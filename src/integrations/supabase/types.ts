@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      friend_access_tiers: {
+        Row: {
+          created_at: string
+          friend_user_id: string
+          id: string
+          owner_id: string
+          tier: Database["public"]["Enums"]["access_tier"]
+        }
+        Insert: {
+          created_at?: string
+          friend_user_id: string
+          id?: string
+          owner_id: string
+          tier?: Database["public"]["Enums"]["access_tier"]
+        }
+        Update: {
+          created_at?: string
+          friend_user_id?: string
+          id?: string
+          owner_id?: string
+          tier?: Database["public"]["Enums"]["access_tier"]
+        }
+        Relationships: []
+      }
       friend_groups: {
         Row: {
           created_at: string
@@ -69,6 +93,110 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      life_posts: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          image_url: string | null
+          link_title: string | null
+          link_url: string | null
+          section_id: string
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          link_title?: string | null
+          link_url?: string | null
+          section_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          link_title?: string | null
+          link_url?: string | null
+          section_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "life_posts_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "life_sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      life_sections: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          min_tier: Database["public"]["Enums"]["access_tier"]
+          name: string
+          section_type: string
+          sort_order: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          min_tier?: Database["public"]["Enums"]["access_tier"]
+          name: string
+          section_type?: string
+          sort_order?: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          min_tier?: Database["public"]["Enums"]["access_tier"]
+          name?: string
+          section_type?: string
+          sort_order?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      period_entries: {
+        Row: {
+          created_at: string
+          date: string
+          flow_level: string | null
+          id: string
+          notes: string | null
+          symptoms: string[] | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          flow_level?: string | null
+          id?: string
+          notes?: string | null
+          symptoms?: string[] | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          flow_level?: string | null
+          id?: string
+          notes?: string | null
+          symptoms?: string[] | null
+          user_id?: string
+        }
+        Relationships: []
       }
       plans: {
         Row: {
@@ -173,16 +301,55 @@ export type Database = {
           },
         ]
       }
+      workout_entries: {
+        Row: {
+          created_at: string
+          date: string
+          duration_mins: number | null
+          id: string
+          notes: string | null
+          user_id: string
+          workout_type: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          duration_mins?: number | null
+          id?: string
+          notes?: string | null
+          user_id: string
+          workout_type: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          duration_mins?: number | null
+          id?: string
+          notes?: string | null
+          user_id?: string
+          workout_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      can_view_life_post: { Args: { _post_id: string }; Returns: boolean }
+      has_tier_access: {
+        Args: {
+          _min_tier: Database["public"]["Enums"]["access_tier"]
+          _owner_id: string
+          _viewer_id: string
+        }
+        Returns: boolean
+      }
       is_group_member: { Args: { _group_id: string }; Returns: boolean }
       is_group_owner: { Args: { _group_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      access_tier: "close" | "inner" | "outer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -309,6 +476,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      access_tier: ["close", "inner", "outer"],
+    },
   },
 } as const
