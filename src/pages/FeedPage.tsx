@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link as LinkIcon, Filter, CalendarDays, MapPin, User, LogOut } from "lucide-react";
+import { Link as LinkIcon, Filter, CalendarDays, MapPin, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
 
@@ -122,14 +122,9 @@ const FeedPage = () => {
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <span className="font-display text-xl font-bold tracking-widest text-foreground">MINBY</span>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="rounded-full">
-              <User className="w-4 h-4" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={signOut} className="rounded-full">
-              <LogOut className="w-4 h-4" />
-            </Button>
-          </div>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/settings")} className="rounded-full">
+            <Settings className="w-4 h-4" />
+          </Button>
         </div>
       </nav>
 
