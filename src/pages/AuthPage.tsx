@@ -48,7 +48,7 @@ const AuthPage = () => {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <span className="text-2xl mb-2 block font-display font-bold tracking-widest text-primary">MINBY</span>
+          <span className="text-2xl mb-2 block font-display font-normal tracking-[0.35em] text-primary">MINBY</span>
           <h1 className="font-display text-3xl font-bold text-foreground">
             {isSignUp ? "Join MINBY" : "Welcome back"}
           </h1>
