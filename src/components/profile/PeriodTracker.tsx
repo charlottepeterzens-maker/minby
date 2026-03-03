@@ -84,14 +84,14 @@ const PeriodTracker = ({ section, isOwner }: Props) => {
   });
 
   return (
-    <Card className="rounded-2xl border-border/50 shadow-card overflow-hidden">
+    <Card className="border-border/50 shadow-card overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="font-display text-base flex items-center gap-2">
             <span className="text-xl">{section.emoji}</span> {section.name}
           </CardTitle>
           {isOwner && (
-            <Button variant="warm" size="sm" className="rounded-full text-xs" onClick={() => setShowLog(!showLog)}>
+            <Button variant="warm" size="sm" className="text-xs" onClick={() => setShowLog(!showLog)}>
               Log today
             </Button>
           )}
@@ -116,11 +116,11 @@ const PeriodTracker = ({ section, isOwner }: Props) => {
 
         {/* Log form */}
         {showLog && isOwner && (
-          <div className="mt-3 bg-muted/30 rounded-xl p-3 space-y-2">
+          <div className="mt-3 bg-muted/30 p-3 space-y-2">
             <div>
               <span className="text-xs text-muted-foreground">Flow level</span>
               <Select value={flowLevel} onValueChange={setFlowLevel}>
-                <SelectTrigger className="mt-1 h-8 text-xs rounded-xl">
+                <SelectTrigger className="mt-1 h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -137,7 +137,7 @@ const PeriodTracker = ({ section, isOwner }: Props) => {
                   <button
                     key={s}
                     onClick={() => toggleSymptom(s)}
-                    className={`px-2 py-0.5 rounded-full text-[10px] font-medium border transition-all ${
+                    className={`px-2 py-0.5 text-[10px] font-medium border transition-all ${
                       selectedSymptoms.includes(s)
                         ? "bg-primary text-primary-foreground border-primary"
                         : "text-muted-foreground border-border/50 hover:bg-muted"
@@ -148,7 +148,7 @@ const PeriodTracker = ({ section, isOwner }: Props) => {
                 ))}
               </div>
             </div>
-            <Button size="sm" onClick={logToday} className="w-full rounded-xl text-xs">
+            <Button size="sm" onClick={logToday} className="w-full text-xs">
               Save entry
             </Button>
           </div>
