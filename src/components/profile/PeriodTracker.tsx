@@ -1,0 +1,161 @@
+import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+import { format, subDays, differenceInDays } from "date-fns";
+
+interface PeriodEntry {
+  id: string;
+  date: string;
+  flow_level: string;
+  symptoms: string[];
+  notes: string | null;
+}
+
+interface Props {
+  section: { id: string; name: string; emoji: string; min_tier: string };
+  isOwner: boolean;
+}
+
+const flowColors: Record<string, string> = {
+  light: "bg-accent/40",
+  medium: "bg-accent/70",
+  heavy: "bg-accent",
+};
+
+const symptomOptions = ["Cramps", "Headache", "Fatigue", "Bloating", "Mood swings", "Back pain"];
+
+const PeriodTracker = ({ section, isOwner }: Props) => {
+  const { user } = useAuth();
+  const [entries, setEntries] = useState<PeriodEntry[]>([]);
+  const [showLog, setShowLog] = useState(false);
+  const [flowLevel, setFlowLevel] = useState("medium");
+  const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+
+  const fetchEntries = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("period_entries")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("date", { ascending: false })
+      .limit(60);
+    if (data) setEntries(data as PeriodEntry[]);
+  }, [user]);
+
+  useEffect(() => {
+    fetchEntries();
+  }, [fetchEntries]);
+
+  const logToday = async () => {
+    if (!user) return;
+    const today = format(new Date(), "yyyy-MM-dd");
+    const { error } = await supabase.from("period_entries").upsert(
+      { user_id: user.id, date: today, flow_level: flowLevel, symptoms: selectedSymptoms },
+      { onConflict: "user_id,date" }
+    );
+    if (error) {
+      toast.error("Could not log");
+    } else {
+      toast.success("Logged! 🩸");
+      setShowLog(false);
+      fetchEntries();
+    }
+  };
+
+  const toggleSymptom = (s: string) => {
+    setSelectedSymptoms((prev) => prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]);
+  };
+
+  // Calculate cycle info
+  const periodDates = entries.map((e) => new Date(e.date)).sort((a, b) => b.getTime() - a.getTime());
+  const lastPeriod = periodDates[0];
+  const daysSinceLast = lastPeriod ? differenceInDays(new Date(), lastPeriod) : null;
+
+  // Simple 14-day calendar
+  const last14 = Array.from({ length: 14 }, (_, i) => {
+    const date = subDays(new Date(), 13 - i);
+    const dateStr = format(date, "yyyy-MM-dd");
+    const entry = entries.find((e) => e.date === dateStr);
+    return { date, dateStr, entry };
+  });
+
+  return (
+    <Card className="rounded-2xl border-border/50 shadow-card overflow-hidden">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="font-display text-base flex items-center gap-2">
+            <span className="text-xl">{section.emoji}</span> {section.name}
+          </CardTitle>
+          {isOwner && (
+            <Button variant="warm" size="sm" className="rounded-full text-xs" onClick={() => setShowLog(!showLog)}>
+              Log today
+            </Button>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="pt-0">
+        {/* Mini calendar */}
+        <div className="flex gap-1 mb-3">
+          {last14.map((day) => (
+            <div key={day.dateStr} className="flex-1 flex flex-col items-center gap-0.5">
+              <span className="text-[9px] text-muted-foreground/60">{format(day.date, "d")}</span>
+              <div className={`w-full aspect-square rounded-sm ${day.entry ? flowColors[day.entry.flow_level] || "bg-accent/50" : "bg-muted/30"}`} />
+            </div>
+          ))}
+        </div>
+
+        {daysSinceLast !== null && (
+          <p className="text-xs text-muted-foreground text-center">
+            Day {daysSinceLast} of cycle
+          </p>
+        )}
+
+        {/* Log form */}
+        {showLog && isOwner && (
+          <div className="mt-3 bg-muted/30 rounded-xl p-3 space-y-2">
+            <div>
+              <span className="text-xs text-muted-foreground">Flow level</span>
+              <Select value={flowLevel} onValueChange={setFlowLevel}>
+                <SelectTrigger className="mt-1 h-8 text-xs rounded-xl">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="light">Light</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="heavy">Heavy</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <span className="text-xs text-muted-foreground">Symptoms</span>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {symptomOptions.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => toggleSymptom(s)}
+                    className={`px-2 py-0.5 rounded-full text-[10px] font-medium border transition-all ${
+                      selectedSymptoms.includes(s)
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "text-muted-foreground border-border/50 hover:bg-muted"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Button size="sm" onClick={logToday} className="w-full rounded-xl text-xs">
+              Save entry
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default PeriodTracker;

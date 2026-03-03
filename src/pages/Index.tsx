@@ -2,12 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 import PlanCard, { type PlanWithDetails } from "@/components/PlanCard";
 import CreatePlanDialog from "@/components/CreatePlanDialog";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
 import HeroSection from "@/components/HeroSection";
 import { Button } from "@/components/ui/button";
-import { LogOut, Users, Sparkles, ChevronLeft } from "lucide-react";
+import { LogOut, Users, Sparkles, ChevronLeft, User } from "lucide-react";
 
 interface Group {
   id: string;
@@ -27,6 +28,7 @@ const vibeFilters = [
 
 const Index = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [plans, setPlans] = useState<PlanWithDetails[]>([]);
@@ -158,6 +160,9 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground font-body">Hey, {displayName || "you"} 👋</span>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="rounded-full">
+                <User className="w-4 h-4" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={signOut} className="rounded-full">
                 <LogOut className="w-4 h-4" />
               </Button>
