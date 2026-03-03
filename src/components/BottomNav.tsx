@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Users, PlusCircle, Bell } from "lucide-react";
+import { Home, Users, PlusCircle, Bell, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,6 +10,7 @@ const navItems = [
   { label: "Friends", icon: Users, path: "/friends" },
   { label: "Share", icon: PlusCircle, path: "__share__" },
   { label: "Notifications", icon: Bell, path: "/notifications" },
+  { label: "Profile", icon: User, path: "/profile" },
 ];
 
 const BottomNav = () => {
