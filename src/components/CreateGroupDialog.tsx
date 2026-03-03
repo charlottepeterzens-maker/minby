@@ -84,7 +84,6 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
           <Button onClick={handleCreate} disabled={!name || loading} className="w-full rounded-xl font-semibold">
             Create group
           </Button>
-          </Button>
         </div>
       </DialogContent>
     </Dialog>

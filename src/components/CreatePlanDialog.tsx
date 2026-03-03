@@ -152,7 +152,6 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
           <Button onClick={handleCreate} disabled={!title || !dateText || loading} className="w-full rounded-xl font-semibold">
             Share with the group
           </Button>
-          </Button>
         </div>
       </DialogContent>
     </Dialog>
