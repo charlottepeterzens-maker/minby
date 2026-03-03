@@ -2,12 +2,13 @@ import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 import PlanCard, { type PlanWithDetails } from "@/components/PlanCard";
 import CreatePlanDialog from "@/components/CreatePlanDialog";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
 import HeroSection from "@/components/HeroSection";
 import { Button } from "@/components/ui/button";
-import { LogOut, Users, Sparkles, ChevronLeft } from "lucide-react";
+import { LogOut, Users, Sparkles, ChevronLeft, User } from "lucide-react";
 
 interface Group {
   id: string;
