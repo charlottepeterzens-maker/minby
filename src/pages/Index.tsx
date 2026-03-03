@@ -28,6 +28,7 @@ const vibeFilters = [
 
 const Index = () => {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [plans, setPlans] = useState<PlanWithDetails[]>([]);
