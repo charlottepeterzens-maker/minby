@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import FeedPage from "./pages/FeedPage";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -34,6 +35,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <AuthProvider>
+        <LanguageProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
@@ -47,6 +49,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </LanguageProvider>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
