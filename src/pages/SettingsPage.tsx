@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, LogOut, Lock, Bell, ShieldCheck, Eye, AlertTriangle, Globe } from "lucide-react";
+import { ChevronLeft, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import BottomNav from "@/components/BottomNav";
 
@@ -68,10 +68,10 @@ const SettingsPage = () => {
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-4">
         {/* Language */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <Card className="rounded-2xl border-border/50">
+          <Card className="border-border/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-display flex items-center gap-2">
-                <Globe className="w-4 h-4 text-primary" /> {t("language")}
+              <CardTitle className="text-sm font-display">
+                {t("language")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -90,10 +90,10 @@ const SettingsPage = () => {
 
         {/* Password */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 }}>
-          <Card className="rounded-2xl border-border/50">
+          <Card className="border-border/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-display flex items-center gap-2">
-                <Lock className="w-4 h-4 text-primary" /> {t("changePassword")}
+              <CardTitle className="text-sm font-display">
+                {t("changePassword")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -114,10 +114,10 @@ const SettingsPage = () => {
 
         {/* Notifications */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }}>
-          <Card className="rounded-2xl border-border/50">
+          <Card className="border-border/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-display flex items-center gap-2">
-                <Bell className="w-4 h-4 text-primary" /> {t("notificationPreferences")}
+              <CardTitle className="text-sm font-display">
+                {t("notificationPreferences")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -139,32 +139,23 @@ const SettingsPage = () => {
 
         {/* Data & Privacy */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.09 }}>
-          <Card className="rounded-2xl border-border/50">
+          <Card className="border-border/50">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-display flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-primary" /> {t("howWeUseData")}
+              <CardTitle className="text-sm font-display">
+                {t("howWeUseData")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-muted-foreground">
-              <div className="flex items-start gap-2">
-                <Eye className="w-4 h-4 mt-0.5 text-accent-foreground shrink-0" />
-                <p>{t("dataPrivacy1")}</p>
-              </div>
-              <div className="flex items-start gap-2">
-                <Lock className="w-4 h-4 mt-0.5 text-accent-foreground shrink-0" />
-                <p>{t("dataPrivacy2")}</p>
-              </div>
-              <div className="flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 mt-0.5 text-accent-foreground shrink-0" />
-                <p>{t("dataPrivacy3")}</p>
-              </div>
+              <p>{t("dataPrivacy1")}</p>
+              <p>{t("dataPrivacy2")}</p>
+              <p>{t("dataPrivacy3")}</p>
             </CardContent>
           </Card>
         </motion.div>
 
         {/* Log out */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
-          <Button variant="outline" onClick={handleLogout} className="w-full rounded-2xl border-destructive/30 text-destructive hover:bg-destructive/10">
+          <Button variant="outline" onClick={handleLogout} className="w-full border-destructive/30 text-destructive hover:bg-destructive/10">
             <LogOut className="w-4 h-4 mr-2" /> {t("logOut")}
           </Button>
         </motion.div>

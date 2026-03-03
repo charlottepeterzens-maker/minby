@@ -123,7 +123,7 @@ const ProfilePage = () => {
     setUploadingAvatar(false);
   };
 
-  const saveBio = async () => {
+   const saveBio = async () => {
     if (!user) return;
     const { error } = await supabase
       .from("profiles")
@@ -270,8 +270,8 @@ const ProfilePage = () => {
 
         {/* Life sections header */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-lg font-semibold text-foreground flex items-center gap-2">
-            <Heart className="w-5 h-5 text-primary" /> {t("lifeUpdates")}
+          <h2 className="font-display text-lg font-semibold text-foreground">
+            {t("lifeUpdates")}
           </h2>
           {isOwnProfile && sections.length === 0 && <CreateSectionDialog onCreated={fetchSections} />}
         </div>

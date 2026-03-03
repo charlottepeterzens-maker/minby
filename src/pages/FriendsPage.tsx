@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
@@ -96,9 +96,8 @@ const FriendsPage = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-2">
-          <Users className="w-5 h-5 text-primary" />
-          <span className="font-display text-lg font-bold tracking-widest text-foreground">MY FRIENDS</span>
+        <div className="max-w-2xl mx-auto px-4 py-3">
+          <span className="font-display text-lg font-normal tracking-[0.35em] text-foreground">FRIENDS</span>
         </div>
       </nav>
 
@@ -109,7 +108,7 @@ const FriendsPage = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search friends..."
-            className="pl-9 rounded-xl bg-muted/50 border-border/50"
+            className="pl-9 bg-muted/50 border-border/50"
           />
         </div>
 
@@ -117,7 +116,6 @@ const FriendsPage = () => {
           <div className="text-center py-16 text-muted-foreground">Loading...</div>
         ) : filtered.length === 0 ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-            <Users className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
             <p className="font-display text-lg text-muted-foreground">
               {friends.length === 0 ? "No friends yet" : "No matches"}
             </p>
@@ -133,14 +131,14 @@ const FriendsPage = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
-                className="flex items-center gap-3 p-3 rounded-2xl bg-card border border-border/50 shadow-soft"
+                className="flex items-center gap-3 p-3 bg-card border border-border/50 shadow-soft"
               >
                 <button
                   onClick={() => navigate(`/profile/${f.friend_user_id}`)}
-                  className="w-10 h-10 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0 hover:scale-105 transition-transform"
+                  className="w-10 h-10 bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0 hover:scale-105 transition-transform"
                 >
                   {f.avatar_url ? (
-                    <img src={f.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                    <img src={f.avatar_url} alt="" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-sm font-display font-bold text-primary">{f.initial}</span>
                   )}
@@ -153,13 +151,13 @@ const FriendsPage = () => {
                     {f.display_name}
                   </button>
                   {f.tier && (
-                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${tierLabels[f.tier]?.badge || ""}`}>
+                    <span className={`text-[10px] font-medium px-2 py-0.5 ${tierLabels[f.tier]?.badge || ""}`}>
                       {tierLabels[f.tier]?.label}
                     </span>
                   )}
                 </div>
                 <Select value={f.tier || "none"} onValueChange={(val) => val !== "none" && setTier(f.friend_user_id, val)}>
-                  <SelectTrigger className="w-[130px] h-8 text-xs rounded-full">
+                  <SelectTrigger className="w-[130px] h-8 text-xs">
                     <SelectValue placeholder="Set tier" />
                   </SelectTrigger>
                   <SelectContent>
