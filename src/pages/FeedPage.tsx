@@ -136,7 +136,7 @@ const FeedPage = () => {
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`px-3 py-1 rounded-full text-xs font-medium border whitespace-nowrap transition-all ${
+              className={`px-3 py-1 text-xs font-medium border whitespace-nowrap transition-all ${
                 filter === f.value
                   ? "bg-primary text-primary-foreground border-primary"
                   : "bg-muted/50 text-muted-foreground border-border/50 hover:bg-muted"
@@ -197,7 +197,7 @@ const PostCard = ({
 }) => {
   const section = post.life_sections;
   return (
-    <Card className="rounded-2xl border-border/50 shadow-card overflow-hidden">
+    <Card className="border-border/50 shadow-card overflow-hidden">
       <CardContent className="p-4">
         <button onClick={onProfileClick} className="flex items-center gap-2 mb-3 group">
           <Avatar className="w-8 h-8 border border-primary/30">
@@ -213,7 +213,7 @@ const PostCard = ({
             {section && <p className="text-[11px] text-muted-foreground">{section.emoji} {section.name}</p>}
           </div>
         </button>
-        {post.image_url && <img src={post.image_url} alt="" className="w-full rounded-xl mb-3 max-h-80 object-cover" />}
+        {post.image_url && <img src={post.image_url} alt="" className="w-full mb-3 max-h-80 object-cover" />}
         {post.content && <p className="text-sm text-foreground mb-2">{post.content}</p>}
         {post.link_url && (
           <a href={post.link_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
@@ -227,10 +227,10 @@ const PostCard = ({
 };
 
 const PlanFeedCard = ({ plan }: { plan: FeedPlan }) => (
-  <Card className="rounded-2xl border-primary/20 bg-primary/5 shadow-card overflow-hidden">
+  <Card className="border-primary/20 bg-primary/5 shadow-card overflow-hidden">
     <CardContent className="p-4">
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+        <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
           <CalendarDays className="w-5 h-5 text-primary" />
         </div>
         <div className="flex-1 min-w-0">

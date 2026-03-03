@@ -163,9 +163,9 @@ const ProfilePage = () => {
         {/* Profile header with avatar */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <div className="relative inline-block mb-4">
-            <div className="w-24 h-24 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center overflow-hidden">
+            <div className="w-24 h-24 bg-primary/10 border-2 border-primary/30 flex items-center justify-center overflow-hidden">
               {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
                 <span className="text-3xl font-display font-bold text-primary">{initial}</span>
               )}
@@ -174,7 +174,7 @@ const ProfilePage = () => {
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar}
-                className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-elevated hover:scale-105 transition-transform disabled:opacity-50"
+                className="absolute bottom-0 right-0 w-8 h-8 bg-primary text-primary-foreground flex items-center justify-center shadow-elevated hover:scale-105 transition-transform disabled:opacity-50"
               >
                 <Camera className="w-4 h-4" />
               </button>
@@ -253,7 +253,7 @@ const ProfilePage = () => {
                 <button
                   key={section.id}
                   onClick={() => scrollToSection(section.id)}
-                  className={`shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  className={`shrink-0 px-3 py-1.5 text-sm font-medium transition-colors ${
                     activeSection === section.id
                       ? "bg-primary/15 text-primary"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -318,7 +318,7 @@ const ProfilePage = () => {
 
         {/* Tier legend */}
         {isOwnProfile && sections.length > 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8 p-4 bg-muted/50 rounded-2xl">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8 p-4 bg-muted/50">
             <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1">
               <Lock className="w-3 h-3" /> {t("accessLevels")}
             </p>

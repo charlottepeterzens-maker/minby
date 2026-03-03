@@ -72,7 +72,7 @@ const BottomNav = () => {
                     navigate(item.path);
                   }
                 }}
-                className={`flex flex-col items-center gap-0.5 px-4 py-1 rounded-xl transition-colors relative ${
+                className={`flex flex-col items-center gap-0.5 px-4 py-1 transition-colors relative ${
                   isShare
                     ? "text-primary"
                     : isActive
