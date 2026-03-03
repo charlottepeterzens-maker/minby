@@ -155,7 +155,7 @@ const Index = () => {
         <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
           <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="font-display text-lg font-bold text-foreground">MinBy</span>
+              <span className="font-display text-xl font-bold tracking-widest text-foreground">MINBY</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground font-body">Hey, {displayName || "you"}</span>

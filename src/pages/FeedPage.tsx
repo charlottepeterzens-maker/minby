@@ -149,8 +149,8 @@ const FeedPage = () => {
             <button onClick={() => navigate("/")} className="text-muted-foreground hover:text-foreground transition-colors">
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="font-display text-lg font-bold text-foreground flex items-center gap-2">
-              <Rss className="w-4 h-4 text-primary" /> Feed
+            <span className="font-display text-lg font-bold tracking-widest text-foreground flex items-center gap-2">
+              <Rss className="w-4 h-4 text-primary" /> FEED
             </span>
           </div>
         </div>
