@@ -8,7 +8,7 @@ import CreatePlanDialog from "@/components/CreatePlanDialog";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
 import HeroSection from "@/components/HeroSection";
 import { Button } from "@/components/ui/button";
-import { LogOut, Users, Sparkles, ChevronLeft, User } from "lucide-react";
+import { LogOut, Users, Sparkles, ChevronLeft, User, Rss } from "lucide-react";
 
 interface Group {
   id: string;
@@ -159,6 +159,9 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground font-body">Hey, {displayName || "you"}</span>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/feed")} className="rounded-full">
+                <Rss className="w-4 h-4" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="rounded-full">
                 <User className="w-4 h-4" />
               </Button>
