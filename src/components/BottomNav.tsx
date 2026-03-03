@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
 import ShareNewSheet from "@/components/ShareNewSheet";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const navItems: { labelKey: TranslationKey; icon: typeof Home; path: string }[] = [
   { labelKey: "home", icon: Home, path: "/" },
@@ -21,6 +22,7 @@ const BottomNav = () => {
   const { t } = useLanguage();
   const [unreadCount, setUnreadCount] = useState(0);
   const [shareOpen, setShareOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -42,6 +44,13 @@ const BottomNav = () => {
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("avatar_url").eq("user_id", user.id).single().then(({ data }) => {
+      setAvatarUrl(data?.avatar_url || null);
+    });
   }, [user]);
 
   return (
@@ -73,6 +82,11 @@ const BottomNav = () => {
               >
                 {isShare ? (
                   <PlusCircle className="w-7 h-7" strokeWidth={1.5} />
+                ) : item.labelKey === "profile" && avatarUrl ? (
+                  <Avatar className="w-6 h-6 border border-primary/30">
+                    <AvatarImage src={avatarUrl} alt="Profile" />
+                    <AvatarFallback className="text-[9px] bg-primary/10 text-primary"><User className="w-3 h-3" /></AvatarFallback>
+                  </Avatar>
                 ) : (
                   <item.icon className="w-5 h-5" />
                 )}
