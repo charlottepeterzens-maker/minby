@@ -19,9 +19,9 @@ const HeroSection = () => {
         </div>
 
         <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold text-foreground leading-tight mb-4">
-          Gather your girls.
+          Your village.
           <br />
-          <span className="text-primary italic">Make it happen.</span>
+          <span className="text-primary italic">Always close.</span>
         </h1>
 
         <p className="font-body text-lg text-muted-foreground max-w-md mx-auto leading-relaxed">
