@@ -122,7 +122,7 @@ const FeedPage = () => {
     <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <span className="font-display text-xl font-bold tracking-widest text-foreground">MINBY</span>
+          <span className="font-display text-xl font-normal tracking-[0.35em] text-foreground">MINBY</span>
           <Button variant="ghost" size="icon" onClick={() => navigate("/settings")} className="rounded-full">
             <Settings className="w-4 h-4" />
           </Button>
