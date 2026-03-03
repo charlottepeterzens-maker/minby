@@ -161,12 +161,12 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               </CardTitle>
               <div className="flex items-center gap-1">
                 {isOwner && (
-                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setEditing(true)}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditing(true)}>
                     <Pencil className="w-3.5 h-3.5" />
                   </Button>
                 )}
                 {isOwner && (
-                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setShowCompose(!showCompose)}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowCompose(!showCompose)}>
                     <Plus className="w-4 h-4" />
                   </Button>
                 )}
@@ -180,17 +180,17 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         <AnimatePresence>
           {showCompose && isOwner && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden mb-4">
-              <div className="bg-muted/30 rounded-xl p-3 space-y-2">
+              <div className="bg-muted/30 p-3 space-y-2">
                 <Textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="What's new?"
-                  className="rounded-xl bg-background/50 border-border/30 min-h-[60px] text-sm"
+                  className="bg-background/50 border-border/30 min-h-[60px] text-sm"
                 />
                 <div className="flex gap-2 items-center">
                   <label className="cursor-pointer">
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
-                    <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-colors ${imageFile ? "bg-primary/10 text-primary border-primary/30" : "text-muted-foreground border-border/50 hover:bg-muted"}`}>
+                    <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 border transition-colors ${imageFile ? "bg-primary/10 text-primary border-primary/30" : "text-muted-foreground border-border/50 hover:bg-muted"}`}>
                       <Image className="w-3 h-3" /> {imageFile ? imageFile.name.slice(0, 15) : "Photo"}
                     </span>
                   </label>
@@ -198,9 +198,9 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     value={linkUrl}
                     onChange={(e) => setLinkUrl(e.target.value)}
                     placeholder="Paste a link..."
-                    className="flex-1 h-7 text-xs rounded-full bg-background/50 border-border/30"
+                    className="flex-1 h-7 text-xs bg-background/50 border-border/30"
                   />
-                  <Button size="sm" disabled={posting} onClick={handlePost} className="rounded-full h-7 px-3">
+                  <Button size="sm" disabled={posting} onClick={handlePost} className="h-7 px-3">
                     <Send className="w-3 h-3" />
                   </Button>
                 </div>
@@ -217,7 +217,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
             {posts.map((post) => (
               <div key={post.id} className="group relative">
                 {post.image_url && (
-                  <img src={post.image_url} alt="" className="w-full rounded-xl mb-2 max-h-64 object-cover" />
+                  <img src={post.image_url} alt="" className="w-full mb-2 max-h-64 object-cover" />
                 )}
                 {post.content && <p className="text-sm text-foreground">{post.content}</p>}
                 {post.link_url && (
