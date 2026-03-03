@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Link as LinkIcon, Filter, CalendarDays, MapPin, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface FeedPost {
   id: string;
@@ -199,13 +200,12 @@ const PostCard = ({
     <Card className="rounded-2xl border-border/50 shadow-card overflow-hidden">
       <CardContent className="p-4">
         <button onClick={onProfileClick} className="flex items-center gap-2 mb-3 group">
-          <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0">
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
-            ) : (
-              <span className="text-xs font-display font-bold text-primary">{getInitial(profile.display_name)}</span>
-            )}
-          </div>
+          <Avatar className="w-8 h-8 border border-primary/30">
+            <AvatarImage src={profile.avatar_url || undefined} alt={profile.display_name || "User"} />
+            <AvatarFallback className="bg-primary/10 text-xs font-display font-bold text-primary">
+              {getInitial(profile.display_name)}
+            </AvatarFallback>
+          </Avatar>
           <div className="text-left">
             <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
               {profile.display_name || "Someone"}
