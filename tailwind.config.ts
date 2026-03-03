@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Epilogue", "sans-serif"],
+        display: ["Prata", "serif"],
         body: ["Poppins", "sans-serif"],
       },
       colors: {
