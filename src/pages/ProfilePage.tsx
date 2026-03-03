@@ -304,6 +304,7 @@ const ProfilePage = () => {
           )}
         </main>
       </div>
+      <BottomNav />
     </div>
   );
 };
