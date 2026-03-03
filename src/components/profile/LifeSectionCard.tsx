@@ -125,7 +125,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   };
 
   return (
-    <Card id={`section-${section.id}`} className="rounded-2xl border-border/50 shadow-card overflow-hidden">
+    <Card id={`section-${section.id}`} className="border-border/50 shadow-card overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           {editing ? (
@@ -133,11 +133,11 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               <Input
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
-                className="h-8 text-sm rounded-lg flex-1 max-w-[180px]"
+                className="h-8 text-sm flex-1 max-w-[180px]"
                 autoFocus
               />
               <Select value={editTier} onValueChange={setEditTier}>
-                <SelectTrigger className="h-8 w-[100px] text-xs rounded-lg">
+                <SelectTrigger className="h-8 w-[100px] text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -146,10 +146,10 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   <SelectItem value="outer">Everyone</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-primary" onClick={handleSaveEdit} disabled={saving}>
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={handleSaveEdit} disabled={saving}>
                 <Check className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-muted-foreground" onClick={() => { setEditing(false); setEditName(section.name); setEditTier(section.min_tier); }}>
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => { setEditing(false); setEditName(section.name); setEditTier(section.min_tier); }}>
                 <X className="w-4 h-4" />
               </Button>
             </div>
@@ -157,7 +157,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
             <>
               <CardTitle className="font-display text-base flex items-center gap-2">
                 {section.name}
-                {isOwner && <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{tierLabels[section.min_tier]}</span>}
+                {isOwner && <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5">{tierLabels[section.min_tier]}</span>}
               </CardTitle>
               <div className="flex items-center gap-1">
                 {isOwner && (

@@ -46,11 +46,11 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="warm" size="sm" className="rounded-full gap-1.5">
+        <Button variant="warm" size="sm" className="gap-1.5">
           <Plus className="w-4 h-4" /> New group
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-sm rounded-2xl">
+      <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">Create a friend group</DialogTitle>
         </DialogHeader>
@@ -62,7 +62,7 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
                 <button
                   key={e}
                   onClick={() => setEmoji(e)}
-                  className={`w-10 h-10 rounded-xl text-xl flex items-center justify-center transition-all ${
+                  className={`w-10 h-10 text-xl flex items-center justify-center transition-all ${
                     emoji === e ? "bg-primary/15 ring-2 ring-primary/30 scale-110" : "bg-muted hover:bg-muted/80"
                   }`}
                 >
@@ -78,10 +78,10 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
               placeholder="Besties, Work crew, Neighbors..."
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1.5 rounded-xl bg-muted/50 border-border/50"
+              className="mt-1.5 bg-muted/50 border-border/50"
             />
           </div>
-          <Button onClick={handleCreate} disabled={!name || loading} className="w-full rounded-xl font-semibold">
+          <Button onClick={handleCreate} disabled={!name || loading} className="w-full font-semibold">
             Create group
           </Button>
         </div>

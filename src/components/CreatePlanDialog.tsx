@@ -70,11 +70,11 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-full font-semibold gap-2 shadow-soft">
+        <Button className="font-semibold gap-2 shadow-soft">
           <Plus className="w-4 h-4" /> New plan
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md rounded-2xl border-border/50">
+      <DialogContent className="sm:max-w-md border-border/50">
         <DialogHeader>
           <DialogTitle className="font-display text-xl flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
@@ -89,7 +89,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
                 <button
                   key={e}
                   onClick={() => setSelectedEmoji(e)}
-                  className={`w-10 h-10 rounded-xl text-xl flex items-center justify-center transition-all ${
+                  className={`w-10 h-10 text-xl flex items-center justify-center transition-all ${
                     selectedEmoji === e ? "bg-primary/15 ring-2 ring-primary/30 scale-110" : "bg-muted hover:bg-muted/80"
                   }`}
                 >
@@ -106,7 +106,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
               placeholder="Cinema night, painting session, wine & chat..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1.5 rounded-xl bg-muted/50 border-border/50"
+              className="mt-1.5 bg-muted/50 border-border/50"
             />
           </div>
 
@@ -117,7 +117,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
               placeholder="March 11, Last weekend in June..."
               value={dateText}
               onChange={(e) => setDateText(e.target.value)}
-              className="mt-1.5 rounded-xl bg-muted/50 border-border/50"
+              className="mt-1.5 bg-muted/50 border-border/50"
             />
           </div>
 
@@ -128,7 +128,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
               placeholder="My place, downtown, the park..."
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="mt-1.5 rounded-xl bg-muted/50 border-border/50"
+              className="mt-1.5 bg-muted/50 border-border/50"
             />
           </div>
 
@@ -139,7 +139,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
                 <button
                   key={v.value}
                   onClick={() => setSelectedVibe(v.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  className={`px-4 py-2 text-sm font-medium transition-all ${
                     selectedVibe === v.value ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
                   }`}
                 >
@@ -149,7 +149,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
             </div>
           </div>
 
-          <Button onClick={handleCreate} disabled={!title || !dateText || loading} className="w-full rounded-xl font-semibold">
+          <Button onClick={handleCreate} disabled={!title || !dateText || loading} className="w-full font-semibold">
             Share with the group
           </Button>
         </div>

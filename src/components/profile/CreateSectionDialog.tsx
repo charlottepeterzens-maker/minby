@@ -70,11 +70,11 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="warm" size="sm" className="rounded-full">
+        <Button variant="warm" size="sm">
           <Plus className="w-4 h-4" /> Add section
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-2xl">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle className="font-display">Add a life section</DialogTitle>
         </DialogHeader>
@@ -85,7 +85,7 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
             <button
               key={p.name}
               onClick={() => handlePreset(p)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+              className={`px-3 py-1.5 text-xs font-medium border transition-all ${
                 name === p.name
                   ? "bg-primary text-primary-foreground border-primary"
                   : "bg-muted text-muted-foreground border-border/50 hover:bg-muted/80"
@@ -100,18 +100,18 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
           <div className="flex gap-2">
             <div className="w-16">
               <Label className="text-xs text-muted-foreground">Emoji</Label>
-              <Input value={emoji} onChange={(e) => setEmoji(e.target.value)} className="mt-1 text-center rounded-xl" maxLength={4} />
+              <Input value={emoji} onChange={(e) => setEmoji(e.target.value)} className="mt-1 text-center" maxLength={4} />
             </div>
             <div className="flex-1">
               <Label className="text-xs text-muted-foreground">Name</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. My garden" className="mt-1 rounded-xl" />
+              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. My garden" className="mt-1" />
             </div>
           </div>
 
           <div>
             <Label className="text-xs text-muted-foreground">Who can see this?</Label>
             <Select value={minTier} onValueChange={setMinTier}>
-              <SelectTrigger className="mt-1 rounded-xl">
+              <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -122,7 +122,7 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
             </Select>
           </div>
 
-          <Button onClick={handleCreate} disabled={!name.trim() || loading} className="w-full rounded-xl">
+          <Button onClick={handleCreate} disabled={!name.trim() || loading} className="w-full">
             {loading ? "Creating..." : "Create section"}
           </Button>
         </div>
