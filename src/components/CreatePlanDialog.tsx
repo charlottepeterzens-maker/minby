@@ -9,10 +9,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 const vibes = [
-  { value: "chill" as const, label: "Chill 🧘" },
-  { value: "adventure" as const, label: "Adventure 🌿" },
-  { value: "creative" as const, label: "Creative 🎨" },
-  { value: "selfcare" as const, label: "Self-care 💆" },
+  { value: "chill" as const, label: "Chill" },
+  { value: "adventure" as const, label: "Adventure" },
+  { value: "creative" as const, label: "Creative" },
+  { value: "selfcare" as const, label: "Self-care" },
 ];
 
 const emojiSuggestions = ["🎬", "🎨", "🧘", "🍷", "☕", "🌿", "🏖️", "💅", "📚", "🎵", "🍕", "🌸"];
@@ -55,7 +55,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
         user_id: user.id,
         status: "in",
       });
-      toast.success("Plan shared! ✨");
+      toast.success("Plan shared!");
       onPlanCreated();
       setTitle("");
       setDateText("");
@@ -150,7 +150,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
           </div>
 
           <Button onClick={handleCreate} disabled={!title || !dateText || loading} className="w-full rounded-xl font-semibold">
-            Share with the group ✨
+            Share with the group
           </Button>
         </div>
       </DialogContent>

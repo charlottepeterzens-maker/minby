@@ -60,7 +60,7 @@ const PeriodTracker = ({ section, isOwner }: Props) => {
     if (error) {
       toast.error("Could not log");
     } else {
-      toast.success("Logged! 🩸");
+      toast.success("Logged!");
       setShowLog(false);
       fetchEntries();
     }

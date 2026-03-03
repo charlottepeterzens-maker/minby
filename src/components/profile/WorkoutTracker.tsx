@@ -57,7 +57,7 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
     if (error) {
       toast.error("Could not log workout");
     } else {
-      toast.success("Workout logged! 💪");
+      toast.success("Workout logged!");
       setShowLog(false);
       fetchEntries();
     }

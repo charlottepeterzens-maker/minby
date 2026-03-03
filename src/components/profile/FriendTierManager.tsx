@@ -121,9 +121,9 @@ const FriendTierManager = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none" disabled>Set tier...</SelectItem>
-                <SelectItem value="close">💖 Close</SelectItem>
-                <SelectItem value="inner">🤝 Inner circle</SelectItem>
-                <SelectItem value="outer">🌍 Everyone</SelectItem>
+                <SelectItem value="close">Close</SelectItem>
+                <SelectItem value="inner">Inner circle</SelectItem>
+                <SelectItem value="outer">Everyone</SelectItem>
               </SelectContent>
             </Select>
           </div>

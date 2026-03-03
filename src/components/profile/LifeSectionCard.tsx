@@ -24,9 +24,9 @@ interface Props {
 }
 
 const tierBadge: Record<string, string> = {
-  close: "💖",
-  inner: "🤝",
-  outer: "🌍",
+  close: "Close",
+  inner: "Inner",
+  outer: "All",
 };
 
 const LifeSectionCard = ({ section, isOwner }: Props) => {
@@ -99,9 +99,8 @@ const LifeSectionCard = ({ section, isOwner }: Props) => {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="font-display text-base flex items-center gap-2">
-            <span className="text-xl">{section.emoji}</span>
             {section.name}
-            {isOwner && <span className="text-xs">{tierBadge[section.min_tier]}</span>}
+            {isOwner && <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{tierBadge[section.min_tier]}</span>}
           </CardTitle>
           {isOwner && (
             <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setShowCompose(!showCompose)}>

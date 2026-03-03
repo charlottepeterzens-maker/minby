@@ -29,7 +29,7 @@ const AuthPage = () => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success("Check your email to confirm your account! 💌");
+        toast.success("Check your email to confirm your account!");
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -48,7 +48,7 @@ const AuthPage = () => {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <span className="text-4xl mb-2 block">🌸</span>
+          <span className="text-4xl mb-2 block font-display font-bold text-primary">G</span>
           <h1 className="font-display text-3xl font-bold text-foreground">
             {isSignUp ? "Join Gather" : "Welcome back"}
           </h1>
@@ -98,7 +98,7 @@ const AuthPage = () => {
           </div>
 
           <Button type="submit" className="w-full rounded-xl font-semibold" disabled={loading}>
-            {loading ? "..." : isSignUp ? "Create account ✨" : "Sign in"}
+            {loading ? "..." : isSignUp ? "Create account" : "Sign in"}
           </Button>
         </form>
 
