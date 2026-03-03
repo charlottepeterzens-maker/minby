@@ -4,57 +4,74 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Sparkles } from "lucide-react";
-import type { Plan } from "./PlanCard";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
 const vibes = [
-  { value: "chill" as const, label: "Chill 🧘", emoji: "🧘" },
-  { value: "adventure" as const, label: "Adventure 🌿", emoji: "🌿" },
-  { value: "creative" as const, label: "Creative 🎨", emoji: "🎨" },
-  { value: "selfcare" as const, label: "Self-care 💆", emoji: "💆" },
+  { value: "chill" as const, label: "Chill 🧘" },
+  { value: "adventure" as const, label: "Adventure 🌿" },
+  { value: "creative" as const, label: "Creative 🎨" },
+  { value: "selfcare" as const, label: "Self-care 💆" },
 ];
 
 const emojiSuggestions = ["🎬", "🎨", "🧘", "🍷", "☕", "🌿", "🏖️", "💅", "📚", "🎵", "🍕", "🌸"];
 
 interface CreatePlanDialogProps {
-  onCreatePlan: (plan: Plan) => void;
+  groupId: string;
+  onPlanCreated: () => void;
 }
 
-const CreatePlanDialog = ({ onCreatePlan }: CreatePlanDialogProps) => {
+const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => {
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [date, setDate] = useState("");
+  const [dateText, setDateText] = useState("");
   const [location, setLocation] = useState("");
-  const [selectedVibe, setSelectedVibe] = useState<Plan["vibe"]>("chill");
+  const [selectedVibe, setSelectedVibe] = useState("chill");
   const [selectedEmoji, setSelectedEmoji] = useState("🎬");
+  const [loading, setLoading] = useState(false);
 
-  const handleCreate = () => {
-    if (!title || !date) return;
-    onCreatePlan({
-      id: Date.now().toString(),
+  const handleCreate = async () => {
+    if (!title || !dateText || !user) return;
+    setLoading(true);
+
+    const { error } = await supabase.from("plans").insert({
+      group_id: groupId,
+      created_by: user.id,
       title,
       emoji: selectedEmoji,
-      date,
-      location: location || undefined,
-      author: "You",
-      authorInitial: "Y",
-      attendees: [{ name: "You", initial: "Y" }],
+      date_text: dateText,
+      location: location || null,
       vibe: selectedVibe,
-      comments: 0,
     });
-    setTitle("");
-    setDate("");
-    setLocation("");
-    setSelectedVibe("chill");
-    setSelectedEmoji("🎬");
-    setOpen(false);
+
+    if (error) {
+      toast.error("Couldn't create plan");
+    } else {
+      // Auto-RSVP the creator
+      await supabase.from("rsvps").insert({
+        plan_id: (await supabase.from("plans").select("id").order("created_at", { ascending: false }).limit(1).single()).data?.id ?? "",
+        user_id: user.id,
+        status: "in",
+      });
+      toast.success("Plan shared! ✨");
+      onPlanCreated();
+      setTitle("");
+      setDateText("");
+      setLocation("");
+      setSelectedVibe("chill");
+      setSelectedEmoji("🎬");
+      setOpen(false);
+    }
+    setLoading(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="rounded-full font-semibold gap-2 shadow-soft">
-          <Plus className="w-4 h-4" />
-          New plan
+          <Plus className="w-4 h-4" /> New plan
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md rounded-2xl border-border/50">
@@ -73,9 +90,7 @@ const CreatePlanDialog = ({ onCreatePlan }: CreatePlanDialogProps) => {
                   key={e}
                   onClick={() => setSelectedEmoji(e)}
                   className={`w-10 h-10 rounded-xl text-xl flex items-center justify-center transition-all ${
-                    selectedEmoji === e
-                      ? "bg-primary/15 ring-2 ring-primary/30 scale-110"
-                      : "bg-muted hover:bg-muted/80"
+                    selectedEmoji === e ? "bg-primary/15 ring-2 ring-primary/30 scale-110" : "bg-muted hover:bg-muted/80"
                   }`}
                 >
                   {e}
@@ -85,9 +100,9 @@ const CreatePlanDialog = ({ onCreatePlan }: CreatePlanDialogProps) => {
           </div>
 
           <div>
-            <Label htmlFor="title" className="text-sm font-medium text-muted-foreground">What's the plan?</Label>
+            <Label htmlFor="plan-title" className="text-sm font-medium text-muted-foreground">What's the plan?</Label>
             <Input
-              id="title"
+              id="plan-title"
               placeholder="Cinema night, painting session, wine & chat..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -96,20 +111,20 @@ const CreatePlanDialog = ({ onCreatePlan }: CreatePlanDialogProps) => {
           </div>
 
           <div>
-            <Label htmlFor="date" className="text-sm font-medium text-muted-foreground">When?</Label>
+            <Label htmlFor="plan-date" className="text-sm font-medium text-muted-foreground">When?</Label>
             <Input
-              id="date"
+              id="plan-date"
               placeholder="March 11, Last weekend in June..."
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+              value={dateText}
+              onChange={(e) => setDateText(e.target.value)}
               className="mt-1.5 rounded-xl bg-muted/50 border-border/50"
             />
           </div>
 
           <div>
-            <Label htmlFor="location" className="text-sm font-medium text-muted-foreground">Where? (optional)</Label>
+            <Label htmlFor="plan-location" className="text-sm font-medium text-muted-foreground">Where? (optional)</Label>
             <Input
-              id="location"
+              id="plan-location"
               placeholder="My place, downtown, the park..."
               value={location}
               onChange={(e) => setLocation(e.target.value)}
@@ -125,9 +140,7 @@ const CreatePlanDialog = ({ onCreatePlan }: CreatePlanDialogProps) => {
                   key={v.value}
                   onClick={() => setSelectedVibe(v.value)}
                   className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                    selectedVibe === v.value
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                    selectedVibe === v.value ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
                   }`}
                 >
                   {v.label}
@@ -136,11 +149,7 @@ const CreatePlanDialog = ({ onCreatePlan }: CreatePlanDialogProps) => {
             </div>
           </div>
 
-          <Button
-            onClick={handleCreate}
-            disabled={!title || !date}
-            className="w-full rounded-xl font-semibold"
-          >
+          <Button onClick={handleCreate} disabled={!title || !dateText || loading} className="w-full rounded-xl font-semibold">
             Share with the group ✨
           </Button>
         </div>
