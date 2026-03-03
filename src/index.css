@@ -7,14 +7,14 @@
 @layer base {
   :root {
     /* Sugared figs base */
-    --background: 90 29% 90%;
-    --foreground: 4 37% 22%;
+    --background: 25 79% 94%;
+    --foreground: 4 37% 18%;
 
-    --card: 15 25% 97%;
-    --card-foreground: 4 37% 22%;
+    --card: 25 60% 96%;
+    --card-foreground: 4 37% 18%;
 
-    --popover: 15 25% 97%;
-    --popover-foreground: 4 37% 22%;
+    --popover: 25 60% 96%;
+    --popover-foreground: 4 37% 18%;
 
     /* Sugared figs #CA9F91 */
     --primary: 15 35% 68%;
@@ -28,14 +28,14 @@
     --accent: 73 17% 26%;
     --accent-foreground: 73 10% 92%;
 
-    --muted: 15 15% 90%;
-    --muted-foreground: 4 15% 45%;
+    --muted: 25 30% 89%;
+    --muted-foreground: 4 20% 40%;
 
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 15 15% 86%;
-    --input: 15 15% 86%;
+    --border: 25 25% 85%;
+    --input: 25 25% 85%;
     /* Mocha latte #67332F */
     --ring: 4 37% 29%;
 
