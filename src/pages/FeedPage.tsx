@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, Image as ImageIcon, Link as LinkIcon, Filter, Rss, CalendarDays, MapPin } from "lucide-react";
+import { Link as LinkIcon, Filter, CalendarDays, MapPin, User, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import BottomNav from "@/components/BottomNav";
 
 interface FeedPost {
   id: string;
@@ -33,9 +34,7 @@ interface FeedPlan {
   vibe: string;
   created_at: string;
   group_id: string;
-  friend_groups: {
-    name: string;
-  } | null;
+  friend_groups: { name: string } | null;
 }
 
 interface ProfileMap {
@@ -55,7 +54,7 @@ const sectionTypeFilters = [
 ];
 
 const FeedPage = () => {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<FeedPost[]>([]);
   const [plans, setPlans] = useState<FeedPlan[]>([]);
@@ -67,7 +66,6 @@ const FeedPage = () => {
     if (!user) return;
     setLoading(true);
 
-    // Fetch posts from friends (RLS handles tier access)
     const { data: postData } = await supabase
       .from("life_posts")
       .select("id, content, image_url, link_url, created_at, section_id, user_id, life_sections(name, emoji, section_type, min_tier, user_id)")
@@ -75,7 +73,6 @@ const FeedPage = () => {
       .order("created_at", { ascending: false })
       .limit(50);
 
-    // Fetch plans from user's groups
     const { data: planData } = await supabase
       .from("plans")
       .select("id, title, emoji, date_text, location, vibe, created_at, group_id, friend_groups(name)")
@@ -88,7 +85,6 @@ const FeedPage = () => {
     setPosts(fetchedPosts);
     setPlans(fetchedPlans);
 
-    // Gather unique user IDs for profile lookup
     const userIds = new Set<string>();
     fetchedPosts.forEach((p) => userIds.add(p.user_id));
     if (userIds.size > 0) {
@@ -98,67 +94,47 @@ const FeedPage = () => {
         .in("user_id", Array.from(userIds));
       if (profileData) {
         const map: ProfileMap = {};
-        profileData.forEach((p) => {
-          map[p.user_id] = { display_name: p.display_name, avatar_url: p.avatar_url };
-        });
+        profileData.forEach((p) => { map[p.user_id] = { display_name: p.display_name, avatar_url: p.avatar_url }; });
         setProfiles(map);
       }
     }
-
     setLoading(false);
   }, [user]);
 
-  useEffect(() => {
-    fetchFeed();
-  }, [fetchFeed]);
+  useEffect(() => { fetchFeed(); }, [fetchFeed]);
 
-  // Merge and sort
   const feedItems: FeedItem[] = [];
-
   if (filter === "all" || filter === "plans") {
-    plans.forEach((plan) =>
-      feedItems.push({ type: "plan", data: plan, created_at: plan.created_at })
-    );
+    plans.forEach((plan) => feedItems.push({ type: "plan", data: plan, created_at: plan.created_at }));
   }
-
   if (filter !== "plans") {
     posts
-      .filter((p) => {
-        if (filter === "all") return true;
-        return p.life_sections?.section_type === filter;
-      })
-      .forEach((post) =>
-        feedItems.push({ type: "post", data: post, created_at: post.created_at })
-      );
+      .filter((p) => filter === "all" || p.life_sections?.section_type === filter)
+      .forEach((post) => feedItems.push({ type: "post", data: post, created_at: post.created_at }));
   }
-
   feedItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-  const getProfile = (userId: string) =>
-    profiles[userId] || { display_name: "Someone", avatar_url: null };
-
-  const getInitial = (name: string | null) =>
-    name?.charAt(0).toUpperCase() || "?";
+  const getProfile = (userId: string) => profiles[userId] || { display_name: "Someone", avatar_url: null };
+  const getInitial = (name: string | null) => name?.charAt(0).toUpperCase() || "?";
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Nav */}
+    <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <button onClick={() => navigate("/")} className="text-muted-foreground hover:text-foreground transition-colors">
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <span className="font-display text-lg font-bold tracking-widest text-foreground flex items-center gap-2">
-              <Rss className="w-4 h-4 text-primary" /> FEED
-            </span>
+          <span className="font-display text-xl font-bold tracking-widest text-foreground">MINBY</span>
+          <div className="flex items-center gap-1">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="rounded-full">
+              <User className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="icon" onClick={signOut} className="rounded-full">
+              <LogOut className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 pb-20">
-        {/* Filters */}
-        <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
+      <main className="max-w-2xl mx-auto px-4 py-4">
+        <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
           <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
           {sectionTypeFilters.map((f) => (
             <button
@@ -179,9 +155,8 @@ const FeedPage = () => {
           <div className="text-center py-16 text-muted-foreground">Loading your feed...</div>
         ) : feedItems.length === 0 ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-            <Rss className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
             <p className="font-display text-lg text-muted-foreground">
-              {filter === "all" ? "No updates from friends yet" : "No updates for this filter"}
+              {filter === "all" ? "No updates yet" : "No updates for this filter"}
             </p>
             <p className="text-sm text-muted-foreground/70 mt-1">
               Add friends and assign them access tiers to see their life updates here
@@ -191,7 +166,7 @@ const FeedPage = () => {
           <div className="space-y-4">
             {feedItems.map((item, i) => (
               <motion.div
-                key={`${item.type}-${item.type === "post" ? item.data.id : item.data.id}`}
+                key={`${item.type}-${item.data.id}`}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.03 }}
@@ -211,17 +186,13 @@ const FeedPage = () => {
           </div>
         )}
       </main>
+      <BottomNav />
     </div>
   );
 };
 
-// --- Sub-components ---
-
 const PostCard = ({
-  post,
-  profile,
-  getInitial,
-  onProfileClick,
+  post, profile, getInitial, onProfileClick,
 }: {
   post: FeedPost;
   profile: { display_name: string | null; avatar_url: string | null };
@@ -229,11 +200,9 @@ const PostCard = ({
   onProfileClick: () => void;
 }) => {
   const section = post.life_sections;
-
   return (
     <Card className="rounded-2xl border-border/50 shadow-card overflow-hidden">
       <CardContent className="p-4">
-        {/* Author header */}
         <button onClick={onProfileClick} className="flex items-center gap-2 mb-3 group">
           <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0">
             {profile.avatar_url ? (
@@ -246,69 +215,41 @@ const PostCard = ({
             <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
               {profile.display_name || "Someone"}
             </p>
-            {section && (
-              <p className="text-[11px] text-muted-foreground">{section.name}</p>
-            )}
+            {section && <p className="text-[11px] text-muted-foreground">{section.emoji} {section.name}</p>}
           </div>
         </button>
-
-        {/* Content */}
-        {post.image_url && (
-          <img src={post.image_url} alt="" className="w-full rounded-xl mb-3 max-h-80 object-cover" />
-        )}
+        {post.image_url && <img src={post.image_url} alt="" className="w-full rounded-xl mb-3 max-h-80 object-cover" />}
         {post.content && <p className="text-sm text-foreground mb-2">{post.content}</p>}
         {post.link_url && (
-          <a
-            href={post.link_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs text-primary hover:underline flex items-center gap-1"
-          >
+          <a href={post.link_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
             <LinkIcon className="w-3 h-3" /> {post.link_url.slice(0, 50)}
           </a>
         )}
-
-        <p className="text-[11px] text-muted-foreground/50 mt-2">
-          {new Date(post.created_at).toLocaleDateString()}
-        </p>
+        <p className="text-[11px] text-muted-foreground/50 mt-2">{new Date(post.created_at).toLocaleDateString()}</p>
       </CardContent>
     </Card>
   );
 };
 
-const PlanFeedCard = ({ plan }: { plan: FeedPlan }) => {
-  const navigate = useNavigate();
-
-  return (
-    <Card className="rounded-2xl border-primary/20 bg-primary/5 shadow-card overflow-hidden">
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-            <CalendarDays className="w-5 h-5 text-primary" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-primary font-medium mb-0.5">
-              {plan.friend_groups?.name || "Group"} · Plan
-            </p>
-            <p className="font-display font-semibold text-foreground">{plan.title}</p>
-            <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <CalendarDays className="w-3 h-3" /> {plan.date_text}
-              </span>
-              {plan.location && (
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" /> {plan.location}
-                </span>
-              )}
-            </div>
+const PlanFeedCard = ({ plan }: { plan: FeedPlan }) => (
+  <Card className="rounded-2xl border-primary/20 bg-primary/5 shadow-card overflow-hidden">
+    <CardContent className="p-4">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+          <CalendarDays className="w-5 h-5 text-primary" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-primary font-medium mb-0.5">{plan.friend_groups?.name || "Group"} · Plan</p>
+          <p className="font-display font-semibold text-foreground">{plan.title}</p>
+          <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" /> {plan.date_text}</span>
+            {plan.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {plan.location}</span>}
           </div>
         </div>
-        <p className="text-[11px] text-muted-foreground/50 mt-2">
-          {new Date(plan.created_at).toLocaleDateString()}
-        </p>
-      </CardContent>
-    </Card>
-  );
-};
+      </div>
+      <p className="text-[11px] text-muted-foreground/50 mt-2">{new Date(plan.created_at).toLocaleDateString()}</p>
+    </CardContent>
+  </Card>
+);
 
 export default FeedPage;

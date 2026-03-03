@@ -6,9 +6,9 @@ import { useNavigate } from "react-router-dom";
 import PlanCard, { type PlanWithDetails } from "@/components/PlanCard";
 import CreatePlanDialog from "@/components/CreatePlanDialog";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
-import HeroSection from "@/components/HeroSection";
 import { Button } from "@/components/ui/button";
-import { LogOut, Users, Sparkles, ChevronLeft, User, Rss } from "lucide-react";
+import { Users, Sparkles, ChevronLeft } from "lucide-react";
+import BottomNav from "@/components/BottomNav";
 
 interface Group {
   id: string;
@@ -27,20 +27,13 @@ const vibeFilters = [
 ];
 
 const Index = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const [plans, setPlans] = useState<PlanWithDetails[]>([]);
   const [activeFilter, setActiveFilter] = useState("all");
   const [loading, setLoading] = useState(true);
-  const [displayName, setDisplayName] = useState("");
-
-  const fetchProfile = useCallback(async () => {
-    if (!user) return;
-    const { data } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
-    if (data?.display_name) setDisplayName(data.display_name);
-  }, [user]);
 
   const fetchGroups = useCallback(async () => {
     if (!user) return;
@@ -49,20 +42,12 @@ const Index = () => {
       .select("group_id")
       .eq("user_id", user.id);
 
-    if (!memberships?.length) {
-      setGroups([]);
-      setLoading(false);
-      return;
-    }
+    if (!memberships?.length) { setGroups([]); setLoading(false); return; }
 
     const groupIds = memberships.map((m) => m.group_id);
-    const { data: groupsData } = await supabase
-      .from("friend_groups")
-      .select("*")
-      .in("id", groupIds);
+    const { data: groupsData } = await supabase.from("friend_groups").select("*").in("id", groupIds);
 
     if (groupsData) {
-      // Get member counts
       const groupsWithCounts: Group[] = await Promise.all(
         groupsData.map(async (g) => {
           const { count } = await supabase
@@ -90,26 +75,12 @@ const Index = () => {
 
     const plansWithDetails: PlanWithDetails[] = await Promise.all(
       plansData.map(async (p) => {
-        // Get creator profile
-        const { data: creatorProfile } = await supabase
-          .from("profiles")
-          .select("display_name")
-          .eq("user_id", p.created_by)
-          .single();
-
-        // Get RSVPs with profiles
-        const { data: rsvpsData } = await supabase
-          .from("rsvps")
-          .select("user_id, status")
-          .eq("plan_id", p.id);
+        const { data: creatorProfile } = await supabase.from("profiles").select("display_name").eq("user_id", p.created_by).single();
+        const { data: rsvpsData } = await supabase.from("rsvps").select("user_id, status").eq("plan_id", p.id);
 
         const rsvpsWithNames = await Promise.all(
           (rsvpsData || []).map(async (r) => {
-            const { data: profile } = await supabase
-              .from("profiles")
-              .select("display_name")
-              .eq("user_id", r.user_id)
-              .single();
+            const { data: profile } = await supabase.from("profiles").select("display_name").eq("user_id", r.user_id).single();
             const name = profile?.display_name || "?";
             return { ...r, display_name: name, initial: name.charAt(0).toUpperCase() };
           })
@@ -119,69 +90,35 @@ const Index = () => {
         const userRsvp = rsvpsWithNames.find((r) => r.user_id === user.id)?.status ?? null;
 
         return {
-          id: p.id,
-          title: p.title,
-          emoji: p.emoji,
-          date_text: p.date_text,
-          location: p.location,
-          vibe: p.vibe,
-          created_by: p.created_by,
-          creator_name: creatorName,
-          creator_initial: creatorName.charAt(0).toUpperCase(),
-          rsvps: rsvpsWithNames,
-          userRsvp,
+          id: p.id, title: p.title, emoji: p.emoji, date_text: p.date_text,
+          location: p.location, vibe: p.vibe, created_by: p.created_by,
+          creator_name: creatorName, creator_initial: creatorName.charAt(0).toUpperCase(),
+          rsvps: rsvpsWithNames, userRsvp,
         };
       })
     );
-
     setPlans(plansWithDetails);
   }, [selectedGroup, user]);
 
-  useEffect(() => {
-    fetchProfile();
-    fetchGroups();
-  }, [fetchProfile, fetchGroups]);
-
-  useEffect(() => {
-    if (selectedGroup) fetchPlans();
-  }, [selectedGroup, fetchPlans]);
+  useEffect(() => { fetchGroups(); }, [fetchGroups]);
+  useEffect(() => { if (selectedGroup) fetchPlans(); }, [selectedGroup, fetchPlans]);
 
   const filteredPlans = activeFilter === "all" ? plans : plans.filter((p) => p.vibe === activeFilter);
 
-  // Group list view
   if (!selectedGroup) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background pb-20">
         <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
           <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="font-display text-xl font-bold tracking-widest text-foreground">MINBY</span>
+              <Users className="w-5 h-5 text-primary" />
+              <span className="font-display text-lg font-bold tracking-widest text-foreground">MY CIRCLES</span>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground font-body">Hey, {displayName || "you"}</span>
-              <Button variant="ghost" size="icon" onClick={() => navigate("/feed")} className="rounded-full">
-                <Rss className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="rounded-full">
-                <User className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={signOut} className="rounded-full">
-                <LogOut className="w-4 h-4" />
-              </Button>
-            </div>
+            <CreateGroupDialog onGroupCreated={fetchGroups} />
           </div>
         </nav>
 
-        <HeroSection />
-
-        <main className="max-w-2xl mx-auto px-4 pb-20">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-display text-xl font-semibold text-foreground flex items-center gap-2">
-              <Users className="w-5 h-5 text-primary" /> Your circles
-            </h2>
-            <CreateGroupDialog onGroupCreated={fetchGroups} />
-          </div>
-
+        <main className="max-w-2xl mx-auto px-4 py-4">
           {loading ? (
             <div className="text-center py-16 text-muted-foreground">Loading...</div>
           ) : groups.length === 0 ? (
@@ -212,13 +149,13 @@ const Index = () => {
             </div>
           )}
         </main>
+        <BottomNav />
       </div>
     );
   }
 
-  // Group detail / plans view
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={() => setSelectedGroup(null)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
@@ -231,20 +168,13 @@ const Index = () => {
       </nav>
 
       <main className="max-w-2xl mx-auto px-4 py-6 pb-20">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="flex items-center gap-2 mb-6 overflow-x-auto pb-2"
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
           {vibeFilters.map((f) => (
             <button
               key={f.value}
               onClick={() => setActiveFilter(f.value)}
               className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                activeFilter === f.value
-                  ? "bg-primary text-primary-foreground shadow-soft"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+                activeFilter === f.value ? "bg-primary text-primary-foreground shadow-soft" : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
             >
               {f.label}
@@ -268,6 +198,7 @@ const Index = () => {
           </motion.div>
         )}
       </main>
+      <BottomNav />
     </div>
   );
 };
