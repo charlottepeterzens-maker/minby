@@ -160,6 +160,9 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground font-body">Hey, {displayName || "you"} 👋</span>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="rounded-full">
+                <User className="w-4 h-4" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={signOut} className="rounded-full">
                 <LogOut className="w-4 h-4" />
               </Button>
