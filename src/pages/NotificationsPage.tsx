@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Bell, Check, CalendarDays, UserPlus, Eye, Sparkles } from "lucide-react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
 
@@ -18,12 +18,6 @@ interface Notification {
   created_at: string;
 }
 
-const typeIcons: Record<string, React.ReactNode> = {
-  plan_invite: <CalendarDays className="w-4 h-4" />,
-  friend_request: <UserPlus className="w-4 h-4" />,
-  tier_granted: <Eye className="w-4 h-4" />,
-  new_post: <Sparkles className="w-4 h-4" />,
-};
 
 const NotificationsPage = () => {
   const { user } = useAuth();
@@ -66,12 +60,9 @@ const NotificationsPage = () => {
     <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Bell className="w-5 h-5 text-primary" />
-            <span className="font-display text-lg font-bold tracking-widest text-foreground">NOTIFICATIONS</span>
-          </div>
+          <span className="font-display text-lg font-normal tracking-[0.35em] text-foreground">NOTIFICATIONS</span>
           {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" onClick={markAllRead} className="text-xs rounded-full gap-1">
+            <Button variant="ghost" size="sm" onClick={markAllRead} className="text-xs gap-1">
               <Check className="w-3 h-3" /> Mark all read
             </Button>
           )}
@@ -83,7 +74,6 @@ const NotificationsPage = () => {
           <div className="text-center py-16 text-muted-foreground">Loading...</div>
         ) : notifications.length === 0 ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-            <Bell className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
             <p className="font-display text-lg text-muted-foreground">No notifications yet</p>
             <p className="text-sm text-muted-foreground/70 mt-1">
               You'll see gathering invites, friend requests, and updates here
@@ -98,18 +88,13 @@ const NotificationsPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.02 }}
                 onClick={() => markRead(n.id)}
-                className={`w-full text-left p-4 rounded-2xl border transition-all ${
+                className={`w-full text-left p-4 border transition-all ${
                   n.read
                     ? "bg-card border-border/30"
                     : "bg-primary/5 border-primary/20 shadow-soft"
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                    n.read ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"
-                  }`}>
-                    {typeIcons[n.type] || <Bell className="w-4 h-4" />}
-                  </div>
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm font-medium ${n.read ? "text-muted-foreground" : "text-foreground"}`}>
                       {n.title}
@@ -122,7 +107,7 @@ const NotificationsPage = () => {
                     </p>
                   </div>
                   {!n.read && (
-                    <div className="w-2 h-2 rounded-full bg-primary shrink-0 mt-2" />
+                    <div className="w-2 h-2 bg-primary shrink-0 mt-2" />
                   )}
                 </div>
               </motion.button>
