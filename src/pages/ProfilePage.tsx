@@ -10,6 +10,7 @@ import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
 import FriendTierManager from "@/components/profile/FriendTierManager";
 import PeriodTracker from "@/components/profile/PeriodTracker";
 import WorkoutTracker from "@/components/profile/WorkoutTracker";
+import BottomNav from "@/components/BottomNav";
 
 interface LifeSection {
   id: string;
