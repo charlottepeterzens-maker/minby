@@ -435,7 +435,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const t = (key: TranslationKey, ...args: (string | number)[]): string => {
-    let str = translations[lang][key] || translations.en[key] || key;
+    let str: string = translations[lang][key] || translations.en[key] || key;
     args.forEach((arg, i) => {
       str = str.replace(`{${i}}`, String(arg));
     });
