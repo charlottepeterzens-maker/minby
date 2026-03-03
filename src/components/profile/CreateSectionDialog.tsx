@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ interface Props {
 
 const CreateSectionDialog = ({ onCreated }: Props) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState("📝");
@@ -54,7 +56,7 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
     });
 
     if (error) {
-      toast.error("Could not create section");
+      toast.error(t("couldNotCreateSection"));
     } else {
       toast.success(`${name} added!`);
       setOpen(false);
@@ -71,12 +73,12 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="warm" size="sm">
-          <Plus className="w-4 h-4" /> Add section
+          <Plus className="w-4 h-4" /> {t("addSection")}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-display">Add a life section</DialogTitle>
+          <DialogTitle className="font-display">{t("addLifeSection")}</DialogTitle>
         </DialogHeader>
 
         {/* Presets */}
@@ -99,31 +101,31 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
         <div className="space-y-3">
           <div className="flex gap-2">
             <div className="w-16">
-              <Label className="text-xs text-muted-foreground">Emoji</Label>
+              <Label className="text-xs text-muted-foreground">{t("emoji")}</Label>
               <Input value={emoji} onChange={(e) => setEmoji(e.target.value)} className="mt-1 text-center" maxLength={4} />
             </div>
             <div className="flex-1">
-              <Label className="text-xs text-muted-foreground">Name</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. My garden" className="mt-1" />
+              <Label className="text-xs text-muted-foreground">{t("name")}</Label>
+              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("sectionNamePlaceholder")} className="mt-1" />
             </div>
           </div>
 
           <div>
-            <Label className="text-xs text-muted-foreground">Who can see this?</Label>
+            <Label className="text-xs text-muted-foreground">{t("whoCanSee")}</Label>
             <Select value={minTier} onValueChange={setMinTier}>
               <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="close">Close friends only</SelectItem>
-                <SelectItem value="inner">Inner circle & closer</SelectItem>
-                <SelectItem value="outer">All friends</SelectItem>
+                <SelectItem value="close">{t("closeFriendsOnly")}</SelectItem>
+                <SelectItem value="inner">{t("innerCircleCloser")}</SelectItem>
+                <SelectItem value="outer">{t("allFriends")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <Button onClick={handleCreate} disabled={!name.trim() || loading} className="w-full">
-            {loading ? "Creating..." : "Create section"}
+            {loading ? t("creating") : t("createSection")}
           </Button>
         </div>
       </DialogContent>

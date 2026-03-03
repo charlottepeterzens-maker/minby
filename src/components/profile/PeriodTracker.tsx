@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,14 +27,22 @@ const flowColors: Record<string, string> = {
   heavy: "bg-accent",
 };
 
-const symptomOptions = ["Cramps", "Headache", "Fatigue", "Bloating", "Mood swings", "Back pain"];
-
 const PeriodTracker = ({ section, isOwner }: Props) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [entries, setEntries] = useState<PeriodEntry[]>([]);
   const [showLog, setShowLog] = useState(false);
   const [flowLevel, setFlowLevel] = useState("medium");
   const [selectedSymptoms, setSelectedSymptoms] = useState<string[]>([]);
+
+  const symptomOptions = [
+    { key: "Cramps", label: t("symptomCramps") },
+    { key: "Headache", label: t("symptomHeadache") },
+    { key: "Fatigue", label: t("symptomFatigue") },
+    { key: "Bloating", label: t("symptomBloating") },
+    { key: "Mood swings", label: t("symptomMoodSwings") },
+    { key: "Back pain", label: t("symptomBackPain") },
+  ];
 
   const fetchEntries = useCallback(async () => {
     if (!user) return;
@@ -58,9 +67,9 @@ const PeriodTracker = ({ section, isOwner }: Props) => {
       { onConflict: "user_id,date" }
     );
     if (error) {
-      toast.error("Could not log");
+      toast.error(t("couldNotLog"));
     } else {
-      toast.success("Logged!");
+      toast.success(t("logged"));
       setShowLog(false);
       fetchEntries();
     }
@@ -92,7 +101,7 @@ const PeriodTracker = ({ section, isOwner }: Props) => {
           </CardTitle>
           {isOwner && (
             <Button variant="warm" size="sm" className="text-xs" onClick={() => setShowLog(!showLog)}>
-              Log today
+              {t("logToday")}
             </Button>
           )}
         </div>
@@ -110,7 +119,7 @@ const PeriodTracker = ({ section, isOwner }: Props) => {
 
         {daysSinceLast !== null && (
           <p className="text-xs text-muted-foreground text-center">
-            Day {daysSinceLast} of cycle
+            {t("dayOfCycle", daysSinceLast)}
           </p>
         )}
 
@@ -118,38 +127,38 @@ const PeriodTracker = ({ section, isOwner }: Props) => {
         {showLog && isOwner && (
           <div className="mt-3 bg-muted/30 p-3 space-y-2">
             <div>
-              <span className="text-xs text-muted-foreground">Flow level</span>
+              <span className="text-xs text-muted-foreground">{t("flowLevel")}</span>
               <Select value={flowLevel} onValueChange={setFlowLevel}>
                 <SelectTrigger className="mt-1 h-8 text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="light">Light</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="heavy">Heavy</SelectItem>
+                  <SelectItem value="light">{t("flowLight")}</SelectItem>
+                  <SelectItem value="medium">{t("flowMedium")}</SelectItem>
+                  <SelectItem value="heavy">{t("flowHeavy")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <span className="text-xs text-muted-foreground">Symptoms</span>
+              <span className="text-xs text-muted-foreground">{t("symptoms")}</span>
               <div className="flex flex-wrap gap-1.5 mt-1">
                 {symptomOptions.map((s) => (
                   <button
-                    key={s}
-                    onClick={() => toggleSymptom(s)}
+                    key={s.key}
+                    onClick={() => toggleSymptom(s.key)}
                     className={`px-2 py-0.5 text-[10px] font-medium border transition-all ${
-                      selectedSymptoms.includes(s)
+                      selectedSymptoms.includes(s.key)
                         ? "bg-primary text-primary-foreground border-primary"
                         : "text-muted-foreground border-border/50 hover:bg-muted"
                     }`}
                   >
-                    {s}
+                    {s.label}
                   </button>
                 ))}
               </div>
             </div>
             <Button size="sm" onClick={logToday} className="w-full text-xs">
-              Save entry
+              {t("saveEntry")}
             </Button>
           </div>
         )}

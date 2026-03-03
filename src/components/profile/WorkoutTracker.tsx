@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { format, subDays } from "date-fns";
-import { Dumbbell } from "lucide-react";
 
 interface WorkoutEntry {
   id: string;
@@ -26,6 +26,7 @@ const workoutTypes = ["Running", "Yoga", "Weights", "HIIT", "Swimming", "Cycling
 
 const WorkoutTracker = ({ section, isOwner }: Props) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [entries, setEntries] = useState<WorkoutEntry[]>([]);
   const [showLog, setShowLog] = useState(false);
   const [workoutType, setWorkoutType] = useState("Running");
@@ -55,9 +56,9 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
       duration_mins: parseInt(duration) || null,
     });
     if (error) {
-      toast.error("Could not log workout");
+      toast.error(t("couldNotLogWorkout"));
     } else {
-      toast.success("Workout logged!");
+      toast.success(t("workoutLogged"));
       setShowLog(false);
       fetchEntries();
     }
@@ -82,7 +83,7 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
           </CardTitle>
           {isOwner && (
             <Button variant="warm" size="sm" className="text-xs" onClick={() => setShowLog(!showLog)}>
-              <Dumbbell className="w-3 h-3" /> Log workout
+              {t("logWorkout")}
             </Button>
           )}
         </div>
@@ -103,7 +104,7 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
         </div>
 
         <p className="text-xs text-muted-foreground text-center mb-3">
-          {weekCount}/7 this week
+          {weekCount}/7 {t("thisWeek")}
         </p>
 
         {/* Recent entries */}
@@ -123,20 +124,20 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {workoutTypes.map((t) => (
-                  <SelectItem key={t} value={t}>{t}</SelectItem>
+                {workoutTypes.map((wt) => (
+                  <SelectItem key={wt} value={wt}>{wt}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Input
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              placeholder="Duration (minutes)"
+              placeholder={t("durationMinutes")}
               type="number"
               className="h-8 text-xs"
             />
             <Button size="sm" onClick={logWorkout} className="w-full text-xs">
-              Save workout
+              {t("saveWorkout")}
             </Button>
           </div>
         )}

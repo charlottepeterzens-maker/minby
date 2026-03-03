@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CalendarDays, Sparkles, Image as ImageIcon } from "lucide-react";
+import { CalendarDays, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -20,21 +21,22 @@ type ShareType = "life_update" | "meeting";
 interface Group { id: string; name: string; emoji: string; }
 interface Section { id: string; name: string; emoji: string; section_type: string; }
 
-const vibes = [
-  { value: "chill", label: "Chill" },
-  { value: "adventure", label: "Adventure" },
-  { value: "creative", label: "Creative" },
-  { value: "selfcare", label: "Self-care" },
-];
-
 const emojiSuggestions = ["🎬", "🎨", "🧘", "🍷", "☕", "🌿", "🏖️", "💅", "📚", "🎵", "🍕", "🌸"];
 
 const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [shareType, setShareType] = useState<ShareType | null>(null);
   const [groups, setGroups] = useState<Group[]>([]);
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const vibes = [
+    { value: "chill", label: t("vibeChill") },
+    { value: "adventure", label: t("vibeAdventure") },
+    { value: "creative", label: t("vibeCreative") },
+    { value: "selfcare", label: t("vibeSelfcare") },
+  ];
 
   // Life update fields
   const [selectedSection, setSelectedSection] = useState("");
@@ -95,9 +97,9 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
       content,
     });
     if (error) {
-      toast.error("Couldn't post update");
+      toast.error(t("couldntPost"));
     } else {
-      toast.success("Update shared!");
+      toast.success(t("updateShared"));
       resetForm();
       onOpenChange(false);
     }
@@ -117,9 +119,9 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
       vibe: selectedVibe,
     });
     if (error) {
-      toast.error("Couldn't create suggestion");
+      toast.error(t("couldntCreateSuggestion"));
     } else {
-      toast.success("Meeting suggested!");
+      toast.success(t("meetingSuggested"));
       resetForm();
       onOpenChange(false);
     }
@@ -130,7 +132,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="rounded-t-3xl max-h-[85vh] overflow-y-auto">
         <SheetHeader>
-          <SheetTitle className="font-display text-xl">Share something new</SheetTitle>
+          <SheetTitle className="font-display text-xl">{t("shareNew")}</SheetTitle>
         </SheetHeader>
 
         {!shareType ? (
@@ -141,8 +143,8 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
             >
               <Sparkles className="w-8 h-8 text-primary" />
               <div className="text-center">
-                <p className="font-display font-semibold text-foreground">Life update</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Share with your circles</p>
+                <p className="font-display font-semibold text-foreground">{t("lifeUpdate")}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("shareWithCircles")}</p>
               </div>
             </button>
             <button
@@ -151,18 +153,18 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
             >
               <CalendarDays className="w-8 h-8 text-secondary-foreground" />
               <div className="text-center">
-                <p className="font-display font-semibold text-foreground">Suggest meeting</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Gather your friends</p>
+                <p className="font-display font-semibold text-foreground">{t("suggestMeeting")}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{t("gatherFriends")}</p>
               </div>
             </button>
           </div>
         ) : shareType === "life_update" ? (
           <div className="space-y-4 py-4">
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Section</Label>
+              <Label className="text-sm font-medium text-muted-foreground">{t("section")}</Label>
               <Select value={selectedSection} onValueChange={setSelectedSection}>
                 <SelectTrigger className="mt-1.5 rounded-xl">
-                  <SelectValue placeholder="Choose a life section" />
+                  <SelectValue placeholder={t("chooseSection")} />
                 </SelectTrigger>
                 <SelectContent>
                   {sections.filter(s => s.section_type === "posts").map((s) => (
@@ -172,28 +174,28 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
               </Select>
             </div>
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">What's new?</Label>
+              <Label className="text-sm font-medium text-muted-foreground">{t("whatsNew")}</Label>
               <Textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="Share an update with your circles..."
+                placeholder={t("shareUpdatePlaceholder")}
                 className="mt-1.5 rounded-xl bg-muted/50 border-border/50 min-h-[100px]"
               />
             </div>
             <div className="flex gap-2 pt-2">
-              <Button variant="outline" onClick={() => setShareType(null)} className="rounded-xl flex-1">Back</Button>
+              <Button variant="outline" onClick={() => setShareType(null)} className="rounded-xl flex-1">{t("back")}</Button>
               <Button onClick={handlePostLifeUpdate} disabled={!selectedSection || !content || loading} className="rounded-xl flex-1">
-                Share
+                {t("share")}
               </Button>
             </div>
           </div>
         ) : (
           <div className="space-y-4 py-4">
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Group</Label>
+              <Label className="text-sm font-medium text-muted-foreground">{t("group")}</Label>
               <Select value={selectedGroup} onValueChange={setSelectedGroup}>
                 <SelectTrigger className="mt-1.5 rounded-xl">
-                  <SelectValue placeholder="Choose a group" />
+                  <SelectValue placeholder={t("chooseGroup")} />
                 </SelectTrigger>
                 <SelectContent>
                   {groups.map((g) => (
@@ -203,7 +205,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
               </Select>
             </div>
             <div>
-              <Label className="text-sm font-medium text-muted-foreground mb-2 block">Emoji</Label>
+              <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t("emoji")}</Label>
               <div className="flex flex-wrap gap-2">
                 {emojiSuggestions.map((e) => (
                   <button
@@ -219,19 +221,19 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
               </div>
             </div>
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">What's the plan?</Label>
+              <Label className="text-sm font-medium text-muted-foreground">{t("whatsThePlan")}</Label>
               <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Cinema night, brunch..." className="mt-1.5 rounded-xl bg-muted/50 border-border/50" />
             </div>
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">When?</Label>
+              <Label className="text-sm font-medium text-muted-foreground">{t("when")}</Label>
               <Input value={dateText} onChange={(e) => setDateText(e.target.value)} placeholder="Saturday, next week..." className="mt-1.5 rounded-xl bg-muted/50 border-border/50" />
             </div>
             <div>
-              <Label className="text-sm font-medium text-muted-foreground">Where? (optional)</Label>
+              <Label className="text-sm font-medium text-muted-foreground">{t("whereOptional")}</Label>
               <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="My place, the park..." className="mt-1.5 rounded-xl bg-muted/50 border-border/50" />
             </div>
             <div>
-              <Label className="text-sm font-medium text-muted-foreground mb-2 block">Vibe</Label>
+              <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t("vibe")}</Label>
               <div className="flex gap-2 flex-wrap">
                 {vibes.map((v) => (
                   <button
@@ -247,9 +249,9 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
               </div>
             </div>
             <div className="flex gap-2 pt-2">
-              <Button variant="outline" onClick={() => setShareType(null)} className="rounded-xl flex-1">Back</Button>
+              <Button variant="outline" onClick={() => setShareType(null)} className="rounded-xl flex-1">{t("back")}</Button>
               <Button onClick={handleCreateMeeting} disabled={!selectedGroup || !title || !dateText || loading} className="rounded-xl flex-1">
-                Suggest
+                {t("suggest")}
               </Button>
             </div>
           </div>

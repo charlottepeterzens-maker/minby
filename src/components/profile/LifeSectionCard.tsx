@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,14 +26,9 @@ interface Props {
   onUpdated?: () => void;
 }
 
-const tierLabels: Record<string, string> = {
-  close: "Close",
-  inner: "Inner",
-  outer: "All",
-};
-
 const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [posts, setPosts] = useState<LifePost[]>([]);
   const [showCompose, setShowCompose] = useState(false);
   const [content, setContent] = useState("");
@@ -45,6 +41,12 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const [editName, setEditName] = useState(section.name);
   const [editTier, setEditTier] = useState(section.min_tier);
   const [saving, setSaving] = useState(false);
+
+  const tierLabels: Record<string, string> = {
+    close: t("tierClose"),
+    inner: t("tierInner"),
+    outer: t("tierAll"),
+  };
 
   const fetchPosts = useCallback(async () => {
     const { data } = await supabase
@@ -73,9 +75,9 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       .update({ name: editName.trim(), min_tier: editTier as any })
       .eq("id", section.id);
     if (error) {
-      toast.error("Could not update section");
+      toast.error(t("couldNotUpdateSection"));
     } else {
-      toast.success("Section updated");
+      toast.success(t("sectionUpdated"));
       setEditing(false);
       onUpdated?.();
     }
@@ -91,7 +93,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       const filePath = `${user.id}/${Date.now()}-${imageFile.name}`;
       const { error: uploadErr } = await supabase.storage.from("life-images").upload(filePath, imageFile);
       if (uploadErr) {
-        toast.error("Image upload failed");
+        toast.error(t("couldNotPost"));
         setPosting(false);
         return;
       }
@@ -108,7 +110,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
     });
 
     if (error) {
-      toast.error("Could not post");
+      toast.error(t("couldNotPost"));
     } else {
       setContent("");
       setLinkUrl("");
@@ -141,9 +143,9 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="close">Close only</SelectItem>
-                  <SelectItem value="inner">Inner+</SelectItem>
-                  <SelectItem value="outer">Everyone</SelectItem>
+                  <SelectItem value="close">{t("closeOnly")}</SelectItem>
+                  <SelectItem value="inner">{t("innerPlus")}</SelectItem>
+                  <SelectItem value="outer">{t("everyone")}</SelectItem>
                 </SelectContent>
               </Select>
               <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={handleSaveEdit} disabled={saving}>
@@ -184,20 +186,20 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 <Textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder="What's new?"
+                  placeholder={t("whatsNew")}
                   className="bg-background/50 border-border/30 min-h-[60px] text-sm"
                 />
                 <div className="flex gap-2 items-center">
                   <label className="cursor-pointer">
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
                     <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 border transition-colors ${imageFile ? "bg-primary/10 text-primary border-primary/30" : "text-muted-foreground border-border/50 hover:bg-muted"}`}>
-                      <Image className="w-3 h-3" /> {imageFile ? imageFile.name.slice(0, 15) : "Photo"}
+                      <Image className="w-3 h-3" /> {imageFile ? imageFile.name.slice(0, 15) : t("photo")}
                     </span>
                   </label>
                   <Input
                     value={linkUrl}
                     onChange={(e) => setLinkUrl(e.target.value)}
-                    placeholder="Paste a link..."
+                    placeholder={t("pasteLink")}
                     className="flex-1 h-7 text-xs bg-background/50 border-border/30"
                   />
                   <Button size="sm" disabled={posting} onClick={handlePost} className="h-7 px-3">
@@ -211,7 +213,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
 
         {/* Posts */}
         {posts.length === 0 ? (
-          <p className="text-sm text-muted-foreground/60 text-center py-4">No updates yet</p>
+          <p className="text-sm text-muted-foreground/60 text-center py-4">{t("noUpdatesYet")}</p>
         ) : (
           <div className="space-y-3">
             {posts.map((post) => (

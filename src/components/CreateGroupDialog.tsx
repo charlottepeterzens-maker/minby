@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 
 const groupEmojis = ["👯", "💅", "🌸", "🔥", "✨", "🌙", "🦋", "🍷"];
@@ -16,6 +17,7 @@ interface CreateGroupDialogProps {
 
 const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState("👯");
@@ -32,9 +34,9 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
     });
 
     if (error) {
-      toast.error("Couldn't create group");
+      toast.error(t("couldntCreateGroup"));
     } else {
-      toast.success("Group created!");
+      toast.success(t("groupCreated"));
       onGroupCreated();
       setName("");
       setEmoji("👯");
@@ -47,16 +49,16 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="warm" size="sm" className="gap-1.5">
-          <Plus className="w-4 h-4" /> New group
+          <Plus className="w-4 h-4" /> {t("newGroup")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl">Create a friend group</DialogTitle>
+          <DialogTitle className="font-display text-xl">{t("createFriendGroup")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 pt-2">
           <div>
-            <Label className="text-sm text-muted-foreground mb-2 block">Pick an emoji</Label>
+            <Label className="text-sm text-muted-foreground mb-2 block">{t("pickEmoji")}</Label>
             <div className="flex gap-2 flex-wrap">
               {groupEmojis.map((e) => (
                 <button
@@ -72,17 +74,17 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
             </div>
           </div>
           <div>
-            <Label htmlFor="gname" className="text-sm text-muted-foreground">Group name</Label>
+            <Label htmlFor="gname" className="text-sm text-muted-foreground">{t("groupName")}</Label>
             <Input
               id="gname"
-              placeholder="Besties, Work crew, Neighbors..."
+              placeholder={t("groupNamePlaceholder")}
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="mt-1.5 bg-muted/50 border-border/50"
             />
           </div>
           <Button onClick={handleCreate} disabled={!name || loading} className="w-full font-semibold">
-            Create group
+            {t("createGroup")}
           </Button>
         </div>
       </DialogContent>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +8,7 @@ import { toast } from "sonner";
 import { motion } from "framer-motion";
 
 const AuthPage = () => {
+  const { t } = useLanguage();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +31,7 @@ const AuthPage = () => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success("Check your email to confirm your account!");
+        toast.success(t("checkEmail"));
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -50,29 +52,29 @@ const AuthPage = () => {
         <div className="text-center mb-8">
           <span className="text-2xl mb-2 block font-display font-normal tracking-[0.35em] text-primary">MINBY</span>
           <h1 className="font-display text-3xl font-bold text-foreground">
-            {isSignUp ? "Join MINBY" : "Welcome back"}
+            {isSignUp ? t("joinMinby") : t("welcomeBack")}
           </h1>
           <p className="text-muted-foreground mt-2 font-body">
-            {isSignUp ? "Start planning real moments with your people" : "Your friends are waiting"}
+            {isSignUp ? t("startPlanning") : t("yourFriendsWaiting")}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isSignUp && (
             <div>
-              <Label htmlFor="name" className="text-sm text-muted-foreground">Your name</Label>
+              <Label htmlFor="name" className="text-sm text-muted-foreground">{t("yourName")}</Label>
               <Input
                 id="name"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="How your friends know you"
+                placeholder={t("howFriendsKnowYou")}
                 className="mt-1.5 rounded-xl bg-muted/50 border-border/50"
                 required
               />
             </div>
           )}
           <div>
-            <Label htmlFor="email" className="text-sm text-muted-foreground">Email</Label>
+            <Label htmlFor="email" className="text-sm text-muted-foreground">{t("email")}</Label>
             <Input
               id="email"
               type="email"
@@ -84,7 +86,7 @@ const AuthPage = () => {
             />
           </div>
           <div>
-            <Label htmlFor="password" className="text-sm text-muted-foreground">Password</Label>
+            <Label htmlFor="password" className="text-sm text-muted-foreground">{t("password")}</Label>
             <Input
               id="password"
               type="password"
@@ -98,17 +100,17 @@ const AuthPage = () => {
           </div>
 
           <Button type="submit" className="w-full rounded-xl font-semibold" disabled={loading}>
-            {loading ? "..." : isSignUp ? "Create account" : "Sign in"}
+            {loading ? "..." : isSignUp ? t("createAccount") : t("signIn")}
           </Button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+          {isSignUp ? t("alreadyHaveAccount") : t("dontHaveAccount")}{" "}
           <button
             onClick={() => setIsSignUp(!isSignUp)}
             className="text-primary font-medium hover:underline"
           >
-            {isSignUp ? "Sign in" : "Sign up"}
+            {isSignUp ? t("signIn") : t("signUp")}
           </button>
         </p>
       </motion.div>

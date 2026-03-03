@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Users } from "lucide-react";
 
 interface FriendWithTier {
   friend_user_id: string;
@@ -15,12 +15,12 @@ interface FriendWithTier {
 
 const FriendTierManager = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [friends, setFriends] = useState<FriendWithTier[]>([]);
 
   const fetchFriends = useCallback(async () => {
     if (!user) return;
 
-    // Get all groups the user is in
     const { data: memberships } = await supabase
       .from("group_memberships")
       .select("group_id")
@@ -30,7 +30,6 @@ const FriendTierManager = () => {
 
     const groupIds = memberships.map((m) => m.group_id);
 
-    // Get all members of those groups (excluding self)
     const { data: allMembers } = await supabase
       .from("group_memberships")
       .select("user_id")
@@ -41,13 +40,11 @@ const FriendTierManager = () => {
 
     const uniqueIds = [...new Set(allMembers.map((m) => m.user_id))];
 
-    // Get profiles
     const { data: profiles } = await supabase
       .from("profiles")
       .select("user_id, display_name")
       .in("user_id", uniqueIds);
 
-    // Get existing tiers
     const { data: tiers } = await supabase
       .from("friend_access_tiers")
       .select("friend_user_id, tier")
@@ -72,7 +69,6 @@ const FriendTierManager = () => {
   const setTier = async (friendUserId: string, tier: string) => {
     if (!user) return;
 
-    // Upsert
     const { error } = await supabase
       .from("friend_access_tiers")
       .upsert(
@@ -81,49 +77,48 @@ const FriendTierManager = () => {
       );
 
     if (error) {
-      toast.error("Could not update tier");
+      toast.error(t("couldNotUpdateTier"));
     } else {
       setFriends((prev) =>
         prev.map((f) => (f.friend_user_id === friendUserId ? { ...f, tier } : f))
       );
-      toast.success("Updated!");
+      toast.success(t("updated"));
     }
   };
 
   if (friends.length === 0) {
     return (
-      <Card className="rounded-2xl border-border/50 shadow-card">
+      <Card className="border-border/50 shadow-card">
         <CardContent className="p-5 text-center text-sm text-muted-foreground">
-          <Users className="w-6 h-6 mx-auto mb-2 text-muted-foreground/40" />
-          Join groups first to manage friend access tiers
+          {t("joinGroupsFirst")}
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="rounded-2xl border-border/50 shadow-card">
+    <Card className="border-border/50 shadow-card">
       <CardHeader className="pb-3">
-        <CardTitle className="font-display text-base flex items-center gap-2">
-          <Users className="w-5 h-5 text-primary" /> Friend access tiers
+        <CardTitle className="font-display text-base">
+          {t("friendAccessTiers")}
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-0 space-y-2">
         {friends.map((f) => (
           <div key={f.friend_user_id} className="flex items-center gap-3 py-1">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
+            <div className="w-8 h-8 bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
               {f.initial}
             </div>
             <span className="flex-1 text-sm font-medium text-foreground truncate">{f.display_name}</span>
             <Select value={f.tier || "none"} onValueChange={(val) => val !== "none" && setTier(f.friend_user_id, val)}>
-              <SelectTrigger className="w-[140px] h-8 text-xs rounded-full">
-                <SelectValue placeholder="Set tier" />
+              <SelectTrigger className="w-[140px] h-8 text-xs">
+                <SelectValue placeholder={t("setTier")} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none" disabled>Set tier...</SelectItem>
-                <SelectItem value="close">Close</SelectItem>
-                <SelectItem value="inner">Inner circle</SelectItem>
-                <SelectItem value="outer">Everyone</SelectItem>
+                <SelectItem value="none" disabled>{t("setTier")}</SelectItem>
+                <SelectItem value="close">{t("close")}</SelectItem>
+                <SelectItem value="inner">{t("innerCircle")}</SelectItem>
+                <SelectItem value="outer">{t("everyone")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
