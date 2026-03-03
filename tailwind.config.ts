@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Playfair Display", "serif"],
+        display: ["Epilogue", "sans-serif"],
         body: ["Poppins", "sans-serif"],
       },
       colors: {
