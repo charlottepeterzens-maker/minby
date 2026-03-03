@@ -6,14 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Plus, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
-
-const vibes = [
-  { value: "chill" as const, label: "Chill" },
-  { value: "adventure" as const, label: "Adventure" },
-  { value: "creative" as const, label: "Creative" },
-  { value: "selfcare" as const, label: "Self-care" },
-];
 
 const emojiSuggestions = ["🎬", "🎨", "🧘", "🍷", "☕", "🌿", "🏖️", "💅", "📚", "🎵", "🍕", "🌸"];
 
@@ -24,6 +18,7 @@ interface CreatePlanDialogProps {
 
 const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [dateText, setDateText] = useState("");
@@ -31,6 +26,13 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
   const [selectedVibe, setSelectedVibe] = useState("chill");
   const [selectedEmoji, setSelectedEmoji] = useState("🎬");
   const [loading, setLoading] = useState(false);
+
+  const vibes = [
+    { value: "chill" as const, label: t("vibeChill") },
+    { value: "adventure" as const, label: t("vibeAdventure") },
+    { value: "creative" as const, label: t("vibeCreative") },
+    { value: "selfcare" as const, label: t("vibeSelfcare") },
+  ];
 
   const handleCreate = async () => {
     if (!title || !dateText || !user) return;
@@ -47,7 +49,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
     });
 
     if (error) {
-      toast.error("Couldn't create plan");
+      toast.error(t("couldntCreatePlan"));
     } else {
       // Auto-RSVP the creator
       await supabase.from("rsvps").insert({
@@ -55,7 +57,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
         user_id: user.id,
         status: "in",
       });
-      toast.success("Plan shared!");
+      toast.success(t("planShared"));
       onPlanCreated();
       setTitle("");
       setDateText("");
@@ -71,19 +73,19 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="font-semibold gap-2 shadow-soft">
-          <Plus className="w-4 h-4" /> New plan
+          <Plus className="w-4 h-4" /> {t("newPlan")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md border-border/50">
         <DialogHeader>
           <DialogTitle className="font-display text-xl flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
-            What do you feel like doing?
+            {t("whatFeelLikeDoing")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-5 pt-2">
           <div>
-            <Label className="text-sm font-medium text-muted-foreground mb-2 block">Pick an emoji</Label>
+            <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t("pickEmoji")}</Label>
             <div className="flex flex-wrap gap-2">
               {emojiSuggestions.map((e) => (
                 <button
@@ -100,10 +102,10 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
           </div>
 
           <div>
-            <Label htmlFor="plan-title" className="text-sm font-medium text-muted-foreground">What's the plan?</Label>
+            <Label htmlFor="plan-title" className="text-sm font-medium text-muted-foreground">{t("whatsThePlan")}</Label>
             <Input
               id="plan-title"
-              placeholder="Cinema night, painting session, wine & chat..."
+              placeholder={t("planTitlePlaceholder")}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="mt-1.5 bg-muted/50 border-border/50"
@@ -111,10 +113,10 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
           </div>
 
           <div>
-            <Label htmlFor="plan-date" className="text-sm font-medium text-muted-foreground">When?</Label>
+            <Label htmlFor="plan-date" className="text-sm font-medium text-muted-foreground">{t("when")}</Label>
             <Input
               id="plan-date"
-              placeholder="March 11, Last weekend in June..."
+              placeholder={t("planDatePlaceholder")}
               value={dateText}
               onChange={(e) => setDateText(e.target.value)}
               className="mt-1.5 bg-muted/50 border-border/50"
@@ -122,10 +124,10 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
           </div>
 
           <div>
-            <Label htmlFor="plan-location" className="text-sm font-medium text-muted-foreground">Where? (optional)</Label>
+            <Label htmlFor="plan-location" className="text-sm font-medium text-muted-foreground">{t("whereOptional")}</Label>
             <Input
               id="plan-location"
-              placeholder="My place, downtown, the park..."
+              placeholder={t("planLocationPlaceholder")}
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               className="mt-1.5 bg-muted/50 border-border/50"
@@ -133,7 +135,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
           </div>
 
           <div>
-            <Label className="text-sm font-medium text-muted-foreground mb-2 block">Vibe</Label>
+            <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t("vibe")}</Label>
             <div className="flex gap-2 flex-wrap">
               {vibes.map((v) => (
                 <button
@@ -150,7 +152,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
           </div>
 
           <Button onClick={handleCreate} disabled={!title || !dateText || loading} className="w-full font-semibold">
-            Share with the group
+            {t("shareWithGroup")}
           </Button>
         </div>
       </DialogContent>

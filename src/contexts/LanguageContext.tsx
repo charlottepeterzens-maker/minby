@@ -51,6 +51,9 @@ const translations = {
     workouts: "Workouts",
     period: "Period",
     plans: "Plans",
+    someone: "Someone",
+    group: "Group",
+    plan: "Plan",
 
     // Profile
     profileTitle: "Profile",
@@ -64,6 +67,142 @@ const translations = {
     close: "Close",
     innerCircle: "Inner circle",
     everyone: "Everyone",
+    loading: "Loading...",
+    anonymous: "Anonymous",
+    addQuoteOrBio: "Add a quote or bio...",
+
+    // Friends page
+    searchFriends: "Search friends...",
+    noFriendsYet: "No friends yet",
+    noMatches: "No matches",
+    joinCirclesHint: "Join circles to connect with friends",
+    setTier: "Set tier...",
+    couldNotUpdateTier: "Could not update tier",
+    updated: "Updated!",
+
+    // Notifications page
+    markAllRead: "Mark all read",
+    noNotificationsYet: "No notifications yet",
+    notificationsHint: "You'll see gathering invites, friend requests, and updates here",
+
+    // Auth page
+    joinMinby: "Join MINBY",
+    welcomeBack: "Welcome back",
+    startPlanning: "Start planning real moments with your people",
+    yourFriendsWaiting: "Your friends are waiting",
+    yourName: "Your name",
+    howFriendsKnowYou: "How your friends know you",
+    email: "Email",
+    password: "Password",
+    createAccount: "Create account",
+    signIn: "Sign in",
+    alreadyHaveAccount: "Already have an account?",
+    dontHaveAccount: "Don't have an account?",
+    signUp: "Sign up",
+    checkEmail: "Check your email to confirm your account!",
+
+    // Share sheet
+    shareNew: "Share something new",
+    lifeUpdate: "Life update",
+    shareWithCircles: "Share with your circles",
+    suggestMeeting: "Suggest meeting",
+    gatherFriends: "Gather your friends",
+    section: "Section",
+    chooseSection: "Choose a life section",
+    whatsNew: "What's new?",
+    shareUpdatePlaceholder: "Share an update with your circles...",
+    back: "Back",
+    couldntPost: "Couldn't post update",
+    updateShared: "Update shared!",
+    chooseGroup: "Choose a group",
+    emoji: "Emoji",
+    whatsThePlan: "What's the plan?",
+    when: "When?",
+    whereOptional: "Where? (optional)",
+    vibe: "Vibe",
+    vibeChill: "Chill",
+    vibeAdventure: "Adventure",
+    vibeCreative: "Creative",
+    vibeSelfcare: "Self-care",
+    suggest: "Suggest",
+    couldntCreateSuggestion: "Couldn't create suggestion",
+    meetingSuggested: "Meeting suggested!",
+
+    // Create group dialog
+    newGroup: "New group",
+    createFriendGroup: "Create a friend group",
+    pickEmoji: "Pick an emoji",
+    groupName: "Group name",
+    groupNamePlaceholder: "Besties, Work crew, Neighbors...",
+    createGroup: "Create group",
+    couldntCreateGroup: "Couldn't create group",
+    groupCreated: "Group created!",
+
+    // Create plan dialog
+    newPlan: "New plan",
+    whatFeelLikeDoing: "What do you feel like doing?",
+    planTitlePlaceholder: "Cinema night, painting session, wine & chat...",
+    planDatePlaceholder: "March 11, Last weekend in June...",
+    planLocationPlaceholder: "My place, downtown, the park...",
+    shareWithGroup: "Share with the group",
+    couldntCreatePlan: "Couldn't create plan",
+    planShared: "Plan shared!",
+
+    // Create section dialog
+    addSection: "Add section",
+    addLifeSection: "Add a life section",
+    name: "Name",
+    sectionNamePlaceholder: "e.g. My garden",
+    whoCanSee: "Who can see this?",
+    closeFriendsOnly: "Close friends only",
+    innerCircleCloser: "Inner circle & closer",
+    allFriends: "All friends",
+    creating: "Creating...",
+    createSection: "Create section",
+    couldNotCreateSection: "Could not create section",
+
+    // Friend tier manager
+    joinGroupsFirst: "Join groups first to manage friend access tiers",
+    friendAccessTiers: "Friend access tiers",
+
+    // Workout tracker
+    logWorkout: "Log workout",
+    durationMinutes: "Duration (minutes)",
+    saveWorkout: "Save workout",
+    couldNotLogWorkout: "Could not log workout",
+    workoutLogged: "Workout logged!",
+    thisWeek: "this week",
+
+    // Period tracker
+    logToday: "Log today",
+    flowLevel: "Flow level",
+    flowLight: "Light",
+    flowMedium: "Medium",
+    flowHeavy: "Heavy",
+    symptoms: "Symptoms",
+    symptomCramps: "Cramps",
+    symptomHeadache: "Headache",
+    symptomFatigue: "Fatigue",
+    symptomBloating: "Bloating",
+    symptomMoodSwings: "Mood swings",
+    symptomBackPain: "Back pain",
+    saveEntry: "Save entry",
+    couldNotLog: "Could not log",
+    logged: "Logged!",
+    dayOfCycle: "Day {0} of cycle",
+
+    // Life section card
+    tierClose: "Close",
+    tierInner: "Inner",
+    tierAll: "All",
+    closeOnly: "Close only",
+    innerPlus: "Inner+",
+    photo: "Photo",
+    pasteLink: "Paste a link...",
+    noUpdatesYet: "No updates yet",
+    couldNotPost: "Could not post",
+    couldNotUpdateSection: "Could not update section",
+    sectionUpdated: "Section updated",
   },
   sv: {
     // Nav
@@ -113,6 +252,9 @@ const translations = {
     workouts: "Träning",
     period: "Mens",
     plans: "Planer",
+    someone: "Någon",
+    group: "Grupp",
+    plan: "Plan",
 
     // Profile
     profileTitle: "Profil",
@@ -126,6 +268,142 @@ const translations = {
     close: "Nära",
     innerCircle: "Inre cirkel",
     everyone: "Alla",
+    loading: "Laddar...",
+    anonymous: "Anonym",
+    addQuoteOrBio: "Lägg till en bio eller citat...",
+
+    // Friends page
+    searchFriends: "Sök vänner...",
+    noFriendsYet: "Inga vänner ännu",
+    noMatches: "Inga träffar",
+    joinCirclesHint: "Gå med i cirklar för att hitta vänner",
+    setTier: "Välj nivå...",
+    couldNotUpdateTier: "Kunde inte uppdatera nivå",
+    updated: "Uppdaterat!",
+
+    // Notifications page
+    markAllRead: "Markera alla som lästa",
+    noNotificationsYet: "Inga aviseringar ännu",
+    notificationsHint: "Du ser träffinbjudningar, vänförfrågningar och uppdateringar här",
+
+    // Auth page
+    joinMinby: "Gå med i MINBY",
+    welcomeBack: "Välkommen tillbaka",
+    startPlanning: "Börja planera riktiga stunder med dina nära",
+    yourFriendsWaiting: "Dina vänner väntar",
+    yourName: "Ditt namn",
+    howFriendsKnowYou: "Vad dina vänner kallar dig",
+    email: "E-post",
+    password: "Lösenord",
+    createAccount: "Skapa konto",
+    signIn: "Logga in",
+    alreadyHaveAccount: "Har du redan ett konto?",
+    dontHaveAccount: "Har du inget konto?",
+    signUp: "Registrera dig",
+    checkEmail: "Kolla din e-post för att bekräfta ditt konto!",
+
+    // Share sheet
+    shareNew: "Dela något nytt",
+    lifeUpdate: "Livsuppdatering",
+    shareWithCircles: "Dela med dina cirklar",
+    suggestMeeting: "Föreslå träff",
+    gatherFriends: "Samla dina vänner",
+    section: "Sektion",
+    chooseSection: "Välj en livssektion",
+    whatsNew: "Vad är nytt?",
+    shareUpdatePlaceholder: "Dela en uppdatering med dina cirklar...",
+    back: "Tillbaka",
+    couldntPost: "Kunde inte publicera",
+    updateShared: "Uppdatering delad!",
+    chooseGroup: "Välj en grupp",
+    emoji: "Emoji",
+    whatsThePlan: "Vad är planen?",
+    when: "När?",
+    whereOptional: "Var? (valfritt)",
+    vibe: "Stämning",
+    vibeChill: "Lugn",
+    vibeAdventure: "Äventyr",
+    vibeCreative: "Kreativ",
+    vibeSelfcare: "Egenvård",
+    suggest: "Föreslå",
+    couldntCreateSuggestion: "Kunde inte skapa förslag",
+    meetingSuggested: "Träff föreslagen!",
+
+    // Create group dialog
+    newGroup: "Ny grupp",
+    createFriendGroup: "Skapa en vängrupp",
+    pickEmoji: "Välj en emoji",
+    groupName: "Gruppnamn",
+    groupNamePlaceholder: "Bästisar, Jobbgänget, Grannar...",
+    createGroup: "Skapa grupp",
+    couldntCreateGroup: "Kunde inte skapa grupp",
+    groupCreated: "Grupp skapad!",
+
+    // Create plan dialog
+    newPlan: "Ny plan",
+    whatFeelLikeDoing: "Vad vill du göra?",
+    planTitlePlaceholder: "Biokvall, målarkväll, vin & snack...",
+    planDatePlaceholder: "11 mars, Sista helgen i juni...",
+    planLocationPlaceholder: "Hemma hos mig, stan, parken...",
+    shareWithGroup: "Dela med gruppen",
+    couldntCreatePlan: "Kunde inte skapa plan",
+    planShared: "Plan delad!",
+
+    // Create section dialog
+    addSection: "Lägg till sektion",
+    addLifeSection: "Lägg till en livssektion",
+    name: "Namn",
+    sectionNamePlaceholder: "t.ex. Min trädgård",
+    whoCanSee: "Vem kan se detta?",
+    closeFriendsOnly: "Bara nära vänner",
+    innerCircleCloser: "Inre cirkel & närmare",
+    allFriends: "Alla vänner",
+    creating: "Skapar...",
+    createSection: "Skapa sektion",
+    couldNotCreateSection: "Kunde inte skapa sektion",
+
+    // Friend tier manager
+    joinGroupsFirst: "Gå med i grupper först för att hantera åtkomstnivåer",
+    friendAccessTiers: "Åtkomstnivåer för vänner",
+
+    // Workout tracker
+    logWorkout: "Logga träning",
+    durationMinutes: "Längd (minuter)",
+    saveWorkout: "Spara träning",
+    couldNotLogWorkout: "Kunde inte logga träning",
+    workoutLogged: "Träning loggad!",
+    thisWeek: "denna vecka",
+
+    // Period tracker
+    logToday: "Logga idag",
+    flowLevel: "Flödesnivå",
+    flowLight: "Lätt",
+    flowMedium: "Medel",
+    flowHeavy: "Kraftigt",
+    symptoms: "Symptom",
+    symptomCramps: "Kramper",
+    symptomHeadache: "Huvudvärk",
+    symptomFatigue: "Trötthet",
+    symptomBloating: "Uppsvälld",
+    symptomMoodSwings: "Humörsvängningar",
+    symptomBackPain: "Ryggvärk",
+    saveEntry: "Spara",
+    couldNotLog: "Kunde inte logga",
+    logged: "Loggat!",
+    dayOfCycle: "Dag {0} av cykeln",
+
+    // Life section card
+    tierClose: "Nära",
+    tierInner: "Inre",
+    tierAll: "Alla",
+    closeOnly: "Bara nära",
+    innerPlus: "Inre+",
+    photo: "Bild",
+    pasteLink: "Klistra in en länk...",
+    noUpdatesYet: "Inga uppdateringar ännu",
+    couldNotPost: "Kunde inte publicera",
+    couldNotUpdateSection: "Kunde inte uppdatera sektion",
+    sectionUpdated: "Sektion uppdaterad",
   },
 } as const;
 
@@ -134,7 +412,7 @@ export type TranslationKey = keyof typeof translations.en;
 interface LanguageContextType {
   lang: Lang;
   setLang: (lang: Lang) => void;
-  t: (key: TranslationKey) => string;
+  t: (key: TranslationKey, ...args: (string | number)[]) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType>({
@@ -156,8 +434,12 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("minby-lang", l);
   };
 
-  const t = (key: TranslationKey): string => {
-    return translations[lang][key] || translations.en[key] || key;
+  const t = (key: TranslationKey, ...args: (string | number)[]): string => {
+    let str: string = translations[lang][key] || translations.en[key] || key;
+    args.forEach((arg, i) => {
+      str = str.replace(`{${i}}`, String(arg));
+    });
+    return str;
   };
 
   return (

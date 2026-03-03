@@ -31,12 +31,6 @@ interface Profile {
   bio: string | null;
 }
 
-const tierLabels: Record<string, { label: string; color: string }> = {
-  close: { label: "Close", color: "text-primary" },
-  inner: { label: "Inner circle", color: "text-secondary-foreground" },
-  outer: { label: "Everyone", color: "text-muted-foreground" },
-};
-
 const ProfilePage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -54,6 +48,12 @@ const ProfilePage = () => {
 
   const targetUserId = userId || user?.id;
   const isOwnProfile = !userId || userId === user?.id;
+
+  const tierLabels: Record<string, { label: string; color: string }> = {
+    close: { label: t("close"), color: "text-primary" },
+    inner: { label: t("innerCircle"), color: "text-secondary-foreground" },
+    outer: { label: t("everyone"), color: "text-muted-foreground" },
+  };
 
   const fetchProfile = useCallback(async () => {
     if (!targetUserId) return;
@@ -189,7 +189,7 @@ const ProfilePage = () => {
           </div>
 
           <h1 className="font-display text-2xl font-bold text-foreground">
-            {profile?.display_name || "Anonymous"}
+            {profile?.display_name || t("anonymous")}
           </h1>
 
           {/* Bio / Quote */}
@@ -200,7 +200,7 @@ const ProfilePage = () => {
                   <Input
                     value={bioText}
                     onChange={(e) => setBioText(e.target.value)}
-                    placeholder="Add a quote or bio..."
+                    placeholder={t("addQuoteOrBio")}
                     className="text-center text-sm"
                     maxLength={150}
                     autoFocus
@@ -220,7 +220,7 @@ const ProfilePage = () => {
                   {profile?.bio ? (
                     <span>"{profile.bio}"</span>
                   ) : (
-                    <span className="not-italic">Add a quote or bio...</span>
+                    <span className="not-italic">{t("addQuoteOrBio")}</span>
                   )}
                   <Pencil className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>
@@ -277,7 +277,7 @@ const ProfilePage = () => {
         </div>
 
         {loading ? (
-          <div className="text-center py-16 text-muted-foreground">Loading...</div>
+          <div className="text-center py-16 text-muted-foreground">{t("loading")}</div>
         ) : sections.length === 0 ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
             <Plus className="w-10 h-10 text-primary/30 mx-auto mb-4" />

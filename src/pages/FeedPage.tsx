@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link as LinkIcon, CalendarDays, MapPin, Settings } from "lucide-react";
@@ -46,22 +47,23 @@ type FeedItem =
   | { type: "post"; data: FeedPost; created_at: string }
   | { type: "plan"; data: FeedPlan; created_at: string };
 
-const sectionTypeFilters = [
-  { label: "All", value: "all" },
-  { label: "Posts", value: "posts" },
-  { label: "Workouts", value: "workout" },
-  { label: "Period", value: "period" },
-  { label: "Plans", value: "plans" },
-];
-
 const FeedPage = () => {
   const { user, signOut } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<FeedPost[]>([]);
   const [plans, setPlans] = useState<FeedPlan[]>([]);
   const [profiles, setProfiles] = useState<ProfileMap>({});
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+
+  const sectionTypeFilters = [
+    { label: t("all"), value: "all" },
+    { label: t("posts"), value: "posts" },
+    { label: t("workouts"), value: "workout" },
+    { label: t("period"), value: "period" },
+    { label: t("plans"), value: "plans" },
+  ];
 
   const fetchFeed = useCallback(async () => {
     if (!user) return;
@@ -115,7 +117,7 @@ const FeedPage = () => {
   }
   feedItems.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-  const getProfile = (userId: string) => profiles[userId] || { display_name: "Someone", avatar_url: null };
+  const getProfile = (userId: string) => profiles[userId] || { display_name: t("someone"), avatar_url: null };
   const getInitial = (name: string | null) => name?.charAt(0).toUpperCase() || "?";
 
   return (
@@ -147,14 +149,14 @@ const FeedPage = () => {
         </div>
 
         {loading ? (
-          <div className="text-center py-16 text-muted-foreground">Loading your feed...</div>
+          <div className="text-center py-16 text-muted-foreground">{t("loadingFeed")}</div>
         ) : feedItems.length === 0 ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
             <p className="font-display text-lg text-muted-foreground">
-              {filter === "all" ? "No updates yet" : "No updates for this filter"}
+              {filter === "all" ? t("noUpdates") : t("noUpdatesFilter")}
             </p>
             <p className="text-sm text-muted-foreground/70 mt-1">
-              Add friends and assign them access tiers to see their life updates here
+              {t("addFriendsHint")}
             </p>
           </motion.div>
         ) : (
@@ -225,25 +227,28 @@ const PostCard = ({
   );
 };
 
-const PlanFeedCard = ({ plan }: { plan: FeedPlan }) => (
-  <Card className="border-primary/20 bg-primary/5 shadow-card overflow-hidden">
-    <CardContent className="p-4">
-      <div className="flex items-start gap-3">
-        <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
-          <CalendarDays className="w-5 h-5 text-primary" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-primary font-medium mb-0.5">{plan.friend_groups?.name || "Group"} · Plan</p>
-          <p className="font-display font-semibold text-foreground">{plan.title}</p>
-          <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" /> {plan.date_text}</span>
-            {plan.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {plan.location}</span>}
+const PlanFeedCard = ({ plan }: { plan: FeedPlan }) => {
+  const { t } = useLanguage();
+  return (
+    <Card className="border-primary/20 bg-primary/5 shadow-card overflow-hidden">
+      <CardContent className="p-4">
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
+            <CalendarDays className="w-5 h-5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-primary font-medium mb-0.5">{plan.friend_groups?.name || t("group")} · {t("plan")}</p>
+            <p className="font-display font-semibold text-foreground">{plan.title}</p>
+            <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" /> {plan.date_text}</span>
+              {plan.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {plan.location}</span>}
+            </div>
           </div>
         </div>
-      </div>
-      <p className="text-[11px] text-muted-foreground/50 mt-2">{new Date(plan.created_at).toLocaleDateString()}</p>
-    </CardContent>
-  </Card>
-);
+        <p className="text-[11px] text-muted-foreground/50 mt-2">{new Date(plan.created_at).toLocaleDateString()}</p>
+      </CardContent>
+    </Card>
+  );
+};
 
 export default FeedPage;

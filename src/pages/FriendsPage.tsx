@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search } from "lucide-react";
@@ -17,18 +18,19 @@ interface FriendWithTier {
   tier: string | null;
 }
 
-const tierLabels: Record<string, { label: string; badge: string }> = {
-  close: { label: "Close", badge: "bg-primary/15 text-primary" },
-  inner: { label: "Inner circle", badge: "bg-secondary/20 text-secondary-foreground" },
-  outer: { label: "Everyone", badge: "bg-muted text-muted-foreground" },
-};
-
 const FriendsPage = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [friends, setFriends] = useState<FriendWithTier[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const tierLabels: Record<string, { label: string; badge: string }> = {
+    close: { label: t("close"), badge: "bg-primary/15 text-primary" },
+    inner: { label: t("innerCircle"), badge: "bg-secondary/20 text-secondary-foreground" },
+    outer: { label: t("everyone"), badge: "bg-muted text-muted-foreground" },
+  };
 
   const fetchFriends = useCallback(async () => {
     if (!user) return;
@@ -82,10 +84,10 @@ const FriendsPage = () => {
         { onConflict: "owner_id,friend_user_id" }
       );
     if (error) {
-      toast.error("Could not update tier");
+      toast.error(t("couldNotUpdateTier"));
     } else {
       setFriends((prev) => prev.map((f) => (f.friend_user_id === friendUserId ? { ...f, tier } : f)));
-      toast.success("Updated!");
+      toast.success(t("updated"));
     }
   };
 
@@ -97,7 +99,7 @@ const FriendsPage = () => {
     <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
         <div className="max-w-2xl mx-auto px-4 py-3">
-          <span className="font-display text-lg font-normal tracking-[0.35em] text-foreground">FRIENDS</span>
+          <span className="font-display text-lg font-normal tracking-[0.35em] text-foreground">{t("friends").toUpperCase()}</span>
         </div>
       </nav>
 
@@ -107,20 +109,20 @@ const FriendsPage = () => {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search friends..."
+            placeholder={t("searchFriends")}
             className="pl-9 bg-muted/50 border-border/50"
           />
         </div>
 
         {loading ? (
-          <div className="text-center py-16 text-muted-foreground">Loading...</div>
+          <div className="text-center py-16 text-muted-foreground">{t("loading")}</div>
         ) : filtered.length === 0 ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
             <p className="font-display text-lg text-muted-foreground">
-              {friends.length === 0 ? "No friends yet" : "No matches"}
+              {friends.length === 0 ? t("noFriendsYet") : t("noMatches")}
             </p>
             <p className="text-sm text-muted-foreground/70 mt-1">
-              Join circles to connect with friends
+              {t("joinCirclesHint")}
             </p>
           </motion.div>
         ) : (
@@ -158,13 +160,13 @@ const FriendsPage = () => {
                 </div>
                 <Select value={f.tier || "none"} onValueChange={(val) => val !== "none" && setTier(f.friend_user_id, val)}>
                   <SelectTrigger className="w-[130px] h-8 text-xs">
-                    <SelectValue placeholder="Set tier" />
+                    <SelectValue placeholder={t("setTier")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none" disabled>Set tier...</SelectItem>
-                    <SelectItem value="close">Close</SelectItem>
-                    <SelectItem value="inner">Inner circle</SelectItem>
-                    <SelectItem value="outer">Everyone</SelectItem>
+                    <SelectItem value="none" disabled>{t("setTier")}</SelectItem>
+                    <SelectItem value="close">{t("close")}</SelectItem>
+                    <SelectItem value="inner">{t("innerCircle")}</SelectItem>
+                    <SelectItem value="outer">{t("everyone")}</SelectItem>
                   </SelectContent>
                 </Select>
               </motion.div>
