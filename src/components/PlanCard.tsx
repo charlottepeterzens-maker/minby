@@ -60,7 +60,7 @@ const PlanCard = ({ plan, onRsvpChange }: { plan: PlanWithDetails; onRsvpChange:
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <span className="text-3xl">{plan.emoji}</span>
+          <span className="text-lg">{plan.emoji}</span>
           <div>
             <h3 className="font-display text-lg font-semibold text-card-foreground leading-tight">
               {plan.title}

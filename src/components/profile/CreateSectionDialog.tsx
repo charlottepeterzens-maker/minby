@@ -56,7 +56,7 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
     if (error) {
       toast.error("Could not create section");
     } else {
-      toast.success(`${emoji} ${name} added!`);
+      toast.success(`${name} added!`);
       setOpen(false);
       setName("");
       setEmoji("📝");
@@ -115,9 +115,9 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="close">💖 Close friends only</SelectItem>
-                <SelectItem value="inner">🤝 Inner circle & closer</SelectItem>
-                <SelectItem value="outer">🌍 All friends</SelectItem>
+                <SelectItem value="close">Close friends only</SelectItem>
+                <SelectItem value="inner">Inner circle & closer</SelectItem>
+                <SelectItem value="outer">All friends</SelectItem>
               </SelectContent>
             </Select>
           </div>

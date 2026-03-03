@@ -26,10 +26,10 @@ interface Profile {
   user_id: string;
 }
 
-const tierLabels: Record<string, { label: string; icon: string; color: string }> = {
-  close: { label: "Close", icon: "💖", color: "text-primary" },
-  inner: { label: "Inner circle", icon: "🤝", color: "text-secondary-foreground" },
-  outer: { label: "Everyone", icon: "🌍", color: "text-muted-foreground" },
+const tierLabels: Record<string, { label: string; color: string }> = {
+  close: { label: "Close", color: "text-primary" },
+  inner: { label: "Inner circle", color: "text-secondary-foreground" },
+  outer: { label: "Everyone", color: "text-muted-foreground" },
 };
 
 const ProfilePage = () => {
@@ -178,7 +178,7 @@ const ProfilePage = () => {
             <div className="flex flex-wrap gap-3">
               {Object.entries(tierLabels).map(([key, val]) => (
                 <span key={key} className={`text-xs ${val.color}`}>
-                  {val.icon} {val.label}
+                  {val.label}
                 </span>
               ))}
             </div>

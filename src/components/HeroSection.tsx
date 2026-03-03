@@ -15,7 +15,6 @@ const HeroSection = () => {
         className="relative z-10 max-w-2xl mx-auto"
       >
         <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-sm font-medium mb-6">
-          <span className="animate-float inline-block">🌸</span>
           Less scrolling, more living
         </div>
 

@@ -34,7 +34,7 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
     if (error) {
       toast.error("Couldn't create group");
     } else {
-      toast.success("Group created! 🎉");
+      toast.success("Group created!");
       onGroupCreated();
       setName("");
       setEmoji("👯");
@@ -82,7 +82,8 @@ const CreateGroupDialog = ({ onGroupCreated }: CreateGroupDialogProps) => {
             />
           </div>
           <Button onClick={handleCreate} disabled={!name || loading} className="w-full rounded-xl font-semibold">
-            Create group ✨
+            Create group
+          </Button>
           </Button>
         </div>
       </DialogContent>
