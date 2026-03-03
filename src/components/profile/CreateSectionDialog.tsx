@@ -123,7 +123,7 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
           </div>
 
           <Button onClick={handleCreate} disabled={!name.trim() || loading} className="w-full rounded-xl">
-            {loading ? "Creating..." : "Create section ✨"}
+            {loading ? "Creating..." : "Create section"}
           </Button>
         </div>
       </DialogContent>
