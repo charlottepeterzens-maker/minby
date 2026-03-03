@@ -125,7 +125,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   };
 
   return (
-    <Card id={`section-${section.id}`} className="rounded-2xl border-border/50 shadow-card overflow-hidden">
+    <Card id={`section-${section.id}`} className="border-border/50 shadow-card overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           {editing ? (
@@ -133,11 +133,11 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               <Input
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
-                className="h-8 text-sm rounded-lg flex-1 max-w-[180px]"
+                className="h-8 text-sm flex-1 max-w-[180px]"
                 autoFocus
               />
               <Select value={editTier} onValueChange={setEditTier}>
-                <SelectTrigger className="h-8 w-[100px] text-xs rounded-lg">
+                <SelectTrigger className="h-8 w-[100px] text-xs">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -146,10 +146,10 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   <SelectItem value="outer">Everyone</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-primary" onClick={handleSaveEdit} disabled={saving}>
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={handleSaveEdit} disabled={saving}>
                 <Check className="w-4 h-4" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-muted-foreground" onClick={() => { setEditing(false); setEditName(section.name); setEditTier(section.min_tier); }}>
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => { setEditing(false); setEditName(section.name); setEditTier(section.min_tier); }}>
                 <X className="w-4 h-4" />
               </Button>
             </div>
@@ -157,16 +157,16 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
             <>
               <CardTitle className="font-display text-base flex items-center gap-2">
                 {section.name}
-                {isOwner && <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{tierLabels[section.min_tier]}</span>}
+                {isOwner && <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5">{tierLabels[section.min_tier]}</span>}
               </CardTitle>
               <div className="flex items-center gap-1">
                 {isOwner && (
-                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setEditing(true)}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditing(true)}>
                     <Pencil className="w-3.5 h-3.5" />
                   </Button>
                 )}
                 {isOwner && (
-                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setShowCompose(!showCompose)}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowCompose(!showCompose)}>
                     <Plus className="w-4 h-4" />
                   </Button>
                 )}
@@ -180,17 +180,17 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         <AnimatePresence>
           {showCompose && isOwner && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden mb-4">
-              <div className="bg-muted/30 rounded-xl p-3 space-y-2">
+              <div className="bg-muted/30 p-3 space-y-2">
                 <Textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="What's new?"
-                  className="rounded-xl bg-background/50 border-border/30 min-h-[60px] text-sm"
+                  className="bg-background/50 border-border/30 min-h-[60px] text-sm"
                 />
                 <div className="flex gap-2 items-center">
                   <label className="cursor-pointer">
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
-                    <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-colors ${imageFile ? "bg-primary/10 text-primary border-primary/30" : "text-muted-foreground border-border/50 hover:bg-muted"}`}>
+                    <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 border transition-colors ${imageFile ? "bg-primary/10 text-primary border-primary/30" : "text-muted-foreground border-border/50 hover:bg-muted"}`}>
                       <Image className="w-3 h-3" /> {imageFile ? imageFile.name.slice(0, 15) : "Photo"}
                     </span>
                   </label>
@@ -198,9 +198,9 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     value={linkUrl}
                     onChange={(e) => setLinkUrl(e.target.value)}
                     placeholder="Paste a link..."
-                    className="flex-1 h-7 text-xs rounded-full bg-background/50 border-border/30"
+                    className="flex-1 h-7 text-xs bg-background/50 border-border/30"
                   />
-                  <Button size="sm" disabled={posting} onClick={handlePost} className="rounded-full h-7 px-3">
+                  <Button size="sm" disabled={posting} onClick={handlePost} className="h-7 px-3">
                     <Send className="w-3 h-3" />
                   </Button>
                 </div>
@@ -217,7 +217,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
             {posts.map((post) => (
               <div key={post.id} className="group relative">
                 {post.image_url && (
-                  <img src={post.image_url} alt="" className="w-full rounded-xl mb-2 max-h-64 object-cover" />
+                  <img src={post.image_url} alt="" className="w-full mb-2 max-h-64 object-cover" />
                 )}
                 {post.content && <p className="text-sm text-foreground">{post.content}</p>}
                 {post.link_url && (

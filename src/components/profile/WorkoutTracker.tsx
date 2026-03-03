@@ -74,14 +74,14 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
   const weekCount = last7.filter((d) => d.hasWorkout).length;
 
   return (
-    <Card className="rounded-2xl border-border/50 shadow-card overflow-hidden">
+    <Card className="border-border/50 shadow-card overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="font-display text-base flex items-center gap-2">
             <span className="text-xl">{section.emoji}</span> {section.name}
           </CardTitle>
           {isOwner && (
-            <Button variant="warm" size="sm" className="rounded-full text-xs" onClick={() => setShowLog(!showLog)}>
+            <Button variant="warm" size="sm" className="text-xs" onClick={() => setShowLog(!showLog)}>
               <Dumbbell className="w-3 h-3" /> Log workout
             </Button>
           )}
@@ -93,7 +93,7 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
           {last7.map((day) => (
             <div key={day.dateStr} className="flex flex-col items-center gap-1">
               <span className="text-[9px] text-muted-foreground/60">{format(day.date, "EEE").slice(0, 2)}</span>
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] ${
+              <div className={`w-6 h-6 flex items-center justify-center text-[10px] ${
                 day.hasWorkout ? "bg-secondary text-secondary-foreground" : "bg-muted/30 text-muted-foreground/30"
               }`}>
                 {day.hasWorkout ? "✓" : "·"}
@@ -117,9 +117,9 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
 
         {/* Log form */}
         {showLog && isOwner && (
-          <div className="mt-3 bg-muted/30 rounded-xl p-3 space-y-2">
+          <div className="mt-3 bg-muted/30 p-3 space-y-2">
             <Select value={workoutType} onValueChange={setWorkoutType}>
-              <SelectTrigger className="h-8 text-xs rounded-xl">
+              <SelectTrigger className="h-8 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -133,9 +133,9 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
               onChange={(e) => setDuration(e.target.value)}
               placeholder="Duration (minutes)"
               type="number"
-              className="h-8 text-xs rounded-xl"
+              className="h-8 text-xs"
             />
-            <Button size="sm" onClick={logWorkout} className="w-full rounded-xl text-xs">
+            <Button size="sm" onClick={logWorkout} className="w-full text-xs">
               Save workout
             </Button>
           </div>
