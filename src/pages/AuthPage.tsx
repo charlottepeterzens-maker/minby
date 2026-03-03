@@ -48,9 +48,9 @@ const AuthPage = () => {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <span className="text-4xl mb-2 block font-display font-bold text-primary">G</span>
+          <span className="text-4xl mb-2 block font-display font-bold text-primary">M</span>
           <h1 className="font-display text-3xl font-bold text-foreground">
-            {isSignUp ? "Join Gather" : "Welcome back"}
+            {isSignUp ? "Join MinBy" : "Welcome back"}
           </h1>
           <p className="text-muted-foreground mt-2 font-body">
             {isSignUp ? "Start planning real moments with your people" : "Your friends are waiting"}
