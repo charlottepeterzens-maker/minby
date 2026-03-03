@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link as LinkIcon, Filter, CalendarDays, MapPin, Settings } from "lucide-react";
+import { Link as LinkIcon, CalendarDays, MapPin, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -131,7 +131,6 @@ const FeedPage = () => {
 
       <main className="max-w-2xl mx-auto px-4 py-4">
         <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
-          <Filter className="w-4 h-4 text-muted-foreground shrink-0" />
           {sectionTypeFilters.map((f) => (
             <button
               key={f.value}
