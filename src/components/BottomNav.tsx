@@ -3,20 +3,22 @@ import { Home, Users, PlusCircle, Bell, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
 import ShareNewSheet from "@/components/ShareNewSheet";
 
-const navItems = [
-  { label: "Home", icon: Home, path: "/" },
-  { label: "Friends", icon: Users, path: "/friends" },
-  { label: "Share", icon: PlusCircle, path: "__share__" },
-  { label: "Notifications", icon: Bell, path: "/notifications" },
-  { label: "Profile", icon: User, path: "/profile" },
+const navItems: { labelKey: TranslationKey; icon: typeof Home; path: string }[] = [
+  { labelKey: "home", icon: Home, path: "/" },
+  { labelKey: "friends", icon: Users, path: "/friends" },
+  { labelKey: "share", icon: PlusCircle, path: "__share__" },
+  { labelKey: "notifications", icon: Bell, path: "/notifications" },
+  { labelKey: "profile", icon: User, path: "/profile" },
 ];
 
 const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [unreadCount, setUnreadCount] = useState(0);
   const [shareOpen, setShareOpen] = useState(false);
 
@@ -53,7 +55,7 @@ const BottomNav = () => {
 
             return (
               <button
-                key={item.label}
+                key={item.labelKey}
                 onClick={() => {
                   if (isShare) {
                     setShareOpen(true);
@@ -74,8 +76,8 @@ const BottomNav = () => {
                 ) : (
                   <item.icon className="w-5 h-5" />
                 )}
-                <span className="text-[10px] font-medium">{item.label}</span>
-                {item.label === "Notifications" && unreadCount > 0 && (
+                <span className="text-[10px] font-medium">{t(item.labelKey)}</span>
+                {item.labelKey === "notifications" && unreadCount > 0 && (
                   <span className="absolute -top-0.5 right-2 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center">
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>

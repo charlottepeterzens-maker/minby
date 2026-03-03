@@ -35,6 +35,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <AuthProvider>
+        <LanguageProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </LanguageProvider>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
