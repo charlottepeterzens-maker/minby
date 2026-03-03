@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Plus, Image, Link, Trash2, Send } from "lucide-react";
+import { Plus, Image, Link, Trash2, Send, Pencil, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface LifePost {
@@ -21,15 +22,16 @@ interface LifePost {
 interface Props {
   section: { id: string; name: string; emoji: string; min_tier: string };
   isOwner: boolean;
+  onUpdated?: () => void;
 }
 
-const tierBadge: Record<string, string> = {
+const tierLabels: Record<string, string> = {
   close: "Close",
   inner: "Inner",
   outer: "All",
 };
 
-const LifeSectionCard = ({ section, isOwner }: Props) => {
+const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const { user } = useAuth();
   const [posts, setPosts] = useState<LifePost[]>([]);
   const [showCompose, setShowCompose] = useState(false);
@@ -37,6 +39,12 @@ const LifeSectionCard = ({ section, isOwner }: Props) => {
   const [linkUrl, setLinkUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [posting, setPosting] = useState(false);
+
+  // Edit state
+  const [editing, setEditing] = useState(false);
+  const [editName, setEditName] = useState(section.name);
+  const [editTier, setEditTier] = useState(section.min_tier);
+  const [saving, setSaving] = useState(false);
 
   const fetchPosts = useCallback(async () => {
     const { data } = await supabase
@@ -51,6 +59,28 @@ const LifeSectionCard = ({ section, isOwner }: Props) => {
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
+
+  useEffect(() => {
+    setEditName(section.name);
+    setEditTier(section.min_tier);
+  }, [section.name, section.min_tier]);
+
+  const handleSaveEdit = async () => {
+    if (!editName.trim()) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("life_sections")
+      .update({ name: editName.trim(), min_tier: editTier as any })
+      .eq("id", section.id);
+    if (error) {
+      toast.error("Could not update section");
+    } else {
+      toast.success("Section updated");
+      setEditing(false);
+      onUpdated?.();
+    }
+    setSaving(false);
+  };
 
   const handlePost = async () => {
     if (!user || (!content.trim() && !imageFile && !linkUrl.trim())) return;
@@ -95,17 +125,53 @@ const LifeSectionCard = ({ section, isOwner }: Props) => {
   };
 
   return (
-    <Card className="rounded-2xl border-border/50 shadow-card overflow-hidden">
+    <Card id={`section-${section.id}`} className="rounded-2xl border-border/50 shadow-card overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="font-display text-base flex items-center gap-2">
-            {section.name}
-            {isOwner && <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{tierBadge[section.min_tier]}</span>}
-          </CardTitle>
-          {isOwner && (
-            <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setShowCompose(!showCompose)}>
-              <Plus className="w-4 h-4" />
-            </Button>
+          {editing ? (
+            <div className="flex-1 flex items-center gap-2">
+              <Input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                className="h-8 text-sm rounded-lg flex-1 max-w-[180px]"
+                autoFocus
+              />
+              <Select value={editTier} onValueChange={setEditTier}>
+                <SelectTrigger className="h-8 w-[100px] text-xs rounded-lg">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="close">Close only</SelectItem>
+                  <SelectItem value="inner">Inner+</SelectItem>
+                  <SelectItem value="outer">Everyone</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-primary" onClick={handleSaveEdit} disabled={saving}>
+                <Check className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full text-muted-foreground" onClick={() => { setEditing(false); setEditName(section.name); setEditTier(section.min_tier); }}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          ) : (
+            <>
+              <CardTitle className="font-display text-base flex items-center gap-2">
+                {section.name}
+                {isOwner && <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5 rounded-full">{tierLabels[section.min_tier]}</span>}
+              </CardTitle>
+              <div className="flex items-center gap-1">
+                {isOwner && (
+                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setEditing(true)}>
+                    <Pencil className="w-3.5 h-3.5" />
+                  </Button>
+                )}
+                {isOwner && (
+                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setShowCompose(!showCompose)}>
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+            </>
           )}
         </div>
       </CardHeader>
