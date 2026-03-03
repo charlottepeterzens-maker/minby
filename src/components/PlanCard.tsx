@@ -1,31 +1,55 @@
 import { motion } from "framer-motion";
 import { Calendar, MapPin, Heart, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 
-export interface Plan {
+interface PlanWithDetails {
   id: string;
   title: string;
   emoji: string;
-  date: string;
-  location?: string;
-  author: string;
-  authorInitial: string;
-  attendees: { name: string; initial: string }[];
-  maxSpots?: number;
-  vibe: "chill" | "adventure" | "creative" | "selfcare";
-  comments: number;
+  date_text: string;
+  location: string | null;
+  vibe: string;
+  created_by: string;
+  creator_name: string;
+  creator_initial: string;
+  rsvps: { user_id: string; status: string; display_name: string; initial: string }[];
+  userRsvp: string | null;
 }
 
-const vibeColors: Record<Plan["vibe"], string> = {
+const vibeColors: Record<string, string> = {
   chill: "bg-secondary/40 text-secondary-foreground",
   adventure: "bg-primary/10 text-primary",
   creative: "bg-accent/30 text-accent-foreground",
   selfcare: "bg-muted text-muted-foreground",
 };
 
-const PlanCard = ({ plan }: { plan: Plan }) => {
-  const [isIn, setIsIn] = useState(false);
+const PlanCard = ({ plan, onRsvpChange }: { plan: PlanWithDetails; onRsvpChange: () => void }) => {
+  const { user } = useAuth();
+  const isIn = plan.userRsvp === "in";
+
+  const handleRsvp = async () => {
+    if (!user) return;
+
+    if (isIn) {
+      await supabase.from("rsvps").delete().eq("plan_id", plan.id).eq("user_id", user.id);
+    } else {
+      const { error } = await supabase.from("rsvps").upsert({
+        plan_id: plan.id,
+        user_id: user.id,
+        status: "in",
+      }, { onConflict: "plan_id,user_id" });
+      if (error) {
+        toast.error("Couldn't RSVP");
+        return;
+      }
+    }
+    onRsvpChange();
+  };
+
+  const inCount = plan.rsvps.filter((r) => r.status === "in").length;
 
   return (
     <motion.div
@@ -42,11 +66,11 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
               {plan.title}
             </h3>
             <p className="text-sm text-muted-foreground font-body">
-              by {plan.author}
+              by {plan.creator_name}
             </p>
           </div>
         </div>
-        <span className={`text-xs font-medium px-3 py-1 rounded-full ${vibeColors[plan.vibe]}`}>
+        <span className={`text-xs font-medium px-3 py-1 rounded-full ${vibeColors[plan.vibe] || vibeColors.chill}`}>
           {plan.vibe}
         </span>
       </div>
@@ -54,7 +78,7 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
       <div className="flex flex-col gap-2 mb-5">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Calendar className="w-4 h-4 text-primary" />
-          <span>{plan.date}</span>
+          <span>{plan.date_text}</span>
         </div>
         {plan.location && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -67,46 +91,36 @@ const PlanCard = ({ plan }: { plan: Plan }) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1">
           <div className="flex -space-x-2">
-            {plan.attendees.map((a, i) => (
+            {plan.rsvps.filter(r => r.status === "in").slice(0, 5).map((r, i) => (
               <div
                 key={i}
                 className="w-8 h-8 rounded-full bg-primary/15 border-2 border-card flex items-center justify-center text-xs font-semibold text-primary"
               >
-                {a.initial}
+                {r.initial}
               </div>
             ))}
           </div>
           <span className="text-xs text-muted-foreground ml-2">
-            {plan.attendees.length} in
-            {plan.maxSpots && ` · ${plan.maxSpots - plan.attendees.length} spots left`}
+            {inCount} in
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-            <MessageCircle className="w-4 h-4" />
-            {plan.comments}
-          </button>
-          <Button
-            variant={isIn ? "default" : "warm"}
-            size="sm"
-            className="rounded-full text-xs font-semibold px-4"
-            onClick={() => setIsIn(!isIn)}
-          >
-            {isIn ? (
-              <>
-                <Heart className="w-3 h-3 fill-current" /> I'm in!
-              </>
-            ) : (
-              <>
-                <Heart className="w-3 h-3" /> Count me in
-              </>
-            )}
-          </Button>
-        </div>
+        <Button
+          variant={isIn ? "default" : "warm"}
+          size="sm"
+          className="rounded-full text-xs font-semibold px-4"
+          onClick={handleRsvp}
+        >
+          {isIn ? (
+            <><Heart className="w-3 h-3 fill-current" /> I'm in!</>
+          ) : (
+            <><Heart className="w-3 h-3" /> Count me in</>
+          )}
+        </Button>
       </div>
     </motion.div>
   );
 };
 
 export default PlanCard;
+export type { PlanWithDetails };

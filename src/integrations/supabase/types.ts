@@ -14,13 +14,172 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      friend_groups: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          name: string
+          owner_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          name: string
+          owner_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          name?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
+      group_memberships: {
+        Row: {
+          group_id: string
+          id: string
+          joined_at: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          group_id: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          group_id?: string
+          id?: string
+          joined_at?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_memberships_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "friend_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plans: {
+        Row: {
+          created_at: string
+          created_by: string
+          date_text: string
+          emoji: string
+          group_id: string
+          id: string
+          location: string | null
+          title: string
+          vibe: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          date_text: string
+          emoji?: string
+          group_id: string
+          id?: string
+          location?: string | null
+          title: string
+          vibe?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          date_text?: string
+          emoji?: string
+          group_id?: string
+          id?: string
+          location?: string | null
+          title?: string
+          vibe?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plans_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "friend_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      rsvps: {
+        Row: {
+          created_at: string
+          id: string
+          plan_id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          plan_id: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          plan_id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rsvps_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_group_member: { Args: { _group_id: string }; Returns: boolean }
+      is_group_owner: { Args: { _group_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
