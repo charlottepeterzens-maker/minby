@@ -222,6 +222,9 @@ const translations = {
     couldNotSaveAvailability: "Could not save availability",
     availabilityRemoved: "Removed",
     couldNotRemoveAvailability: "Could not remove",
+    freeDates: "Free dates",
+    shareWhenFree: "Let friends know when you're free",
+    editAvailability: "Edit",
   },
   sv: {
     // Nav
@@ -442,6 +445,9 @@ const translations = {
     couldNotSaveAvailability: "Kunde inte spara tillgänglighet",
     availabilityRemoved: "Borttagen",
     couldNotRemoveAvailability: "Kunde inte ta bort",
+    freeDates: "Lediga dagar",
+    shareWhenFree: "Visa vänner när du är ledig",
+    editAvailability: "Redigera",
   },
 } as const;
 
