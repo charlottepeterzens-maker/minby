@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Link as LinkIcon, CalendarDays, MapPin, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface FeedPost {
@@ -183,6 +184,7 @@ const FeedPage = () => {
           </div>
         )}
       </main>
+      <ScrollToTopButton />
       <BottomNav />
     </div>
   );

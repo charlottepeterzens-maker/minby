@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 interface Notification {
   id: string;
@@ -116,6 +117,7 @@ const NotificationsPage = () => {
           </div>
         )}
       </main>
+      <ScrollToTopButton />
       <BottomNav />
     </div>
   );

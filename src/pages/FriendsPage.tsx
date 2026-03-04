@@ -9,6 +9,7 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
 
 interface FriendWithTier {
   friend_user_id: string;
@@ -174,6 +175,7 @@ const FriendsPage = () => {
           </div>
         )}
       </main>
+      <ScrollToTopButton />
       <BottomNav />
     </div>
   );
