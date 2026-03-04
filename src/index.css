@@ -10,7 +10,7 @@
     --background: 35 40% 95%;
     --foreground: 4 37% 18%;
 
-    --card: 25 60% 96%;
+    --card: 28 45% 93%;
     --card-foreground: 4 37% 18%;
 
     --popover: 25 60% 96%;
@@ -28,14 +28,14 @@
     --accent: 73 17% 26%;
     --accent-foreground: 73 10% 92%;
 
-    --muted: 25 30% 89%;
+    --muted: 28 30% 87%;
     --muted-foreground: 4 20% 40%;
 
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 25 25% 85%;
-    --input: 25 25% 85%;
+    --border: 25 25% 85% / 0;
+    --input: 25 30% 82%;
     /* Mocha latte #67332F */
     --ring: 4 37% 29%;
 
@@ -83,8 +83,8 @@
     --destructive: 0 62% 35%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 4 15% 20%;
-    --input: 4 15% 20%;
+    --border: 4 15% 20% / 0;
+    --input: 4 15% 25%;
     --ring: 15 40% 62%;
 
     --sidebar-background: 4 20% 12%;
