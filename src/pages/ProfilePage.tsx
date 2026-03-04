@@ -138,6 +138,14 @@ const ProfilePage = () => {
     }
   };
 
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 300);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const initial = profile?.display_name?.charAt(0).toUpperCase() || "?";
 
   return (
