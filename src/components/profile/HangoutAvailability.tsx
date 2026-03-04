@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
-import { CalendarIcon, Plus, X, Trash2 } from "lucide-react";
+import { CalendarIcon, Plus, X, Pencil } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -241,12 +241,25 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 )}
               </div>
               {isOwner && (
-                <button
-                  onClick={() => handleRemove(entry.id)}
-                  className="shrink-0 text-muted-foreground hover:text-destructive transition-colors p-1"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button
+                    onClick={() => {
+                      setSelectedDate(new Date(entry.date + "T00:00:00"));
+                      setSelectedActivities([...entry.activities]);
+                      setCustomNote(entry.custom_note || "");
+                      setShowAdd(true);
+                    }}
+                    className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => handleRemove(entry.id)}
+                    className="shrink-0 text-muted-foreground hover:text-destructive transition-colors p-1"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               )}
             </motion.div>
           ))}
