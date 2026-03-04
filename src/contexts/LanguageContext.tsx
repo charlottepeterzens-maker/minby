@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useMemo, type ReactNode } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export type Lang = "en" | "sv";
 
@@ -473,13 +474,39 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     return (stored === "sv" ? "sv" : "en") as Lang;
   });
 
+  const [dbOverrides, setDbOverrides] = useState<Record<string, Record<string, string>>>({});
+
+  // Fetch DB translation overrides
+  useEffect(() => {
+    const fetchOverrides = async () => {
+      const { data } = await supabase
+        .from("app_translations")
+        .select("key, lang, value");
+      if (data && data.length > 0) {
+        const map: Record<string, Record<string, string>> = {};
+        data.forEach((row: { key: string; lang: string; value: string }) => {
+          if (!map[row.lang]) map[row.lang] = {};
+          map[row.lang][row.key] = row.value;
+        });
+        setDbOverrides(map);
+      }
+    };
+    fetchOverrides();
+  }, []);
+
   const setLang = (l: Lang) => {
     setLangState(l);
     localStorage.setItem("minby-lang", l);
   };
 
   const t = (key: TranslationKey, ...args: (string | number)[]): string => {
-    let str: string = translations[lang][key] || translations.en[key] || key;
+    // DB override takes priority, then hardcoded, then key
+    let str: string =
+      dbOverrides[lang]?.[key] ||
+      translations[lang][key] ||
+      dbOverrides["en"]?.[key] ||
+      translations.en[key] ||
+      key;
     args.forEach((arg, i) => {
       str = str.replace(`{${i}}`, String(arg));
     });
