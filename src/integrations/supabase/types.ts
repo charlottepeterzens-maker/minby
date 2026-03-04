@@ -94,6 +94,33 @@ export type Database = {
           },
         ]
       }
+      hangout_availability: {
+        Row: {
+          activities: string[]
+          created_at: string
+          custom_note: string | null
+          date: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          activities?: string[]
+          created_at?: string
+          custom_note?: string | null
+          date: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          activities?: string[]
+          created_at?: string
+          custom_note?: string | null
+          date?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       life_posts: {
         Row: {
           content: string | null

@@ -13,6 +13,7 @@ import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
 import FriendTierManager from "@/components/profile/FriendTierManager";
 import PeriodTracker from "@/components/profile/PeriodTracker";
 import WorkoutTracker from "@/components/profile/WorkoutTracker";
+import HangoutAvailability from "@/components/profile/HangoutAvailability";
 import BottomNav from "@/components/BottomNav";
 import { toast } from "@/hooks/use-toast";
 
@@ -247,6 +248,13 @@ const ProfilePage = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Hangout Availability */}
+        {targetUserId && (
+          <div className="mb-6">
+            <HangoutAvailability userId={targetUserId} isOwner={isOwnProfile} />
+          </div>
+        )}
 
         {/* Horizontal section nav bar */}
         {sections.length > 0 && (
