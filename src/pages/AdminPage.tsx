@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, FileText, Users, Settings, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import TranslationEditor from "@/components/admin/TranslationEditor";
 
 const AdminPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -84,14 +85,7 @@ const AdminPage = () => {
           </TabsContent>
 
           <TabsContent value="copy" className="mt-6">
-            <div className="rounded-lg border border-border bg-card p-8 text-center">
-              <FileText className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-              <h2 className="font-display text-lg text-foreground mb-1">Copy & Translations</h2>
-              <p className="text-sm text-muted-foreground">
-                Edit app text, labels, and translations (EN/HE) from here.
-              </p>
-              <p className="text-xs text-muted-foreground mt-4 italic">Coming next…</p>
-            </div>
+            <TranslationEditor />
           </TabsContent>
 
           <TabsContent value="config" className="mt-6">
