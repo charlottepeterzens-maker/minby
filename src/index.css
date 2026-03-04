@@ -34,7 +34,7 @@
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 25 25% 85% / 0;
+    --border: 35 40% 95%;
     --input: 25 30% 82%;
     /* Mocha latte #67332F */
     --ring: 4 37% 29%;
@@ -83,7 +83,7 @@
     --destructive: 0 62% 35%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 4 15% 20% / 0;
+    --border: 4 25% 10%;
     --input: 4 15% 25%;
     --ring: 15 40% 62%;
 
