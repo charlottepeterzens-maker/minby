@@ -222,6 +222,9 @@ const translations = {
     couldNotSaveAvailability: "Could not save availability",
     availabilityRemoved: "Removed",
     couldNotRemoveAvailability: "Could not remove",
+    freeDates: "Free dates",
+    shareWhenFree: "Let friends know when you're free",
+    editAvailability: "Edit",
   },
   sv: {
     // Nav
