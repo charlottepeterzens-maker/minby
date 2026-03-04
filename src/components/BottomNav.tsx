@@ -90,7 +90,7 @@ const BottomNav = () => {
                 ) : (
                   <item.icon className="w-5 h-5" />
                 )}
-                <span className="text-[10px] font-medium">{t(item.labelKey)}</span>
+                
                 {item.labelKey === "notifications" && unreadCount > 0 && (
                   <span className="absolute -top-0.5 right-2 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold flex items-center justify-center">
                     {unreadCount > 9 ? "9+" : unreadCount}
