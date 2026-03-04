@@ -445,6 +445,9 @@ const translations = {
     couldNotSaveAvailability: "Kunde inte spara tillgänglighet",
     availabilityRemoved: "Borttagen",
     couldNotRemoveAvailability: "Kunde inte ta bort",
+    freeDates: "Lediga dagar",
+    shareWhenFree: "Visa vänner när du är ledig",
+    editAvailability: "Redigera",
   },
 } as const;
 
