@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_translations: {
+        Row: {
+          id: string
+          key: string
+          lang: string
+          updated_at: string
+          updated_by: string | null
+          value: string
+        }
+        Insert: {
+          id?: string
+          key: string
+          lang?: string
+          updated_at?: string
+          updated_by?: string | null
+          value: string
+        }
+        Update: {
+          id?: string
+          key?: string
+          lang?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: string
+        }
+        Relationships: []
+      }
       friend_access_tiers: {
         Row: {
           created_at: string
