@@ -247,24 +247,21 @@ const ProfilePage = () => {
 
         {/* Horizontal section nav bar */}
         {sections.length > 0 && (
-          <div className="sticky top-[57px] z-40 bg-background/90 backdrop-blur-md border-b border-border/30 -mx-4 px-4 mb-6">
-            <div className="flex items-center gap-1 overflow-x-auto py-2 scrollbar-none">
-              {sections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => scrollToSection(section.id)}
-                  className={`shrink-0 px-3 py-1.5 text-sm font-medium transition-colors ${
-                    activeSection === section.id
-                      ? "bg-primary/15 text-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                >
-                  <span className="mr-1">{section.emoji}</span>
-                  {section.name}
-                </button>
-              ))}
-              {isOwnProfile && <CreateSectionDialog onCreated={fetchSections} />}
-            </div>
+          <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => scrollToSection(section.id)}
+                className={`px-3 py-1 text-xs font-medium border whitespace-nowrap transition-all ${
+                  activeSection === section.id
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted/50 text-muted-foreground border-border/50 hover:bg-muted"
+                }`}
+              >
+                {section.name}
+              </button>
+            ))}
+            {isOwnProfile && <CreateSectionDialog onCreated={fetchSections} />}
           </div>
         )}
 
