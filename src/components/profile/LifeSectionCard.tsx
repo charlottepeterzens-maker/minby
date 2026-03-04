@@ -219,19 +219,26 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         ) : (
           <div className="space-y-3">
             {posts.map((post) => (
-              <div key={post.id} className="group relative">
+              <div key={post.id} className="group relative flex gap-3">
                 {post.image_url && (
-                  <img src={post.image_url} alt="" className="w-full mb-2 max-h-64 object-cover" />
+                  <button
+                    onClick={() => setExpandedImage(post.image_url)}
+                    className="shrink-0 w-16 h-16 rounded-lg overflow-hidden hover:opacity-80 transition-opacity"
+                  >
+                    <img src={post.image_url} alt="" className="w-full h-full object-cover" />
+                  </button>
                 )}
-                {post.content && <p className="text-sm text-foreground">{post.content}</p>}
-                {post.link_url && (
-                  <a href={post.link_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1 mt-1">
-                    <Link className="w-3 h-3" /> {post.link_url.slice(0, 40)}...
-                  </a>
-                )}
-                <p className="text-xs text-muted-foreground/50 mt-1">
-                  {new Date(post.created_at).toLocaleDateString()}
-                </p>
+                <div className="flex-1 min-w-0">
+                  {post.content && <p className="text-sm text-foreground">{post.content}</p>}
+                  {post.link_url && (
+                    <a href={post.link_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1 mt-1">
+                      <Link className="w-3 h-3" /> {post.link_url.slice(0, 40)}...
+                    </a>
+                  )}
+                  <p className="text-xs text-muted-foreground/50 mt-1">
+                    {new Date(post.created_at).toLocaleDateString()}
+                  </p>
+                </div>
                 {isOwner && (
                   <button
                     onClick={() => handleDelete(post.id)}
