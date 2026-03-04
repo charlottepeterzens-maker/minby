@@ -367,6 +367,27 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       workout_entries: {
         Row: {
           created_at: string
@@ -403,6 +424,13 @@ export type Database = {
     }
     Functions: {
       can_view_life_post: { Args: { _post_id: string }; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_tier_access: {
         Args: {
           _min_tier: Database["public"]["Enums"]["access_tier"]
@@ -416,6 +444,7 @@ export type Database = {
     }
     Enums: {
       access_tier: "close" | "inner" | "outer"
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -544,6 +573,7 @@ export const Constants = {
   public: {
     Enums: {
       access_tier: ["close", "inner", "outer"],
+      app_role: ["admin", "moderator", "user"],
     },
   },
 } as const
