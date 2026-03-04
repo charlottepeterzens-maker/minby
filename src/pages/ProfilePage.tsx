@@ -259,32 +259,12 @@ const ProfilePage = () => {
           </div>
         )}
 
-        {/* Horizontal section nav bar */}
-        {sections.length > 0 && (
-          <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                onClick={() => scrollToSection(section.id)}
-                className={`px-3 py-1 text-xs font-medium border whitespace-nowrap transition-all ${
-                  activeSection === section.id
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted/50 text-muted-foreground border-border/50 hover:bg-muted"
-                }`}
-              >
-                {section.name}
-              </button>
-            ))}
-            {isOwnProfile && <CreateSectionDialog onCreated={fetchSections} />}
-          </div>
-        )}
-
-        {/* Life sections header */}
+        {/* Life sections as thumbnail grid */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-lg font-semibold text-foreground">
             {t("lifeUpdates")}
           </h2>
-          {isOwnProfile && sections.length === 0 && <CreateSectionDialog onCreated={fetchSections} />}
+          {isOwnProfile && <CreateSectionDialog onCreated={fetchSections} />}
         </div>
 
         {loading ? (
@@ -302,25 +282,74 @@ const ProfilePage = () => {
             )}
           </motion.div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             {sections.map((section, i) => {
-              if (section.section_type === "period") {
-                return (
-                  <motion.div key={section.id} id={`section-${section.id}`} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                    <PeriodTracker section={section} isOwner={isOwnProfile} />
-                  </motion.div>
-                );
-              }
-              if (section.section_type === "workout") {
-                return (
-                  <motion.div key={section.id} id={`section-${section.id}`} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                    <WorkoutTracker section={section} isOwner={isOwnProfile} />
-                  </motion.div>
-                );
-              }
+              const isExpanded = expandedSection === section.id;
               return (
-                <motion.div key={section.id} id={`section-${section.id}`} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-                  <LifeSectionCard section={section} isOwner={isOwnProfile} onUpdated={fetchSections} />
+                <motion.div
+                  key={section.id}
+                  id={`section-${section.id}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.04 }}
+                >
+                  {/* Thumbnail header — always visible */}
+                  <button
+                    onClick={() => toggleSection(section.id)}
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all text-left ${
+                      isExpanded
+                        ? "bg-card shadow-card"
+                        : "bg-muted/40 hover:bg-muted/70"
+                    }`}
+                  >
+                    <span className="text-xl shrink-0">{section.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-display text-sm font-semibold text-foreground truncate">
+                        {section.name}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {section.section_type === "period"
+                          ? t("period")
+                          : section.section_type === "workout"
+                          ? t("workouts")
+                          : t("posts")}
+                        {isOwnProfile && (
+                          <span className="ml-1.5 text-muted-foreground/60">
+                            · {tierLabels[section.min_tier]?.label}
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                    <motion.div
+                      animate={{ rotate: isExpanded ? 45 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Plus className="w-4 h-4 text-muted-foreground" />
+                    </motion.div>
+                  </button>
+
+                  {/* Expanded content */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-2 pb-1">
+                          {section.section_type === "period" ? (
+                            <PeriodTracker section={section} isOwner={isOwnProfile} />
+                          ) : section.section_type === "workout" ? (
+                            <WorkoutTracker section={section} isOwner={isOwnProfile} />
+                          ) : (
+                            <LifeSectionCard section={section} isOwner={isOwnProfile} onUpdated={fetchSections} />
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               );
             })}
