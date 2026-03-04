@@ -162,22 +162,22 @@ const ProfilePage = () => {
 
       <main className="max-w-2xl mx-auto px-4 py-6 pb-24">
         {/* Profile header with avatar */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <div className="relative inline-block mb-4">
-            <div className="w-24 h-24 bg-primary/10 border-2 border-primary/30 flex items-center justify-center overflow-hidden">
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-start gap-4 mb-8">
+          <div className="relative shrink-0">
+            <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center overflow-hidden">
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-3xl font-display font-bold text-primary">{initial}</span>
+                <span className="text-xl font-display font-bold text-primary">{initial}</span>
               )}
             </div>
             {isOwnProfile && (
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar}
-                className="absolute bottom-0 right-0 w-8 h-8 bg-primary text-primary-foreground flex items-center justify-center shadow-elevated hover:scale-105 transition-transform disabled:opacity-50"
+                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-elevated hover:scale-105 transition-transform disabled:opacity-50"
               >
-                <Camera className="w-4 h-4" />
+                <Camera className="w-3 h-3" />
               </button>
             )}
             <input
@@ -189,47 +189,49 @@ const ProfilePage = () => {
             />
           </div>
 
-          <h1 className="font-display text-2xl font-bold text-foreground">
-            {profile?.display_name || t("anonymous")}
-          </h1>
+          <div className="flex-1 min-w-0 pt-1">
+            <h1 className="font-display text-xl font-bold text-foreground">
+              {profile?.display_name || t("anonymous")}
+            </h1>
 
-          {/* Bio / Quote */}
-          {isOwnProfile ? (
-            <div className="mt-3 max-w-sm mx-auto">
-              {editingBio ? (
-                <div className="flex items-center gap-2">
-                  <Input
-                    value={bioText}
-                    onChange={(e) => setBioText(e.target.value)}
-                    placeholder={t("addQuoteOrBio")}
-                    className="text-center text-sm"
-                    maxLength={150}
-                    autoFocus
-                  />
-                  <Button size="icon" variant="ghost" className="shrink-0 h-8 w-8" onClick={saveBio}>
-                    <Check className="w-4 h-4 text-accent" />
-                  </Button>
-                  <Button size="icon" variant="ghost" className="shrink-0 h-8 w-8" onClick={() => { setEditingBio(false); setBioText(profile?.bio || ""); }}>
-                    <X className="w-4 h-4 text-muted-foreground" />
-                  </Button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => setEditingBio(true)}
-                  className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground italic hover:text-foreground transition-colors"
-                >
-                  {profile?.bio ? (
-                    <span>"{profile.bio}"</span>
-                  ) : (
-                    <span className="not-italic">{t("addQuoteOrBio")}</span>
-                  )}
-                  <Pencil className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
-              )}
-            </div>
-          ) : profile?.bio ? (
-            <p className="mt-3 text-sm text-muted-foreground italic">"{profile.bio}"</p>
-          ) : null}
+            {/* Bio / Quote */}
+            {isOwnProfile ? (
+              <div className="mt-1">
+                {editingBio ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={bioText}
+                      onChange={(e) => setBioText(e.target.value)}
+                      placeholder={t("addQuoteOrBio")}
+                      className="text-sm"
+                      maxLength={150}
+                      autoFocus
+                    />
+                    <Button size="icon" variant="ghost" className="shrink-0 h-8 w-8" onClick={saveBio}>
+                      <Check className="w-4 h-4 text-accent" />
+                    </Button>
+                    <Button size="icon" variant="ghost" className="shrink-0 h-8 w-8" onClick={() => { setEditingBio(false); setBioText(profile?.bio || ""); }}>
+                      <X className="w-4 h-4 text-muted-foreground" />
+                    </Button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setEditingBio(true)}
+                    className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground italic hover:text-foreground transition-colors"
+                  >
+                    {profile?.bio ? (
+                      <span>"{profile.bio}"</span>
+                    ) : (
+                      <span className="not-italic">{t("addQuoteOrBio")}</span>
+                    )}
+                    <Pencil className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                )}
+              </div>
+            ) : profile?.bio ? (
+              <p className="mt-1 text-sm text-muted-foreground italic">"{profile.bio}"</p>
+            ) : null}
+          </div>
         </motion.div>
 
         {/* Friend Tier Manager */}
