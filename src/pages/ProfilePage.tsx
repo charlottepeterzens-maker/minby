@@ -86,10 +86,13 @@ const ProfilePage = () => {
     fetchSections();
   }, [fetchProfile, fetchSections]);
 
-  const scrollToSection = (sectionId: string) => {
-    setActiveSection(sectionId);
-    const el = document.getElementById(`section-${sectionId}`);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  const toggleSection = (sectionId: string) => {
+    setExpandedSection((prev) => (prev === sectionId ? null : sectionId));
+    // Scroll into view after a brief delay for animation
+    setTimeout(() => {
+      const el = document.getElementById(`section-${sectionId}`);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 100);
   };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
