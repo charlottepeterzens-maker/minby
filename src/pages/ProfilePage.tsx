@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X } from "lucide-react";
+import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X, ChevronUp } from "lucide-react";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
 import FriendTierManager from "@/components/profile/FriendTierManager";
