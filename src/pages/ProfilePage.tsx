@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X } from "lucide-react";
+import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X, ChevronUp } from "lucide-react";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
 import FriendTierManager from "@/components/profile/FriendTierManager";
@@ -329,6 +329,12 @@ const ProfilePage = () => {
           </motion.div>
         )}
       </main>
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className="fixed bottom-20 right-4 z-50 w-10 h-10 bg-muted border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ChevronUp className="w-4 h-4" />
+      </button>
       <BottomNav />
     </div>
   );
