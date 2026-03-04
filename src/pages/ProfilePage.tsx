@@ -42,7 +42,7 @@ const ProfilePage = () => {
   const [sections, setSections] = useState<LifeSection[]>([]);
   const [showTierManager, setShowTierManager] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [editingBio, setEditingBio] = useState(false);
   const [bioText, setBioText] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
