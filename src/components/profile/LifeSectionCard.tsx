@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Plus, Image, Link, Trash2, Send, Pencil, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -35,6 +36,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const [linkUrl, setLinkUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [posting, setPosting] = useState(false);
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
   // Edit state
   const [editing, setEditing] = useState(false);
