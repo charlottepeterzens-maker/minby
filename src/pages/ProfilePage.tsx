@@ -331,7 +331,7 @@ const ProfilePage = () => {
       </main>
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className="fixed bottom-20 right-4 z-50 w-10 h-10 bg-muted border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+        className="fixed bottom-20 right-4 z-50 w-10 h-10 rounded-full bg-muted border border-border/50 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
       >
         <ChevronUp className="w-4 h-4" />
       </button>
