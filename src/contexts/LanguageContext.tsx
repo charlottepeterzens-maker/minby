@@ -226,6 +226,10 @@ const translations = {
     freeDates: "Free dates",
     shareWhenFree: "Let friends know when you're free",
     editAvailability: "Edit",
+    comments: "Comments",
+    addComment: "Add a comment...",
+    friends: "Friends",
+    searchFriends: "Search friends...",
   },
   sv: {
     // Nav
@@ -449,6 +453,10 @@ const translations = {
     freeDates: "Lediga dagar",
     shareWhenFree: "Visa vänner när du är ledig",
     editAvailability: "Redigera",
+    comments: "Kommentarer",
+    addComment: "Skriv en kommentar...",
+    friends: "Vänner",
+    searchFriends: "Sök vänner...",
   },
 } as const;
 
