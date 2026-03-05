@@ -46,8 +46,8 @@
     --sidebar-border: 35 10% 90%;
     --sidebar-ring: 30 5% 30%;
 
-    --font-display: 'Urbanist', sans-serif;
-    --font-body: 'Fraunces', serif;
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Urbanist', sans-serif;
 
     --shadow-soft: 0 1px 3px 0 hsl(30 5% 12% / 0.03);
     --shadow-card: 0 1px 6px -1px hsl(30 5% 12% / 0.04);
