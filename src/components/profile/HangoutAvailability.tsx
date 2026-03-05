@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
-import { CalendarIcon, Plus, X, Pencil, TreePine, UtensilsCrossed, Sofa, ShoppingBag, Dumbbell, Coffee, Film, Gamepad2 } from "lucide-react";
+import { CalendarIcon, Plus, X, Pencil, TreePine, UtensilsCrossed, Sofa, ShoppingBag, Dumbbell, Coffee, Film, Gamepad2, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -215,61 +215,89 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
         )}
       </AnimatePresence>
 
-      {/* Entries list */}
+      {/* Entries carousel */}
       {entries.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-3">{t("noAvailability")}</p>
       ) : (
-        <div className="space-y-2">
-          {entries.map((entry) => (
-            <motion.div
-              key={entry.id}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-start justify-between gap-2 p-2.5 bg-muted/30 rounded-lg"
-            >
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-foreground">
-                  {format(new Date(entry.date + "T00:00:00"), "EEE, MMM d")}
-                </p>
-                {entry.activities.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {entry.activities.map((a) => (
-                      <span
-                        key={a}
-                        className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary inline-flex items-center gap-1"
-                      >
-                        {getActivityIcon(a)} {getActivityLabel(a)}
-                      </span>
-                    ))}
+        <div className="relative">
+          {entries.length > 3 && (
+            <>
+              <button
+                onClick={() => {
+                  const el = document.getElementById("hangout-scroll");
+                  if (el) el.scrollBy({ left: -160, behavior: "smooth" });
+                }}
+                className="absolute -left-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-background/90 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => {
+                  const el = document.getElementById("hangout-scroll");
+                  if (el) el.scrollBy({ left: 160, behavior: "smooth" });
+                }}
+                className="absolute -right-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-background/90 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </>
+          )}
+          <div
+            id="hangout-scroll"
+            className="flex gap-2 overflow-x-auto scrollbar-hide pb-1"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {entries.map((entry) => (
+              <motion.div
+                key={entry.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="relative shrink-0 w-[140px] bg-muted/40 rounded-md p-2.5 flex flex-col justify-between"
+              >
+                {isOwner && (
+                  <div className="absolute top-1.5 right-1.5 flex gap-0.5">
+                    <button
+                      onClick={() => {
+                        setSelectedDate(new Date(entry.date + "T00:00:00"));
+                        setSelectedActivities([...entry.activities]);
+                        setCustomNote(entry.custom_note || "");
+                        setShowAdd(true);
+                      }}
+                      className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
+                    >
+                      <Pencil className="w-3 h-3" />
+                    </button>
+                    <button
+                      onClick={() => handleRemove(entry.id)}
+                      className="text-muted-foreground hover:text-destructive transition-colors p-0.5"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
                   </div>
                 )}
-                {entry.custom_note && (
-                  <p className="text-xs text-muted-foreground mt-1 italic">"{entry.custom_note}"</p>
-                )}
-              </div>
-              {isOwner && (
-                <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    onClick={() => {
-                      setSelectedDate(new Date(entry.date + "T00:00:00"));
-                      setSelectedActivities([...entry.activities]);
-                      setCustomNote(entry.custom_note || "");
-                      setShowAdd(true);
-                    }}
-                    className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={() => handleRemove(entry.id)}
-                    className="shrink-0 text-muted-foreground hover:text-destructive transition-colors p-1"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
+                <div>
+                  <p className="text-xs font-semibold text-foreground leading-tight">
+                    {format(new Date(entry.date + "T00:00:00"), "EEE, MMM d")}
+                  </p>
+                  {entry.activities.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-1.5">
+                      {entry.activities.map((a) => (
+                        <span
+                          key={a}
+                          className="text-[9px] px-1.5 py-0.5 rounded bg-primary/10 text-primary inline-flex items-center gap-0.5"
+                        >
+                          {getActivityIcon(a)} {getActivityLabel(a)}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </motion.div>
-          ))}
+                {entry.custom_note && (
+                  <p className="text-[10px] text-muted-foreground mt-1.5 italic truncate">"{entry.custom_note}"</p>
+                )}
+              </motion.div>
+            ))}
+          </div>
         </div>
       )}
     </div>
