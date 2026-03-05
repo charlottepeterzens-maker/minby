@@ -297,9 +297,8 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           {t("hangoutAvailability")}
         </h3>
         {isOwner && (
-          <Button variant="ghost" size="sm" className="text-xs" onClick={() => setShowAdd(!showAdd)}>
-            <Plus className="w-3.5 h-3.5 mr-1" />
-            {t("addAvailability")}
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowAdd(!showAdd)}>
+            <Plus className="w-3.5 h-3.5" />
           </Button>
         )}
       </div>
