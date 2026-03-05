@@ -300,4 +300,8 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           </div>
         </div>
       )}
+    </div>
+  );
+};
+
 export default HangoutAvailability;
