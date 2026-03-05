@@ -228,8 +228,6 @@ const translations = {
     editAvailability: "Edit",
     comments: "Comments",
     addComment: "Add a comment...",
-    friends: "Friends",
-    searchFriends: "Search friends...",
   },
   sv: {
     // Nav
@@ -454,9 +452,8 @@ const translations = {
     shareWhenFree: "Visa vänner när du är ledig",
     editAvailability: "Redigera",
     comments: "Kommentarer",
+    comments: "Kommentarer",
     addComment: "Skriv en kommentar...",
-    friends: "Vänner",
-    searchFriends: "Sök vänner...",
   },
 } as const;
 
