@@ -69,7 +69,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.04 }}
-      className={`relative aspect-square w-full overflow-hidden rounded-lg transition-all group ${
+      className={`relative aspect-[5/4] w-full overflow-hidden rounded-md transition-all group ${
         isExpanded ? "ring-2 ring-foreground/20" : ""
       }`}
       style={!hasImage ? { backgroundColor: colors.bg } : undefined}
