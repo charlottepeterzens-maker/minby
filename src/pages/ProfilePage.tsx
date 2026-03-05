@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X } from "lucide-react";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
+import SectionGridCard from "@/components/profile/SectionGridCard";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
 import FriendTierManager from "@/components/profile/FriendTierManager";
 import PeriodTracker from "@/components/profile/PeriodTracker";
