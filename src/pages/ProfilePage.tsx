@@ -284,43 +284,60 @@ const ProfilePage = () => {
           </motion.div>
         ) : (
           <>
-            <div className="grid grid-cols-2 gap-3">
-              {sections.map((section, i) => (
-                <SectionGridCard
-                  key={section.id}
-                  section={section}
-                  isOwner={isOwnProfile}
-                  isExpanded={expandedSection === section.id}
-                  onClick={() => toggleSection(section.id)}
-                  index={i}
-                />
-              ))}
-            </div>
+            <div className="grid grid-cols-3 gap-2.5">
+              {sections.map((section, i) => {
+                const cols = 3;
+                const isLastInRow = (i + 1) % cols === 0 || i === sections.length - 1;
+                const rowEnd = isLastInRow ? i : -1;
 
-            {/* Expanded section detail */}
-            <AnimatePresence>
-              {expandedSection && (
-                <motion.div
-                  key={expandedSection}
-                  id={`section-${expandedSection}`}
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25, ease: "easeInOut" }}
-                  className="overflow-hidden mt-4"
-                >
-                  {(() => {
-                    const section = sections.find((s) => s.id === expandedSection);
-                    if (!section) return null;
-                    if (section.section_type === "period")
-                      return <PeriodTracker section={section} isOwner={isOwnProfile} />;
-                    if (section.section_type === "workout")
-                      return <WorkoutTracker section={section} isOwner={isOwnProfile} />;
-                    return <LifeSectionCard section={section} isOwner={isOwnProfile} onUpdated={fetchSections} />;
-                  })()}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                // Determine if expanded section should render after this card's row
+                let expandAfter = false;
+                if (expandedSection && isLastInRow) {
+                  const expandedIdx = sections.findIndex((s) => s.id === expandedSection);
+                  const rowStart = Math.floor(i / cols) * cols;
+                  if (expandedIdx >= rowStart && expandedIdx <= i) {
+                    expandAfter = true;
+                  }
+                }
+
+                return (
+                  <div key={section.id} className="contents">
+                    <SectionGridCard
+                      section={section}
+                      isOwner={isOwnProfile}
+                      isExpanded={expandedSection === section.id}
+                      onClick={() => toggleSection(section.id)}
+                      index={i}
+                    />
+                    {expandAfter && (
+                      <div className="col-span-3">
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={expandedSection}
+                            id={`section-${expandedSection}`}
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.25, ease: "easeInOut" }}
+                            className="overflow-hidden"
+                          >
+                            {(() => {
+                              const sec = sections.find((s) => s.id === expandedSection);
+                              if (!sec) return null;
+                              if (sec.section_type === "period")
+                                return <PeriodTracker section={sec} isOwner={isOwnProfile} />;
+                              if (sec.section_type === "workout")
+                                return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
+                              return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
+                            })()}
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </>
         )}
 
