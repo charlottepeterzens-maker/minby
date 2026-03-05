@@ -284,7 +284,7 @@ const ProfilePage = () => {
           </motion.div>
         ) : (
           <>
-            <div className="grid grid-cols-3 gap-2.5">
+            <div className="grid grid-cols-3 gap-1.5">
               {sections.map((section, i) => {
                 const cols = 3;
                 const isLastInRow = (i + 1) % cols === 0 || i === sections.length - 1;
