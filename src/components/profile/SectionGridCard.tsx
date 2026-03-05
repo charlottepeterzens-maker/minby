@@ -84,7 +84,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
       )}
 
       {/* Text content */}
-      <div className="absolute inset-0 flex flex-col justify-end p-2.5">
+      <div className="absolute inset-0 flex flex-col justify-end items-start p-2.5">
         {hasImage ? (
           /* On image cards: text in a semi-transparent box */
           <div className="bg-background/85 backdrop-blur-sm rounded px-2 py-1.5">
