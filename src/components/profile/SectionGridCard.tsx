@@ -102,7 +102,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
           </div>
         ) : (
           /* On color cards: contrasting playful text */
-          <div>
+          <div className="p-2.5">
             <h3
               className="font-display text-sm font-bold leading-tight truncate"
               style={{ color: colors.text }}
