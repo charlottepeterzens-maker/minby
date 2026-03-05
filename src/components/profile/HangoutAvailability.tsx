@@ -1,6 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
-import { CalendarIcon, Plus, X, Pencil, TreePine, UtensilsCrossed, Sofa, ShoppingBag, Dumbbell, Coffee, Film, Gamepad2, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  CalendarIcon, Plus, X, Pencil, TreePine, UtensilsCrossed, Sofa,
+  ShoppingBag, Dumbbell, Coffee, Film, Gamepad2, ChevronLeft,
+  ChevronRight, MessageCircle, UserPlus, Send, Trash2,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,6 +23,23 @@ interface AvailabilityEntry {
   custom_note: string | null;
 }
 
+interface Comment {
+  id: string;
+  availability_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  profile?: { display_name: string | null; avatar_url: string | null };
+}
+
+interface TaggedFriend {
+  id: string;
+  availability_id: string;
+  tagged_user_id: string;
+  tagged_by: string;
+  profile?: { display_name: string | null; avatar_url: string | null };
+}
+
 const ACTIVITY_OPTIONS: { key: TranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
   { key: "activityNature", icon: TreePine },
   { key: "activityFoodOut", icon: UtensilsCrossed },
@@ -30,6 +51,15 @@ const ACTIVITY_OPTIONS: { key: TranslationKey; icon: React.ComponentType<{ class
   { key: "activityGames", icon: Gamepad2 },
 ];
 
+const CARD_COLORS = [
+  { bg: "hsl(214 60% 88%)", text: "hsl(235 50% 25%)" },
+  { bg: "hsl(25 100% 90%)", text: "hsl(16 60% 30%)" },
+  { bg: "hsl(262 60% 82%)", text: "hsl(262 40% 20%)" },
+  { bg: "hsl(100 50% 80%)", text: "hsl(150 30% 15%)" },
+  { bg: "hsl(66 65% 58%)", text: "hsl(66 50% 12%)" },
+  { bg: "hsl(316 100% 83%)", text: "hsl(316 50% 20%)" },
+];
+
 interface Props {
   userId: string;
   isOwner: boolean;
@@ -39,11 +69,23 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [entries, setEntries] = useState<AvailabilityEntry[]>([]);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [customNote, setCustomNote] = useState("");
   const [saving, setSaving] = useState(false);
+
+  // Comments state
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentText, setCommentText] = useState("");
+  const [sendingComment, setSendingComment] = useState(false);
+
+  // Tagged friends state
+  const [taggedFriends, setTaggedFriends] = useState<TaggedFriend[]>([]);
+  const [friendSearch, setFriendSearch] = useState("");
+  const [friendResults, setFriendResults] = useState<{ user_id: string; display_name: string | null; avatar_url: string | null }[]>([]);
+  const [showTagInput, setShowTagInput] = useState(false);
 
   const fetchEntries = useCallback(async () => {
     const today = format(new Date(), "yyyy-MM-dd");
@@ -60,6 +102,54 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     fetchEntries();
   }, [fetchEntries]);
 
+  // Fetch comments and tagged friends when expanded
+  useEffect(() => {
+    if (!expandedId) return;
+    const fetchDetails = async () => {
+      const [commentsRes, tagsRes] = await Promise.all([
+        supabase
+          .from("hangout_comments")
+          .select("*")
+          .eq("availability_id", expandedId)
+          .order("created_at", { ascending: true }),
+        supabase
+          .from("hangout_tagged_friends")
+          .select("*")
+          .eq("availability_id", expandedId),
+      ]);
+
+      if (commentsRes.data) {
+        // Fetch profiles for comments
+        const userIds = [...new Set(commentsRes.data.map((c: any) => c.user_id))];
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, display_name, avatar_url")
+          .in("user_id", userIds);
+        const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+        setComments(
+          commentsRes.data.map((c: any) => ({ ...c, profile: profileMap.get(c.user_id) }))
+        );
+      }
+
+      if (tagsRes.data) {
+        const tagUserIds = [...new Set(tagsRes.data.map((t: any) => t.tagged_user_id))];
+        if (tagUserIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("user_id, display_name, avatar_url")
+            .in("user_id", tagUserIds);
+          const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+          setTaggedFriends(
+            tagsRes.data.map((t: any) => ({ ...t, profile: profileMap.get(t.tagged_user_id) }))
+          );
+        } else {
+          setTaggedFriends([]);
+        }
+      }
+    };
+    fetchDetails();
+  }, [expandedId]);
+
   const toggleActivity = (activity: string) => {
     setSelectedActivities((prev) =>
       prev.includes(activity) ? prev.filter((a) => a !== activity) : [...prev, activity]
@@ -70,17 +160,10 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     if (!selectedDate || !user) return;
     setSaving(true);
     const dateStr = format(selectedDate, "yyyy-MM-dd");
-
     const { error } = await supabase.from("hangout_availability").upsert(
-      {
-        user_id: user.id,
-        date: dateStr,
-        activities: selectedActivities,
-        custom_note: customNote.trim() || null,
-      },
+      { user_id: user.id, date: dateStr, activities: selectedActivities, custom_note: customNote.trim() || null },
       { onConflict: "user_id,date" }
     );
-
     if (error) {
       toast({ title: t("error"), description: t("couldNotSaveAvailability"), variant: "destructive" });
     } else {
@@ -100,13 +183,90 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
       toast({ title: t("error"), description: t("couldNotRemoveAvailability"), variant: "destructive" });
     } else {
       toast({ title: t("availabilityRemoved") });
+      if (expandedId === id) setExpandedId(null);
       await fetchEntries();
     }
   };
 
-  const getActivityLabel = (activity: string) => {
-    const opt = ACTIVITY_OPTIONS.find((o) => o.key === activity);
-    return opt ? t(opt.key) : activity;
+  const handleAddComment = async () => {
+    if (!commentText.trim() || !user || !expandedId) return;
+    setSendingComment(true);
+    const { error } = await supabase.from("hangout_comments").insert({
+      availability_id: expandedId,
+      user_id: user.id,
+      content: commentText.trim(),
+    });
+    if (!error) {
+      setCommentText("");
+      // Refetch comments
+      const { data } = await supabase
+        .from("hangout_comments")
+        .select("*")
+        .eq("availability_id", expandedId)
+        .order("created_at", { ascending: true });
+      if (data) {
+        const userIds = [...new Set(data.map((c: any) => c.user_id))];
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, display_name, avatar_url")
+          .in("user_id", userIds);
+        const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+        setComments(data.map((c: any) => ({ ...c, profile: profileMap.get(c.user_id) })));
+      }
+    }
+    setSendingComment(false);
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    await supabase.from("hangout_comments").delete().eq("id", commentId);
+    setComments((prev) => prev.filter((c) => c.id !== commentId));
+  };
+
+  const searchFriends = async (query: string) => {
+    setFriendSearch(query);
+    if (query.length < 2) { setFriendResults([]); return; }
+    const { data } = await supabase
+      .from("profiles")
+      .select("user_id, display_name, avatar_url")
+      .ilike("display_name", `%${query}%`)
+      .limit(5);
+    if (data) {
+      const alreadyTagged = new Set(taggedFriends.map((t) => t.tagged_user_id));
+      setFriendResults(data.filter((p: any) => !alreadyTagged.has(p.user_id) && p.user_id !== user?.id));
+    }
+  };
+
+  const handleTagFriend = async (friendUserId: string) => {
+    if (!user || !expandedId) return;
+    const { error } = await supabase.from("hangout_tagged_friends").insert({
+      availability_id: expandedId,
+      tagged_user_id: friendUserId,
+      tagged_by: user.id,
+    });
+    if (!error) {
+      setFriendSearch("");
+      setFriendResults([]);
+      setShowTagInput(false);
+      // Refetch tags
+      const { data } = await supabase
+        .from("hangout_tagged_friends")
+        .select("*")
+        .eq("availability_id", expandedId);
+      if (data) {
+        const tagUserIds = data.map((t: any) => t.tagged_user_id);
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, display_name, avatar_url")
+          .in("user_id", tagUserIds);
+        const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+        setTaggedFriends(data.map((t: any) => ({ ...t, profile: profileMap.get(t.tagged_user_id) })));
+      }
+    }
+  };
+
+  const handleRemoveTag = async (tagId: string) => {
+    await supabase.from("hangout_tagged_friends").delete().eq("id", tagId);
+    setTaggedFriends((prev) => prev.filter((t) => t.id !== tagId));
   };
 
   const getActivityIcon = (activity: string) => {
@@ -114,6 +274,19 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     if (!opt) return null;
     const Icon = opt.icon;
     return <Icon className="w-3 h-3" />;
+  };
+
+  const getActivityLabel = (activity: string) => {
+    const opt = ACTIVITY_OPTIONS.find((o) => o.key === activity);
+    return opt ? t(opt.key) : activity;
+  };
+
+  const toggleExpand = (id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+    setCommentText("");
+    setShowTagInput(false);
+    setFriendSearch("");
+    setFriendResults([]);
   };
 
   return (
@@ -124,12 +297,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           {t("hangoutAvailability")}
         </h3>
         {isOwner && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-xs"
-            onClick={() => setShowAdd(!showAdd)}
-          >
+          <Button variant="ghost" size="sm" className="text-xs" onClick={() => setShowAdd(!showAdd)}>
             <Plus className="w-3.5 h-3.5 mr-1" />
             {t("addAvailability")}
           </Button>
@@ -150,10 +318,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !selectedDate && "text-muted-foreground"
-                    )}
+                    className={cn("w-full justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {selectedDate ? format(selectedDate, "PPP") : t("selectDate")}
@@ -202,12 +367,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 maxLength={100}
               />
 
-              <Button
-                size="sm"
-                className="w-full"
-                disabled={!selectedDate || saving}
-                onClick={handleSave}
-              >
+              <Button size="sm" className="w-full" disabled={!selectedDate || saving} onClick={handleSave}>
                 {t("save")}
               </Button>
             </div>
@@ -215,89 +375,268 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
         )}
       </AnimatePresence>
 
-      {/* Entries carousel */}
+      {/* Entries grid row */}
       {entries.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-3">{t("noAvailability")}</p>
       ) : (
-        <div className="relative">
-          {entries.length > 3 && (
-            <>
-              <button
-                onClick={() => {
-                  const el = document.getElementById("hangout-scroll");
-                  if (el) el.scrollBy({ left: -160, behavior: "smooth" });
-                }}
-                className="absolute -left-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-background/90 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={() => {
-                  const el = document.getElementById("hangout-scroll");
-                  if (el) el.scrollBy({ left: 160, behavior: "smooth" });
-                }}
-                className="absolute -right-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-background/90 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </>
-          )}
-          <div
-            id="hangout-scroll"
-            className="flex gap-2 overflow-x-auto scrollbar-hide pb-1"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {entries.map((entry) => (
-              <motion.div
-                key={entry.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="relative shrink-0 w-[140px] bg-muted/40 rounded-md p-2.5 flex flex-col justify-between"
-              >
-                {isOwner && (
-                  <div className="absolute top-1.5 right-1.5 flex gap-0.5">
-                    <button
-                      onClick={() => {
-                        setSelectedDate(new Date(entry.date + "T00:00:00"));
-                        setSelectedActivities([...entry.activities]);
-                        setCustomNote(entry.custom_note || "");
-                        setShowAdd(true);
-                      }}
-                      className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
-                    >
-                      <Pencil className="w-3 h-3" />
-                    </button>
-                    <button
-                      onClick={() => handleRemove(entry.id)}
-                      className="text-muted-foreground hover:text-destructive transition-colors p-0.5"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                )}
-                <div>
-                  <p className="text-xs font-semibold text-foreground leading-tight">
-                    {format(new Date(entry.date + "T00:00:00"), "EEE, MMM d")}
-                  </p>
-                  {entry.activities.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      {entry.activities.map((a) => (
-                        <span
-                          key={a}
-                          className="text-[9px] px-1.5 py-0.5 rounded bg-primary/10 text-primary inline-flex items-center gap-0.5"
-                        >
-                          {getActivityIcon(a)} {getActivityLabel(a)}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {entry.custom_note && (
-                  <p className="text-[10px] text-muted-foreground mt-1.5 italic truncate">"{entry.custom_note}"</p>
-                )}
-              </motion.div>
-            ))}
+        <div>
+          <div className="relative">
+            {entries.length > 3 && (
+              <>
+                <button
+                  onClick={() => {
+                    const el = document.getElementById("hangout-scroll");
+                    if (el) el.scrollBy({ left: -130, behavior: "smooth" });
+                  }}
+                  className="absolute -left-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-background/90 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => {
+                    const el = document.getElementById("hangout-scroll");
+                    if (el) el.scrollBy({ left: 130, behavior: "smooth" });
+                  }}
+                  className="absolute -right-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-background/90 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </>
+            )}
+            <div
+              id="hangout-scroll"
+              className="flex gap-1.5 overflow-x-auto pb-1"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {entries.map((entry, i) => {
+                const colors = CARD_COLORS[i % CARD_COLORS.length];
+                const isExpanded = expandedId === entry.id;
+                const dateObj = new Date(entry.date + "T00:00:00");
+                return (
+                  <motion.button
+                    key={entry.id}
+                    onClick={() => toggleExpand(entry.id)}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className={cn(
+                      "relative shrink-0 w-[100px] aspect-square rounded-md flex flex-col items-start justify-end p-2 transition-all",
+                      isExpanded && "ring-2 ring-foreground/20"
+                    )}
+                    style={{ backgroundColor: colors.bg }}
+                  >
+                    <p className="font-display text-lg font-bold leading-none" style={{ color: colors.text }}>
+                      {format(dateObj, "d")}
+                    </p>
+                    <p className="text-[10px] font-medium mt-0.5" style={{ color: colors.text, opacity: 0.7 }}>
+                      {format(dateObj, "EEE, MMM")}
+                    </p>
+                    {entry.activities.length > 0 && (
+                      <div className="flex gap-0.5 mt-1">
+                        {entry.activities.slice(0, 3).map((a) => (
+                          <span key={a} style={{ color: colors.text, opacity: 0.6 }}>
+                            {getActivityIcon(a)}
+                          </span>
+                        ))}
+                        {entry.activities.length > 3 && (
+                          <span className="text-[8px]" style={{ color: colors.text, opacity: 0.5 }}>
+                            +{entry.activities.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </motion.button>
+                );
+              })}
+            </div>
           </div>
+
+          {/* Expanded detail */}
+          <AnimatePresence>
+            {expandedId && (() => {
+              const entry = entries.find((e) => e.id === expandedId);
+              if (!entry) return null;
+              return (
+                <motion.div
+                  key={expandedId}
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="overflow-hidden mt-3"
+                >
+                  <div className="bg-muted/40 rounded-md p-3 space-y-3">
+                    {/* Header */}
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="font-display text-sm font-bold text-foreground">
+                          {format(new Date(entry.date + "T00:00:00"), "EEEE, MMMM d")}
+                        </p>
+                        {entry.custom_note && (
+                          <p className="text-xs text-muted-foreground italic mt-0.5">"{entry.custom_note}"</p>
+                        )}
+                      </div>
+                      {isOwner && (
+                        <div className="flex gap-1">
+                          <button
+                            onClick={() => {
+                              setSelectedDate(new Date(entry.date + "T00:00:00"));
+                              setSelectedActivities([...entry.activities]);
+                              setCustomNote(entry.custom_note || "");
+                              setShowAdd(true);
+                            }}
+                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleRemove(entry.id)}
+                            className="text-muted-foreground hover:text-destructive transition-colors p-1"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Activities */}
+                    {entry.activities.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {entry.activities.map((a) => (
+                          <span
+                            key={a}
+                            className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary inline-flex items-center gap-1"
+                          >
+                            {getActivityIcon(a)} {getActivityLabel(a)}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Tagged friends */}
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <UserPlus className="w-3 h-3 text-muted-foreground" />
+                        <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                          {t("friends") || "Friends"}
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {taggedFriends.map((tf) => (
+                          <span
+                            key={tf.id}
+                            className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground inline-flex items-center gap-1"
+                          >
+                            {tf.profile?.display_name || "?"}
+                            {(user?.id === tf.tagged_by || isOwner) && (
+                              <button onClick={() => handleRemoveTag(tf.id)} className="hover:text-destructive">
+                                <X className="w-2.5 h-2.5" />
+                              </button>
+                            )}
+                          </span>
+                        ))}
+                        {user && (
+                          showTagInput ? (
+                            <div className="relative">
+                              <Input
+                                value={friendSearch}
+                                onChange={(e) => searchFriends(e.target.value)}
+                                placeholder={t("searchFriends") || "Search friends..."}
+                                className="text-xs h-6 w-36"
+                                autoFocus
+                                onBlur={() => setTimeout(() => { setShowTagInput(false); setFriendResults([]); }, 200)}
+                              />
+                              {friendResults.length > 0 && (
+                                <div className="absolute top-7 left-0 z-20 bg-popover border border-border rounded-md shadow-elevated w-40 py-1">
+                                  {friendResults.map((fr) => (
+                                    <button
+                                      key={fr.user_id}
+                                      onMouseDown={() => handleTagFriend(fr.user_id)}
+                                      className="w-full text-left px-2 py-1 text-xs hover:bg-accent transition-colors truncate"
+                                    >
+                                      {fr.display_name || "?"}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => setShowTagInput(true)}
+                              className="text-[10px] px-2 py-0.5 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors inline-flex items-center gap-1"
+                            >
+                              <Plus className="w-2.5 h-2.5" /> {t("addAvailability") ? "Add" : "Add"}
+                            </button>
+                          )
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Comments */}
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <MessageCircle className="w-3 h-3 text-muted-foreground" />
+                        <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                          {t("comments") || "Comments"}
+                        </span>
+                      </div>
+                      {comments.length > 0 && (
+                        <div className="space-y-1.5 mb-2">
+                          {comments.map((c) => (
+                            <div key={c.id} className="flex items-start gap-2 group">
+                              <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                                {c.profile?.avatar_url ? (
+                                  <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                                ) : (
+                                  <span className="text-[8px] font-bold text-primary">
+                                    {c.profile?.display_name?.charAt(0).toUpperCase() || "?"}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[10px]">
+                                  <span className="font-semibold text-foreground">{c.profile?.display_name || "?"}</span>{" "}
+                                  <span className="text-muted-foreground">{c.content}</span>
+                                </p>
+                              </div>
+                              {user?.id === c.user_id && (
+                                <button
+                                  onClick={() => handleDeleteComment(c.id)}
+                                  className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all p-0.5"
+                                >
+                                  <Trash2 className="w-2.5 h-2.5" />
+                                </button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {user && (
+                        <div className="flex gap-1.5">
+                          <Input
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                            placeholder={t("addComment") || "Add a comment..."}
+                            className="text-xs h-7 flex-1"
+                            maxLength={200}
+                            onKeyDown={(e) => e.key === "Enter" && handleAddComment()}
+                          />
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-7 w-7 shrink-0"
+                            disabled={!commentText.trim() || sendingComment}
+                            onClick={handleAddComment}
+                          >
+                            <Send className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })()}
+          </AnimatePresence>
         </div>
       )}
     </div>

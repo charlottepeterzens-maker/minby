@@ -148,6 +148,70 @@ export type Database = {
         }
         Relationships: []
       }
+      hangout_comments: {
+        Row: {
+          availability_id: string
+          content: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          availability_id: string
+          content: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          availability_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hangout_comments_availability_id_fkey"
+            columns: ["availability_id"]
+            isOneToOne: false
+            referencedRelation: "hangout_availability"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hangout_tagged_friends: {
+        Row: {
+          availability_id: string
+          created_at: string
+          id: string
+          tagged_by: string
+          tagged_user_id: string
+        }
+        Insert: {
+          availability_id: string
+          created_at?: string
+          id?: string
+          tagged_by: string
+          tagged_user_id: string
+        }
+        Update: {
+          availability_id?: string
+          created_at?: string
+          id?: string
+          tagged_by?: string
+          tagged_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hangout_tagged_friends_availability_id_fkey"
+            columns: ["availability_id"]
+            isOneToOne: false
+            referencedRelation: "hangout_availability"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       life_posts: {
         Row: {
           content: string | null
