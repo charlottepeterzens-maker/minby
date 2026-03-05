@@ -213,7 +213,7 @@ const PostCard = ({
             <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
               {profile.display_name || "Someone"}
             </p>
-            {section && <p className="text-[11px] text-muted-foreground">{section.emoji} {section.name}</p>}
+            {section && <p className="text-[11px] text-muted-foreground">{section.name}</p>}
           </div>
         </button>
         {post.image_url && <img src={post.image_url} alt="" className="w-full mb-3 max-h-80 object-cover" />}

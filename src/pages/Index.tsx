@@ -138,7 +138,9 @@ const Index = () => {
                   onClick={() => setSelectedGroup(g)}
                   className="bg-card rounded-2xl p-5 shadow-card hover:shadow-elevated transition-all duration-300 border border-border/50 text-left flex items-center gap-4"
                 >
-                  <span className="text-lg">{g.emoji}</span>
+                  <div className="w-8 h-8 bg-muted flex items-center justify-center rounded">
+                    <Users className="w-4 h-4 text-muted-foreground" />
+                  </div>
                   <div className="flex-1">
                     <h3 className="font-display text-lg font-semibold text-card-foreground">{g.name}</h3>
                     <p className="text-sm text-muted-foreground">{g.member_count} member{g.member_count !== 1 ? "s" : ""}</p>
@@ -160,7 +162,7 @@ const Index = () => {
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={() => setSelectedGroup(null)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
             <ChevronLeft className="w-5 h-5" />
-            <span className="text-xl">{selectedGroup.emoji}</span>
+            <span className="font-display text-lg font-bold text-foreground">{selectedGroup.name}</span>
             <span className="font-display text-lg font-bold text-foreground">{selectedGroup.name}</span>
           </button>
           <CreatePlanDialog groupId={selectedGroup.id} onPlanCreated={fetchPlans} />
