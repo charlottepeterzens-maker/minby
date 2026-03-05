@@ -6,7 +6,22 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X } from "lucide-react";
+import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  rectSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
 import SectionGridCard from "@/components/profile/SectionGridCard";
@@ -15,6 +30,9 @@ import FriendTierManager from "@/components/profile/FriendTierManager";
 import PeriodTracker from "@/components/profile/PeriodTracker";
 import WorkoutTracker from "@/components/profile/WorkoutTracker";
 import HangoutAvailability from "@/components/profile/HangoutAvailability";
+import ProfileShareDialog from "@/components/profile/ProfileShareDialog";
+import FriendRequestButton from "@/components/profile/FriendRequestButton";
+import GroupHangoutSuggestions from "@/components/profile/GroupHangoutSuggestions";
 import BottomNav from "@/components/BottomNav";
 import { toast } from "@/hooks/use-toast";
 
@@ -34,6 +52,52 @@ interface Profile {
   bio: string | null;
 }
 
+// Sortable wrapper for grid cards
+const SortableGridCard = ({
+  section,
+  isOwner,
+  isExpanded,
+  onClick,
+  index,
+  reordering,
+}: {
+  section: LifeSection;
+  isOwner: boolean;
+  isExpanded: boolean;
+  onClick: () => void;
+  index: number;
+  reordering: boolean;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : "auto" as any,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} className="relative">
+      {reordering && (
+        <div
+          {...attributes}
+          {...listeners}
+          className="absolute top-1 right-1 z-10 w-6 h-6 rounded bg-background/80 flex items-center justify-center cursor-grab active:cursor-grabbing"
+        >
+          <GripVertical className="w-3.5 h-3.5 text-muted-foreground" />
+        </div>
+      )}
+      <SectionGridCard
+        section={section}
+        isOwner={isOwner}
+        isExpanded={isExpanded}
+        onClick={reordering ? () => {} : onClick}
+        index={index}
+      />
+    </div>
+  );
+};
+
 const ProfilePage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -47,6 +111,7 @@ const ProfilePage = () => {
   const [editingBio, setEditingBio] = useState(false);
   const [bioText, setBioText] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [reordering, setReordering] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const targetUserId = userId || user?.id;
@@ -57,6 +122,11 @@ const ProfilePage = () => {
     inner: { label: t("innerCircle"), color: "text-secondary-foreground" },
     outer: { label: t("everyone"), color: "text-muted-foreground" },
   };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
+  );
 
   const fetchProfile = useCallback(async () => {
     if (!targetUserId) return;
@@ -89,38 +159,55 @@ const ProfilePage = () => {
 
   const toggleSection = (sectionId: string) => {
     setExpandedSection((prev) => (prev === sectionId ? null : sectionId));
-    // Scroll into view after a brief delay for animation
     setTimeout(() => {
       const el = document.getElementById(`section-${sectionId}`);
       if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }, 100);
   };
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = sections.findIndex((s) => s.id === active.id);
+    const newIndex = sections.findIndex((s) => s.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const updated = [...sections];
+    const [moved] = updated.splice(oldIndex, 1);
+    updated.splice(newIndex, 0, moved);
+
+    // Update sort_order
+    const withOrder = updated.map((s, i) => ({ ...s, sort_order: i }));
+    setSections(withOrder);
+
+    // Persist
+    await Promise.all(
+      withOrder.map((s) =>
+        supabase.from("life_sections").update({ sort_order: s.sort_order }).eq("id", s.id)
+      )
+    );
+  };
+
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
-
     setUploadingAvatar(true);
     const ext = file.name.split(".").pop();
     const path = `${user.id}/avatar.${ext}`;
-
     const { error: uploadError } = await supabase.storage
       .from("life-images")
       .upload(path, file, { upsert: true });
-
     if (uploadError) {
       toast({ title: t("error"), description: uploadError.message, variant: "destructive" });
       setUploadingAvatar(false);
       return;
     }
-
     const { data: urlData } = supabase.storage.from("life-images").getPublicUrl(path);
-
     const { error: updateError } = await supabase
       .from("profiles")
       .update({ avatar_url: urlData.publicUrl })
       .eq("user_id", user.id);
-
     if (updateError) {
       toast({ title: t("error"), description: updateError.message, variant: "destructive" });
     } else {
@@ -157,11 +244,14 @@ const ProfilePage = () => {
             </button>
             <span className="font-display text-lg font-bold text-foreground">{t("profileTitle")}</span>
           </div>
-          {isOwnProfile && (
-            <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => setShowTierManager(!showTierManager)}>
-              {t("accessLevels")}
-            </Button>
-          )}
+          <div className="flex items-center gap-1">
+            {targetUserId && <ProfileShareDialog userId={targetUserId} />}
+            {isOwnProfile && (
+              <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => setShowTierManager(!showTierManager)}>
+                {t("accessLevels")}
+              </Button>
+            )}
+          </div>
         </div>
       </nav>
 
@@ -195,9 +285,14 @@ const ProfilePage = () => {
           </div>
 
           <div className="flex-1 min-w-0 pt-1">
-            <h1 className="font-display text-xl font-bold text-foreground">
-              {profile?.display_name || t("anonymous")}
-            </h1>
+            <div className="flex items-center gap-2">
+              <h1 className="font-display text-xl font-bold text-foreground">
+                {profile?.display_name || t("anonymous")}
+              </h1>
+              {!isOwnProfile && targetUserId && (
+                <FriendRequestButton targetUserId={targetUserId} />
+              )}
+            </div>
 
             {/* Bio / Quote */}
             {isOwnProfile ? (
@@ -260,12 +355,32 @@ const ProfilePage = () => {
           </div>
         )}
 
+        {/* Group Hangout Suggestions */}
+        {isOwnProfile && (
+          <div className="mb-6">
+            <GroupHangoutSuggestions />
+          </div>
+        )}
+
         {/* Life sections as thumbnail grid */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-lg font-semibold text-foreground">
             {t("lifeUpdates")}
           </h2>
-          {isOwnProfile && <CreateSectionDialog onCreated={fetchSections} />}
+          <div className="flex items-center gap-1">
+            {isOwnProfile && sections.length > 1 && (
+              <Button
+                variant={reordering ? "default" : "ghost"}
+                size="sm"
+                className="text-xs"
+                onClick={() => setReordering(!reordering)}
+              >
+                {reordering ? <Check className="w-3 h-3 mr-1" /> : <GripVertical className="w-3 h-3 mr-1" />}
+                {t("reorderSections")}
+              </Button>
+            )}
+            {isOwnProfile && <CreateSectionDialog onCreated={fetchSections} />}
+          </div>
         </div>
 
         {loading ? (
@@ -283,62 +398,63 @@ const ProfilePage = () => {
             )}
           </motion.div>
         ) : (
-          <>
-            <div className="grid grid-cols-3 gap-1.5">
-              {sections.map((section, i) => {
-                const cols = 3;
-                const isLastInRow = (i + 1) % cols === 0 || i === sections.length - 1;
-                const rowEnd = isLastInRow ? i : -1;
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
+              <div className="grid grid-cols-3 gap-1.5">
+                {sections.map((section, i) => {
+                  const cols = 3;
+                  const isLastInRow = (i + 1) % cols === 0 || i === sections.length - 1;
 
-                // Determine if expanded section should render after this card's row
-                let expandAfter = false;
-                if (expandedSection && isLastInRow) {
-                  const expandedIdx = sections.findIndex((s) => s.id === expandedSection);
-                  const rowStart = Math.floor(i / cols) * cols;
-                  if (expandedIdx >= rowStart && expandedIdx <= i) {
-                    expandAfter = true;
+                  let expandAfter = false;
+                  if (expandedSection && isLastInRow && !reordering) {
+                    const expandedIdx = sections.findIndex((s) => s.id === expandedSection);
+                    const rowStart = Math.floor(i / cols) * cols;
+                    if (expandedIdx >= rowStart && expandedIdx <= i) {
+                      expandAfter = true;
+                    }
                   }
-                }
 
-                return (
-                  <div key={section.id} className="contents">
-                    <SectionGridCard
-                      section={section}
-                      isOwner={isOwnProfile}
-                      isExpanded={expandedSection === section.id}
-                      onClick={() => toggleSection(section.id)}
-                      index={i}
-                    />
-                    {expandAfter && (
-                      <div className="col-span-3">
-                        <AnimatePresence mode="wait">
-                          <motion.div
-                            key={expandedSection}
-                            id={`section-${expandedSection}`}
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.25, ease: "easeInOut" }}
-                            className="overflow-hidden"
-                          >
-                            {(() => {
-                              const sec = sections.find((s) => s.id === expandedSection);
-                              if (!sec) return null;
-                              if (sec.section_type === "period")
-                                return <PeriodTracker section={sec} isOwner={isOwnProfile} />;
-                              if (sec.section_type === "workout")
-                                return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
-                              return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
-                            })()}
-                          </motion.div>
-                        </AnimatePresence>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </>
+                  return (
+                    <div key={section.id} className="contents">
+                      <SortableGridCard
+                        section={section}
+                        isOwner={isOwnProfile}
+                        isExpanded={expandedSection === section.id}
+                        onClick={() => toggleSection(section.id)}
+                        index={i}
+                        reordering={reordering}
+                      />
+                      {expandAfter && (
+                        <div className="col-span-3">
+                          <AnimatePresence mode="wait">
+                            <motion.div
+                              key={expandedSection}
+                              id={`section-${expandedSection}`}
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.25, ease: "easeInOut" }}
+                              className="overflow-hidden"
+                            >
+                              {(() => {
+                                const sec = sections.find((s) => s.id === expandedSection);
+                                if (!sec) return null;
+                                if (sec.section_type === "period")
+                                  return <PeriodTracker section={sec} isOwner={isOwnProfile} />;
+                                if (sec.section_type === "workout")
+                                  return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
+                                return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
+                              })()}
+                            </motion.div>
+                          </AnimatePresence>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </SortableContext>
+          </DndContext>
         )}
 
         {/* Tier legend */}
