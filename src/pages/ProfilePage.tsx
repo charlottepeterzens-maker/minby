@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X } from "lucide-react";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
+import SectionGridCard from "@/components/profile/SectionGridCard";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
 import FriendTierManager from "@/components/profile/FriendTierManager";
 import PeriodTracker from "@/components/profile/PeriodTracker";
@@ -282,78 +283,45 @@ const ProfilePage = () => {
             )}
           </motion.div>
         ) : (
-          <div className="flex flex-col gap-2">
-            {sections.map((section, i) => {
-              const isExpanded = expandedSection === section.id;
-              return (
-                <motion.div
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              {sections.map((section, i) => (
+                <SectionGridCard
                   key={section.id}
-                  id={`section-${section.id}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.04 }}
-                >
-                  {/* Thumbnail header — always visible */}
-                  <button
-                    onClick={() => toggleSection(section.id)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all text-left ${
-                      isExpanded
-                        ? "bg-card shadow-card"
-                        : "bg-muted/40 hover:bg-muted/70"
-                    }`}
-                  >
-                    <span className="text-xs text-muted-foreground shrink-0">·</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-display text-sm font-semibold text-foreground truncate">
-                        {section.name}
-                      </p>
-                      <p className="text-[10px] text-muted-foreground">
-                        {section.section_type === "period"
-                          ? t("period")
-                          : section.section_type === "workout"
-                          ? t("workouts")
-                          : t("posts")}
-                        {isOwnProfile && (
-                          <span className="ml-1.5 text-muted-foreground/60">
-                            · {tierLabels[section.min_tier]?.label}
-                          </span>
-                        )}
-                      </p>
-                    </div>
-                    <motion.div
-                      animate={{ rotate: isExpanded ? 45 : 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Plus className="w-4 h-4 text-muted-foreground" />
-                    </motion.div>
-                  </button>
+                  section={section}
+                  isOwner={isOwnProfile}
+                  isExpanded={expandedSection === section.id}
+                  onClick={() => toggleSection(section.id)}
+                  index={i}
+                />
+              ))}
+            </div>
 
-                  {/* Expanded content */}
-                  <AnimatePresence>
-                    {isExpanded && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pt-2 pb-1">
-                          {section.section_type === "period" ? (
-                            <PeriodTracker section={section} isOwner={isOwnProfile} />
-                          ) : section.section_type === "workout" ? (
-                            <WorkoutTracker section={section} isOwner={isOwnProfile} />
-                          ) : (
-                            <LifeSectionCard section={section} isOwner={isOwnProfile} onUpdated={fetchSections} />
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+            {/* Expanded section detail */}
+            <AnimatePresence>
+              {expandedSection && (
+                <motion.div
+                  key={expandedSection}
+                  id={`section-${expandedSection}`}
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="overflow-hidden mt-4"
+                >
+                  {(() => {
+                    const section = sections.find((s) => s.id === expandedSection);
+                    if (!section) return null;
+                    if (section.section_type === "period")
+                      return <PeriodTracker section={section} isOwner={isOwnProfile} />;
+                    if (section.section_type === "workout")
+                      return <WorkoutTracker section={section} isOwner={isOwnProfile} />;
+                    return <LifeSectionCard section={section} isOwner={isOwnProfile} onUpdated={fetchSections} />;
+                  })()}
                 </motion.div>
-              );
-            })}
-          </div>
+              )}
+            </AnimatePresence>
+          </>
         )}
 
         {/* Tier legend */}
