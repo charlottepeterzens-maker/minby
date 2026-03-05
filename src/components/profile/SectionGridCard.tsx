@@ -84,10 +84,10 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
       )}
 
       {/* Text content */}
-      <div className="absolute inset-0 flex flex-col justify-end items-start p-2.5">
+      <div className="absolute inset-0 flex flex-col justify-end items-start">
         {hasImage ? (
           /* On image cards: text in a semi-transparent box */
-          <div className="bg-background/85 backdrop-blur-sm rounded px-1.5 py-1">
+          <div className="bg-background/85 backdrop-blur-sm rounded-tr px-1.5 py-1">
             <h3 className="font-display text-xs font-bold text-foreground leading-tight truncate">
               {section.name}
             </h3>
