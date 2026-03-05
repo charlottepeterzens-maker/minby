@@ -452,7 +452,6 @@ const translations = {
     shareWhenFree: "Visa vänner när du är ledig",
     editAvailability: "Redigera",
     comments: "Kommentarer",
-    comments: "Kommentarer",
     addComment: "Skriv en kommentar...",
   },
 } as const;
