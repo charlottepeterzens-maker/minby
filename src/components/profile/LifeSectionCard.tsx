@@ -239,6 +239,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   <p className="text-xs text-muted-foreground/50 mt-1">
                     {new Date(post.created_at).toLocaleDateString()}
                   </p>
+                  <PostReactions postId={post.id} />
                 </div>
                 {isOwner && (
                   <button
