@@ -4,10 +4,11 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Check } from "lucide-react";
+import { Check, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
+import { toast } from "@/hooks/use-toast";
 
 interface Notification {
   id: string;
@@ -56,6 +57,29 @@ const NotificationsPage = () => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
   };
 
+  const acceptFriendRequest = async (n: Notification) => {
+    if (!user || !n.from_user_id) return;
+    const { data: req } = await supabase
+      .from("friend_requests")
+      .select("id")
+      .eq("from_user_id", n.from_user_id)
+      .eq("to_user_id", user.id)
+      .eq("status", "pending")
+      .single();
+    if (req) {
+      await supabase
+        .from("friend_requests")
+        .update({ status: "accepted", updated_at: new Date().toISOString() })
+        .eq("id", req.id);
+      await supabase.from("friend_access_tiers").upsert([
+        { owner_id: user.id, friend_user_id: n.from_user_id, tier: "outer" as const },
+        { owner_id: n.from_user_id, friend_user_id: user.id, tier: "outer" as const },
+      ], { onConflict: "owner_id,friend_user_id" });
+      markRead(n.id);
+      toast({ title: t("friendAdded") });
+    }
+  };
+
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
@@ -77,23 +101,19 @@ const NotificationsPage = () => {
         ) : notifications.length === 0 ? (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
             <p className="font-display text-lg text-muted-foreground">{t("noNotificationsYet")}</p>
-            <p className="text-sm text-muted-foreground/70 mt-1">
-              {t("notificationsHint")}
-            </p>
+            <p className="text-sm text-muted-foreground/70 mt-1">{t("notificationsHint")}</p>
           </motion.div>
         ) : (
           <div className="space-y-2">
             {notifications.map((n, i) => (
-              <motion.button
+              <motion.div
                 key={n.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.02 }}
                 onClick={() => markRead(n.id)}
-                className={`w-full text-left p-4 border transition-all ${
-                  n.read
-                    ? "bg-card border-border/30"
-                    : "bg-primary/5 border-primary/20 shadow-soft"
+                className={`w-full text-left p-4 border transition-all cursor-pointer ${
+                  n.read ? "bg-card border-border/30" : "bg-primary/5 border-primary/20 shadow-soft"
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -101,18 +121,26 @@ const NotificationsPage = () => {
                     <p className={`text-sm font-medium ${n.read ? "text-muted-foreground" : "text-foreground"}`}>
                       {n.title}
                     </p>
-                    {n.body && (
-                      <p className="text-xs text-muted-foreground mt-0.5">{n.body}</p>
-                    )}
+                    {n.body && <p className="text-xs text-muted-foreground mt-0.5">{n.body}</p>}
                     <p className="text-[10px] text-muted-foreground/50 mt-1">
                       {new Date(n.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  {!n.read && (
+                  {n.type === "friend_request" && !n.read && n.from_user_id && (
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="text-xs h-7 gap-1 shrink-0"
+                      onClick={(e) => { e.stopPropagation(); acceptFriendRequest(n); }}
+                    >
+                      <UserCheck className="w-3 h-3" /> {t("accept")}
+                    </Button>
+                  )}
+                  {!n.read && n.type !== "friend_request" && (
                     <div className="w-2 h-2 bg-primary shrink-0 mt-2" />
                   )}
                 </div>
-              </motion.button>
+              </motion.div>
             ))}
           </div>
         )}

@@ -11,6 +11,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Plus, Image, Link, Trash2, Send, Pencil, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import PostReactions from "@/components/profile/PostReactions";
 
 interface LifePost {
   id: string;
@@ -238,6 +239,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   <p className="text-xs text-muted-foreground/50 mt-1">
                     {new Date(post.created_at).toLocaleDateString()}
                   </p>
+                  <PostReactions postId={post.id} />
                 </div>
                 {isOwner && (
                   <button
