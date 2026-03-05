@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
-import { CalendarIcon, Plus, X, Pencil } from "lucide-react";
+import { CalendarIcon, Plus, X, Pencil, TreePine, UtensilsCrossed, Sofa, ShoppingBag, Dumbbell, Coffee, Film, Gamepad2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,15 +19,15 @@ interface AvailabilityEntry {
   custom_note: string | null;
 }
 
-const ACTIVITY_OPTIONS: { key: TranslationKey; emoji: string }[] = [
-  { key: "activityNature", emoji: "🌿" },
-  { key: "activityFoodOut", emoji: "🍽️" },
-  { key: "activityRelax", emoji: "😌" },
-  { key: "activityShopping", emoji: "🛍️" },
-  { key: "activitySports", emoji: "⚽" },
-  { key: "activityCoffee", emoji: "☕" },
-  { key: "activityMovies", emoji: "🎬" },
-  { key: "activityGames", emoji: "🎮" },
+const ACTIVITY_OPTIONS: { key: TranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
+  { key: "activityNature", icon: TreePine },
+  { key: "activityFoodOut", icon: UtensilsCrossed },
+  { key: "activityRelax", icon: Sofa },
+  { key: "activityShopping", icon: ShoppingBag },
+  { key: "activitySports", icon: Dumbbell },
+  { key: "activityCoffee", icon: Coffee },
+  { key: "activityMovies", icon: Film },
+  { key: "activityGames", icon: Gamepad2 },
 ];
 
 interface Props {
@@ -106,14 +106,22 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
 
   const getActivityLabel = (activity: string) => {
     const opt = ACTIVITY_OPTIONS.find((o) => o.key === activity);
-    return opt ? `${opt.emoji} ${t(opt.key)}` : activity;
+    return opt ? t(opt.key) : activity;
+  };
+
+  const getActivityIcon = (activity: string) => {
+    const opt = ACTIVITY_OPTIONS.find((o) => o.key === activity);
+    if (!opt) return null;
+    const Icon = opt.icon;
+    return <Icon className="w-3 h-3" />;
   };
 
   return (
     <div className="bg-card border border-border/50 rounded-lg p-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
-          📅 {t("hangoutAvailability")}
+          <CalendarIcon className="w-4 h-4 text-muted-foreground" />
+          {t("hangoutAvailability")}
         </h3>
         {isOwner && (
           <Button
@@ -138,7 +146,6 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             className="overflow-hidden mb-4"
           >
             <div className="space-y-3 p-3 bg-muted/50 rounded-lg">
-              {/* Date picker */}
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -164,28 +171,29 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 </PopoverContent>
               </Popover>
 
-              {/* Activity tags */}
               <div>
                 <p className="text-xs font-medium text-muted-foreground mb-2">{t("activities")}</p>
                 <div className="flex flex-wrap gap-2">
-                  {ACTIVITY_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.key}
-                      onClick={() => toggleActivity(opt.key)}
-                      className={cn(
-                        "px-2.5 py-1 text-xs rounded-full border transition-all",
-                        selectedActivities.includes(opt.key)
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-background text-muted-foreground border-border hover:border-primary/50"
-                      )}
-                    >
-                      {opt.emoji} {t(opt.key)}
-                    </button>
-                  ))}
+                  {ACTIVITY_OPTIONS.map((opt) => {
+                    const Icon = opt.icon;
+                    return (
+                      <button
+                        key={opt.key}
+                        onClick={() => toggleActivity(opt.key)}
+                        className={cn(
+                          "px-2.5 py-1 text-xs rounded-full border transition-all inline-flex items-center gap-1.5",
+                          selectedActivities.includes(opt.key)
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-background text-muted-foreground border-border hover:border-primary/50"
+                        )}
+                      >
+                        <Icon className="w-3 h-3" /> {t(opt.key)}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Custom note */}
               <Input
                 value={customNote}
                 onChange={(e) => setCustomNote(e.target.value)}
@@ -194,7 +202,6 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 maxLength={100}
               />
 
-              {/* Save */}
               <Button
                 size="sm"
                 className="w-full"
@@ -229,9 +236,9 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     {entry.activities.map((a) => (
                       <span
                         key={a}
-                        className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary"
+                        className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary inline-flex items-center gap-1"
                       >
-                        {getActivityLabel(a)}
+                        {getActivityIcon(a)} {getActivityLabel(a)}
                       </span>
                     ))}
                   </div>

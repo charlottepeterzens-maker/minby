@@ -97,7 +97,7 @@ const PeriodTracker = ({ section, isOwner }: Props) => {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="font-display text-base flex items-center gap-2">
-            <span className="text-xl">{section.emoji}</span> {section.name}
+            {section.name}
           </CardTitle>
           {isOwner && (
             <Button variant="warm" size="sm" className="text-xs" onClick={() => setShowLog(!showLog)}>

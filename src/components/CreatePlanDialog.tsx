@@ -3,13 +3,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Sparkles } from "lucide-react";
+import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
-
-const emojiSuggestions = ["🎬", "🎨", "🧘", "🍷", "☕", "🌿", "🏖️", "💅", "📚", "🎵", "🍕", "🌸"];
 
 interface CreatePlanDialogProps {
   groupId: string;
@@ -24,7 +22,6 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
   const [dateText, setDateText] = useState("");
   const [location, setLocation] = useState("");
   const [selectedVibe, setSelectedVibe] = useState("chill");
-  const [selectedEmoji, setSelectedEmoji] = useState("🎬");
   const [loading, setLoading] = useState(false);
 
   const vibes = [
@@ -42,7 +39,7 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
       group_id: groupId,
       created_by: user.id,
       title,
-      emoji: selectedEmoji,
+      emoji: "—",
       date_text: dateText,
       location: location || null,
       vibe: selectedVibe,
@@ -63,7 +60,6 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
       setDateText("");
       setLocation("");
       setSelectedVibe("chill");
-      setSelectedEmoji("🎬");
       setOpen(false);
     }
     setLoading(false);
@@ -78,29 +74,11 @@ const CreatePlanDialog = ({ groupId, onPlanCreated }: CreatePlanDialogProps) => 
       </DialogTrigger>
       <DialogContent className="sm:max-w-md border-border/50">
         <DialogHeader>
-          <DialogTitle className="font-display text-xl flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-primary" />
+          <DialogTitle className="font-display text-xl">
             {t("whatFeelLikeDoing")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-5 pt-2">
-          <div>
-            <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t("pickEmoji")}</Label>
-            <div className="flex flex-wrap gap-2">
-              {emojiSuggestions.map((e) => (
-                <button
-                  key={e}
-                  onClick={() => setSelectedEmoji(e)}
-                  className={`w-10 h-10 text-xl flex items-center justify-center transition-all ${
-                    selectedEmoji === e ? "bg-primary/15 ring-2 ring-primary/30 scale-110" : "bg-muted hover:bg-muted/80"
-                  }`}
-                >
-                  {e}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div>
             <Label htmlFor="plan-title" className="text-sm font-medium text-muted-foreground">{t("whatsThePlan")}</Label>
             <Input

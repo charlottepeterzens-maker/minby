@@ -302,7 +302,7 @@ const ProfilePage = () => {
                         : "bg-muted/40 hover:bg-muted/70"
                     }`}
                   >
-                    <span className="text-xl shrink-0">{section.emoji}</span>
+                    <span className="text-xs text-muted-foreground shrink-0">·</span>
                     <div className="flex-1 min-w-0">
                       <p className="font-display text-sm font-semibold text-foreground truncate">
                         {section.name}

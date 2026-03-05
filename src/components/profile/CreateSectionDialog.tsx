@@ -8,19 +8,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Plus } from "lucide-react";
+import { Plus, Baby, Heart, Home, Briefcase, Stethoscope, Droplets, Dumbbell, Plane, PawPrint, CookingPot } from "lucide-react";
 
 const presets = [
-  { name: "My kids", emoji: "👶", type: "posts" },
-  { name: "My partner", emoji: "💕", type: "posts" },
-  { name: "House renovation", emoji: "🏠", type: "posts" },
-  { name: "Work life", emoji: "💼", type: "posts" },
-  { name: "My pregnancy", emoji: "🤰", type: "posts" },
-  { name: "Period tracker", emoji: "🩸", type: "period" },
-  { name: "My workouts", emoji: "💪", type: "workout" },
-  { name: "Travel", emoji: "✈️", type: "posts" },
-  { name: "Pets", emoji: "🐾", type: "posts" },
-  { name: "Cooking", emoji: "🍳", type: "posts" },
+  { name: "My kids", icon: Baby, type: "posts" },
+  { name: "My partner", icon: Heart, type: "posts" },
+  { name: "House renovation", icon: Home, type: "posts" },
+  { name: "Work life", icon: Briefcase, type: "posts" },
+  { name: "My pregnancy", icon: Stethoscope, type: "posts" },
+  { name: "Period tracker", icon: Droplets, type: "period" },
+  { name: "My workouts", icon: Dumbbell, type: "workout" },
+  { name: "Travel", icon: Plane, type: "posts" },
+  { name: "Pets", icon: PawPrint, type: "posts" },
+  { name: "Cooking", icon: CookingPot, type: "posts" },
 ];
 
 interface Props {
@@ -32,14 +32,12 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
-  const [emoji, setEmoji] = useState("📝");
   const [sectionType, setSectionType] = useState("posts");
   const [minTier, setMinTier] = useState("outer");
   const [loading, setLoading] = useState(false);
 
   const handlePreset = (preset: typeof presets[0]) => {
     setName(preset.name);
-    setEmoji(preset.emoji);
     setSectionType(preset.type);
   };
 
@@ -50,7 +48,7 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
     const { error } = await supabase.from("life_sections").insert({
       user_id: user.id,
       name: name.trim(),
-      emoji,
+      emoji: "—",
       min_tier: minTier as any,
       section_type: sectionType,
     });
@@ -61,7 +59,6 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
       toast.success(`${name} added!`);
       setOpen(false);
       setName("");
-      setEmoji("📝");
       setSectionType("posts");
       setMinTier("outer");
       onCreated();
@@ -72,7 +69,7 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="warm" size="sm">
+        <Button variant="ghost" size="sm">
           <Plus className="w-4 h-4" /> {t("addSection")}
         </Button>
       </DialogTrigger>
@@ -83,31 +80,28 @@ const CreateSectionDialog = ({ onCreated }: Props) => {
 
         {/* Presets */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {presets.map((p) => (
-            <button
-              key={p.name}
-              onClick={() => handlePreset(p)}
-              className={`px-3 py-1.5 text-xs font-medium border transition-all ${
-                name === p.name
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-muted text-muted-foreground border-border/50 hover:bg-muted/80"
-              }`}
-            >
-              {p.emoji} {p.name}
-            </button>
-          ))}
+          {presets.map((p) => {
+            const Icon = p.icon;
+            return (
+              <button
+                key={p.name}
+                onClick={() => handlePreset(p)}
+                className={`px-3 py-1.5 text-xs font-medium border transition-all inline-flex items-center gap-1.5 ${
+                  name === p.name
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted text-muted-foreground border-border/50 hover:bg-muted/80"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" /> {p.name}
+              </button>
+            );
+          })}
         </div>
 
         <div className="space-y-3">
-          <div className="flex gap-2">
-            <div className="w-16">
-              <Label className="text-xs text-muted-foreground">{t("emoji")}</Label>
-              <Input value={emoji} onChange={(e) => setEmoji(e.target.value)} className="mt-1 text-center" maxLength={4} />
-            </div>
-            <div className="flex-1">
-              <Label className="text-xs text-muted-foreground">{t("name")}</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("sectionNamePlaceholder")} className="mt-1" />
-            </div>
+          <div>
+            <Label className="text-xs text-muted-foreground">{t("name")}</Label>
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("sectionNamePlaceholder")} className="mt-1" />
           </div>
 
           <div>

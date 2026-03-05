@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarDays, Sparkles, CalendarIcon, X, Pencil } from "lucide-react";
+import { CalendarDays, Sparkles, CalendarIcon, X, Pencil, TreePine, UtensilsCrossed, Sofa, ShoppingBag, Dumbbell, Coffee, Film, Gamepad2 } from "lucide-react";
 import { format, isBefore, startOfDay } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
@@ -26,17 +26,15 @@ interface Group { id: string; name: string; emoji: string; }
 interface Section { id: string; name: string; emoji: string; section_type: string; }
 interface AvailabilityEntry { id: string; date: string; activities: string[]; custom_note: string | null; }
 
-const emojiSuggestions = ["🎬", "🎨", "🧘", "🍷", "☕", "🌿", "🏖️", "💅", "📚", "🎵", "🍕", "🌸"];
-
-const ACTIVITY_OPTIONS: { key: TranslationKey; emoji: string }[] = [
-  { key: "activityNature", emoji: "🌿" },
-  { key: "activityFoodOut", emoji: "🍽️" },
-  { key: "activityRelax", emoji: "😌" },
-  { key: "activityShopping", emoji: "🛍️" },
-  { key: "activitySports", emoji: "⚽" },
-  { key: "activityCoffee", emoji: "☕" },
-  { key: "activityMovies", emoji: "🎬" },
-  { key: "activityGames", emoji: "🎮" },
+const ACTIVITY_OPTIONS: { key: TranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
+  { key: "activityNature", icon: TreePine },
+  { key: "activityFoodOut", icon: UtensilsCrossed },
+  { key: "activityRelax", icon: Sofa },
+  { key: "activityShopping", icon: ShoppingBag },
+  { key: "activitySports", icon: Dumbbell },
+  { key: "activityCoffee", icon: Coffee },
+  { key: "activityMovies", icon: Film },
+  { key: "activityGames", icon: Gamepad2 },
 ];
 
 const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
@@ -71,7 +69,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
   const [dateText, setDateText] = useState("");
   const [location, setLocation] = useState("");
   const [selectedVibe, setSelectedVibe] = useState("chill");
-  const [selectedEmoji, setSelectedEmoji] = useState("🎬");
+  const [selectedEmoji, setSelectedEmoji] = useState("—");
 
   const fetchData = useCallback(async () => {
     if (!user) return;
@@ -126,7 +124,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
     setDateText("");
     setLocation("");
     setSelectedVibe("chill");
-    setSelectedEmoji("🎬");
+    setSelectedEmoji("—");
     resetFreeDateForm();
   };
 
@@ -227,7 +225,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
 
   const getActivityLabel = (activity: string) => {
     const opt = ACTIVITY_OPTIONS.find((o) => o.key === activity);
-    return opt ? `${opt.emoji} ${t(opt.key)}` : activity;
+    return opt ? t(opt.key) : activity;
   };
 
   return (
@@ -280,7 +278,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   {sections.filter(s => s.section_type === "posts").map((s) => (
-                    <SelectItem key={s.id} value={s.id}>{s.emoji} {s.name}</SelectItem>
+                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -333,20 +331,23 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
               <div>
                 <p className="text-xs font-medium text-muted-foreground mb-2">{t("activities")}</p>
                 <div className="flex flex-wrap gap-2">
-                  {ACTIVITY_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.key}
-                      onClick={() => toggleActivity(opt.key)}
-                      className={cn(
-                        "px-2.5 py-1 text-xs rounded-full transition-all",
-                        selectedActivities.includes(opt.key)
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-background text-muted-foreground hover:bg-muted"
-                      )}
-                    >
-                      {opt.emoji} {t(opt.key)}
-                    </button>
-                  ))}
+                  {ACTIVITY_OPTIONS.map((opt) => {
+                    const Icon = opt.icon;
+                    return (
+                      <button
+                        key={opt.key}
+                        onClick={() => toggleActivity(opt.key)}
+                        className={cn(
+                          "px-2.5 py-1 text-xs rounded-full transition-all inline-flex items-center gap-1.5",
+                          selectedActivities.includes(opt.key)
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-background text-muted-foreground hover:bg-muted"
+                        )}
+                      >
+                        <Icon className="w-3 h-3" /> {t(opt.key)}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -426,26 +427,10 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   {groups.map((g) => (
-                    <SelectItem key={g.id} value={g.id}>{g.emoji} {g.name}</SelectItem>
+                    <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-            <div>
-              <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t("emoji")}</Label>
-              <div className="flex flex-wrap gap-2">
-                {emojiSuggestions.map((e) => (
-                  <button
-                    key={e}
-                    onClick={() => setSelectedEmoji(e)}
-                    className={`w-9 h-9 rounded-lg text-lg flex items-center justify-center transition-all ${
-                      selectedEmoji === e ? "bg-primary/15 ring-2 ring-primary/30 scale-110" : "bg-muted hover:bg-muted/80"
-                    }`}
-                  >
-                    {e}
-                  </button>
-                ))}
-              </div>
             </div>
             <div>
               <Label className="text-sm font-medium text-muted-foreground">{t("whatsThePlan")}</Label>
