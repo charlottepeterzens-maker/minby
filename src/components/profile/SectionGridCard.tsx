@@ -16,6 +16,21 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
   const { t } = useLanguage();
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
 
+  // Muted, Scandinavian-friendly palette inspired by the reference
+  const fallbackColors = [
+    "hsl(262 60% 82%)",   // lavender
+    "hsl(66 65% 58%)",    // citrus green
+    "hsl(25 100% 90%)",   // soft peach
+    "hsl(16 100% 63%)",   // sunset orange
+    "hsl(214 60% 88%)",   // glacier blue
+    "hsl(150 30% 24%)",   // deep green
+    "hsl(316 100% 83%)",  // petunia pink
+    "hsl(100 50% 80%)",   // vibrant mint
+    "hsl(235 72% 55%)",   // electric blue
+  ];
+
+  const bgColor = fallbackColors[index % fallbackColors.length];
+
   useEffect(() => {
     const fetchThumbnail = async () => {
       if (section.section_type !== "posts") return;
@@ -32,7 +47,6 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
     };
     fetchThumbnail();
   }, [section.id, section.section_type]);
-
   const typeIcon = section.section_type === "period" ? (
     <Droplets className="w-3 h-3" />
   ) : section.section_type === "workout" ? (
