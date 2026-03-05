@@ -81,7 +81,6 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
           <CardTitle className="font-display text-base flex items-center gap-2">
             {section.name}
           </CardTitle>
-          </CardTitle>
           {isOwner && (
             <Button variant="warm" size="sm" className="text-xs" onClick={() => setShowLog(!showLog)}>
               {t("logWorkout")}
