@@ -86,15 +86,21 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
       {/* Text content */}
       <div className="absolute inset-0 flex flex-col justify-end items-start">
         {hasImage ? (
-          /* On image cards: text in a semi-transparent box */
-          <div className="bg-background/85 backdrop-blur-sm rounded-tr px-1.5 py-1">
-            <h3 className="font-display text-xs font-bold text-foreground leading-tight truncate">
+          /* On image cards: colored text box matching palette */
+          <div className="p-2.5">
+            <h3
+              className="font-display text-sm font-bold leading-tight truncate"
+              style={{ color: colors.text, textShadow: "0 1px 3px rgba(0,0,0,0.3)" }}
+            >
               {section.name}
             </h3>
             <div className="flex items-center gap-1 mt-0.5">
-              <span className="text-muted-foreground">{typeIcon}</span>
+              <span style={{ color: colors.text, opacity: 0.7 }}>{typeIcon}</span>
               {isOwner && (
-                <span className="text-[8px] text-muted-foreground uppercase tracking-wider">
+                <span
+                  className="text-[8px] uppercase tracking-wider"
+                  style={{ color: colors.text, opacity: 0.6 }}
+                >
                   {tierLabels[section.min_tier]}
                 </span>
               )}
