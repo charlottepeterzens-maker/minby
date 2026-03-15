@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Prata", "serif"],
-        body: ["Poppins", "sans-serif"],
+        display: ["Fraunces", "serif"],
+        body: ["Urbanist", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -51,6 +51,18 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "dusty-rose": {
+          DEFAULT: "hsl(var(--dusty-rose))",
+          bg: "hsl(var(--dusty-rose-bg))",
+        },
+        salvia: {
+          DEFAULT: "hsl(var(--salvia))",
+          bg: "hsl(var(--salvia-bg))",
+        },
+        lavender: {
+          DEFAULT: "hsl(var(--lavender))",
+          bg: "hsl(var(--lavender-bg))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -76,15 +88,10 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "float": {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-8px)" },
-        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "float": "float 3s ease-in-out infinite",
       },
     },
   },
