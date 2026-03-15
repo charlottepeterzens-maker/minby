@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import PWAInstallBanner from "@/components/PWAInstallBanner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        <PWAInstallBanner />
         </LanguageProvider>
       </AuthProvider>
     </TooltipProvider>
