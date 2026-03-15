@@ -28,7 +28,7 @@ interface Props {
   trigger?: React.ReactNode;
 }
 
-const CreateSectionDialog = ({ onCreated }: Props) => {
+const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [open, setOpen] = useState(false);
