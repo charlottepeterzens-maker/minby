@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
-import { Link as LinkIcon, CalendarDays, MapPin, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Link as LinkIcon, CalendarDays, MapPin } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -49,7 +47,7 @@ type FeedItem =
   | { type: "plan"; data: FeedPlan; created_at: string };
 
 const FeedPage = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [posts, setPosts] = useState<FeedPost[]>([]);
@@ -123,25 +121,24 @@ const FeedPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <span className="font-display text-xl font-normal tracking-[0.35em] text-foreground">MINBY</span>
-          <Button variant="ghost" size="icon" onClick={() => navigate("/settings")}>
-            <Settings className="w-4 h-4" />
-          </Button>
+      {/* Header */}
+      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+        <div className="max-w-2xl mx-auto px-5 py-4">
+          <span className="font-display text-lg font-medium tracking-[0.35em] text-foreground">MINBY</span>
         </div>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-4 py-4">
-        <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
+      <main className="max-w-2xl mx-auto px-5 py-5">
+        {/* Filter pills */}
+        <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
           {sectionTypeFilters.map((f) => (
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`px-3 py-1 text-xs font-medium border whitespace-nowrap transition-all ${
+              className={`px-4 py-1.5 text-xs font-medium rounded-[20px] whitespace-nowrap transition-colors duration-150 ${
                 filter === f.value
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-muted/50 text-muted-foreground border-border/50 hover:bg-muted"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-card text-muted-foreground border border-border hover:text-foreground"
               }`}
             >
               {f.label}
@@ -150,25 +147,24 @@ const FeedPage = () => {
         </div>
 
         {loading ? (
-          <div className="text-center py-16 text-muted-foreground">{t("loadingFeed")}</div>
+          <div className="space-y-4">
+            {[1,2,3].map(i => (
+              <div key={i} className="bg-muted rounded-[14px] h-32 animate-pulse" />
+            ))}
+          </div>
         ) : feedItems.length === 0 ? (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+          <div className="text-center py-20">
             <p className="font-display text-lg text-muted-foreground">
               {filter === "all" ? t("noUpdates") : t("noUpdatesFilter")}
             </p>
-            <p className="text-sm text-muted-foreground/70 mt-1">
+            <p className="text-sm text-muted-foreground mt-2">
               {t("addFriendsHint")}
             </p>
-          </motion.div>
+          </div>
         ) : (
           <div className="space-y-4">
-            {feedItems.map((item, i) => (
-              <motion.div
-                key={`${item.type}-${item.data.id}`}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.03 }}
-              >
+            {feedItems.map((item) => (
+              <div key={`${item.type}-${item.data.id}`}>
                 {item.type === "post" ? (
                   <PostCard
                     post={item.data}
@@ -179,7 +175,7 @@ const FeedPage = () => {
                 ) : (
                   <PlanFeedCard plan={item.data} />
                 )}
-              </motion.div>
+              </div>
             ))}
           </div>
         )}
@@ -200,30 +196,44 @@ const PostCard = ({
 }) => {
   const section = post.life_sections;
   return (
-    <Card className="border-border/50 shadow-card overflow-hidden">
+    <Card className="rounded-[14px] border-[0.5px] border-border overflow-hidden">
       <CardContent className="p-4">
-        <button onClick={onProfileClick} className="flex items-center gap-2 mb-3 group">
-          <Avatar className="w-8 h-8 border border-primary/30">
-            <AvatarImage src={profile.avatar_url || undefined} alt={profile.display_name || "User"} />
-            <AvatarFallback className="bg-primary/10 text-xs font-display font-bold text-primary">
-              {getInitial(profile.display_name)}
-            </AvatarFallback>
-          </Avatar>
-          <div className="text-left">
-            <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+        {/* Header: avatar + name + timestamp + category pill */}
+        <div className="flex items-center gap-2.5 mb-3">
+          <button onClick={onProfileClick} className="shrink-0">
+            <Avatar className="w-8 h-8">
+              <AvatarImage src={profile.avatar_url || undefined} alt={profile.display_name || "User"} />
+              <AvatarFallback className="bg-primary text-secondary text-xs font-display">
+                {getInitial(profile.display_name)}
+              </AvatarFallback>
+            </Avatar>
+          </button>
+          <div className="flex-1 min-w-0">
+            <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline">
               {profile.display_name || "Someone"}
+            </button>
+            <p className="text-[11px] text-muted-foreground">
+              {new Date(post.created_at).toLocaleDateString()}
             </p>
-            {section && <p className="text-[11px] text-muted-foreground">{section.name}</p>}
           </div>
-        </button>
-        {post.image_url && <img src={post.image_url} alt="" className="w-full mb-3 max-h-80 object-cover" />}
-        {post.content && <p className="text-sm text-foreground mb-2">{post.content}</p>}
+          {section && (
+            <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px] bg-lavender-bg text-secondary-foreground">
+              {section.name}
+            </span>
+          )}
+        </div>
+
+        {post.image_url && (
+          <img src={post.image_url} alt="" className="w-full mb-3 max-h-80 object-cover rounded-lg" />
+        )}
+        {post.content && (
+          <p className="text-[13px] text-foreground leading-[1.5] mb-2">{post.content}</p>
+        )}
         {post.link_url && (
           <a href={post.link_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1">
             <LinkIcon className="w-3 h-3" /> {post.link_url.slice(0, 50)}
           </a>
         )}
-        <p className="text-[11px] text-muted-foreground/50 mt-2">{new Date(post.created_at).toLocaleDateString()}</p>
       </CardContent>
     </Card>
   );
@@ -232,22 +242,29 @@ const PostCard = ({
 const PlanFeedCard = ({ plan }: { plan: FeedPlan }) => {
   const { t } = useLanguage();
   return (
-    <Card className="border-primary/20 bg-primary/5 shadow-card overflow-hidden">
+    <Card className="rounded-[14px] border-[0.5px] border-border bg-primary text-primary-foreground overflow-hidden">
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 bg-primary/10 flex items-center justify-center shrink-0">
-            <CalendarDays className="w-5 h-5 text-primary" />
+          <div className="w-10 h-10 bg-secondary/30 rounded-lg flex items-center justify-center shrink-0">
+            <CalendarDays className="w-5 h-5 text-secondary" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-primary font-medium mb-0.5">{plan.friend_groups?.name || t("group")} · {t("plan")}</p>
-            <p className="font-display font-semibold text-foreground">{plan.title}</p>
-            <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1"><CalendarDays className="w-3 h-3" /> {plan.date_text}</span>
-              {plan.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {plan.location}</span>}
+            <p className="text-[11px] text-secondary font-medium mb-0.5">
+              {plan.friend_groups?.name || t("group")} · {t("plan")}
+            </p>
+            <p className="font-display font-medium text-primary-foreground">{plan.title}</p>
+            <div className="flex items-center gap-3 mt-1.5">
+              <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-[20px] bg-secondary/30 text-secondary">
+                <CalendarDays className="w-3 h-3" /> {plan.date_text}
+              </span>
+              {plan.location && (
+                <span className="inline-flex items-center gap-1 text-[11px] text-secondary/80">
+                  <MapPin className="w-3 h-3" /> {plan.location}
+                </span>
+              )}
             </div>
           </div>
         </div>
-        <p className="text-[11px] text-muted-foreground/50 mt-2">{new Date(plan.created_at).toLocaleDateString()}</p>
       </CardContent>
     </Card>
   );

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -56,111 +55,101 @@ const SettingsPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground transition-colors">
-            <ChevronLeft className="w-5 h-5" />
+      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center gap-2">
+          <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground transition-colors duration-150">
+            <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
-          <span className="font-display text-lg font-bold text-foreground">{t("settings")}</span>
+          <span className="font-display text-lg font-medium text-foreground">{t("settings")}</span>
         </div>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 space-y-4">
+      <main className="max-w-2xl mx-auto px-5 py-6 space-y-4">
         {/* Language */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <Card className="border-border/50">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-display">
-                {t("language")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Select value={lang} onValueChange={(v) => setLang(v as "en" | "sv")}>
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">{t("english")}</SelectItem>
-                  <SelectItem value="sv">{t("swedish")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </CardContent>
-          </Card>
-        </motion.div>
+        <Card className="rounded-[14px] border-[0.5px] border-border">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-[11px] uppercase tracking-wider text-muted-foreground font-body font-medium">
+              {t("language")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Select value={lang} onValueChange={(v) => setLang(v as "en" | "sv")}>
+              <SelectTrigger className="w-full rounded-[10px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">{t("english")}</SelectItem>
+                <SelectItem value="sv">{t("swedish")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
 
         {/* Password */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 }}>
-          <Card className="border-border/50">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-display">
-                {t("changePassword")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div>
-                <Label className="text-xs text-muted-foreground">{t("newPassword")}</Label>
-                <Input type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="mt-1" />
-              </div>
-              <div>
-                <Label className="text-xs text-muted-foreground">{t("confirmPassword")}</Label>
-                <Input type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="mt-1" />
-              </div>
-              <Button onClick={handleChangePassword} disabled={changingPassword} size="sm" className="w-full">
-                {changingPassword ? t("updating") : t("updatePassword")}
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
+        <Card className="rounded-[14px] border-[0.5px] border-border">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-[11px] uppercase tracking-wider text-muted-foreground font-body font-medium">
+              {t("changePassword")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div>
+              <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("newPassword")}</Label>
+              <Input type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="mt-1 rounded-[10px] border-[0.5px]" />
+            </div>
+            <div>
+              <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("confirmPassword")}</Label>
+              <Input type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="mt-1 rounded-[10px] border-[0.5px]" />
+            </div>
+            <Button onClick={handleChangePassword} disabled={changingPassword} size="sm" className="w-full rounded-[10px] font-medium text-sm">
+              {changingPassword ? t("updating") : t("updatePassword")}
+            </Button>
+          </CardContent>
+        </Card>
 
         {/* Notifications */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }}>
-          <Card className="border-border/50">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-display">
-                {t("notificationPreferences")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm">{t("friendRequests")}</Label>
-                <Switch checked={notifFriendRequests} onCheckedChange={setNotifFriendRequests} />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-sm">{t("gatheringInvites")}</Label>
-                <Switch checked={notifGatherings} onCheckedChange={setNotifGatherings} />
-              </div>
-              <div className="flex items-center justify-between">
-                <Label className="text-sm">{t("newLifeUpdates")}</Label>
-                <Switch checked={notifUpdates} onCheckedChange={setNotifUpdates} />
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+        <Card className="rounded-[14px] border-[0.5px] border-border">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-[11px] uppercase tracking-wider text-muted-foreground font-body font-medium">
+              {t("notificationPreferences")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm">{t("friendRequests")}</Label>
+              <Switch checked={notifFriendRequests} onCheckedChange={setNotifFriendRequests} />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label className="text-sm">{t("gatheringInvites")}</Label>
+              <Switch checked={notifGatherings} onCheckedChange={setNotifGatherings} />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label className="text-sm">{t("newLifeUpdates")}</Label>
+              <Switch checked={notifUpdates} onCheckedChange={setNotifUpdates} />
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Data & Privacy */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.09 }}>
-          <Card className="border-border/50">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-display">
-                {t("howWeUseData")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3 text-sm text-muted-foreground">
-              <p>{t("dataPrivacy1")}</p>
-              <p>{t("dataPrivacy2")}</p>
-              <p>{t("dataPrivacy3")}</p>
-            </CardContent>
-          </Card>
-        </motion.div>
+        <Card className="rounded-[14px] border-[0.5px] border-border">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-[11px] uppercase tracking-wider text-muted-foreground font-body font-medium">
+              {t("howWeUseData")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm text-muted-foreground">
+            <p>{t("dataPrivacy1")}</p>
+            <p>{t("dataPrivacy2")}</p>
+            <p>{t("dataPrivacy3")}</p>
+          </CardContent>
+        </Card>
 
         {/* Log out */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
-          <Button variant="outline" onClick={handleLogout} className="w-full border-destructive/30 text-destructive hover:bg-destructive/10">
-            <LogOut className="w-4 h-4 mr-2" /> {t("logOut")}
-          </Button>
-        </motion.div>
+        <Button variant="outline" onClick={handleLogout} className="w-full rounded-[10px] border-[0.5px] border-border text-muted-foreground hover:text-foreground hover:bg-muted">
+          <LogOut className="w-4 h-4 mr-2" strokeWidth={1.5} /> {t("logOut")}
+        </Button>
 
-        <p className="text-center text-[11px] text-muted-foreground/50 pt-4">
+        <p className="text-center text-[11px] text-muted-foreground pt-4">
           {t("signedInAs")} {user?.email}
         </p>
       </main>

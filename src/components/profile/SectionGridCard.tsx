@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Layers, Activity, Droplets } from "lucide-react";
-import { motion } from "framer-motion";
 
 interface Props {
   section: { id: string; name: string; emoji: string; min_tier: string; section_type: string };
@@ -13,15 +12,12 @@ interface Props {
 }
 
 const PALETTE = [
-  { bg: "hsl(262 60% 82%)", text: "hsl(262 40% 20%)" },   // lavender
-  { bg: "hsl(66 65% 58%)",  text: "hsl(66 50% 12%)" },    // citrus green
-  { bg: "hsl(25 100% 90%)", text: "hsl(16 60% 30%)" },     // soft peach
-  { bg: "hsl(16 100% 63%)", text: "hsl(0 0% 100%)" },      // sunset orange
-  { bg: "hsl(214 60% 88%)", text: "hsl(235 50% 25%)" },    // glacier blue
-  { bg: "hsl(150 30% 24%)", text: "hsl(100 50% 80%)" },    // deep green
-  { bg: "hsl(316 100% 83%)", text: "hsl(316 50% 20%)" },   // petunia pink
-  { bg: "hsl(100 50% 80%)", text: "hsl(150 30% 15%)" },    // vibrant mint
-  { bg: "hsl(235 72% 55%)", text: "hsl(0 0% 100%)" },      // electric blue
+  { bg: "hsl(270 25% 78%)", text: "hsl(270 30% 23%)" },   // lavender
+  { bg: "hsl(145 18% 75%)", text: "hsl(150 30% 15%)" },    // salvia
+  { bg: "hsl(340 25% 87%)", text: "hsl(340 20% 30%)" },    // dusty rose
+  { bg: "hsl(270 30% 23%)", text: "hsl(270 25% 78%)" },    // lila natt
+  { bg: "hsl(30 25% 90%)", text: "hsl(270 30% 23%)" },     // warm linen
+  { bg: "hsl(145 20% 85%)", text: "hsl(150 30% 15%)" },    // light salvia
 ];
 
 const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props) => {
@@ -48,11 +44,11 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
   }, [section.id, section.section_type]);
 
   const typeIcon = section.section_type === "period" ? (
-    <Droplets className="w-3 h-3" />
+    <Droplets className="w-3 h-3" strokeWidth={1.5} />
   ) : section.section_type === "workout" ? (
-    <Activity className="w-3 h-3" />
+    <Activity className="w-3 h-3" strokeWidth={1.5} />
   ) : (
-    <Layers className="w-3 h-3" />
+    <Layers className="w-3 h-3" strokeWidth={1.5} />
   );
 
   const tierLabels: Record<string, string> = {
@@ -64,13 +60,10 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
   const hasImage = !!thumbnailUrl;
 
   return (
-    <motion.button
+    <button
       onClick={onClick}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04 }}
-      className={`relative aspect-[5/4] w-full overflow-hidden rounded-md transition-all group ${
-        isExpanded ? "ring-2 ring-foreground/20" : ""
+      className={`relative aspect-[5/4] w-full overflow-hidden rounded-[14px] transition-colors duration-150 group ${
+        isExpanded ? "ring-[0.5px] ring-primary" : ""
       }`}
       style={!hasImage ? { backgroundColor: colors.bg } : undefined}
     >
@@ -79,16 +72,15 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
         <img
           src={thumbnailUrl!}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="absolute inset-0 w-full h-full object-cover"
         />
       )}
 
       {/* Text content */}
       <div className="absolute inset-0 flex flex-col justify-end items-start">
         {hasImage ? (
-          /* On image cards: text in a semi-transparent box */
-          <div className="rounded-tr px-1.5 py-1" style={{ backgroundColor: colors.bg }}>
-            <h3 className="font-display text-xs font-bold leading-tight truncate" style={{ color: colors.text }}>
+          <div className="rounded-tr-[10px] px-2 py-1.5" style={{ backgroundColor: colors.bg }}>
+            <h3 className="font-display text-xs font-medium leading-tight truncate" style={{ color: colors.text }}>
               {section.name}
             </h3>
             <div className="flex items-center gap-1 mt-0.5">
@@ -101,10 +93,9 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
             </div>
           </div>
         ) : (
-          /* On color cards: contrasting playful text */
           <div className="p-2.5">
             <h3
-              className="font-display text-sm font-bold leading-tight truncate"
+              className="font-display text-sm font-medium leading-tight truncate"
               style={{ color: colors.text }}
             >
               {section.name}
@@ -123,7 +114,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
           </div>
         )}
       </div>
-    </motion.button>
+    </button>
   );
 };
 

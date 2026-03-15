@@ -236,13 +236,13 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Top nav */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <button onClick={() => navigate("/")} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
-              <ChevronLeft className="w-5 h-5" />
+            <button onClick={() => navigate("/")} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150">
+              <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </button>
-            <span className="font-display text-lg font-bold text-foreground">{t("profileTitle")}</span>
+            <span className="font-display text-lg font-medium text-foreground">{t("profileTitle")}</span>
           </div>
           <div className="flex items-center gap-1">
             {targetUserId && <ProfileShareDialog userId={targetUserId} />}
@@ -255,22 +255,22 @@ const ProfilePage = () => {
         </div>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 pb-24">
+      <main className="max-w-2xl mx-auto px-5 py-6 pb-24">
         {/* Profile header with avatar */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-start gap-4 mb-8">
+        <div className="flex items-start gap-4 mb-8">
           <div className="relative shrink-0">
-            <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center overflow-hidden">
+            <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center overflow-hidden">
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-xl font-display font-bold text-primary">{initial}</span>
+                <span className="text-lg font-display font-medium text-secondary">{initial}</span>
               )}
             </div>
             {isOwnProfile && (
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar}
-                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-elevated hover:scale-105 transition-transform disabled:opacity-50"
+                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center transition-colors duration-150 disabled:opacity-50"
               >
                 <Camera className="w-3 h-3" />
               </button>
@@ -286,7 +286,7 @@ const ProfilePage = () => {
 
           <div className="flex-1 min-w-0 pt-1">
             <div className="flex items-center gap-2">
-              <h1 className="font-display text-xl font-bold text-foreground">
+              <h1 className="font-display text-base font-medium text-foreground">
                 {profile?.display_name || t("anonymous")}
               </h1>
               {!isOwnProfile && targetUserId && (
@@ -332,7 +332,7 @@ const ProfilePage = () => {
               <p className="mt-1 text-sm text-muted-foreground italic">"{profile.bio}"</p>
             ) : null}
           </div>
-        </motion.div>
+        </div>
 
         {/* Friend Tier Manager */}
         <AnimatePresence>
@@ -364,7 +364,7 @@ const ProfilePage = () => {
 
         {/* Life sections as thumbnail grid */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-lg font-semibold text-foreground">
+          <h2 className="text-[11px] uppercase tracking-wider font-medium text-muted-foreground font-body">
             {t("lifeUpdates")}
           </h2>
           <div className="flex items-center gap-1">
@@ -459,7 +459,7 @@ const ProfilePage = () => {
 
         {/* Tier legend */}
         {isOwnProfile && sections.length > 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8 p-4 bg-muted/50">
+          <div className="mt-8 p-4 bg-card rounded-[14px] border-[0.5px] border-border">
             <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1">
               <Lock className="w-3 h-3" /> {t("accessLevels")}
             </p>
@@ -470,7 +470,7 @@ const ProfilePage = () => {
                 </span>
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
       </main>
       <ScrollToTopButton />

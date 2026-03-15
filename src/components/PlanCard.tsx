@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { Calendar, MapPin, Heart, MessageCircle } from "lucide-react";
+import { Calendar, MapPin, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,9 +19,9 @@ interface PlanWithDetails {
 }
 
 const vibeColors: Record<string, string> = {
-  chill: "bg-secondary/40 text-secondary-foreground",
-  adventure: "bg-primary/10 text-primary",
-  creative: "bg-accent/30 text-accent-foreground",
+  chill: "bg-lavender-bg text-secondary-foreground",
+  adventure: "bg-salvia-bg text-accent-foreground",
+  creative: "bg-dusty-rose-bg text-foreground",
   selfcare: "bg-muted text-muted-foreground",
 };
 
@@ -52,39 +51,34 @@ const PlanCard = ({ plan, onRsvpChange }: { plan: PlanWithDetails; onRsvpChange:
   const inCount = plan.rsvps.filter((r) => r.status === "in").length;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="bg-card rounded-2xl p-6 shadow-card hover:shadow-elevated transition-shadow duration-300 border border-border/50"
-    >
-      <div className="flex items-start justify-between mb-4">
+    <div className="bg-card rounded-[14px] p-5 border-[0.5px] border-border">
+      <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-muted flex items-center justify-center rounded">
-            <Calendar className="w-4 h-4 text-muted-foreground" />
+          <div className="w-8 h-8 bg-lavender-bg rounded-lg flex items-center justify-center">
+            <Calendar className="w-4 h-4 text-secondary-foreground" strokeWidth={1.5} />
           </div>
           <div>
-            <h3 className="font-display text-lg font-semibold text-card-foreground leading-tight">
+            <h3 className="font-display text-base font-medium text-card-foreground leading-tight">
               {plan.title}
             </h3>
-            <p className="text-sm text-muted-foreground font-body">
-              by {plan.creator_name}
+            <p className="text-xs text-muted-foreground">
+              av {plan.creator_name}
             </p>
           </div>
         </div>
-        <span className={`text-xs font-medium px-3 py-1 rounded-full ${vibeColors[plan.vibe] || vibeColors.chill}`}>
+        <span className={`text-[11px] font-medium px-2.5 py-0.5 rounded-[20px] ${vibeColors[plan.vibe] || vibeColors.chill}`}>
           {plan.vibe}
         </span>
       </div>
 
-      <div className="flex flex-col gap-2 mb-5">
+      <div className="flex flex-col gap-1.5 mb-4">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Calendar className="w-4 h-4 text-primary" />
+          <Calendar className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
           <span>{plan.date_text}</span>
         </div>
         {plan.location && (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4 text-primary" />
+            <MapPin className="w-3.5 h-3.5 text-primary" strokeWidth={1.5} />
             <span>{plan.location}</span>
           </div>
         )}
@@ -96,31 +90,35 @@ const PlanCard = ({ plan, onRsvpChange }: { plan: PlanWithDetails; onRsvpChange:
             {plan.rsvps.filter(r => r.status === "in").slice(0, 5).map((r, i) => (
               <div
                 key={i}
-                className="w-8 h-8 rounded-full bg-primary/15 border-2 border-card flex items-center justify-center text-xs font-semibold text-primary"
+                className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-[10px] font-medium text-secondary border-2 border-card"
               >
                 {r.initial}
               </div>
             ))}
           </div>
-          <span className="text-xs text-muted-foreground ml-2">
+          <span className="text-[11px] text-muted-foreground ml-2">
             {inCount} in
           </span>
         </div>
 
         <Button
-          variant={isIn ? "default" : "warm"}
+          variant="outline"
           size="sm"
-          className="rounded-full text-xs font-semibold px-4"
+          className={`rounded-[10px] text-xs font-medium px-4 border-[0.5px] ${
+            isIn
+              ? "bg-salvia-bg text-accent-foreground border-accent"
+              : "bg-card text-muted-foreground border-border hover:bg-salvia-bg hover:text-accent-foreground"
+          }`}
           onClick={handleRsvp}
         >
           {isIn ? (
-            <><Heart className="w-3 h-3 fill-current" /> I'm in!</>
+            <><Heart className="w-3 h-3 fill-current mr-1" /> Jag är med!</>
           ) : (
-            <><Heart className="w-3 h-3" /> Count me in</>
+            <><Heart className="w-3 h-3 mr-1" strokeWidth={1.5} /> Ja, jag är med!</>
           )}
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
