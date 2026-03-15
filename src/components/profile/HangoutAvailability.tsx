@@ -422,13 +422,13 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         {entry.activities.slice(0, 3).map((a) => (
                           <span
                             key={a}
-                            className="text-[10px] font-medium px-2 py-0.5 rounded-[20px] inline-flex items-center gap-1"
+                            className="text-[10px] font-medium px-2 py-0.5 rounded-[20px]"
                             style={{
                               backgroundColor: "hsl(270 20% 94%)",
                               color: "hsl(var(--primary))",
                             }}
                           >
-                            {getActivityIcon(a)} {getActivityLabel(a)}
+                            {getActivityLabel(a)}
                           </span>
                         ))}
                         {entry.activities.length > 3 && (
