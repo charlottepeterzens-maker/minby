@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import OnboardingFlow from "@/components/OnboardingFlow";
 import FeedPage from "./pages/FeedPage";
 import AuthPage from "./pages/AuthPage";
@@ -26,16 +27,21 @@ const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
-  const [onboarded, setOnboarded] = useState(true);
+  const [onboarded, setOnboarded] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (user) {
-      const done = localStorage.getItem(`onboarding_done_${user.id}`);
-      setOnboarded(!!done);
-    }
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("onboarded_at")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        setOnboarded(!!data?.onboarded_at);
+      });
   }, [user]);
 
-  if (loading) {
+  if (loading || (user && onboarded === null)) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>

@@ -112,14 +112,14 @@ const OnboardingFlow = ({ onComplete }: Props) => {
     onComplete();
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
     if (!user) return;
     if (step === 2) {
       setStep(3);
     } else if (step === 3) {
       setStep(4);
     } else if (step === 4) {
-      localStorage.setItem(`onboarding_done_${user.id}`, "true");
+      await markOnboarded();
       onComplete();
     }
   };
