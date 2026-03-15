@@ -92,6 +92,8 @@ const SortableGridCard = ({
         isOwner={isOwner}
         isExpanded={isExpanded}
         onClick={reordering ? () => {} : onClick}
+        onDeleted={onDeleted}
+        onRenamed={onRenamed}
         index={index}
       />
     </div>
