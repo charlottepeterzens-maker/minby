@@ -93,7 +93,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
                   className="flex-1 px-3 py-2.5 text-[13px] rounded-[10px] border outline-none"
                   style={{
                     backgroundColor: "#FFFFFF",
-                    borderColor: "#DDD5CC",
+                    borderColor: "#EDE8F4",
                     color: "#3C2A4D",
                   }}
                 />
