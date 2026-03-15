@@ -8,17 +8,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Plus, Baby, Heart, Home, Briefcase, Dumbbell, Plane, PawPrint, CookingPot } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const presets = [
-  { name: "Barn", icon: Baby, type: "posts" },
-  { name: "Partner", icon: Heart, type: "posts" },
-  { name: "Husbygge", icon: Home, type: "posts" },
-  { name: "Jobb", icon: Briefcase, type: "posts" },
-  { name: "Träning", icon: Dumbbell, type: "workout" },
-  { name: "Resor", icon: Plane, type: "posts" },
-  { name: "Husdjur", icon: PawPrint, type: "posts" },
-  { name: "Matlagning", icon: CookingPot, type: "posts" },
+  { name: "Barn", type: "posts" },
+  { name: "Familj", type: "posts" },
+  { name: "Jobb", type: "posts" },
+  { name: "Hem", type: "posts" },
+  { name: "Kärlek", type: "posts" },
+  { name: "Hälsa", type: "posts" },
+  { name: "Träning", type: "workout" },
+  { name: "Resor", type: "posts" },
+  { name: "Husdjur", type: "posts" },
+  { name: "Mat & dryck", type: "posts" },
+  { name: "Studier", type: "posts" },
+  { name: "Projekt", type: "posts" },
+  { name: "Övrigt", type: "posts" },
 ];
 
 interface Props {
