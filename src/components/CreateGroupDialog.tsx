@@ -163,7 +163,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
               </div>
 
               <div>
-                <Label className="text-sm" style={{ color: "#7A6A85" }}>Välj emoji</Label>
+                <Label className="text-sm" style={{ color: "#7A6A85" }}>Välj syfte</Label>
                 <div className="flex gap-2 mt-2">
                   {emojiPresets.map((preset) =>
                 <button
