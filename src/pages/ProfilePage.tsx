@@ -239,7 +239,7 @@ const ProfilePage = () => {
             <button onClick={() => navigate("/")} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150">
               <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </button>
-            <span className="font-display text-[22px] text-foreground">{t("profileTitle")}</span>
+            <span className="font-display text-[20px] font-medium text-foreground">{t("profileTitle")}</span>
           </div>
           <div className="flex items-center gap-1">
             {targetUserId && <ProfileShareDialog userId={targetUserId} />}

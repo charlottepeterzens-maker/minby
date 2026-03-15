@@ -85,7 +85,7 @@ const NotificationsPage = () => {
     <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background border-b border-border">
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
-          <span className="font-display text-[22px] text-foreground">{t("notifications")}</span>
+          <span className="font-display text-[20px] font-medium text-foreground">{t("notifications")}</span>
           {unreadCount > 0 && (
             <Button variant="ghost" size="sm" onClick={markAllRead} className="text-xs gap-1 text-muted-foreground">
               <Check className="w-3 h-3" strokeWidth={1.5} /> {t("markAllRead")}

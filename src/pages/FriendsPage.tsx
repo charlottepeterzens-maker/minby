@@ -99,7 +99,7 @@ const FriendsPage = () => {
     <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background border-b border-border">
         <div className="max-w-2xl mx-auto px-5 py-4">
-          <span className="font-display text-[22px] text-foreground">{t("friends")}</span>
+          <span className="font-display text-[20px] font-medium text-foreground">{t("friends")}</span>
         </div>
       </nav>
 

@@ -109,7 +109,7 @@ const Index = () => {
       <div className="min-h-screen bg-background pb-20">
         <nav className="sticky top-0 z-50 bg-background border-b border-border">
           <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
-            <span className="font-display text-lg font-medium tracking-[0.35em] text-foreground">GRUPPER</span>
+            <span className="font-display text-[20px] font-medium text-foreground">Grupper</span>
             <CreateGroupDialog onGroupCreated={fetchGroups} />
           </div>
         </nav>
