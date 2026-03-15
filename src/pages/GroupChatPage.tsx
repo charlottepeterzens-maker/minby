@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, SendHorizontal } from "lucide-react";
+import { ChevronLeft, SendHorizontal, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
+import CreatePollSheet from "@/components/chat/CreatePollSheet";
+import PollCard from "@/components/chat/PollCard";
 
 interface Message {
   id: string;
@@ -20,6 +22,26 @@ interface Member {
   initial: string;
 }
 
+interface Poll {
+  id: string;
+  group_id: string;
+  user_id: string;
+  question: string;
+  options: string[];
+  created_at: string;
+}
+
+interface PollVote {
+  id: string;
+  poll_id: string;
+  user_id: string;
+  option_index: number;
+}
+
+type TimelineItem =
+  | { type: "message"; data: Message }
+  | { type: "poll"; data: Poll };
+
 const GroupChatPage = () => {
   const { groupId } = useParams();
   const navigate = useNavigate();
@@ -29,6 +51,9 @@ const GroupChatPage = () => {
   const [groupName, setGroupName] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
+  const [polls, setPolls] = useState<Poll[]>([]);
+  const [pollVotes, setPollVotes] = useState<PollVote[]>([]);
+  const [pollSheetOpen, setPollSheetOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -80,14 +105,37 @@ const GroupChatPage = () => {
     }
   }, [groupId]);
 
+  const fetchPolls = useCallback(async () => {
+    if (!groupId) return;
+    const { data: pollData } = await supabase
+      .from("group_polls")
+      .select("*")
+      .eq("group_id", groupId)
+      .order("created_at", { ascending: true });
+
+    if (pollData) {
+      setPolls(pollData as Poll[]);
+      const pollIds = pollData.map((p) => p.id);
+      if (pollIds.length > 0) {
+        const { data: voteData } = await supabase
+          .from("poll_votes")
+          .select("*")
+          .in("poll_id", pollIds);
+        if (voteData) setPollVotes(voteData as PollVote[]);
+      }
+    }
+  }, [groupId]);
+
   useEffect(() => {
     fetchGroupInfo();
     fetchMessages();
-  }, [fetchGroupInfo, fetchMessages]);
+    fetchPolls();
+  }, [fetchGroupInfo, fetchMessages, fetchPolls]);
 
-  // Realtime subscription
+  // Realtime subscriptions
   useEffect(() => {
     if (!groupId) return;
+
     const channel = supabase
       .channel(`group-chat-${groupId}`)
       .on(
@@ -101,6 +149,34 @@ const GroupChatPage = () => {
         (payload) => {
           setMessages((prev) => [...prev, payload.new as Message]);
           scrollToBottom();
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "group_polls",
+          filter: `group_id=eq.${groupId}`,
+        },
+        (payload) => {
+          setPolls((prev) => [...prev, payload.new as Poll]);
+          scrollToBottom();
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "poll_votes",
+        },
+        (payload) => {
+          const newVote = payload.new as PollVote;
+          setPollVotes((prev) => {
+            if (prev.some((v) => v.id === newVote.id)) return prev;
+            return [...prev, newVote];
+          });
         }
       )
       .subscribe();
@@ -126,11 +202,39 @@ const GroupChatPage = () => {
     inputRef.current?.focus();
   };
 
+  const handleCreatePoll = async (question: string, options: string[]) => {
+    if (!user || !groupId) return;
+    await supabase.from("group_polls").insert({
+      group_id: groupId,
+      user_id: user.id,
+      question,
+      options,
+    });
+  };
+
+  const handleVote = async (pollId: string, optionIndex: number) => {
+    if (!user) return;
+    await supabase.from("poll_votes").insert({
+      poll_id: pollId,
+      user_id: user.id,
+      option_index: optionIndex,
+    });
+  };
+
   const getMember = (userId: string) =>
     members.find((m) => m.user_id === userId);
 
   const formatTime = (dateStr: string) =>
     format(new Date(dateStr), "HH:mm", { locale: sv });
+
+  // Merge messages and polls into a timeline
+  const timeline: TimelineItem[] = [
+    ...messages.map((m) => ({ type: "message" as const, data: m })),
+    ...polls.map((p) => ({ type: "poll" as const, data: p })),
+  ].sort(
+    (a, b) =>
+      new Date(a.data.created_at).getTime() - new Date(b.data.created_at).getTime()
+  );
 
   return (
     <div
@@ -142,23 +246,14 @@ const GroupChatPage = () => {
         className="sticky top-0 z-50 flex items-center px-4 py-3 gap-3"
         style={{ backgroundColor: "#3C2A4D" }}
       >
-        <button
-          onClick={() => navigate("/groups")}
-          className="shrink-0 p-1"
-        >
+        <button onClick={() => navigate("/groups")} className="shrink-0 p-1">
           <ChevronLeft className="w-5 h-5" style={{ color: "#C9B8D8" }} />
         </button>
-
         <div className="flex-1 text-center">
-          <p
-            className="text-[13px] font-medium"
-            style={{ color: "#C9B8D8" }}
-          >
+          <p className="text-[13px] font-medium" style={{ color: "#C9B8D8" }}>
             {groupName}
           </p>
         </div>
-
-        {/* Overlapping avatars */}
         <div className="shrink-0 flex items-center -space-x-2">
           {members.slice(0, 4).map((m) => (
             <div
@@ -188,9 +283,9 @@ const GroupChatPage = () => {
         </div>
       </header>
 
-      {/* Messages */}
+      {/* Timeline */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        {messages.length === 0 && (
+        {timeline.length === 0 && (
           <div className="text-center py-16">
             <p className="text-[13px]" style={{ color: "#7A6A85" }}>
               Inga meddelanden ännu. Skriv det första!
@@ -198,45 +293,63 @@ const GroupChatPage = () => {
           </div>
         )}
 
-        {messages.map((msg) => {
-          const isOwn = msg.user_id === user?.id;
-          const member = getMember(msg.user_id);
+        {timeline.map((item) => {
+          if (item.type === "message") {
+            const msg = item.data;
+            const isOwn = msg.user_id === user?.id;
+            const member = getMember(msg.user_id);
+
+            return (
+              <div
+                key={msg.id}
+                className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}
+              >
+                <div
+                  className="px-3 py-2"
+                  style={{
+                    maxWidth: 200,
+                    borderRadius: isOwn
+                      ? "14px 14px 4px 14px"
+                      : "14px 14px 14px 4px",
+                    backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
+                    color: isOwn ? "#FFFFFF" : "#3C2A4D",
+                    border: isOwn ? "none" : "0.5px solid #DDD5CC",
+                    fontSize: 13,
+                    lineHeight: "18px",
+                  }}
+                >
+                  {msg.content}
+                </div>
+                <div className="flex items-center gap-1.5 mt-1 px-1">
+                  {!isOwn && (
+                    <span className="text-[10px]" style={{ color: "#7A6A85" }}>
+                      {member?.display_name || "Anonym"}
+                    </span>
+                  )}
+                  <span className="text-[10px]" style={{ color: "#9B8BA5" }}>
+                    {formatTime(msg.created_at)}
+                  </span>
+                </div>
+              </div>
+            );
+          }
+
+          // Poll item
+          const poll = item.data as Poll;
+          const votes = pollVotes.filter((v) => v.poll_id === poll.id);
+          const creator = getMember(poll.user_id);
 
           return (
-            <div
-              key={msg.id}
-              className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}
-            >
-              <div
-                className="px-3 py-2"
-                style={{
-                  maxWidth: 200,
-                  borderRadius: isOwn
-                    ? "14px 14px 4px 14px"
-                    : "14px 14px 14px 4px",
-                  backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
-                  color: isOwn ? "#FFFFFF" : "#3C2A4D",
-                  border: isOwn ? "none" : "0.5px solid #DDD5CC",
-                  fontSize: 13,
-                  lineHeight: "18px",
-                }}
-              >
-                {msg.content}
-              </div>
-              <div className="flex items-center gap-1.5 mt-1 px-1">
-                {!isOwn && (
-                  <span
-                    className="text-[10px]"
-                    style={{ color: "#7A6A85" }}
-                  >
-                    {member?.display_name || "Anonym"}
-                  </span>
-                )}
-                <span className="text-[10px]" style={{ color: "#9B8BA5" }}>
-                  {formatTime(msg.created_at)}
-                </span>
-              </div>
-            </div>
+            <PollCard
+              key={poll.id}
+              question={poll.question}
+              options={poll.options}
+              votes={votes}
+              currentUserId={user?.id || ""}
+              onVote={(idx) => handleVote(poll.id, idx)}
+              creatorName={creator?.display_name || "Anonym"}
+              time={formatTime(poll.created_at)}
+            />
           );
         })}
         <div ref={bottomRef} />
@@ -255,6 +368,12 @@ const GroupChatPage = () => {
             border: "0.5px solid #DDD5CC",
           }}
         >
+          <button
+            onClick={() => setPollSheetOpen(true)}
+            className="shrink-0 flex items-center justify-center"
+          >
+            <BarChart3 className="w-5 h-5" style={{ color: "#3C2A4D" }} />
+          </button>
           <input
             ref={inputRef}
             type="text"
@@ -279,6 +398,14 @@ const GroupChatPage = () => {
           </button>
         </div>
       </div>
+
+      {/* Poll creation sheet */}
+      <CreatePollSheet
+        open={pollSheetOpen}
+        onOpenChange={setPollSheetOpen}
+        onSubmit={handleCreatePoll}
+        sending={sending}
+      />
     </div>
   );
 };
