@@ -105,7 +105,7 @@ const ProfilePage = () => {
   const { t } = useLanguage();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [sections, setSections] = useState<LifeSection[]>([]);
-  const [showTierManager, setShowTierManager] = useState(false);
+  
   const [loading, setLoading] = useState(true);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [editingBio, setEditingBio] = useState(false);
