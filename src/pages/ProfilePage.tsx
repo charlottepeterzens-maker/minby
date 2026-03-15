@@ -246,11 +246,6 @@ const ProfilePage = () => {
           </div>
           <div className="flex items-center gap-1">
             {targetUserId && <ProfileShareDialog userId={targetUserId} />}
-            {isOwnProfile && (
-              <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => setShowTierManager(!showTierManager)}>
-                {t("accessLevels")}
-              </Button>
-            )}
           </div>
         </div>
       </nav>
