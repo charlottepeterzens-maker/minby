@@ -426,7 +426,7 @@ const ProfilePage = () => {
                     </div>
                   );
                 })}
-                {/* "Nytt rum" add card */}
+                {/* Add card */}
                 {isOwnProfile && (
                   <CreateSectionDialog onCreated={fetchSections} trigger={
                     <button className="w-full flex items-center gap-2.5 rounded-[12px] border-[0.5px] border-dashed border-border p-2.5 text-left text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">

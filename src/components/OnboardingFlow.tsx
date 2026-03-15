@@ -265,7 +265,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               className="w-full text-[13px] font-normal"
               style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "10px" }}
             >
-              {loading ? "..." : "Skapa rum och kom igång"}
+              {loading ? "..." : "Skapa och kom igång"}
             </Button>
             <button
               onClick={handleSkip}
