@@ -370,6 +370,19 @@ const GroupChatPage = () => {
       </div>
 
       <CreatePollSheet open={pollSheetOpen} onOpenChange={setPollSheetOpen} onSubmit={handleCreatePoll} sending={sending} />
+      <ConfirmSheet
+        open={leaveConfirmOpen}
+        onOpenChange={setLeaveConfirmOpen}
+        title="Lämna grupp"
+        description="Är du säker på att du vill lämna gruppen?"
+        confirmLabel="Lämna"
+        onConfirm={async () => {
+          if (!user || !groupId) return;
+          await supabase.from("group_memberships").delete().eq("group_id", groupId).eq("user_id", user.id);
+          toast.success("Du har lämnat gruppen");
+          navigate("/groups");
+        }}
+      />
     </div>
   );
 };
