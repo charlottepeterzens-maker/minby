@@ -58,6 +58,8 @@ const SortableGridCard = ({
   isOwner,
   isExpanded,
   onClick,
+  onDeleted,
+  onRenamed,
   index,
   reordering,
 }: {
@@ -65,6 +67,8 @@ const SortableGridCard = ({
   isOwner: boolean;
   isExpanded: boolean;
   onClick: () => void;
+  onDeleted?: () => void;
+  onRenamed?: () => void;
   index: number;
   reordering: boolean;
 }) => {
