@@ -248,7 +248,7 @@ const FeedPage = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredItems.map((item) => {
+            {filteredItems.map((item, idx) => {
               const profile = getProfile(item.userId);
               const key = `${item.type}-${item.data.id}`;
 
