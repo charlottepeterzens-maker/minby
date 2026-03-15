@@ -362,7 +362,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         borderRadius: 20,
                         fontSize: 13,
                         padding: "6px 14px",
-                        border: "0.5px solid #DDD5CC",
+                        border: "0.5px solid #EDE8F4",
                         backgroundColor: selectedActivities.includes(opt.key) ? "#3C2A4D" : "#FFFFFF",
                         color: selectedActivities.includes(opt.key) ? "#FFFFFF" : "#3C2A4D",
                       }}
@@ -415,7 +415,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 <div key={entry.id} className="relative">
                   {/* Edit inline form */}
                   {editingEntryId === entry.id && isOwner ? (
-                    <div className="bg-muted/50 rounded-[12px] border-[0.5px] border-border p-3 space-y-3">
+                    <div className="bg-muted/50 rounded-[16px] border-[0.5px] border-border p-3 space-y-3">
                       <p className="text-[13px] font-medium text-foreground">{dateTitle}</p>
                       <div className="flex flex-wrap gap-2">
                         {ACTIVITY_OPTIONS.map((opt) => (
@@ -426,7 +426,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                               borderRadius: 20,
                               fontSize: 13,
                               padding: "6px 14px",
-                              border: "0.5px solid #DDD5CC",
+                              border: "0.5px solid #EDE8F4",
                               backgroundColor: editActivities.includes(opt.key) ? "#3C2A4D" : "#FFFFFF",
                               color: editActivities.includes(opt.key) ? "#FFFFFF" : "#3C2A4D",
                             }}
@@ -445,7 +445,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         rows={2}
                       />
                       <div className="flex gap-2">
-                        <button onClick={() => setEditingEntryId(null)} className="flex-1 py-2 text-[13px] font-medium rounded-[10px]" style={{ border: "0.5px solid #DDD5CC", color: "#3C2A4D" }}>Avbryt</button>
+                        <button onClick={() => setEditingEntryId(null)} className="flex-1 py-2 text-[13px] font-medium rounded-[10px]" style={{ border: "0.5px solid #EDE8F4", color: "#3C2A4D" }}>Avbryt</button>
                         <button onClick={handleSaveEdit} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] text-white" style={{ backgroundColor: "#3C2A4D" }}>Spara</button>
                       </div>
                     </div>
@@ -453,17 +453,17 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     <button
                       onClick={() => toggleExpand(entry.id)}
                       className={cn(
-                        "w-full flex items-center gap-3 bg-card rounded-[12px] border-[0.5px] border-border p-2.5 text-left transition-all",
+                        "w-full flex items-center gap-3 bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all",
                         isExpanded && "ring-1 ring-primary/20"
                       )}
                     >
                       {/* Date icon */}
                       <div
-                        className="shrink-0 flex flex-col items-center justify-center rounded-[10px]"
-                        style={{ width: 38, height: 38, backgroundColor: "hsl(var(--primary))" }}
+                        className="shrink-0 flex flex-col items-center justify-center"
+                        style={{ width: 38, height: 38, backgroundColor: "#3C2A4D", borderRadius: 12 }}
                       >
-                        <span className="text-[9px] font-medium leading-none" style={{ color: "hsl(var(--secondary))" }}>{monthLabel}</span>
-                        <span className="text-[15px] font-bold leading-none mt-0.5" style={{ color: "hsl(var(--background))" }}>{dayLabel}</span>
+                        <span className="text-[9px] font-medium leading-none" style={{ color: "#C9B8D8" }}>{monthLabel}</span>
+                        <span className="text-[15px] leading-none mt-0.5" style={{ color: "#F7F3EF", fontWeight: 500 }}>{dayLabel}</span>
                       </div>
 
                       {/* Middle */}
@@ -512,7 +512,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             {isOwner && (
               <button
                 onClick={() => setShowAdd(!showAdd)}
-                className="w-full flex items-center justify-center gap-2 rounded-[12px] border-[0.5px] border-dashed border-border p-3 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+                className="w-full flex items-center justify-center gap-2 rounded-[16px] border-[0.5px] border-dashed border-border p-3 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span className="text-xs font-medium">Lägg till</span>

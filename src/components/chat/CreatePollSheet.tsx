@@ -73,7 +73,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
               className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none"
               style={{
                 backgroundColor: "#FFFFFF",
-                borderColor: "#DDD5CC",
+                borderColor: "#EDE8F4",
                 color: "#3C2A4D",
               }}
             />
@@ -93,7 +93,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
                   className="flex-1 px-3 py-2.5 text-[13px] rounded-[10px] border outline-none"
                   style={{
                     backgroundColor: "#FFFFFF",
-                    borderColor: "#DDD5CC",
+                    borderColor: "#EDE8F4",
                     color: "#3C2A4D",
                   }}
                 />
@@ -101,7 +101,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
                   <button
                     onClick={() => removeOption(i)}
                     className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: "#DDD5CC" }}
+                    style={{ backgroundColor: "#EDE8F4" }}
                   >
                     <X className="w-3.5 h-3.5" style={{ color: "#7A6A85" }} />
                   </button>

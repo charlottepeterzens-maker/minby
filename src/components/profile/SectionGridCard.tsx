@@ -77,7 +77,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
 
   if (editing) {
     return (
-      <div className="w-full flex items-center gap-2 bg-card rounded-[12px] border-[0.5px] border-primary/30 p-2.5">
+      <div className="w-full flex items-center gap-2 bg-card rounded-[16px] border-[0.5px] border-primary/30 p-2.5">
         <Input
           value={editName}
           onChange={(e) => setEditName(e.target.value)}
@@ -95,7 +95,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
       <div className="relative w-full">
         <button
           onClick={onClick}
-          className={`w-full flex items-center gap-2.5 bg-card rounded-[12px] border-[0.5px] border-border p-2.5 text-left transition-all ${
+          className={`w-full flex items-center gap-2.5 bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all ${
             isExpanded ? "ring-1 ring-primary/20" : ""
           }`}
         >

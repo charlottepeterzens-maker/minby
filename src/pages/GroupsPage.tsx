@@ -121,7 +121,7 @@ const GroupsPage = () => {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="rounded-[12px] h-[72px] animate-pulse"
+                className="rounded-[16px] h-[72px] animate-pulse"
                 style={{ backgroundColor: "#E8E2DB" }}
               />
             ))}
@@ -132,10 +132,10 @@ const GroupsPage = () => {
               <button
                 key={g.id}
                 onClick={() => navigate(`/groups/${g.id}`)}
-                className="w-full flex items-center gap-3 rounded-[12px] p-3 text-left transition-colors hover:opacity-90"
+                className="w-full flex items-center gap-3 rounded-[16px] p-3 text-left transition-colors hover:opacity-90"
                 style={{
                   backgroundColor: "#FFFFFF",
-                  border: "0.5px solid #DDD5CC",
+                  border: "0.5px solid #EDE8F4",
                 }}
               >
                 {/* Emoji icon box */}
@@ -181,8 +181,8 @@ const GroupsPage = () => {
               onGroupCreated={fetchGroups}
               trigger={
                 <button
-                  className="w-full flex items-center gap-3 rounded-[12px] p-3 text-left transition-colors hover:opacity-80 outline-none focus:outline-none"
-                  style={{ border: "1.5px dashed #DDD5CC" }}
+                  className="w-full flex items-center gap-3 rounded-[16px] p-3 text-left transition-colors hover:opacity-80 outline-none focus:outline-none"
+                  style={{ border: "1.5px dashed #EDE8F4" }}
                 >
                   <div
                     className="shrink-0 flex items-center justify-center"
@@ -190,7 +190,7 @@ const GroupsPage = () => {
                       width: 42,
                       height: 42,
                       borderRadius: 10,
-                      border: "0.5px dashed #DDD5CC",
+                      border: "0.5px dashed #EDE8F4",
                     }}
                   >
                     <Plus className="w-4 h-4" style={{ color: "#7A6A85" }} />

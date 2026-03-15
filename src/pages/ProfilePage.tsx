@@ -315,7 +315,8 @@ const ProfilePage = () => {
                 ) : (
                   <button
                     onClick={() => setEditingBio(true)}
-                    className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground italic hover:text-foreground transition-colors"
+                    className="group flex items-start gap-1.5 text-sm text-muted-foreground italic hover:text-foreground transition-colors w-full text-left"
+                    style={{ wordBreak: "break-word" }}
                   >
                     {profile?.bio ? (
                       <span>"{profile.bio}"</span>
@@ -340,7 +341,7 @@ const ProfilePage = () => {
         )}
 
         {/* Health coming soon placeholder */}
-        <div className="mb-6 flex items-center gap-3 rounded-[12px] border-[0.5px] border-[#DDD5CC] bg-[#FFFFFF] p-3">
+        <div className="mb-6 flex items-center gap-3 rounded-[16px] border-[0.5px] border-[#EDE8F4] bg-[#FFFFFF] p-3">
           <div className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 36, height: 36, backgroundColor: '#FCF0F3' }}>
             <Heart className="w-4 h-4" style={{ color: '#993556' }} />
           </div>
@@ -437,7 +438,7 @@ const ProfilePage = () => {
                 {/* Add card */}
                 {isOwnProfile && (
                   <CreateSectionDialog onCreated={fetchSections} trigger={
-                    <button className="w-full flex items-center gap-2.5 rounded-[12px] border-[0.5px] border-dashed border-border p-2.5 text-left text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
+                    <button className="w-full flex items-center gap-2.5 rounded-[16px] border-[0.5px] border-dashed border-border p-2.5 text-left text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
                       <div className="shrink-0 flex items-center justify-center rounded-[7px] border-[0.5px] border-dashed border-current" style={{ width: 26, height: 26 }}>
                         <Plus className="w-3.5 h-3.5" />
                       </div>

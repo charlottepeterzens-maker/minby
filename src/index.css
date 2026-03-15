@@ -7,7 +7,7 @@
 @layer base {
   :root {
     /* Minby — Scandinavian warmth with muted purple */
-    --background: 30 25% 95%;
+    --background: 30 33% 95%;
     --foreground: 270 30% 23%;
 
     --card: 0 0% 100%;
@@ -31,7 +31,7 @@
     --destructive: 0 0% 55%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 30 15% 85%;
+    --border: 265 30% 93%;
     --input: 0 0% 100%;
     --ring: 270 30% 23%;
 
