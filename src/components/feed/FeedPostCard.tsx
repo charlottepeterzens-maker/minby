@@ -29,7 +29,7 @@ const FeedPostCard = ({ post, profile, onProfileClick }: FeedPostCardProps) => {
         <div className="flex items-center gap-2.5">
           <button onClick={onProfileClick} className="shrink-0">
             <Avatar className="w-9 h-9">
-              <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
+              <AvatarFallback style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }} className="text-xs font-medium">
                 {profile.initials}
               </AvatarFallback>
             </Avatar>

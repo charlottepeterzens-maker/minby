@@ -69,7 +69,8 @@ const FeedHangoutCard = ({ hangout, profile, onProfileClick, onJoin, onMaybe }: 
             {hangout.activities.map((activity) => (
               <span
                 key={activity}
-                className="text-[11px] font-medium px-3 py-1 rounded-[20px] bg-primary-foreground/15 text-primary-foreground"
+                className="text-[11px] font-medium px-3 py-1 rounded-[20px]"
+                style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }}
               >
                 {activity}
               </span>

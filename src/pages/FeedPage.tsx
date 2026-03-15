@@ -201,11 +201,35 @@ const FeedPage = () => {
         ) : filteredItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 px-6">
             <Heart className="w-8 h-8 text-muted-foreground/40 mb-5" />
-            <p className="font-display font-medium text-[16px] text-foreground text-center">
-              Din by är tyst just nu
-            </p>
-            <p className="text-[13px] text-muted-foreground text-center mt-2">
-              Bjud in en vän eller skapa ditt första inlägg
+            {(() => {
+              const hour = new Date().getHours();
+              const name = profiles[user?.id || ""]?.display_name || "";
+              const firstName = name ? name.split(" ")[0] : "";
+              let greeting: string;
+              let subtitle: string;
+              if (hour >= 5 && hour < 12) {
+                greeting = firstName ? `God morgon, ${firstName}.` : "God morgon.";
+                subtitle = "Din by är tyst just nu.";
+              } else if (hour >= 12 && hour < 18) {
+                greeting = firstName ? `God eftermiddag, ${firstName}.` : "God eftermiddag.";
+                subtitle = "Inget nytt från byn ännu.";
+              } else {
+                greeting = firstName ? `God kväll, ${firstName}.` : "God kväll.";
+                subtitle = "Lugnt i byn ikväll.";
+              }
+              return (
+                <>
+                  <p className="font-display font-medium text-[16px] text-center" style={{ color: '#3C2A4D' }}>
+                    {greeting}
+                  </p>
+                  <p className="text-[13px] text-center mt-1" style={{ color: '#3C2A4D' }}>
+                    {subtitle}
+                  </p>
+                </>
+              );
+            })()}
+            <p className="text-[13px] text-muted-foreground text-center mt-3">
+              Bjud in en vän eller dela något från din vardag
             </p>
             <button
               onClick={() => navigate("/friends")}

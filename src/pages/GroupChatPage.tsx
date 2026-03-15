@@ -280,7 +280,7 @@ const GroupChatPage = () => {
         <div className="shrink-0 flex items-center -space-x-2">
           {members.slice(0, 4).map((m) => (
             <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
-              style={{ backgroundColor: "#C9B8D8", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
+              style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
               {m.initial}
             </div>
           ))}

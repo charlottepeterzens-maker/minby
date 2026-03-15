@@ -657,11 +657,11 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         <div className="space-y-1.5 mb-2">
                           {comments.map((c) => (
                             <div key={c.id} className="flex items-start gap-2 group">
-                              <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                              <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: '#EDE8F4' }}>
                                 {c.profile?.avatar_url ? (
                                   <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
                                 ) : (
-                                  <span className="text-[8px] font-bold text-primary">
+                                  <span className="text-[8px] font-bold" style={{ color: '#3C2A4D' }}>
                                     {c.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                                   </span>
                                 )}
