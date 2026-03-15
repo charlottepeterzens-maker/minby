@@ -458,7 +458,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 className="w-full flex items-center justify-center gap-2 rounded-[12px] border-[0.5px] border-dashed border-border p-3 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span className="text-xs font-medium">Lägg till datum</span>
+                <span className="text-xs font-medium">Lägg till</span>
               </button>
             )}
           </div>
