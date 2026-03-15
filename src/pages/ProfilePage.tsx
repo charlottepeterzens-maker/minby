@@ -240,7 +240,7 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Top nav */}
-      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+      <nav className="sticky top-0 z-50 bg-background">
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button onClick={() => navigate("/")} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150">
@@ -252,6 +252,7 @@ const ProfilePage = () => {
             {targetUserId && <ProfileShareDialog userId={targetUserId} />}
           </div>
         </div>
+        <CurvedSeparator />
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-6 pb-24">
