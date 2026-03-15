@@ -209,7 +209,7 @@ const FeedPage = () => {
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 px-6">
-            <Heart className="w-8 h-8 text-muted-foreground/40 mb-5" />
+            <Heart className="w-8 h-8 text-muted-foreground/40 mb-5 animate-breathe" />
             {(() => {
               const hour = new Date().getHours();
               const firstName = currentUserName ? currentUserName.split(" ")[0] : "";
