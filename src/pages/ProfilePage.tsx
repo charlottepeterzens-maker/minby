@@ -408,9 +408,9 @@ const ProfilePage = () => {
         ) : (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-2 gap-2">
                 {sections.map((section, i) => {
-                  const cols = 3;
+                  const cols = 2;
                   const isLastInRow = (i + 1) % cols === 0 || i === sections.length - 1;
 
                   let expandAfter = false;
@@ -433,7 +433,7 @@ const ProfilePage = () => {
                         reordering={reordering}
                       />
                       {expandAfter && (
-                        <div className="col-span-3">
+                        <div className="col-span-2">
                           <AnimatePresence mode="wait">
                             <motion.div
                               key={expandedSection}
