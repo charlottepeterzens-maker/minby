@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ const AuthPage = () => {
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [consent, setConsent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,7 +96,29 @@ const AuthPage = () => {
             />
           </div>
 
-          <Button type="submit" className="w-full rounded-[10px] font-medium text-sm" disabled={loading}>
+          {isSignUp && (
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="mt-0.5 h-4 w-4 rounded border-border accent-primary shrink-0"
+              />
+              <span className="text-[12px] text-muted-foreground leading-[1.5]">
+                Jag har läst och godkänner{" "}
+                <Link to="/privacy" className="underline text-foreground hover:opacity-80">integritetspolicyn</Link>
+                {" "}och{" "}
+                <Link to="/terms" className="underline text-foreground hover:opacity-80">användarvillkoren</Link>
+              </span>
+            </label>
+          )}
+
+          <Button
+            type="submit"
+            className="w-full rounded-[10px] font-medium text-sm"
+            disabled={loading || (isSignUp && !consent)}
+            style={isSignUp && consent ? { backgroundColor: "#3C2A4D", color: "#fff" } : undefined}
+          >
             {loading ? "..." : isSignUp ? t("createAccount") : t("signIn")}
           </Button>
         </form>
