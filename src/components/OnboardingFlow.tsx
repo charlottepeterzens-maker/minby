@@ -236,12 +236,12 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               className="font-display"
               style={{ fontWeight: 500, fontSize: "20px", color: "#3C2A4D" }}
             >
-              Skapa ditt första vardagsrum
+              Skapa din första del av min vardag
             </h1>
             <Input
               value={roomName}
               onChange={(e) => setRoomName(e.target.value)}
-              placeholder="Namnge ditt rum"
+              placeholder="T.ex. Jobb, Familj, Resor..."
               className="rounded-[10px] bg-card border-[0.5px] border-border text-center"
             />
             <div className="flex flex-wrap justify-center gap-2">
@@ -265,7 +265,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               className="w-full text-[13px] font-normal"
               style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "10px" }}
             >
-              {loading ? "..." : "Skapa rum och kom igång"}
+              {loading ? "..." : "Skapa och kom igång"}
             </Button>
             <button
               onClick={handleSkip}

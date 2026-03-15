@@ -355,7 +355,7 @@ const ProfilePage = () => {
         {/* Life sections as thumbnail grid */}
         <div className="mb-4">
           <h2 className="text-xs font-medium text-muted-foreground font-body">
-            Vardagsrum
+            Min vardag
           </h2>
         </div>
 
@@ -426,14 +426,14 @@ const ProfilePage = () => {
                     </div>
                   );
                 })}
-                {/* "Nytt rum" add card */}
+                {/* Add card */}
                 {isOwnProfile && (
                   <CreateSectionDialog onCreated={fetchSections} trigger={
                     <button className="w-full flex items-center gap-2.5 rounded-[12px] border-[0.5px] border-dashed border-border p-2.5 text-left text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
                       <div className="shrink-0 flex items-center justify-center rounded-[7px] border-[0.5px] border-dashed border-current" style={{ width: 26, height: 26 }}>
                         <Plus className="w-3.5 h-3.5" />
                       </div>
-                      <span className="text-[12px] font-medium">Nytt rum</span>
+                      <span className="text-[12px] font-medium">Lägg till</span>
                     </button>
                   } />
                 )}
