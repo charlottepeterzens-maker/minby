@@ -41,15 +41,15 @@ interface TaggedFriend {
   profile?: { display_name: string | null; avatar_url: string | null };
 }
 
-const ACTIVITY_OPTIONS: { key: TranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
-  { key: "activityNature", icon: TreePine },
-  { key: "activityFoodOut", icon: UtensilsCrossed },
-  { key: "activityRelax", icon: Sofa },
-  { key: "activityShopping", icon: ShoppingBag },
-  { key: "activitySports", icon: Dumbbell },
-  { key: "activityCoffee", icon: Coffee },
-  { key: "activityMovies", icon: Film },
-  { key: "activityGames", icon: Gamepad2 },
+const ACTIVITY_OPTIONS: { key: TranslationKey; label: string }[] = [
+  { key: "activityNature", label: "Natur" },
+  { key: "activityFoodOut", label: "Äta ute" },
+  { key: "activityRelax", label: "Hänga" },
+  { key: "activityShopping", label: "Shopping" },
+  { key: "activitySports", label: "Sport" },
+  { key: "activityCoffee", label: "Fika" },
+  { key: "activityMovies", label: "Bio" },
+  { key: "activityGames", label: "Spel" },
 ];
 
 // No longer needed - removed CARD_COLORS
