@@ -262,11 +262,9 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     setTaggedFriends((prev) => prev.filter((t) => t.id !== tagId));
   };
 
-  const getActivityIcon = (activity: string) => {
+  const getActivityLabel = (activity: string) => {
     const opt = ACTIVITY_OPTIONS.find((o) => o.key === activity);
-    if (!opt) return null;
-    const Icon = opt.icon;
-    return <Icon className="w-3 h-3" />;
+    return opt ? opt.label : activity;
   };
 
   const getActivityLabel = (activity: string) => {
