@@ -1,11 +1,11 @@
 import { useState, useEffect, type ReactNode } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,7 +46,6 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
   useEffect(() => {
     if (!open || !user) return;
     const fetchFriends = async () => {
-      // Get accepted friend requests in both directions
       const { data: requests } = await supabase
         .from("friend_requests")
         .select("from_user_id, to_user_id")
@@ -97,14 +96,12 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
       return;
     }
 
-    // Add owner as member
     await supabase.from("group_memberships").insert({
       group_id: group.id,
       user_id: user.id,
       role: "owner",
     });
 
-    // Add selected friends as members
     if (selectedFriends.length > 0) {
       await supabase.from("group_memberships").insert(
         selectedFriends.map((fId) => ({
@@ -130,132 +127,150 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
   };
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) resetState(); }}>
-      <DialogTrigger asChild>
+    <Drawer open={open} onOpenChange={(v) => { setOpen(v); if (!v) resetState(); }}>
+      <DrawerTrigger asChild>
         {trigger || (
           <Button variant="ghost" size="sm" className="gap-1.5">
             <Plus className="w-4 h-4" /> Ny grupp
           </Button>
         )}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle className="font-display text-xl">
+      </DrawerTrigger>
+      <DrawerContent
+        className="mx-auto max-w-lg border-0"
+        style={{ backgroundColor: "#F7F3EF", borderRadius: "20px 20px 0 0" }}
+      >
+        <DrawerHeader className="pb-0">
+          <DrawerTitle className="font-display text-xl text-center" style={{ color: "#3C2A4D" }}>
             {step === 1 ? "Skapa grupp" : "Bjud in vänner"}
-          </DialogTitle>
-        </DialogHeader>
+          </DrawerTitle>
+        </DrawerHeader>
 
-        {step === 1 ? (
-          <div className="space-y-4 pt-2">
-            <div>
-              <Label htmlFor="gname" className="text-sm text-muted-foreground">
-                Gruppnamn
-              </Label>
-              <Input
-                id="gname"
-                placeholder="T.ex. Resegänget"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="mt-1.5 bg-muted/50 border-border/50"
-              />
-            </div>
-
-            <div>
-              <Label className="text-sm text-muted-foreground">Välj emoji</Label>
-              <div className="flex gap-2 mt-2">
-                {emojiPresets.map((preset) => (
-                  <button
-                    key={preset.emoji}
-                    type="button"
-                    onClick={() => setSelectedEmoji(preset.emoji)}
-                    className="flex flex-col items-center gap-1 rounded-lg p-2 transition-colors"
-                    style={{
-                      backgroundColor:
-                        selectedEmoji === preset.emoji ? "#E8D5DA" : "#F7F3EF",
-                      border:
-                        selectedEmoji === preset.emoji
-                          ? "1px solid #C9B8D8"
-                          : "1px solid transparent",
-                    }}
-                  >
-                    <span className="text-lg">{preset.emoji}</span>
-                    <span className="text-[10px]" style={{ color: "#7A6A85" }}>
-                      {preset.label}
-                    </span>
-                  </button>
-                ))}
+        <div className="px-5 pb-6">
+          {step === 1 ? (
+            <div className="space-y-4 pt-4">
+              <div>
+                <Label htmlFor="gname" className="text-sm" style={{ color: "#7A6A85" }}>
+                  Gruppnamn
+                </Label>
+                <Input
+                  id="gname"
+                  placeholder="T.ex. Resegänget"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="mt-1.5 border-border/50"
+                  style={{ backgroundColor: "#FFFFFF" }}
+                />
               </div>
-            </div>
 
-            <Button
-              onClick={() => setStep(2)}
-              disabled={!name}
-              className="w-full font-semibold"
-            >
-              Nästa
-            </Button>
-          </div>
-        ) : (
-          <div className="space-y-4 pt-2">
-            {friends.length === 0 ? (
-              <p className="text-[13px] text-center py-6" style={{ color: "#7A6A85" }}>
-                Du har inga vänner att bjuda in ännu.
-              </p>
-            ) : (
-              <div className="space-y-1.5 max-h-60 overflow-y-auto">
-                {friends.map((f) => {
-                  const selected = selectedFriends.includes(f.user_id);
-                  return (
+              <div>
+                <Label className="text-sm" style={{ color: "#7A6A85" }}>Välj emoji</Label>
+                <div className="flex gap-2 mt-2">
+                  {emojiPresets.map((preset) => (
                     <button
-                      key={f.user_id}
+                      key={preset.emoji}
                       type="button"
-                      onClick={() => toggleFriend(f.user_id)}
-                      className="w-full flex items-center gap-3 rounded-[10px] p-2.5 text-left transition-colors"
+                      onClick={() => setSelectedEmoji(preset.emoji)}
+                      className="flex flex-col items-center gap-1 rounded-lg p-2 transition-colors"
                       style={{
-                        backgroundColor: selected ? "#EAF2E8" : "#FFFFFF",
-                        border: `0.5px solid ${selected ? "#B5CCBF" : "#DDD5CC"}`,
+                        backgroundColor:
+                          selectedEmoji === preset.emoji ? "#E8D5DA" : "#FFFFFF",
+                        border:
+                          selectedEmoji === preset.emoji
+                            ? "1px solid #C9B8D8"
+                            : "1px solid transparent",
                       }}
                     >
-                      <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium"
-                        style={{ backgroundColor: "#C9B8D8", color: "#3C2A4D" }}
-                      >
-                        {f.initial}
-                      </div>
-                      <span className="flex-1 text-[13px] font-medium" style={{ color: "#3C2A4D" }}>
-                        {f.display_name}
+                      <span className="text-lg">{preset.emoji}</span>
+                      <span className="text-[10px]" style={{ color: "#7A6A85" }}>
+                        {preset.label}
                       </span>
-                      {selected && (
-                        <Check className="w-4 h-4" style={{ color: "#1F4A1A" }} />
-                      )}
                     </button>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            )}
 
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setStep(1)}
-                className="flex-1"
+              <button
+                onClick={() => setStep(2)}
+                disabled={!name}
+                className="w-full py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
+                style={{
+                  backgroundColor: "#3C2A4D",
+                  borderRadius: 10,
+                }}
               >
-                Tillbaka
-              </Button>
-              <Button
-                onClick={handleCreate}
-                disabled={loading}
-                className="flex-1 font-semibold"
-              >
-                {selectedFriends.length > 0
-                  ? `Skapa (${selectedFriends.length} valda)`
-                  : "Skapa utan vänner"}
-              </Button>
+                Nästa
+              </button>
             </div>
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
+          ) : (
+            <div className="space-y-4 pt-4">
+              {friends.length === 0 ? (
+                <p className="text-[13px] text-center py-6" style={{ color: "#7A6A85" }}>
+                  Du har inga vänner att bjuda in ännu.
+                </p>
+              ) : (
+                <div className="space-y-1.5 max-h-60 overflow-y-auto">
+                  {friends.map((f) => {
+                    const selected = selectedFriends.includes(f.user_id);
+                    return (
+                      <button
+                        key={f.user_id}
+                        type="button"
+                        onClick={() => toggleFriend(f.user_id)}
+                        className="w-full flex items-center gap-3 rounded-[10px] p-2.5 text-left transition-colors"
+                        style={{
+                          backgroundColor: selected ? "#EAF2E8" : "#FFFFFF",
+                          border: `0.5px solid ${selected ? "#B5CCBF" : "#DDD5CC"}`,
+                        }}
+                      >
+                        <div
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium"
+                          style={{ backgroundColor: "#C9B8D8", color: "#3C2A4D" }}
+                        >
+                          {f.initial}
+                        </div>
+                        <span className="flex-1 text-[13px] font-medium" style={{ color: "#3C2A4D" }}>
+                          {f.display_name}
+                        </span>
+                        {selected && (
+                          <Check className="w-4 h-4" style={{ color: "#1F4A1A" }} />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setStep(1)}
+                  className="flex-1 py-2.5 text-sm font-medium rounded-[10px]"
+                  style={{
+                    border: "0.5px solid #DDD5CC",
+                    color: "#3C2A4D",
+                    backgroundColor: "#FFFFFF",
+                  }}
+                >
+                  Tillbaka
+                </button>
+                <button
+                  onClick={handleCreate}
+                  disabled={loading}
+                  className="flex-1 py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
+                  style={{
+                    backgroundColor: "#3C2A4D",
+                    borderRadius: 10,
+                  }}
+                >
+                  {selectedFriends.length > 0
+                    ? `Skapa (${selectedFriends.length} valda)`
+                    : "Skapa utan vänner"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

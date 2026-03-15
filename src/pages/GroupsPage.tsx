@@ -12,6 +12,21 @@ interface Group {
   emoji: string;
   owner_id: string;
   member_names: string[];
+  last_message: string | null;
+  last_message_at: string | null;
+}
+
+function formatTime(dateStr: string): string {
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffDays === 0) {
+    return d.toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit" });
+  }
+  if (diffDays === 1) return "Igår";
+  if (diffDays < 7) return d.toLocaleDateString("sv-SE", { weekday: "short" });
+  return d.toLocaleDateString("sv-SE", { month: "short", day: "numeric" });
 }
 
 const GroupsPage = () => {
@@ -57,9 +72,32 @@ const GroupsPage = () => {
             .map((p) => p.display_name || "Anonym")
             .slice(0, 4);
 
-          return { ...g, member_names: names };
+          // Fetch last message
+          const { data: lastMsg } = await supabase
+            .from("group_messages")
+            .select("content, created_at")
+            .eq("group_id", g.id)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          return {
+            ...g,
+            member_names: names,
+            last_message: lastMsg?.content || null,
+            last_message_at: lastMsg?.created_at || null,
+          };
         })
       );
+
+      // Sort by last message time (newest first), groups without messages last
+      groupsWithMembers.sort((a, b) => {
+        if (!a.last_message_at && !b.last_message_at) return 0;
+        if (!a.last_message_at) return 1;
+        if (!b.last_message_at) return -1;
+        return new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime();
+      });
+
       setGroups(groupsWithMembers);
     }
     setLoading(false);
@@ -122,17 +160,17 @@ const GroupsPage = () => {
                     {g.name}
                   </p>
                   <p
-                    className="text-[11px] truncate"
+                    className="text-[11px] truncate italic"
                     style={{ color: "#7A6A85" }}
                   >
-                    {g.member_names.join(", ")}
+                    {g.last_message || "Inga meddelanden än"}
                   </p>
                 </div>
 
-                {/* Timestamp placeholder */}
+                {/* Timestamp */}
                 <div className="shrink-0 flex flex-col items-end gap-1">
                   <span className="text-[10px]" style={{ color: "#7A6A85" }}>
-                    –
+                    {g.last_message_at ? formatTime(g.last_message_at) : "–"}
                   </span>
                 </div>
               </button>
