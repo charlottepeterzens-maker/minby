@@ -252,10 +252,16 @@ const FeedPage = () => {
               const profile = getProfile(item.userId);
               const key = `${item.type}-${item.data.id}`;
 
+              const animDelay = `${Math.min(idx * 80, 400)}ms`;
+              const wrapper = (child: React.ReactNode) => (
+                <div key={key} className="animate-fade-up" style={{ animationDelay: animDelay }}>
+                  {child}
+                </div>
+              );
+
               if (item.type === "post") {
-                return (
+                return wrapper(
                   <FeedPostCard
-                    key={key}
                     post={item.data}
                     profile={profile}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
@@ -264,9 +270,8 @@ const FeedPage = () => {
               }
 
               if (item.type === "hangout") {
-                return (
+                return wrapper(
                   <FeedHangoutCard
-                    key={key}
                     hangout={item.data}
                     profile={profile}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
@@ -275,9 +280,8 @@ const FeedPage = () => {
               }
 
               if (item.type === "health") {
-                return (
+                return wrapper(
                   <FeedHealthCard
-                    key={key}
                     post={item.data}
                     profile={profile}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
