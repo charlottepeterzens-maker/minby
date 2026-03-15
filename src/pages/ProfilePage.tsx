@@ -33,6 +33,7 @@ import HangoutAvailability from "@/components/profile/HangoutAvailability";
 import ProfileShareDialog from "@/components/profile/ProfileShareDialog";
 import FriendRequestButton from "@/components/profile/FriendRequestButton";
 import GroupHangoutSuggestions from "@/components/profile/GroupHangoutSuggestions";
+import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import BottomNav from "@/components/BottomNav";
 import { toast } from "@/hooks/use-toast";
 
