@@ -1,18 +1,16 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, User, Users, Settings } from "lucide-react";
-import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
+import { Home, User, UsersRound, Settings } from "lucide-react";
 
-const navItems: { labelKey: TranslationKey; icon: typeof Home; path: string }[] = [
-  { labelKey: "home", icon: Home, path: "/" },
-  { labelKey: "profile", icon: User, path: "/profile" },
-  { labelKey: "friends", icon: Users, path: "/circles" },
-  { labelKey: "settings", icon: Settings, path: "/settings" },
+const navItems = [
+  { label: "Hem", icon: Home, path: "/" },
+  { label: "Profil", icon: User, path: "/profile" },
+  { label: "Grupper", icon: UsersRound, path: "/groups" },
+  { label: "Inställningar", icon: Settings, path: "/settings" },
 ];
 
 const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useLanguage();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border safe-area-bottom">
@@ -22,7 +20,7 @@ const BottomNav = () => {
 
           return (
             <button
-              key={item.labelKey}
+              key={item.label}
               onClick={() => navigate(item.path)}
               className="flex flex-col items-center gap-1 px-4 py-1.5 relative transition-colors duration-150"
             >
