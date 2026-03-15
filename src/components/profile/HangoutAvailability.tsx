@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
 import {
   CalendarIcon, Plus, X, Pencil, TreePine, UtensilsCrossed, Sofa,
-  ShoppingBag, Dumbbell, Coffee, Film, Gamepad2, ChevronLeft,
-  ChevronRight, MessageCircle, UserPlus, Send, Trash2,
+  ShoppingBag, Dumbbell, Coffee, Film, Gamepad2,
+  MessageCircle, UserPlus, Send, Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
