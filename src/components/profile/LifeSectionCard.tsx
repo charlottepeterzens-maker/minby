@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Plus, Image, Link, Trash2, Send, Pencil, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PostReactions from "@/components/profile/PostReactions";
+import ConfirmSheet from "@/components/ConfirmSheet";
 
 interface LifePost {
   id: string;
@@ -38,7 +39,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [posting, setPosting] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
-
+  const [deletePostId, setDeletePostId] = useState<string | null>(null);
   // Edit state
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(section.name);
@@ -243,7 +244,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 </div>
                 {isOwner && (
                   <button
-                    onClick={() => handleDelete(post.id)}
+                    onClick={() => setDeletePostId(post.id)}
                     className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity text-destructive/50 hover:text-destructive"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -262,6 +263,14 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
           )}
         </DialogContent>
       </Dialog>
+      <ConfirmSheet
+        open={!!deletePostId}
+        onOpenChange={(open) => { if (!open) setDeletePostId(null); }}
+        title="Ta bort inlägg"
+        description="Är du säker på att du vill ta bort detta inlägg? Det går inte att ångra."
+        confirmLabel="Ta bort"
+        onConfirm={() => { if (deletePostId) handleDelete(deletePostId); setDeletePostId(null); }}
+      />
     </Card>
   );
 };

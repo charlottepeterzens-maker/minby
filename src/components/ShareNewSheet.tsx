@@ -15,6 +15,7 @@ import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import ConfirmSheet from "@/components/ConfirmSheet";
 
 interface ShareNewSheetProps {
   open: boolean;
@@ -52,6 +53,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [customNote, setCustomNote] = useState("");
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
+  const [deleteEntryId, setDeleteEntryId] = useState<string | null>(null);
 
   const vibes = [
     { value: "chill", label: t("vibeChill") },
@@ -230,6 +232,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
   };
 
   return (
+    <>
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="rounded-t-3xl max-h-[85vh] overflow-y-auto">
         <SheetHeader>
@@ -403,7 +406,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button
-                        onClick={() => handleRemoveAvailability(entry.id)}
+                        onClick={() => setDeleteEntryId(entry.id)}
                         className="text-muted-foreground hover:text-destructive transition-colors p-1"
                       >
                         <X className="w-3.5 h-3.5" />
@@ -471,6 +474,15 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
         )}
       </SheetContent>
     </Sheet>
+    <ConfirmSheet
+      open={!!deleteEntryId}
+      onOpenChange={(open) => { if (!open) setDeleteEntryId(null); }}
+      title="Ta bort datum"
+      description="Vill du ta bort detta datum?"
+      confirmLabel="Ta bort"
+      onConfirm={() => { if (deleteEntryId) handleRemoveAvailability(deleteEntryId); setDeleteEntryId(null); }}
+    />
+    </>
   );
 };
 
