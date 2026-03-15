@@ -473,6 +473,15 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
         )}
       </SheetContent>
     </Sheet>
+    <ConfirmSheet
+      open={!!deleteEntryId}
+      onOpenChange={(open) => { if (!open) setDeleteEntryId(null); }}
+      title="Ta bort datum"
+      description="Vill du ta bort detta datum?"
+      confirmLabel="Ta bort"
+      onConfirm={() => { if (deleteEntryId) handleRemoveAvailability(deleteEntryId); setDeleteEntryId(null); }}
+    />
+    </>
   );
 };
 
