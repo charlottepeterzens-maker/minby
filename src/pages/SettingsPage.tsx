@@ -60,7 +60,7 @@ const SettingsPage = () => {
           <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground transition-colors duration-150">
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
-          <span className="font-display text-lg font-medium text-foreground">{t("settings")}</span>
+          <span className="font-display text-[22px] text-foreground">{t("settings")}</span>
         </div>
       </nav>
 
