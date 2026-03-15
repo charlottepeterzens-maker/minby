@@ -104,7 +104,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
               <span style={{ color: colors.text, opacity: 0.7 }}>{typeIcon}</span>
               {isOwner && (
                 <span
-                  className="text-[8px] uppercase tracking-wider"
+                  className="text-[8px]"
                   style={{ color: colors.text, opacity: 0.6 }}
                 >
                   {tierLabels[section.min_tier]}

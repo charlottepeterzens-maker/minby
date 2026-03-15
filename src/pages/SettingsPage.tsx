@@ -133,7 +133,7 @@ const SettingsPage = () => {
         {/* Data & Privacy */}
         <Card className="rounded-[14px] border-[0.5px] border-border">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[11px] uppercase tracking-wider text-muted-foreground font-body font-medium">
+            <CardTitle className="text-xs text-muted-foreground font-body font-medium">
               {t("howWeUseData")}
             </CardTitle>
           </CardHeader>

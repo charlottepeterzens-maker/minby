@@ -99,7 +99,7 @@ const FriendsPage = () => {
     <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background border-b border-border">
         <div className="max-w-2xl mx-auto px-5 py-4">
-          <span className="font-display text-lg font-medium tracking-[0.35em] text-foreground">{t("friends").toUpperCase()}</span>
+          <span className="font-display text-lg font-medium text-foreground">{t("friends")}</span>
         </div>
       </nav>
 

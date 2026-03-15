@@ -81,7 +81,7 @@ const AuthPage = () => {
             />
           </div>
           <div>
-            <Label htmlFor="password" className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("password")}</Label>
+            <Label htmlFor="password" className="text-xs text-muted-foreground">{t("password")}</Label>
             <Input
               id="password"
               type="password"
