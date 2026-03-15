@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { format, subDays } from "date-fns";
+import { sv } from "date-fns/locale";
 
 interface WorkoutEntry {
   id: string;

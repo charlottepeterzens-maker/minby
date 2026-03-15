@@ -9,6 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarDays, Sparkles, CalendarIcon, X, Pencil, TreePine, UtensilsCrossed, Sofa, ShoppingBag, Dumbbell, Coffee, Film, Gamepad2 } from "lucide-react";
 import { format, isBefore, startOfDay } from "date-fns";
+import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
