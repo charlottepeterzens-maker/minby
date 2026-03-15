@@ -405,7 +405,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                       <button
-                        onClick={() => handleRemoveAvailability(entry.id)}
+                        onClick={() => setDeleteEntryId(entry.id)}
                         className="text-muted-foreground hover:text-destructive transition-colors p-1"
                       >
                         <X className="w-3.5 h-3.5" />
