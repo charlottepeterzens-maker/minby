@@ -263,7 +263,7 @@ const ProfilePage = () => {
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-xl font-display font-bold text-primary">{initial}</span>
+                <span className="text-lg font-display font-medium text-secondary">{initial}</span>
               )}
             </div>
             {isOwnProfile && (
