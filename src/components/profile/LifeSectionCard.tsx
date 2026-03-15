@@ -263,6 +263,14 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
           )}
         </DialogContent>
       </Dialog>
+      <ConfirmSheet
+        open={!!deletePostId}
+        onOpenChange={(open) => { if (!open) setDeletePostId(null); }}
+        title="Ta bort inlägg"
+        description="Är du säker på att du vill ta bort detta inlägg? Det går inte att ångra."
+        confirmLabel="Ta bort"
+        onConfirm={() => { if (deletePostId) handleDelete(deletePostId); setDeletePostId(null); }}
+      />
     </Card>
   );
 };
