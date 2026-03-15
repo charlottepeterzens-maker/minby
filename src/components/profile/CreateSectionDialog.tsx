@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Plus, Baby, Heart, Home, Briefcase, Stethoscope, Droplets, Dumbbell, Plane, PawPrint, CookingPot } from "lucide-react";
+import { Plus, Baby, Heart, Home, Briefcase, Dumbbell, Plane, PawPrint, CookingPot } from "lucide-react";
 
 const presets = [
   { name: "Barn", icon: Baby, type: "posts" },
