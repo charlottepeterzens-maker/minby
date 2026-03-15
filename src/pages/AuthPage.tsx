@@ -69,7 +69,7 @@ const AuthPage = () => {
             </div>
           )}
           <div>
-            <Label htmlFor="email" className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("email")}</Label>
+            <Label htmlFor="email" className="text-xs text-muted-foreground">{t("email")}</Label>
             <Input
               id="email"
               type="email"
