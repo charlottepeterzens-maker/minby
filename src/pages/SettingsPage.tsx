@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChevronLeft, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import BottomNav from "@/components/BottomNav";
+import ConfirmSheet from "@/components/ConfirmSheet";
 
 const SettingsPage = () => {
   const navigate = useNavigate();
