@@ -70,9 +70,11 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm">
-          <Plus className="w-4 h-4" /> {t("addSection")}
-        </Button>
+        {trigger || (
+          <Button variant="ghost" size="sm">
+            <Plus className="w-4 h-4" /> {t("addSection")}
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
