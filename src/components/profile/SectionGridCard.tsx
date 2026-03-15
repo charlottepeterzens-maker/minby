@@ -100,7 +100,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
           }`}
         >
           <div
-            className="shrink-0 flex items-center justify-center rounded-[7px]"
+            className="shrink-0 flex items-center justify-center rounded-[7px] group-hover:animate-emoji-wobble"
             style={{ width: 26, height: 26, backgroundColor: colors.bg }}
           >
             <IconComponent className="w-3.5 h-3.5" strokeWidth={1.5} style={{ color: colors.icon }} />
