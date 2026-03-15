@@ -2,8 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
 import { sv } from "date-fns/locale";
 import {
-  CalendarIcon, Plus, X, Pencil, TreePine, UtensilsCrossed, Sofa,
-  ShoppingBag, Dumbbell, Coffee, Film, Gamepad2,
+  CalendarIcon, Plus, X, Pencil,
   MessageCircle, UserPlus, Send, Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -41,15 +40,15 @@ interface TaggedFriend {
   profile?: { display_name: string | null; avatar_url: string | null };
 }
 
-const ACTIVITY_OPTIONS: { key: TranslationKey; icon: React.ComponentType<{ className?: string }> }[] = [
-  { key: "activityNature", icon: TreePine },
-  { key: "activityFoodOut", icon: UtensilsCrossed },
-  { key: "activityRelax", icon: Sofa },
-  { key: "activityShopping", icon: ShoppingBag },
-  { key: "activitySports", icon: Dumbbell },
-  { key: "activityCoffee", icon: Coffee },
-  { key: "activityMovies", icon: Film },
-  { key: "activityGames", icon: Gamepad2 },
+const ACTIVITY_OPTIONS: { key: TranslationKey; label: string }[] = [
+  { key: "activityNature", label: "Natur" },
+  { key: "activityFoodOut", label: "Äta ute" },
+  { key: "activityRelax", label: "Hänga" },
+  { key: "activityShopping", label: "Shopping" },
+  { key: "activitySports", label: "Sport" },
+  { key: "activityCoffee", label: "Fika" },
+  { key: "activityMovies", label: "Bio" },
+  { key: "activityGames", label: "Spel" },
 ];
 
 // No longer needed - removed CARD_COLORS
@@ -263,17 +262,11 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     setTaggedFriends((prev) => prev.filter((t) => t.id !== tagId));
   };
 
-  const getActivityIcon = (activity: string) => {
-    const opt = ACTIVITY_OPTIONS.find((o) => o.key === activity);
-    if (!opt) return null;
-    const Icon = opt.icon;
-    return <Icon className="w-3 h-3" />;
-  };
-
   const getActivityLabel = (activity: string) => {
     const opt = ACTIVITY_OPTIONS.find((o) => o.key === activity);
-    return opt ? t(opt.key) : activity;
+    return opt ? opt.label : activity;
   };
+
 
   const toggleExpand = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
@@ -332,23 +325,23 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               <div>
                 <p className="text-xs font-medium text-muted-foreground mb-2">{t("activities")}</p>
                 <div className="flex flex-wrap gap-2">
-                  {ACTIVITY_OPTIONS.map((opt) => {
-                    const Icon = opt.icon;
-                    return (
-                      <button
-                        key={opt.key}
-                        onClick={() => toggleActivity(opt.key)}
-                        className={cn(
-                          "px-2.5 py-1 text-xs rounded-full border transition-all inline-flex items-center gap-1.5",
-                          selectedActivities.includes(opt.key)
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-background text-muted-foreground border-border hover:border-primary/50"
-                        )}
-                      >
-                        <Icon className="w-3 h-3" /> {t(opt.key)}
-                      </button>
-                    );
-                  })}
+                  {ACTIVITY_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.key}
+                      onClick={() => toggleActivity(opt.key)}
+                      style={{
+                        borderRadius: 20,
+                        fontSize: 13,
+                        padding: "6px 14px",
+                        border: "0.5px solid #DDD5CC",
+                        backgroundColor: selectedActivities.includes(opt.key) ? "#3C2A4D" : "#FFFFFF",
+                        color: selectedActivities.includes(opt.key) ? "#FFFFFF" : "#3C2A4D",
+                      }}
+                      className="font-medium transition-all"
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -425,13 +418,13 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         {entry.activities.slice(0, 3).map((a) => (
                           <span
                             key={a}
-                            className="text-[10px] font-medium px-2 py-0.5 rounded-[20px] inline-flex items-center gap-1"
+                            className="text-[10px] font-medium px-2 py-0.5 rounded-[20px]"
                             style={{
                               backgroundColor: "hsl(270 20% 94%)",
                               color: "hsl(var(--primary))",
                             }}
                           >
-                            {getActivityIcon(a)} {getActivityLabel(a)}
+                            {getActivityLabel(a)}
                           </span>
                         ))}
                         {entry.activities.length > 3 && (
@@ -528,9 +521,9 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         {entry.activities.map((a) => (
                           <span
                             key={a}
-                            className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary inline-flex items-center gap-1"
+                            className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary"
                           >
-                            {getActivityIcon(a)} {getActivityLabel(a)}
+                            {getActivityLabel(a)}
                           </span>
                         ))}
                       </div>
