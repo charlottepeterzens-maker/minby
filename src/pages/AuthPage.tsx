@@ -57,7 +57,7 @@ const AuthPage = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {isSignUp && (
             <div>
-              <Label htmlFor="name" className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("yourName")}</Label>
+              <Label htmlFor="name" className="text-xs text-muted-foreground">{t("yourName")}</Label>
               <Input
                 id="name"
                 value={displayName}
