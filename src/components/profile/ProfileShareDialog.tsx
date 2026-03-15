@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Share2, Copy, Check } from "lucide-react";
+import { Share, Copy, Check } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -25,7 +25,7 @@ const ProfileShareDialog = ({ userId }: Props) => {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8">
-          <Share2 className="w-4 h-4" />
+          <Share className="w-4 h-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-sm">
