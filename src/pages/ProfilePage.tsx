@@ -58,6 +58,8 @@ const SortableGridCard = ({
   isOwner,
   isExpanded,
   onClick,
+  onDeleted,
+  onRenamed,
   index,
   reordering,
 }: {
@@ -65,6 +67,8 @@ const SortableGridCard = ({
   isOwner: boolean;
   isExpanded: boolean;
   onClick: () => void;
+  onDeleted?: () => void;
+  onRenamed?: () => void;
   index: number;
   reordering: boolean;
 }) => {
@@ -92,6 +96,8 @@ const SortableGridCard = ({
         isOwner={isOwner}
         isExpanded={isExpanded}
         onClick={reordering ? () => {} : onClick}
+        onDeleted={onDeleted}
+        onRenamed={onRenamed}
         index={index}
       />
     </div>
@@ -397,6 +403,8 @@ const ProfilePage = () => {
                         isOwner={isOwnProfile}
                         isExpanded={expandedSection === section.id}
                         onClick={() => toggleSection(section.id)}
+                        onDeleted={fetchSections}
+                        onRenamed={fetchSections}
                         index={i}
                         reordering={reordering}
                       />
