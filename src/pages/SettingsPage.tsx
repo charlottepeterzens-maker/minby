@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -26,6 +26,30 @@ const SettingsPage = () => {
   const [notifFriendRequests, setNotifFriendRequests] = useState(true);
   const [notifGatherings, setNotifGatherings] = useState(true);
   const [notifUpdates, setNotifUpdates] = useState(true);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("friend_request_notifications, meetup_notifications, update_notifications")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        if (data) {
+          setNotifFriendRequests((data as any).friend_request_notifications ?? true);
+          setNotifGatherings((data as any).meetup_notifications ?? true);
+          setNotifUpdates((data as any).update_notifications ?? true);
+        }
+      });
+  }, [user]);
+
+  const updateNotifPref = useCallback(async (column: string, value: boolean) => {
+    if (!user) return;
+    await supabase
+      .from("profiles")
+      .update({ [column]: value } as any)
+      .eq("user_id", user.id);
+  }, [user]);
 
   const handleChangePassword = async () => {
     if (newPassword.length < 6) {
