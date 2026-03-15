@@ -482,7 +482,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="font-display text-sm font-bold text-foreground">
-                          {format(new Date(entry.date + "T00:00:00"), "EEEE, MMMM d")}
+                          {format(new Date(entry.date + "T00:00:00"), "EEEE d MMMM", { locale: sv })}
                         </p>
                         {entry.custom_note && (
                           <p className="text-xs text-muted-foreground italic mt-0.5">"{entry.custom_note}"</p>

@@ -380,7 +380,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-foreground">
-                        {format(new Date(entry.date + "T00:00:00"), "EEE, MMM d")}
+                        {format(new Date(entry.date + "T00:00:00"), "EEE d MMM", { locale: sv })}
                       </p>
                       {entry.activities.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-1">
