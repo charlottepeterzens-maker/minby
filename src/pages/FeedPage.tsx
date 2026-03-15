@@ -212,8 +212,7 @@ const FeedPage = () => {
             <Heart className="w-8 h-8 text-muted-foreground/40 mb-5" />
             {(() => {
               const hour = new Date().getHours();
-              const name = profiles[user?.id || ""]?.display_name || "";
-              const firstName = name ? name.split(" ")[0] : "";
+              const firstName = currentUserName ? currentUserName.split(" ")[0] : "";
               let greeting: string;
               let subtitle: string;
               if (hour >= 5 && hour < 12) {
