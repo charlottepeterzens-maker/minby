@@ -232,6 +232,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
   };
 
   return (
+    <>
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom" className="rounded-t-3xl max-h-[85vh] overflow-y-auto">
         <SheetHeader>
