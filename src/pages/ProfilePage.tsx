@@ -470,7 +470,7 @@ const ProfilePage = () => {
                 </span>
               ))}
             </div>
-          </motion.div>
+          </div>
         )}
       </main>
       <ScrollToTopButton />
