@@ -52,7 +52,7 @@ const ACTIVITY_OPTIONS: { key: TranslationKey; icon: React.ComponentType<{ class
 ];
 
 const CARD_COLORS = [
-  { bg: "hsl(214 60% 88%)", text: "hsl(235 50% 25%)" },
+  { bg: "hsl(270 20% 94%)", text: "hsl(270 30% 23%)" },
   { bg: "hsl(25 100% 90%)", text: "hsl(16 60% 30%)" },
   { bg: "hsl(262 60% 82%)", text: "hsl(262 40% 20%)" },
   { bg: "hsl(100 50% 80%)", text: "hsl(150 30% 15%)" },
