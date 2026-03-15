@@ -219,7 +219,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                         className="w-full flex items-center gap-3 rounded-[10px] p-2.5 text-left transition-colors"
                         style={{
                           backgroundColor: selected ? "#EAF2E8" : "#FFFFFF",
-                          border: `0.5px solid ${selected ? "#B5CCBF" : "#DDD5CC"}`,
+                          border: `0.5px solid ${selected ? "#B5CCBF" : "#EDE8F4"}`,
                         }}
                       >
                         <div
