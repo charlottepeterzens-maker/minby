@@ -27,8 +27,17 @@ const FeedPage = () => {
   const navigate = useNavigate();
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [profiles, setProfiles] = useState<ProfileMap>({});
+  const [currentUserName, setCurrentUserName] = useState<string>("");
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+
+  // Fetch current user's name for greeting
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("display_name").eq("user_id", user.id).single().then(({ data }) => {
+      if (data?.display_name) setCurrentUserName(data.display_name);
+    });
+  }, [user]);
 
   const filters = [
     { label: t("all"), value: "all" },
