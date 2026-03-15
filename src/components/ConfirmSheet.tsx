@@ -11,10 +11,11 @@ interface Props {
   title: string;
   description: string;
   confirmLabel?: string;
+  confirmStyle?: React.CSSProperties;
   onConfirm: () => void;
 }
 
-const ConfirmSheet = ({ open, onOpenChange, title, description, confirmLabel = "Ta bort", onConfirm }: Props) => (
+const ConfirmSheet = ({ open, onOpenChange, title, description, confirmLabel = "Ta bort", confirmStyle, onConfirm }: Props) => (
   <Drawer open={open} onOpenChange={onOpenChange}>
     <DrawerContent className="mx-auto max-w-lg border-0" style={{ backgroundColor: "#F7F3EF", borderRadius: "20px 20px 0 0" }}>
       <DrawerHeader className="pb-2">
