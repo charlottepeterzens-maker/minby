@@ -377,9 +377,9 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             {entries.map((entry) => {
               const isExpanded = expandedId === entry.id;
               const dateObj = new Date(entry.date + "T00:00:00");
-              const monthLabel = format(dateObj, "MMM").toUpperCase();
+              const monthLabel = format(dateObj, "MMM", { locale: sv }).toUpperCase();
               const dayLabel = format(dateObj, "d");
-              const dateTitle = format(dateObj, "EEEE d MMMM");
+              const dateTitle = format(dateObj, "EEEE d MMMM", { locale: sv });
 
               return (
                 <button
