@@ -74,10 +74,10 @@ const defaultTranslations: Record<string, Record<string, string>> = {
     logToday: "Log today", flowLevel: "Flow level", flowLight: "Light",
     flowMedium: "Medium", flowHeavy: "Heavy", symptoms: "Symptoms",
     saveEntry: "Save entry", couldNotLog: "Could not log", logged: "Logged!",
-    hangoutAvailability: "When I'm free", addAvailability: "Add a date",
+    hangoutAvailability: "Hang out", addAvailability: "Add a date",
     selectDate: "Select a date", activities: "Activities",
     save: "Save", noAvailability: "No dates marked yet",
-    freeDates: "Free dates", shareWhenFree: "Let friends know when you're free",
+    freeDates: "Hang out", shareWhenFree: "Let friends know when you want to hang out",
     editAvailability: "Edit",
   },
   sv: {
