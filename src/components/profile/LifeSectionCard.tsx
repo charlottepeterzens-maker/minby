@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Plus, Image, Link, Trash2, Send, Pencil, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PostReactions from "@/components/profile/PostReactions";
+import ConfirmSheet from "@/components/ConfirmSheet";
 
 interface LifePost {
   id: string;
