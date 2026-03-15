@@ -459,7 +459,7 @@ const ProfilePage = () => {
 
         {/* Tier legend */}
         {isOwnProfile && sections.length > 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8 p-4 bg-muted/50">
+          <div className="mt-8 p-4 bg-card rounded-[14px] border-[0.5px] border-border">
             <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1">
               <Lock className="w-3 h-3" /> {t("accessLevels")}
             </p>
