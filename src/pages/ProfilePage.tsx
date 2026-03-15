@@ -315,11 +315,11 @@ const ProfilePage = () => {
                 ) : (
                   <button
                     onClick={() => setEditingBio(true)}
-                    className="group flex items-start gap-1.5 text-sm text-muted-foreground italic hover:text-foreground transition-colors w-full text-left"
-                    style={{ wordBreak: "break-word" }}
+                    className="group flex items-start gap-1.5 text-[13px] hover:text-foreground transition-colors w-full text-left"
+                    style={{ color: '#7A6A85', wordBreak: "break-word" }}
                   >
                     {profile?.bio ? (
-                      <span>"{profile.bio}"</span>
+                      <span>{profile.bio}</span>
                     ) : (
                       <span className="not-italic">{t("addQuoteOrBio")}</span>
                     )}
@@ -328,7 +328,7 @@ const ProfilePage = () => {
                 )}
               </div>
             ) : profile?.bio ? (
-              <p className="mt-1 text-sm text-muted-foreground italic">"{profile.bio}"</p>
+              <p className="mt-1 text-[13px]" style={{ color: '#7A6A85' }}>{profile.bio}</p>
             ) : null}
           </div>
         </div>
