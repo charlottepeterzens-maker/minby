@@ -433,7 +433,7 @@ const ProfilePage = () => {
                       <div className="shrink-0 flex items-center justify-center rounded-[7px] border-[0.5px] border-dashed border-current" style={{ width: 26, height: 26 }}>
                         <Plus className="w-3.5 h-3.5" />
                       </div>
-                      <span className="text-[12px] font-medium">Nytt rum</span>
+                      <span className="text-[12px] font-medium">Lägg till</span>
                     </button>
                   } />
                 )}

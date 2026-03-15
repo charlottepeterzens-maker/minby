@@ -16,7 +16,7 @@ const PrivacyPage = () => {
         <div className="space-y-6 text-[13px] leading-[1.7]" style={{ color: "#5A4A65" }}>
           <section>
             <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Vad vi samlar in</h2>
-            <p>Namn, e-postadress, profilbild, inlägg i vardagsrum, gruppchattar och meddelanden, lediga datum och aktiviteter.</p>
+            <p>Namn, e-postadress, profilbild, inlägg i delar av min vardag, gruppchattar och meddelanden, lediga datum och aktiviteter.</p>
           </section>
 
           <section>

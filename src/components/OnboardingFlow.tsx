@@ -236,7 +236,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               className="font-display"
               style={{ fontWeight: 500, fontSize: "20px", color: "#3C2A4D" }}
             >
-              Skapa ditt första vardagsrum
+              Skapa din första del av min vardag
             </h1>
             <Input
               value={roomName}
