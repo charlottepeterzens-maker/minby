@@ -255,11 +255,11 @@ const ProfilePage = () => {
         </div>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 pb-24">
+      <main className="max-w-2xl mx-auto px-5 py-6 pb-24">
         {/* Profile header with avatar */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-start gap-4 mb-8">
+        <div className="flex items-start gap-4 mb-8">
           <div className="relative shrink-0">
-            <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/30 flex items-center justify-center overflow-hidden">
+            <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center overflow-hidden">
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
