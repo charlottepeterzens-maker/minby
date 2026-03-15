@@ -286,7 +286,7 @@ const ProfilePage = () => {
 
           <div className="flex-1 min-w-0 pt-1">
             <div className="flex items-center gap-2">
-              <h1 className="font-display text-xl font-bold text-foreground">
+              <h1 className="font-display text-base font-medium text-foreground">
                 {profile?.display_name || t("anonymous")}
               </h1>
               {!isOwnProfile && targetUserId && (
