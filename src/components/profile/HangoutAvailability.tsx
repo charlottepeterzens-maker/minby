@@ -453,7 +453,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     <button
                       onClick={() => toggleExpand(entry.id)}
                       className={cn(
-                        "w-full flex items-center gap-3 bg-card rounded-[12px] border-[0.5px] border-border p-2.5 text-left transition-all",
+                        "w-full flex items-center gap-3 bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all",
                         isExpanded && "ring-1 ring-primary/20"
                       )}
                     >
