@@ -415,7 +415,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 <div key={entry.id} className="relative">
                   {/* Edit inline form */}
                   {editingEntryId === entry.id && isOwner ? (
-                    <div className="bg-muted/50 rounded-[12px] border-[0.5px] border-border p-3 space-y-3">
+                    <div className="bg-muted/50 rounded-[16px] border-[0.5px] border-border p-3 space-y-3">
                       <p className="text-[13px] font-medium text-foreground">{dateTitle}</p>
                       <div className="flex flex-wrap gap-2">
                         {ACTIVITY_OPTIONS.map((opt) => (
