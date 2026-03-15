@@ -267,10 +267,6 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     return opt ? opt.label : activity;
   };
 
-  const getActivityLabel = (activity: string) => {
-    const opt = ACTIVITY_OPTIONS.find((o) => o.key === activity);
-    return opt ? t(opt.key) : activity;
-  };
 
   const toggleExpand = (id: string) => {
     setExpandedId((prev) => (prev === id ? null : id));
