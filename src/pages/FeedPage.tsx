@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -196,13 +197,20 @@ const FeedPage = () => {
             ))}
           </div>
         ) : filteredItems.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="font-display text-lg text-muted-foreground">
-              {filter === "all" ? t("noUpdates") : t("noUpdatesFilter")}
+          <div className="flex flex-col items-center justify-center py-24 px-6">
+            <Heart className="w-8 h-8 text-muted-foreground/40 mb-5" />
+            <p className="font-display font-medium text-[16px] text-foreground text-center">
+              Din by är tyst just nu
             </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              {t("addFriendsHint")}
+            <p className="text-[13px] text-muted-foreground text-center mt-2">
+              Bjud in en vän eller skapa ditt första inlägg
             </p>
+            <button
+              onClick={() => navigate("/friends")}
+              className="mt-6 px-5 py-2.5 rounded-[10px] text-[13px] font-medium bg-primary text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              Bjud in en vän
+            </button>
           </div>
         ) : (
           <div className="space-y-4">
