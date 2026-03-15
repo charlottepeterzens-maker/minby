@@ -329,23 +329,23 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               <div>
                 <p className="text-xs font-medium text-muted-foreground mb-2">{t("activities")}</p>
                 <div className="flex flex-wrap gap-2">
-                  {ACTIVITY_OPTIONS.map((opt) => {
-                    const Icon = opt.icon;
-                    return (
-                      <button
-                        key={opt.key}
-                        onClick={() => toggleActivity(opt.key)}
-                        className={cn(
-                          "px-2.5 py-1 text-xs rounded-full border transition-all inline-flex items-center gap-1.5",
-                          selectedActivities.includes(opt.key)
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-background text-muted-foreground border-border hover:border-primary/50"
-                        )}
-                      >
-                        <Icon className="w-3 h-3" /> {t(opt.key)}
-                      </button>
-                    );
-                  })}
+                  {ACTIVITY_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.key}
+                      onClick={() => toggleActivity(opt.key)}
+                      style={{
+                        borderRadius: 20,
+                        fontSize: 13,
+                        padding: "6px 14px",
+                        border: "0.5px solid #DDD5CC",
+                        backgroundColor: selectedActivities.includes(opt.key) ? "#3C2A4D" : "#FFFFFF",
+                        color: selectedActivities.includes(opt.key) ? "#FFFFFF" : "#3C2A4D",
+                      }}
+                      className="font-medium transition-all"
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
