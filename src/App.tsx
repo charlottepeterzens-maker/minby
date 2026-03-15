@@ -43,6 +43,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
             <Route path="/circles" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+            <Route path="/groups" element={<ProtectedRoute><GroupsPage /></ProtectedRoute>} />
+            <Route path="/groups/:groupId" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             <Route path="/friends" element={<ProtectedRoute><FriendsPage /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
