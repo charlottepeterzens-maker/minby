@@ -369,6 +369,18 @@ const ProfilePage = () => {
           </div>
         )}
 
+        {/* Health coming soon placeholder */}
+        <div className="mb-6 flex items-center gap-3 rounded-[12px] border-[0.5px] border-[#DDD5CC] bg-[#FFFFFF] p-3">
+          <div className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 36, height: 36, backgroundColor: '#FCF0F3' }}>
+            <Heart className="w-4 h-4" style={{ color: '#993556' }} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-medium" style={{ color: '#3C2A4D' }}>Hälsa</p>
+            <p className="text-[11px]" style={{ color: '#7A6A85' }}>Menscykel, graviditet och mer – kommer snart</p>
+          </div>
+          <Lock className="w-4 h-4 shrink-0" style={{ color: '#C9B8D8' }} />
+        </div>
+
         {/* Life sections as thumbnail grid */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xs font-medium text-muted-foreground font-body">
