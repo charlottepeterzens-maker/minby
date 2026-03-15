@@ -332,7 +332,7 @@ const ProfilePage = () => {
               <p className="mt-1 text-sm text-muted-foreground italic">"{profile.bio}"</p>
             ) : null}
           </div>
-        </motion.div>
+        </div>
 
         {/* Friend Tier Manager */}
         <AnimatePresence>
