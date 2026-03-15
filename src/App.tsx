@@ -23,6 +23,15 @@ const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
+  const [onboarded, setOnboarded] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      const done = localStorage.getItem(`onboarding_done_${user.id}`);
+      setOnboarded(!!done);
+    }
+  }, [user]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -31,6 +40,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     );
   }
   if (!user) return <AuthPage />;
+  if (!onboarded) return <OnboardingFlow onComplete={() => setOnboarded(true)} />;
   return <>{children}</>;
 };
 
