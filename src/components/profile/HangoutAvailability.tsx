@@ -515,7 +515,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     <div>
                       <div className="flex items-center gap-1.5 mb-1.5">
                         <UserPlus className="w-3 h-3 text-muted-foreground" />
-                        <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                        <span className="text-[10px] font-medium text-muted-foreground">
                           {t("friends") || "Friends"}
                         </span>
                       </div>
