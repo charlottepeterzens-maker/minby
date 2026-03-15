@@ -94,7 +94,7 @@ const SettingsPage = () => {
           </CardHeader>
           <CardContent className="space-y-3">
             <div>
-              <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("newPassword")}</Label>
+              <Label className="text-xs text-muted-foreground">{t("newPassword")}</Label>
               <Input type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="mt-1 rounded-[10px] border-[0.5px]" />
             </div>
             <div>
