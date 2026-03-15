@@ -76,7 +76,8 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="font-display">{t("addLifeSection")}</DialogTitle>
+          <DialogTitle className="font-display">Lägg till en del av din vardag</DialogTitle>
+          <p className="text-[13px] text-muted-foreground mt-1">Vad händer i ditt liv just nu som du vill dela med dina närmaste?</p>
         </DialogHeader>
 
         {/* Presets */}
