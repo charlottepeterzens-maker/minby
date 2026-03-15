@@ -377,21 +377,10 @@ const ProfilePage = () => {
         </div>
 
         {/* Life sections as thumbnail grid */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4">
           <h2 className="text-xs font-medium text-muted-foreground font-body">
-            {t("lifeUpdates")}
+            Vardagsrum
           </h2>
-          {isOwnProfile && sections.length > 1 && (
-            <Button
-              variant={reordering ? "default" : "ghost"}
-              size="sm"
-              className="text-xs"
-              onClick={() => setReordering(!reordering)}
-            >
-              {reordering ? <Check className="w-3 h-3 mr-1" /> : <GripVertical className="w-3 h-3 mr-1" />}
-              {t("reorderSections")}
-            </Button>
-          )}
         </div>
 
         {loading ? (
