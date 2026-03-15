@@ -23,6 +23,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
+import CurvedSeparator from "@/components/CurvedSeparator";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
 import SectionGridCard from "@/components/profile/SectionGridCard";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
@@ -239,7 +240,7 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Top nav */}
-      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+      <nav className="sticky top-0 z-50 bg-background">
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button onClick={() => navigate("/")} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150">
@@ -251,17 +252,18 @@ const ProfilePage = () => {
             {targetUserId && <ProfileShareDialog userId={targetUserId} />}
           </div>
         </div>
+        <CurvedSeparator />
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-6 pb-24">
         {/* Profile header with avatar */}
         <div className="flex items-start gap-4 mb-8">
           <div className="relative shrink-0">
-            <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center overflow-hidden">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#EDE8F4' }}>
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-lg font-display font-medium text-secondary">{initial}</span>
+                <span className="text-lg font-display font-medium" style={{ color: '#3C2A4D' }}>{initial}</span>
               )}
             </div>
             {isOwnProfile && (

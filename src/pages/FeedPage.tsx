@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
+import CurvedSeparator from "@/components/CurvedSeparator";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import FeedPostCard from "@/components/feed/FeedPostCard";
 import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
@@ -26,8 +27,17 @@ const FeedPage = () => {
   const navigate = useNavigate();
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [profiles, setProfiles] = useState<ProfileMap>({});
+  const [currentUserName, setCurrentUserName] = useState<string>("");
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
+
+  // Fetch current user's name for greeting
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("display_name").eq("user_id", user.id).single().then(({ data }) => {
+      if (data?.display_name) setCurrentUserName(data.display_name);
+    });
+  }, [user]);
 
   const filters = [
     { label: t("all"), value: "all" },
@@ -164,12 +174,13 @@ const FeedPage = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <nav className="sticky top-0 z-50 bg-background border-b-[0.5px] border-border">
+      <nav className="sticky top-0 z-50 bg-background">
         <div className="max-w-2xl mx-auto px-5 py-4 text-center">
           <span className="font-display text-[26px] font-light tracking-[-0.5px] text-foreground lowercase">
             minby
           </span>
         </div>
+        <CurvedSeparator />
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-5">
@@ -199,11 +210,34 @@ const FeedPage = () => {
         ) : filteredItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 px-6">
             <Heart className="w-8 h-8 text-muted-foreground/40 mb-5" />
-            <p className="font-display font-medium text-[16px] text-foreground text-center">
-              Din by är tyst just nu
-            </p>
-            <p className="text-[13px] text-muted-foreground text-center mt-2">
-              Bjud in en vän eller skapa ditt första inlägg
+            {(() => {
+              const hour = new Date().getHours();
+              const firstName = currentUserName ? currentUserName.split(" ")[0] : "";
+              let greeting: string;
+              let subtitle: string;
+              if (hour >= 5 && hour < 12) {
+                greeting = firstName ? `God morgon, ${firstName}.` : "God morgon.";
+                subtitle = "Din by är tyst just nu.";
+              } else if (hour >= 12 && hour < 18) {
+                greeting = firstName ? `God eftermiddag, ${firstName}.` : "God eftermiddag.";
+                subtitle = "Inget nytt från byn ännu.";
+              } else {
+                greeting = firstName ? `God kväll, ${firstName}.` : "God kväll.";
+                subtitle = "Lugnt i byn ikväll.";
+              }
+              return (
+                <>
+                  <p className="font-display font-medium text-[16px] text-center" style={{ color: '#3C2A4D' }}>
+                    {greeting}
+                  </p>
+                  <p className="text-[13px] text-center mt-1" style={{ color: '#3C2A4D' }}>
+                    {subtitle}
+                  </p>
+                </>
+              );
+            })()}
+            <p className="text-[13px] text-muted-foreground text-center mt-3">
+              Bjud in en vän eller dela något från din vardag
             </p>
             <button
               onClick={() => navigate("/friends")}

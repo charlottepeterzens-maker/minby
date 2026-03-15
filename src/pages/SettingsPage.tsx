@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChevronLeft, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import BottomNav from "@/components/BottomNav";
+import CurvedSeparator from "@/components/CurvedSeparator";
 import ConfirmSheet from "@/components/ConfirmSheet";
 
 const SettingsPage = () => {
@@ -104,13 +105,14 @@ const SettingsPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+      <nav className="sticky top-0 z-50 bg-background">
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center gap-2">
           <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground transition-colors duration-150">
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
           <span className="font-display text-[20px] font-medium text-foreground">{t("settings")}</span>
         </div>
+        <CurvedSeparator />
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-6 space-y-4">

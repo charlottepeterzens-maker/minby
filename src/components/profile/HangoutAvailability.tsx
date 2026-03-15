@@ -459,11 +459,14 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     >
                       {/* Date icon */}
                       <div
-                        className="shrink-0 flex flex-col items-center justify-center"
+                        className="shrink-0 flex flex-col items-center justify-center relative"
                         style={{ width: 38, height: 38, backgroundColor: "#3C2A4D", borderRadius: 12 }}
                       >
                         <span className="text-[9px] font-medium leading-none" style={{ color: "#C9B8D8" }}>{monthLabel}</span>
                         <span className="text-[15px] leading-none mt-0.5" style={{ color: "#F7F3EF", fontWeight: 500 }}>{dayLabel}</span>
+                        {entry.date === new Date().toISOString().split("T")[0] && (
+                          <span className="absolute -bottom-0.5 w-[6px] h-[6px] rounded-full" style={{ backgroundColor: "#C9B8D8" }} />
+                        )}
                       </div>
 
                       {/* Middle */}
@@ -472,7 +475,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         {entry.activities.length > 0 && (
                           <div className="flex flex-wrap gap-1 mt-1">
                             {entry.activities.slice(0, 3).map((a) => (
-                              <span key={a} className="text-[10px] font-medium px-2 py-0.5 rounded-[20px]" style={{ backgroundColor: "hsl(270 20% 94%)", color: "hsl(var(--primary))" }}>{getActivityLabel(a)}</span>
+                              <span key={a} className="text-[10px] font-medium px-2 py-0.5 rounded-[20px]" style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}>{getActivityLabel(a)}</span>
                             ))}
                             {entry.activities.length > 3 && <span className="text-[10px] text-muted-foreground">+{entry.activities.length - 3}</span>}
                           </div>
@@ -574,7 +577,8 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         {entry.activities.map((a) => (
                           <span
                             key={a}
-                            className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary"
+                            className="text-[10px] px-2 py-0.5 rounded"
+                            style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
                           >
                             {getActivityLabel(a)}
                           </span>
@@ -653,11 +657,11 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         <div className="space-y-1.5 mb-2">
                           {comments.map((c) => (
                             <div key={c.id} className="flex items-start gap-2 group">
-                              <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                              <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: '#EDE8F4' }}>
                                 {c.profile?.avatar_url ? (
                                   <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
                                 ) : (
-                                  <span className="text-[8px] font-bold text-primary">
+                                  <span className="text-[8px] font-bold" style={{ color: '#3C2A4D' }}>
                                     {c.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                                   </span>
                                 )}
