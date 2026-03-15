@@ -352,15 +352,23 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 </div>
               </div>
 
-              <Input
+              <textarea
                 value={customNote}
-                onChange={(e) => setCustomNote(e.target.value)}
-                placeholder={t("customNote")}
-                className="text-sm"
-                maxLength={100}
+                onChange={(e) => setCustomNote(e.target.value.slice(0, 150))}
+                placeholder="Berätta lite mer... t.ex. var, vad du är sugen på eller annat."
+                className="w-full text-sm rounded-md border border-border bg-background px-3 py-2 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+                maxLength={150}
+                rows={2}
               />
+              <p className="text-[10px] text-muted-foreground text-right">{customNote.length}/150</p>
 
-              <Button size="sm" className="w-full" disabled={!selectedDate || saving} onClick={handleSave}>
+              <Button
+                size="sm"
+                className="w-full text-white"
+                style={{ backgroundColor: "#3C2A4D" }}
+                disabled={!selectedDate || saving}
+                onClick={handleSave}
+              >
                 {t("save")}
               </Button>
             </div>
