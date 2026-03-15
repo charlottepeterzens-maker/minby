@@ -367,79 +367,99 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
         )}
       </AnimatePresence>
 
-      {/* Entries grid row */}
+      {/* Entries as compact rows */}
       {entries.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-3">{t("noAvailability")}</p>
       ) : (
         <div>
-          <div className="relative">
-            {entries.length > 3 && (
-              <>
+          <div className="space-y-2">
+            {entries.map((entry) => {
+              const isExpanded = expandedId === entry.id;
+              const dateObj = new Date(entry.date + "T00:00:00");
+              const monthLabel = format(dateObj, "MMM").toUpperCase();
+              const dayLabel = format(dateObj, "d");
+              const dateTitle = format(dateObj, "EEEE d MMMM");
+
+              return (
                 <button
-                  onClick={() => {
-                    const el = document.getElementById("hangout-scroll");
-                    if (el) el.scrollBy({ left: -130, behavior: "smooth" });
-                  }}
-                  className="absolute -left-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-background/90 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                  key={entry.id}
+                  onClick={() => toggleExpand(entry.id)}
+                  className={cn(
+                    "w-full flex items-center gap-3 bg-card rounded-[12px] border-[0.5px] border-border p-2.5 text-left transition-all",
+                    isExpanded && "ring-1 ring-primary/20"
+                  )}
                 >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => {
-                    const el = document.getElementById("hangout-scroll");
-                    if (el) el.scrollBy({ left: 130, behavior: "smooth" });
-                  }}
-                  className="absolute -right-1 top-1/2 -translate-y-1/2 z-10 w-6 h-6 rounded-full bg-background/90 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </>
-            )}
-            <div
-              id="hangout-scroll"
-              className="flex gap-1.5 overflow-x-auto pb-1"
-              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            >
-              {entries.map((entry, i) => {
-                const colors = CARD_COLORS[i % CARD_COLORS.length];
-                const isExpanded = expandedId === entry.id;
-                const dateObj = new Date(entry.date + "T00:00:00");
-                return (
-                  <motion.button
-                    key={entry.id}
-                    onClick={() => toggleExpand(entry.id)}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className={cn(
-                      "relative shrink-0 w-[100px] aspect-square rounded-md flex flex-col items-start justify-end p-2 transition-all",
-                      isExpanded && "ring-2 ring-foreground/20"
-                    )}
-                    style={{ backgroundColor: colors.bg }}
+                  {/* Date icon */}
+                  <div
+                    className="shrink-0 flex flex-col items-center justify-center rounded-[10px]"
+                    style={{
+                      width: 38,
+                      height: 38,
+                      backgroundColor: "hsl(var(--primary))",
+                    }}
                   >
-                    <p className="font-display text-lg font-bold leading-none" style={{ color: colors.text }}>
-                      {format(dateObj, "d")}
-                    </p>
-                    <p className="text-[10px] font-medium mt-0.5" style={{ color: colors.text, opacity: 0.7 }}>
-                      {format(dateObj, "EEE, MMM")}
+                    <span className="text-[9px] font-medium leading-none" style={{ color: "hsl(var(--secondary))" }}>
+                      {monthLabel}
+                    </span>
+                    <span className="text-[15px] font-bold leading-none mt-0.5" style={{ color: "hsl(var(--background))" }}>
+                      {dayLabel}
+                    </span>
+                  </div>
+
+                  {/* Middle: date title + activity pills */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium text-foreground leading-tight truncate">
+                      {dateTitle}
                     </p>
                     {entry.activities.length > 0 && (
-                      <div className="flex gap-0.5 mt-1">
+                      <div className="flex flex-wrap gap-1 mt-1">
                         {entry.activities.slice(0, 3).map((a) => (
-                          <span key={a} style={{ color: colors.text, opacity: 0.6 }}>
-                            {getActivityIcon(a)}
+                          <span
+                            key={a}
+                            className="text-[10px] font-medium px-2 py-0.5 rounded-[20px] inline-flex items-center gap-1"
+                            style={{
+                              backgroundColor: "hsl(270 20% 94%)",
+                              color: "hsl(var(--primary))",
+                            }}
+                          >
+                            {getActivityIcon(a)} {getActivityLabel(a)}
                           </span>
                         ))}
                         {entry.activities.length > 3 && (
-                          <span className="text-[8px]" style={{ color: colors.text, opacity: 0.5 }}>
+                          <span className="text-[10px] text-muted-foreground">
                             +{entry.activities.length - 3}
                           </span>
                         )}
                       </div>
                     )}
-                  </motion.button>
-                );
-              })}
-            </div>
+                  </div>
+
+                  {/* Right: Ja! button */}
+                  {!isOwner && (
+                    <span
+                      className="shrink-0 text-[11px] font-medium px-3 py-1.5 rounded-[8px]"
+                      style={{
+                        backgroundColor: "hsl(145 20% 94%)",
+                        color: "hsl(150 40% 20%)",
+                      }}
+                    >
+                      Ja!
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+
+            {/* Add date row */}
+            {isOwner && (
+              <button
+                onClick={() => setShowAdd(!showAdd)}
+                className="w-full flex items-center justify-center gap-2 rounded-[12px] border-[0.5px] border-dashed border-border p-3 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span className="text-xs font-medium">Lägg till datum</span>
+              </button>
+            )}
           </div>
 
           {/* Expanded detail */}
