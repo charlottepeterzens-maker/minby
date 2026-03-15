@@ -443,8 +443,6 @@ const ProfilePage = () => {
                               {(() => {
                                 const sec = sections.find((s) => s.id === expandedSection);
                                 if (!sec) return null;
-                                if (sec.section_type === "period")
-                                  return <PeriodTracker section={sec} isOwner={isOwnProfile} />;
                                 if (sec.section_type === "workout")
                                   return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
                                 return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
