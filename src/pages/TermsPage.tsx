@@ -1,18 +1,54 @@
-const TermsPage = () => (
-  <div className="min-h-screen bg-background px-5 py-10 max-w-2xl mx-auto">
-    <h1 className="font-display text-[22px] font-medium text-foreground mb-6">Användarvillkor</h1>
-    <div className="space-y-4 text-[13px] text-muted-foreground leading-[1.7]">
-      <p>Genom att skapa ett konto på Minby godkänner du dessa villkor.</p>
-      <h2 className="text-foreground font-medium text-[15px] pt-2">Användning av tjänsten</h2>
-      <p>Minby är en plattform för att hålla kontakten med vänner och planera träffar. Du ansvarar för allt innehåll du delar och förbinder dig att inte använda tjänsten för att sprida hat, trakasserier eller olagligt material.</p>
-      <h2 className="text-foreground font-medium text-[15px] pt-2">Konto och säkerhet</h2>
-      <p>Du ansvarar för att hålla dina inloggningsuppgifter säkra. Om du misstänker obehörig åtkomst till ditt konto, kontakta oss omedelbart.</p>
-      <h2 className="text-foreground font-medium text-[15px] pt-2">Uppsägning</h2>
-      <p>Du kan när som helst sluta använda Minby. Vi förbehåller oss rätten att stänga av konton som bryter mot dessa villkor.</p>
-      <h2 className="text-foreground font-medium text-[15px] pt-2">Ändringar</h2>
-      <p>Vi kan uppdatera dessa villkor. Vid väsentliga ändringar meddelar vi dig via appen.</p>
+import { useNavigate } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
+
+const TermsPage = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: "#F7F3EF" }}>
+      <div className="max-w-[600px] mx-auto px-6 py-6">
+        <button onClick={() => navigate(-1)} className="mb-6 flex items-center gap-1 text-[13px] font-medium" style={{ color: "#3C2A4D" }}>
+          <ChevronLeft className="w-4 h-4" strokeWidth={1.5} /> Tillbaka
+        </button>
+
+        <h1 className="font-display text-[22px] font-medium mb-8" style={{ color: "#3C2A4D" }}>Användarvillkor</h1>
+
+        <div className="space-y-6 text-[13px] leading-[1.7]" style={{ color: "#5A4A65" }}>
+          <section>
+            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Tjänsten</h2>
+            <p>Minby är en social app i testfas driven av Charlotte Peterzéns.</p>
+          </section>
+
+          <section>
+            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Ålder</h2>
+            <p>Du måste vara minst 18 år för att använda tjänsten.</p>
+          </section>
+
+          <section>
+            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Ditt innehåll</h2>
+            <p>Du ansvarar själv för det innehåll du publicerar i appen.</p>
+          </section>
+
+          <section>
+            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Testfas</h2>
+            <p>Tjänsten är under aktiv utveckling och kan ändras eller avslutas när som helst.</p>
+          </section>
+
+          <section>
+            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Uppförande</h2>
+            <p>Respektera andra användare – kränkande eller stötande innehåll tolereras inte.</p>
+          </section>
+
+          <section>
+            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Kontakt</h2>
+            <p><a href="mailto:charlotte.peterzens@gmail.com" className="underline" style={{ color: "#3C2A4D" }}>charlotte.peterzens@gmail.com</a></p>
+          </section>
+
+          <p className="text-[11px] pt-2" style={{ color: "#9B8BA5" }}>Senast uppdaterad: mars 2026</p>
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default TermsPage;
