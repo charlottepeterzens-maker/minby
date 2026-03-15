@@ -190,7 +190,7 @@ const GroupsPage = () => {
                       width: 42,
                       height: 42,
                       borderRadius: 10,
-                      border: "0.5px dashed #DDD5CC",
+                      border: "0.5px dashed #EDE8F4",
                     }}
                   >
                     <Plus className="w-4 h-4" style={{ color: "#7A6A85" }} />

@@ -245,7 +245,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                   onClick={() => setStep(1)}
                   className="flex-1 py-2.5 text-sm font-medium rounded-[10px]"
                   style={{
-                    border: "0.5px solid #DDD5CC",
+                    border: "0.5px solid #EDE8F4",
                     color: "#3C2A4D",
                     backgroundColor: "#FFFFFF",
                   }}

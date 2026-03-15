@@ -445,7 +445,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         rows={2}
                       />
                       <div className="flex gap-2">
-                        <button onClick={() => setEditingEntryId(null)} className="flex-1 py-2 text-[13px] font-medium rounded-[10px]" style={{ border: "0.5px solid #DDD5CC", color: "#3C2A4D" }}>Avbryt</button>
+                        <button onClick={() => setEditingEntryId(null)} className="flex-1 py-2 text-[13px] font-medium rounded-[10px]" style={{ border: "0.5px solid #EDE8F4", color: "#3C2A4D" }}>Avbryt</button>
                         <button onClick={handleSaveEdit} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] text-white" style={{ backgroundColor: "#3C2A4D" }}>Spara</button>
                       </div>
                     </div>

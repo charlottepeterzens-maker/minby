@@ -101,7 +101,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
                   <button
                     onClick={() => removeOption(i)}
                     className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: "#DDD5CC" }}
+                    style={{ backgroundColor: "#EDE8F4" }}
                   >
                     <X className="w-3.5 h-3.5" style={{ color: "#7A6A85" }} />
                   </button>

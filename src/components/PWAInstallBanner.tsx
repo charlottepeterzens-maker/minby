@@ -59,7 +59,7 @@ const PWAInstallBanner = () => {
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
           className="fixed bottom-20 left-4 right-4 z-50 flex items-center gap-3 rounded-2xl p-4 shadow-lg"
-          style={{ backgroundColor: "#FFFFFF", border: "0.5px solid #DDD5CC" }}
+          style={{ backgroundColor: "#FFFFFF", border: "0.5px solid #EDE8F4" }}
         >
           <div
             className="shrink-0 flex items-center justify-center rounded-full"

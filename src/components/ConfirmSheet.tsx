@@ -29,7 +29,7 @@ const ConfirmSheet = ({ open, onOpenChange, title, description, confirmLabel = "
           <button
             onClick={() => onOpenChange(false)}
             className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px]"
-            style={{ border: "0.5px solid #DDD5CC", color: "#3C2A4D", backgroundColor: "#FFFFFF" }}
+            style={{ border: "0.5px solid #EDE8F4", color: "#3C2A4D", backgroundColor: "#FFFFFF" }}
           >
             Avbryt
           </button>
