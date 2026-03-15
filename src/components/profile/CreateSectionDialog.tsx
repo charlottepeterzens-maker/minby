@@ -15,8 +15,6 @@ const presets = [
   { name: "Partner", icon: Heart, type: "posts" },
   { name: "Husbygge", icon: Home, type: "posts" },
   { name: "Jobb", icon: Briefcase, type: "posts" },
-  { name: "Graviditet", icon: Stethoscope, type: "posts" },
-  { name: "Hälsa", icon: Droplets, type: "period" },
   { name: "Träning", icon: Dumbbell, type: "workout" },
   { name: "Resor", icon: Plane, type: "posts" },
   { name: "Husdjur", icon: PawPrint, type: "posts" },

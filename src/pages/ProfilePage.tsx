@@ -148,7 +148,7 @@ const ProfilePage = () => {
       .select("*")
       .eq("user_id", targetUserId)
       .order("sort_order", { ascending: true });
-    if (data) setSections(data as LifeSection[]);
+    if (data) setSections((data as LifeSection[]).filter(s => s.section_type !== "period"));
     setLoading(false);
   }, [targetUserId]);
 
