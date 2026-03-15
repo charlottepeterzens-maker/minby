@@ -26,7 +26,7 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
 import SectionGridCard from "@/components/profile/SectionGridCard";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
-import FriendTierManager from "@/components/profile/FriendTierManager";
+
 import WorkoutTracker from "@/components/profile/WorkoutTracker";
 import HangoutAvailability from "@/components/profile/HangoutAvailability";
 import ProfileShareDialog from "@/components/profile/ProfileShareDialog";
