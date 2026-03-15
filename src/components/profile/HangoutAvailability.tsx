@@ -497,7 +497,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
-                          className="absolute top-2.5 right-2.5 z-10 w-5 h-5 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+                          className="absolute top-1/2 -translate-y-1/2 right-2.5 z-10 w-5 h-5 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
