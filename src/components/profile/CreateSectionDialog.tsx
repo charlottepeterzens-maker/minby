@@ -11,20 +11,21 @@ import { toast } from "sonner";
 import { Plus, Baby, Heart, Home, Briefcase, Stethoscope, Droplets, Dumbbell, Plane, PawPrint, CookingPot } from "lucide-react";
 
 const presets = [
-  { name: "My kids", icon: Baby, type: "posts" },
-  { name: "My partner", icon: Heart, type: "posts" },
-  { name: "House renovation", icon: Home, type: "posts" },
-  { name: "Work life", icon: Briefcase, type: "posts" },
-  { name: "My pregnancy", icon: Stethoscope, type: "posts" },
-  { name: "Period tracker", icon: Droplets, type: "period" },
-  { name: "My workouts", icon: Dumbbell, type: "workout" },
-  { name: "Travel", icon: Plane, type: "posts" },
-  { name: "Pets", icon: PawPrint, type: "posts" },
-  { name: "Cooking", icon: CookingPot, type: "posts" },
+  { name: "Barn", icon: Baby, type: "posts" },
+  { name: "Partner", icon: Heart, type: "posts" },
+  { name: "Husbygge", icon: Home, type: "posts" },
+  { name: "Jobb", icon: Briefcase, type: "posts" },
+  { name: "Graviditet", icon: Stethoscope, type: "posts" },
+  { name: "Hälsa", icon: Droplets, type: "period" },
+  { name: "Träning", icon: Dumbbell, type: "workout" },
+  { name: "Resor", icon: Plane, type: "posts" },
+  { name: "Husdjur", icon: PawPrint, type: "posts" },
+  { name: "Matlagning", icon: CookingPot, type: "posts" },
 ];
 
 interface Props {
   onCreated: () => void;
+  trigger?: React.ReactNode;
 }
 
 const CreateSectionDialog = ({ onCreated }: Props) => {
