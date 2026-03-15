@@ -441,6 +441,9 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         )}
                       </div>
                     )}
+                    {entry.custom_note && (
+                      <p className="text-[11px] text-muted-foreground mt-1 truncate">{entry.custom_note}</p>
+                    )}
                   </div>
 
                   {/* Right: Ja! button */}
