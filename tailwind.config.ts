@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Fraunces", "serif"],
+        display: ["Sofia", "cursive"],
         body: ["Urbanist", "sans-serif"],
       },
       colors: {

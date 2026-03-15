@@ -111,7 +111,7 @@ const GroupsPage = () => {
     <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
       <nav className="sticky top-0 z-50 border-b border-border" style={{ backgroundColor: "#F7F3EF" }}>
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
-          <span className="font-display text-lg font-medium text-foreground">Grupper</span>
+          <span className="font-display text-[22px] text-foreground">Grupper</span>
         </div>
       </nav>
 

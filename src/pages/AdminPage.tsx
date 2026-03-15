@@ -13,8 +13,8 @@ const AdminPage = () => {
   if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="text-xl animate-float font-display font-normal tracking-[0.35em] text-primary">
-          MINBY
+        <span className="text-[22px] animate-float font-display tracking-[0.35em] text-primary lowercase">
+          minby
         </span>
       </div>
     );

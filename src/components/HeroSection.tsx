@@ -6,7 +6,7 @@ const HeroSection = () => {
           Less scrolling, more living
         </div>
 
-        <h1 className="font-display text-3xl sm:text-4xl font-medium text-foreground leading-tight mb-4">
+        <h1 className="font-display text-[22px] text-foreground leading-tight mb-4">
           Your village.
           <br />
           <span className="text-primary italic">Always close.</span>
