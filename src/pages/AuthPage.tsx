@@ -45,8 +45,8 @@ const AuthPage = () => {
     <div className="min-h-screen bg-background flex items-center justify-center px-5">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <span className="text-[22px] font-display tracking-[0.35em] text-foreground lowercase">minby</span>
-          <h1 className="font-display text-[22px] text-foreground mt-4">
+          <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
+          <h1 className="font-display font-medium text-[20px] text-foreground mt-4">
             {isSignUp ? t("joinMinby") : t("welcomeBack")}
           </h1>
           <p className="text-muted-foreground mt-2 text-sm">

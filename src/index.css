@@ -127,7 +127,6 @@
 @layer utilities {
   .font-display {
     font-family: var(--font-display);
-    font-weight: 400 !important;
     font-style: normal !important;
   }
   .font-body {

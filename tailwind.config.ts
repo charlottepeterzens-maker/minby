@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Sofia", "cursive"],
-        body: ["Urbanist", "sans-serif"],
+        display: ["Lexend", "sans-serif"],
+        body: ["Lexend", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
