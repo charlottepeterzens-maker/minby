@@ -453,34 +453,36 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     <button
                       onClick={() => toggleExpand(entry.id)}
                       className={cn(
-                        "w-full flex items-center gap-3 bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all",
+                        "w-full flex items-center bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all",
                         isExpanded && "ring-1 ring-primary/20"
                       )}
                     >
-                      {/* Date icon */}
-                      <div
-                        className="shrink-0 flex flex-col items-center justify-center relative"
-                        style={{ width: 38, height: 38, backgroundColor: "#3C2A4D", borderRadius: 12 }}
-                      >
-                        <span className="text-[9px] font-medium leading-none" style={{ color: "#C9B8D8" }}>{monthLabel}</span>
-                        <span className="text-[15px] leading-none mt-0.5" style={{ color: "#F7F3EF", fontWeight: 500 }}>{dayLabel}</span>
-                        {entry.date === new Date().toISOString().split("T")[0] && (
-                          <span className="absolute -bottom-0.5 w-[6px] h-[6px] rounded-full" style={{ backgroundColor: "#C9B8D8" }} />
-                        )}
+                      {/* Date column */}
+                      <div className="shrink-0 flex flex-col items-center justify-center" style={{ width: 40 }}>
+                        <span className="text-[22px] leading-none" style={{ color: "#3C2A4D", fontWeight: 500 }}>{dayLabel}</span>
+                        <span className="text-[10px] font-medium leading-none mt-0.5 uppercase" style={{ color: "#C9B8D8", letterSpacing: "0.05em" }}>{monthLabel}</span>
                       </div>
 
-                      {/* Middle */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-medium text-foreground leading-tight truncate pr-5">{dateTitle}</p>
-                        {entry.activities.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-1">
+                      {/* Vertical separator */}
+                      <div className="shrink-0 mx-2.5 self-stretch" style={{ width: 1, backgroundColor: "#EDE8F4" }} />
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0 pr-5">
+                        <p className="text-[13px] leading-tight truncate" style={{ color: "#3C2A4D", fontWeight: 500 }}>{dateTitle}</p>
+                        {(entry.activities.length > 0 || entry.custom_note) && (
+                          <div className="flex items-center flex-wrap gap-1 mt-1">
                             {entry.activities.slice(0, 3).map((a) => (
                               <span key={a} className="text-[10px] font-medium px-2 py-0.5 rounded-[20px]" style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}>{getActivityLabel(a)}</span>
                             ))}
                             {entry.activities.length > 3 && <span className="text-[10px] text-muted-foreground">+{entry.activities.length - 3}</span>}
+                            {entry.activities.length > 0 && entry.custom_note && (
+                              <span className="text-[10px]" style={{ color: "#7A6A85" }}>·</span>
+                            )}
+                            {entry.custom_note && (
+                              <span className="text-[12px] truncate" style={{ color: "#7A6A85" }}>{entry.custom_note}</span>
+                            )}
                           </div>
                         )}
-                        {entry.custom_note && <p className="text-[11px] text-muted-foreground mt-1 truncate">{entry.custom_note}</p>}
                       </div>
 
                       {/* Right: Ja! button */}
