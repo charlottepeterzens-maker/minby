@@ -98,7 +98,7 @@ const SettingsPage = () => {
               <Input type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="mt-1 rounded-[10px] border-[0.5px]" />
             </div>
             <div>
-              <Label className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("confirmPassword")}</Label>
+              <Label className="text-xs text-muted-foreground">{t("confirmPassword")}</Label>
               <Input type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="mt-1 rounded-[10px] border-[0.5px]" />
             </div>
             <Button onClick={handleChangePassword} disabled={changingPassword} size="sm" className="w-full rounded-[10px] font-medium text-sm">
