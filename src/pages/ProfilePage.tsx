@@ -400,7 +400,7 @@ const ProfilePage = () => {
                   }
 
                   return (
-                    <div key={section.id} className="contents">
+                    <div key={section.id} className="contents animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
                       <SortableGridCard
                         section={section}
                         isOwner={isOwnProfile}
