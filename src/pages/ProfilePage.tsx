@@ -364,7 +364,7 @@ const ProfilePage = () => {
 
         {/* Life sections as thumbnail grid */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display text-lg font-semibold text-foreground">
+          <h2 className="text-[11px] uppercase tracking-wider font-medium text-muted-foreground font-body">
             {t("lifeUpdates")}
           </h2>
           <div className="flex items-center gap-1">
