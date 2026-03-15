@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { Layers, Activity, Droplets } from "lucide-react";
+import { Layers, Activity, Droplets, Baby, Home, Heart, Briefcase, BookOpen, Users, Utensils } from "lucide-react";
 
 interface Props {
   section: { id: string; name: string; emoji: string; min_tier: string; section_type: string };
@@ -11,108 +10,70 @@ interface Props {
   index: number;
 }
 
-const PALETTE = [
-  { bg: "hsl(270 25% 78%)", text: "hsl(270 30% 23%)" },   // lavender
-  { bg: "hsl(145 18% 75%)", text: "hsl(150 30% 15%)" },    // salvia
-  { bg: "hsl(340 25% 87%)", text: "hsl(340 20% 30%)" },    // dusty rose
-  { bg: "hsl(270 30% 23%)", text: "hsl(270 25% 78%)" },    // lila natt
-  { bg: "hsl(30 25% 90%)", text: "hsl(270 30% 23%)" },     // warm linen
-  { bg: "hsl(145 20% 85%)", text: "hsl(150 30% 15%)" },    // light salvia
+const ICON_COLORS = [
+  { bg: "hsl(var(--lavender-bg))", icon: "hsl(var(--primary))" },
+  { bg: "hsl(var(--salvia-bg))", icon: "hsl(var(--accent-foreground))" },
+  { bg: "hsl(var(--dusty-rose-bg))", icon: "hsl(var(--foreground))" },
+  { bg: "hsl(var(--lavender-bg))", icon: "hsl(var(--secondary))" },
 ];
 
-const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props) => {
-  const { t } = useLanguage();
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+function getSectionIcon(name: string, sectionType: string) {
+  const lower = name.toLowerCase();
+  if (sectionType === "period") return Droplets;
+  if (sectionType === "workout") return Activity;
+  if (lower.includes("barn") || lower.includes("kid")) return Baby;
+  if (lower.includes("familj") || lower.includes("family")) return Users;
+  if (lower.includes("hus") || lower.includes("hem") || lower.includes("home")) return Home;
+  if (lower.includes("hälsa") || lower.includes("health")) return Heart;
+  if (lower.includes("jobb") || lower.includes("work") || lower.includes("projekt")) return Briefcase;
+  if (lower.includes("mat") || lower.includes("food")) return Utensils;
+  if (lower.includes("läs") || lower.includes("read") || lower.includes("book")) return BookOpen;
+  return Layers;
+}
 
-  const colors = PALETTE[index % PALETTE.length];
+const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props) => {
+  const [postCount, setPostCount] = useState<number>(0);
+  const colors = ICON_COLORS[index % ICON_COLORS.length];
+  const IconComponent = getSectionIcon(section.name, section.section_type);
 
   useEffect(() => {
-    const fetchThumbnail = async () => {
-      if (section.section_type !== "posts") return;
-      const { data } = await supabase
+    const fetchCount = async () => {
+      const { count } = await supabase
         .from("life_posts")
-        .select("image_url")
-        .eq("section_id", section.id)
-        .not("image_url", "is", null)
-        .order("created_at", { ascending: false })
-        .limit(1);
-      if (data?.[0]?.image_url) {
-        setThumbnailUrl(data[0].image_url);
-      }
+        .select("id", { count: "exact", head: true })
+        .eq("section_id", section.id);
+      setPostCount(count || 0);
     };
-    fetchThumbnail();
-  }, [section.id, section.section_type]);
-
-  const typeIcon = section.section_type === "period" ? (
-    <Droplets className="w-3 h-3" strokeWidth={1.5} />
-  ) : section.section_type === "workout" ? (
-    <Activity className="w-3 h-3" strokeWidth={1.5} />
-  ) : (
-    <Layers className="w-3 h-3" strokeWidth={1.5} />
-  );
-
-  const tierLabels: Record<string, string> = {
-    close: t("close"),
-    inner: t("innerCircle"),
-    outer: t("everyone"),
-  };
-
-  const hasImage = !!thumbnailUrl;
+    fetchCount();
+  }, [section.id]);
 
   return (
     <button
       onClick={onClick}
-      className={`relative aspect-[5/4] w-full overflow-hidden rounded-[14px] transition-colors duration-150 group ${
-        isExpanded ? "ring-[0.5px] ring-primary" : ""
+      className={`w-full flex items-center gap-2.5 bg-card rounded-[12px] border-[0.5px] border-border p-2.5 text-left transition-all ${
+        isExpanded ? "ring-1 ring-primary/20" : ""
       }`}
-      style={!hasImage ? { backgroundColor: colors.bg } : undefined}
     >
-      {/* Image background */}
-      {hasImage && (
-        <img
-          src={thumbnailUrl!}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      )}
+      {/* Icon box */}
+      <div
+        className="shrink-0 flex items-center justify-center rounded-[7px]"
+        style={{
+          width: 26,
+          height: 26,
+          backgroundColor: colors.bg,
+        }}
+      >
+        <IconComponent className="w-3.5 h-3.5" strokeWidth={1.5} style={{ color: colors.icon }} />
+      </div>
 
-      {/* Text content */}
-      <div className="absolute inset-0 flex flex-col justify-end items-start">
-        {hasImage ? (
-          <div className="rounded-tr-[10px] px-2 py-1.5" style={{ backgroundColor: colors.bg }}>
-            <h3 className="font-display text-xs font-medium leading-tight truncate" style={{ color: colors.text }}>
-              {section.name}
-            </h3>
-            <div className="flex items-center gap-1 mt-0.5">
-              <span style={{ color: colors.text, opacity: 0.7 }}>{typeIcon}</span>
-              {isOwner && (
-                <span className="text-[8px]" style={{ color: colors.text, opacity: 0.6 }}>
-                  {tierLabels[section.min_tier]}
-                </span>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="p-2.5">
-            <h3
-              className="font-display text-sm font-medium leading-tight truncate"
-              style={{ color: colors.text }}
-            >
-              {section.name}
-            </h3>
-            <div className="flex items-center gap-1 mt-0.5">
-              <span style={{ color: colors.text, opacity: 0.7 }}>{typeIcon}</span>
-              {isOwner && (
-                <span
-                  className="text-[8px]"
-                  style={{ color: colors.text, opacity: 0.6 }}
-                >
-                  {tierLabels[section.min_tier]}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
+      {/* Text */}
+      <div className="min-w-0 flex-1">
+        <p className="text-[12px] font-medium text-foreground leading-tight truncate">
+          {section.name}
+        </p>
+        <p className="text-[11px] text-muted-foreground leading-tight">
+          {postCount} {postCount === 1 ? "inlägg" : "inlägg"}
+        </p>
       </div>
     </button>
   );

@@ -375,20 +375,17 @@ const ProfilePage = () => {
           <h2 className="text-xs font-medium text-muted-foreground font-body">
             {t("lifeUpdates")}
           </h2>
-          <div className="flex items-center gap-1">
-            {isOwnProfile && sections.length > 1 && (
-              <Button
-                variant={reordering ? "default" : "ghost"}
-                size="sm"
-                className="text-xs"
-                onClick={() => setReordering(!reordering)}
-              >
-                {reordering ? <Check className="w-3 h-3 mr-1" /> : <GripVertical className="w-3 h-3 mr-1" />}
-                {t("reorderSections")}
-              </Button>
-            )}
-            {isOwnProfile && <CreateSectionDialog onCreated={fetchSections} />}
-          </div>
+          {isOwnProfile && sections.length > 1 && (
+            <Button
+              variant={reordering ? "default" : "ghost"}
+              size="sm"
+              className="text-xs"
+              onClick={() => setReordering(!reordering)}
+            >
+              {reordering ? <Check className="w-3 h-3 mr-1" /> : <GripVertical className="w-3 h-3 mr-1" />}
+              {t("reorderSections")}
+            </Button>
+          )}
         </div>
 
         {loading ? (
@@ -408,9 +405,9 @@ const ProfilePage = () => {
         ) : (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-2 gap-2">
                 {sections.map((section, i) => {
-                  const cols = 3;
+                  const cols = 2;
                   const isLastInRow = (i + 1) % cols === 0 || i === sections.length - 1;
 
                   let expandAfter = false;
@@ -433,7 +430,7 @@ const ProfilePage = () => {
                         reordering={reordering}
                       />
                       {expandAfter && (
-                        <div className="col-span-3">
+                        <div className="col-span-2">
                           <AnimatePresence mode="wait">
                             <motion.div
                               key={expandedSection}
@@ -460,6 +457,17 @@ const ProfilePage = () => {
                     </div>
                   );
                 })}
+                {/* "Nytt rum" add card */}
+                {isOwnProfile && (
+                  <CreateSectionDialog onCreated={fetchSections} trigger={
+                    <button className="w-full flex items-center gap-2.5 rounded-[12px] border-[0.5px] border-dashed border-border p-2.5 text-left text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
+                      <div className="shrink-0 flex items-center justify-center rounded-[7px] border-[0.5px] border-dashed border-current" style={{ width: 26, height: 26 }}>
+                        <Plus className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="text-[12px] font-medium">Nytt rum</span>
+                    </button>
+                  } />
+                )}
               </div>
             </SortableContext>
           </DndContext>
