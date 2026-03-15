@@ -349,6 +349,13 @@ const ProfilePage = () => {
           )}
         </AnimatePresence>
 
+        {/* Invite friend */}
+        {isOwnProfile && (
+          <div className="mb-6 flex justify-start">
+            <InviteFriendDialog />
+          </div>
+        )}
+
         {/* Hangout Availability */}
         {targetUserId && (
           <div className="mb-6">
