@@ -8,17 +8,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Plus, Baby, Heart, Home, Briefcase, Dumbbell, Plane, PawPrint, CookingPot } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const presets = [
-  { name: "Barn", icon: Baby, type: "posts" },
-  { name: "Partner", icon: Heart, type: "posts" },
-  { name: "Husbygge", icon: Home, type: "posts" },
-  { name: "Jobb", icon: Briefcase, type: "posts" },
-  { name: "Träning", icon: Dumbbell, type: "workout" },
-  { name: "Resor", icon: Plane, type: "posts" },
-  { name: "Husdjur", icon: PawPrint, type: "posts" },
-  { name: "Matlagning", icon: CookingPot, type: "posts" },
+  { name: "Barn", type: "posts" },
+  { name: "Familj", type: "posts" },
+  { name: "Jobb", type: "posts" },
+  { name: "Hem", type: "posts" },
+  { name: "Kärlek", type: "posts" },
+  { name: "Hälsa", type: "posts" },
+  { name: "Träning", type: "workout" },
+  { name: "Resor", type: "posts" },
+  { name: "Husdjur", type: "posts" },
+  { name: "Mat & dryck", type: "posts" },
+  { name: "Studier", type: "posts" },
+  { name: "Projekt", type: "posts" },
+  { name: "Övrigt", type: "posts" },
 ];
 
 interface Props {
@@ -35,9 +40,22 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
   const [minTier, setMinTier] = useState("outer");
   const [loading, setLoading] = useState(false);
 
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+
   const handlePreset = (preset: typeof presets[0]) => {
-    setName(preset.name);
+    if (selectedPreset === preset.name) {
+      setSelectedPreset(null);
+      setName("");
+      setSectionType("posts");
+      return;
+    }
+    setSelectedPreset(preset.name);
     setSectionType(preset.type);
+    if (preset.name === "Övrigt") {
+      setName("");
+    } else {
+      setName(preset.name);
+    }
   };
 
   const handleCreate = async () => {
@@ -82,28 +100,29 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
 
         {/* Presets */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {presets.map((p) => {
-            const Icon = p.icon;
-            return (
-              <button
-                key={p.name}
-                onClick={() => handlePreset(p)}
-                className={`px-3 py-1.5 text-xs font-medium border transition-all inline-flex items-center gap-1.5 ${
-                  name === p.name
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted text-muted-foreground border-border/50 hover:bg-muted/80"
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" /> {p.name}
-              </button>
-            );
-          })}
+          {presets.map((p) => (
+            <button
+              key={p.name}
+              onClick={() => handlePreset(p)}
+              style={{
+                borderRadius: 20,
+                fontSize: 13,
+                padding: "6px 14px",
+                border: "0.5px solid #DDD5CC",
+                backgroundColor: selectedPreset === p.name ? "#3C2A4D" : "#FFFFFF",
+                color: selectedPreset === p.name ? "#FFFFFF" : "#3C2A4D",
+              }}
+              className="font-medium transition-all"
+            >
+              {p.name}
+            </button>
+          ))}
         </div>
 
         <div className="space-y-3">
           <div>
             <Label className="text-xs text-muted-foreground">{t("name")}</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("sectionNamePlaceholder")} className="mt-1" />
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={selectedPreset === "Övrigt" ? "Vad vill du dela?" : t("sectionNamePlaceholder")} className="mt-1" />
           </div>
 
           <div>
