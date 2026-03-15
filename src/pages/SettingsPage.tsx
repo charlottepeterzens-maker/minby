@@ -112,6 +112,7 @@ const SettingsPage = () => {
           </button>
           <span className="font-display text-[20px] font-medium text-foreground">{t("settings")}</span>
         </div>
+        <CurvedSeparator />
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-6 space-y-4">
