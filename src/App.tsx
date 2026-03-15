@@ -13,6 +13,7 @@ import FriendsPage from "./pages/FriendsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import Index from "./pages/Index";
 import GroupsPage from "./pages/GroupsPage";
+import GroupChatPage from "./pages/GroupChatPage";
 import SettingsPage from "./pages/SettingsPage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
