@@ -51,14 +51,7 @@ const ACTIVITY_OPTIONS: { key: TranslationKey; icon: React.ComponentType<{ class
   { key: "activityGames", icon: Gamepad2 },
 ];
 
-const CARD_COLORS = [
-  { bg: "hsl(270 20% 94%)", text: "hsl(270 30% 23%)" },
-  { bg: "hsl(25 100% 90%)", text: "hsl(16 60% 30%)" },
-  { bg: "hsl(262 60% 82%)", text: "hsl(262 40% 20%)" },
-  { bg: "hsl(100 50% 80%)", text: "hsl(150 30% 15%)" },
-  { bg: "hsl(66 65% 58%)", text: "hsl(66 50% 12%)" },
-  { bg: "hsl(316 100% 83%)", text: "hsl(316 50% 20%)" },
-];
+// No longer needed - removed CARD_COLORS
 
 interface Props {
   userId: string;
