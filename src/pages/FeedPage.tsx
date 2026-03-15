@@ -165,12 +165,13 @@ const FeedPage = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
-      <nav className="sticky top-0 z-50 bg-background border-b-[0.5px] border-border">
+      <nav className="sticky top-0 z-50 bg-background">
         <div className="max-w-2xl mx-auto px-5 py-4 text-center">
           <span className="font-display text-[26px] font-light tracking-[-0.5px] text-foreground lowercase">
             minby
           </span>
         </div>
+        <CurvedSeparator />
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-5">
