@@ -237,7 +237,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     </a>
                   )}
                   <p className="text-xs text-muted-foreground/50 mt-1">
-                    {new Date(post.created_at).toLocaleDateString()}
+                    {new Date(post.created_at).toLocaleDateString("sv-SE")}
                   </p>
                   <PostReactions postId={post.id} />
                 </div>

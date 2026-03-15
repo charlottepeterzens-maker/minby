@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { format, subDays, differenceInDays } from "date-fns";
+import { sv } from "date-fns/locale";
 
 interface PeriodEntry {
   id: string;

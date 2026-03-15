@@ -503,7 +503,7 @@ export const useLanguage = () => useContext(LanguageContext);
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [lang, setLangState] = useState<Lang>(() => {
     const stored = localStorage.getItem("minby-lang");
-    return (stored === "sv" ? "sv" : "en") as Lang;
+    return (stored === "en" ? "en" : "sv") as Lang;
   });
 
   const [dbOverrides, setDbOverrides] = useState<Record<string, Record<string, string>>>({});

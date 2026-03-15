@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { format, subDays } from "date-fns";
+import { sv } from "date-fns/locale";
 
 interface WorkoutEntry {
   id: string;
@@ -93,7 +94,7 @@ const WorkoutTracker = ({ section, isOwner }: Props) => {
         <div className="flex gap-2 mb-3 justify-center">
           {last7.map((day) => (
             <div key={day.dateStr} className="flex flex-col items-center gap-1">
-              <span className="text-[9px] text-muted-foreground/60">{format(day.date, "EEE").slice(0, 2)}</span>
+              <span className="text-[9px] text-muted-foreground/60">{format(day.date, "EEE", { locale: sv }).slice(0, 2)}</span>
               <div className={`w-6 h-6 flex items-center justify-center text-[10px] ${
                 day.hasWorkout ? "bg-secondary text-secondary-foreground" : "bg-muted/30 text-muted-foreground/30"
               }`}>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
+import { sv } from "date-fns/locale";
 import {
   CalendarIcon, Plus, X, Pencil, TreePine, UtensilsCrossed, Sofa,
   ShoppingBag, Dumbbell, Coffee, Film, Gamepad2,
@@ -313,7 +314,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     className={cn("w-full justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedDate ? format(selectedDate, "PPP") : t("selectDate")}
+                    {selectedDate ? format(selectedDate, "PPP", { locale: sv }) : t("selectDate")}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -376,9 +377,9 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             {entries.map((entry) => {
               const isExpanded = expandedId === entry.id;
               const dateObj = new Date(entry.date + "T00:00:00");
-              const monthLabel = format(dateObj, "MMM").toUpperCase();
+              const monthLabel = format(dateObj, "MMM", { locale: sv }).toUpperCase();
               const dayLabel = format(dateObj, "d");
-              const dateTitle = format(dateObj, "EEEE d MMMM");
+              const dateTitle = format(dateObj, "EEEE d MMMM", { locale: sv });
 
               return (
                 <button
@@ -481,7 +482,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="font-display text-sm font-bold text-foreground">
-                          {format(new Date(entry.date + "T00:00:00"), "EEEE, MMMM d")}
+                          {format(new Date(entry.date + "T00:00:00"), "EEEE d MMMM", { locale: sv })}
                         </p>
                         {entry.custom_note && (
                           <p className="text-xs text-muted-foreground italic mt-0.5">"{entry.custom_note}"</p>

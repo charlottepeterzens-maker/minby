@@ -9,6 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarDays, Sparkles, CalendarIcon, X, Pencil, TreePine, UtensilsCrossed, Sofa, ShoppingBag, Dumbbell, Coffee, Film, Gamepad2 } from "lucide-react";
 import { format, isBefore, startOfDay } from "date-fns";
+import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -313,7 +314,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedDate ? format(selectedDate, "PPP") : t("selectDate")}
+                    {selectedDate ? format(selectedDate, "PPP", { locale: sv }) : t("selectDate")}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -379,7 +380,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-foreground">
-                        {format(new Date(entry.date + "T00:00:00"), "EEE, MMM d")}
+                        {format(new Date(entry.date + "T00:00:00"), "EEE d MMM", { locale: sv })}
                       </p>
                       {entry.activities.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-1">

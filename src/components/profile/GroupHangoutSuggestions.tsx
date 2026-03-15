@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
+import { sv } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -127,7 +128,7 @@ const GroupHangoutSuggestions = () => {
                     className="bg-background rounded-md p-3 border border-border/50"
                   >
                     <p className="font-display text-sm font-bold text-foreground">
-                      {format(dateObj, "EEE, MMM d")}
+                      {format(dateObj, "EEE d MMM", { locale: sv })}
                     </p>
                     <div className="flex items-center gap-1 mt-1">
                       <Users className="w-3 h-3 text-muted-foreground" />

@@ -123,7 +123,7 @@ const NotificationsPage = () => {
                     </p>
                     {n.body && <p className="text-xs text-muted-foreground mt-0.5">{n.body}</p>}
                     <p className="text-[10px] text-muted-foreground mt-1">
-                      {new Date(n.created_at).toLocaleDateString()}
+                      {new Date(n.created_at).toLocaleDateString("sv-SE")}
                     </p>
                   </div>
                   {n.type === "friend_request" && !n.read && n.from_user_id && (
