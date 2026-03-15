@@ -86,7 +86,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
             <div className="flex items-center gap-1 mt-0.5">
               <span style={{ color: colors.text, opacity: 0.7 }}>{typeIcon}</span>
               {isOwner && (
-                <span className="text-[8px] uppercase tracking-wider" style={{ color: colors.text, opacity: 0.6 }}>
+                <span className="text-[8px]" style={{ color: colors.text, opacity: 0.6 }}>
                   {tierLabels[section.min_tier]}
                 </span>
               )}
@@ -104,7 +104,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, index }: Props
               <span style={{ color: colors.text, opacity: 0.7 }}>{typeIcon}</span>
               {isOwner && (
                 <span
-                  className="text-[8px] uppercase tracking-wider"
+                  className="text-[8px]"
                   style={{ color: colors.text, opacity: 0.6 }}
                 >
                   {tierLabels[section.min_tier]}

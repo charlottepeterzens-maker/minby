@@ -2,7 +2,7 @@ const HeroSection = () => {
   return (
     <section className="pt-16 pb-8 px-5 text-center">
       <div className="max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2 bg-lavender-bg text-secondary-foreground px-4 py-1.5 rounded-[20px] text-[11px] font-medium uppercase tracking-wider mb-6">
+        <div className="inline-flex items-center gap-2 bg-lavender-bg text-secondary-foreground px-4 py-1.5 rounded-[20px] text-[11px] font-medium mb-6">
           Less scrolling, more living
         </div>
 

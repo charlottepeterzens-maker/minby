@@ -57,7 +57,7 @@ const AuthPage = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {isSignUp && (
             <div>
-              <Label htmlFor="name" className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("yourName")}</Label>
+              <Label htmlFor="name" className="text-xs text-muted-foreground">{t("yourName")}</Label>
               <Input
                 id="name"
                 value={displayName}
@@ -69,7 +69,7 @@ const AuthPage = () => {
             </div>
           )}
           <div>
-            <Label htmlFor="email" className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("email")}</Label>
+            <Label htmlFor="email" className="text-xs text-muted-foreground">{t("email")}</Label>
             <Input
               id="email"
               type="email"
@@ -81,7 +81,7 @@ const AuthPage = () => {
             />
           </div>
           <div>
-            <Label htmlFor="password" className="text-[11px] uppercase tracking-wider text-muted-foreground">{t("password")}</Label>
+            <Label htmlFor="password" className="text-xs text-muted-foreground">{t("password")}</Label>
             <Input
               id="password"
               type="password"
