@@ -8,8 +8,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DialogTrigger } from
+"@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -30,7 +30,7 @@ const InviteFriendDialog = () => {
     setSending(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-invite", {
-        body: { email: email.trim(), message: message.trim() },
+        body: { email: email.trim(), message: message.trim() }
       });
 
       if (error) throw error;
@@ -56,7 +56,7 @@ const InviteFriendDialog = () => {
       <DialogTrigger asChild>
         <button className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <UserPlus className="w-3.5 h-3.5" />
-          <span>Bjud in en vän</span>
+          <span>​Bjud in en vän till din by   </span>
         </button>
       </DialogTrigger>
       <DialogContent className="rounded-[14px] border-[0.5px] border-border max-w-sm">
@@ -75,8 +75,8 @@ const InviteFriendDialog = () => {
               placeholder="namn@exempel.se"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="text-sm"
-            />
+              className="text-sm" />
+            
           </div>
           <div>
             <label className="text-xs text-muted-foreground mb-1 block">
@@ -88,20 +88,20 @@ const InviteFriendDialog = () => {
               onChange={(e) => setMessage(e.target.value)}
               maxLength={300}
               rows={3}
-              className="text-sm resize-none"
-            />
+              className="text-sm resize-none" />
+            
           </div>
           <Button
             onClick={handleSend}
             disabled={sending || !email}
-            className="w-full rounded-[10px] text-sm"
-          >
+            className="w-full rounded-[10px] text-sm">
+            
             {sending ? "Skickar..." : "Skicka inbjudan"}
           </Button>
         </div>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>);
+
 };
 
 export default InviteFriendDialog;
