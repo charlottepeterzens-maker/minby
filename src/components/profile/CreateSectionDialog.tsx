@@ -122,7 +122,7 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
         <div className="space-y-3">
           <div>
             <Label className="text-xs text-muted-foreground">{t("name")}</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t("sectionNamePlaceholder")} className="mt-1" />
+            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={selectedPreset === "Övrigt" ? "Vad vill du dela?" : t("sectionNamePlaceholder")} className="mt-1" />
           </div>
 
           <div>
