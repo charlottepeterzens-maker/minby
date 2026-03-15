@@ -315,7 +315,8 @@ const ProfilePage = () => {
                 ) : (
                   <button
                     onClick={() => setEditingBio(true)}
-                    className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground italic hover:text-foreground transition-colors"
+                    className="group flex items-start gap-1.5 text-sm text-muted-foreground italic hover:text-foreground transition-colors w-full text-left"
+                    style={{ wordBreak: "break-word" }}
                   >
                     {profile?.bio ? (
                       <span>"{profile.bio}"</span>

@@ -459,11 +459,11 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                     >
                       {/* Date icon */}
                       <div
-                        className="shrink-0 flex flex-col items-center justify-center rounded-[10px]"
-                        style={{ width: 38, height: 38, backgroundColor: "hsl(var(--primary))" }}
+                        className="shrink-0 flex flex-col items-center justify-center"
+                        style={{ width: 38, height: 38, backgroundColor: "#3C2A4D", borderRadius: 12 }}
                       >
-                        <span className="text-[9px] font-medium leading-none" style={{ color: "hsl(var(--secondary))" }}>{monthLabel}</span>
-                        <span className="text-[15px] font-bold leading-none mt-0.5" style={{ color: "hsl(var(--background))" }}>{dayLabel}</span>
+                        <span className="text-[9px] font-medium leading-none" style={{ color: "#C9B8D8" }}>{monthLabel}</span>
+                        <span className="text-[15px] leading-none mt-0.5" style={{ color: "#F7F3EF", fontWeight: 500 }}>{dayLabel}</span>
                       </div>
 
                       {/* Middle */}
