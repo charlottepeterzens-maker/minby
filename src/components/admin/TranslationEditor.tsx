@@ -101,7 +101,7 @@ const defaultTranslations: Record<string, Record<string, string>> = {
     joinMinby: "Gå med i MINBY", welcomeBack: "Välkommen tillbaka",
     signIn: "Logga in", signUp: "Registrera dig",
     shareNew: "Dela något nytt", back: "Tillbaka",
-    save: "Spara", freeDates: "Lediga dagar", editAvailability: "Redigera",
+    save: "Spara", freeDates: "Hitta på något", editAvailability: "Redigera",
   },
 };
 
