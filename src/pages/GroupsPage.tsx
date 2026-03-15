@@ -121,7 +121,7 @@ const GroupsPage = () => {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="rounded-[12px] h-[72px] animate-pulse"
+                className="rounded-[16px] h-[72px] animate-pulse"
                 style={{ backgroundColor: "#E8E2DB" }}
               />
             ))}
