@@ -70,6 +70,10 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [customNote, setCustomNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
+  const [editActivities, setEditActivities] = useState<string[]>([]);
+  const [editNote, setEditNote] = useState("");
 
   // Comments state
   const [comments, setComments] = useState<Comment[]>([]);
