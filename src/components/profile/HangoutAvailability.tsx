@@ -2,8 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
 import { sv } from "date-fns/locale";
 import {
-  CalendarIcon, Plus, X, Pencil, TreePine, UtensilsCrossed, Sofa,
-  ShoppingBag, Dumbbell, Coffee, Film, Gamepad2,
+  CalendarIcon, Plus, X, Pencil,
   MessageCircle, UserPlus, Send, Trash2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
