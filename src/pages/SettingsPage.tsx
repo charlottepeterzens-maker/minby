@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChevronLeft, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import BottomNav from "@/components/BottomNav";
+import ConfirmSheet from "@/components/ConfirmSheet";
 
 const SettingsPage = () => {
   const navigate = useNavigate();
@@ -72,9 +73,33 @@ const SettingsPage = () => {
     }
   };
 
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   const handleLogout = async () => {
     await signOut();
     navigate("/auth");
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    setDeleting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("delete-account", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (res.error) {
+        toast({ title: t("error"), description: "Kunde inte radera kontot.", variant: "destructive" });
+        setDeleting(false);
+        return;
+      }
+      await supabase.auth.signOut();
+      navigate("/auth");
+    } catch {
+      toast({ title: t("error"), description: "Något gick fel.", variant: "destructive" });
+      setDeleting(false);
+    }
   };
 
   return (
@@ -176,6 +201,27 @@ const SettingsPage = () => {
         <p className="text-center text-[11px] text-muted-foreground pt-4">
           {t("signedInAs")} {user?.email}
         </p>
+
+        {/* Delete account */}
+        <div className="text-center pb-6">
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            className="text-[12px] hover:underline"
+            style={{ color: "#A32D2D" }}
+          >
+            Radera mitt konto
+          </button>
+        </div>
+
+        <ConfirmSheet
+          open={showDeleteConfirm}
+          onOpenChange={setShowDeleteConfirm}
+          title="Radera konto"
+          description="Detta raderar ditt konto och all din data permanent. Det går inte att ångra."
+          confirmLabel="Radera konto"
+          confirmStyle={{ backgroundColor: "#A32D2D" }}
+          onConfirm={handleDeleteAccount}
+        />
       </main>
       <BottomNav />
     </div>
