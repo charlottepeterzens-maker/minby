@@ -236,13 +236,13 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Top nav */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <button onClick={() => navigate("/")} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
-              <ChevronLeft className="w-5 h-5" />
+            <button onClick={() => navigate("/")} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150">
+              <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </button>
-            <span className="font-display text-lg font-bold text-foreground">{t("profileTitle")}</span>
+            <span className="font-display text-lg font-medium text-foreground">{t("profileTitle")}</span>
           </div>
           <div className="flex items-center gap-1">
             {targetUserId && <ProfileShareDialog userId={targetUserId} />}
