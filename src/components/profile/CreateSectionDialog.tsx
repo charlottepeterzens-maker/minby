@@ -57,7 +57,7 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
     if (error) {
       toast.error(t("couldNotCreateSection"));
     } else {
-      toast.success(`${name} added!`);
+      toast.success(`${name} tillagt!`);
       setOpen(false);
       setName("");
       setSectionType("posts");
