@@ -521,9 +521,9 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         {entry.activities.map((a) => (
                           <span
                             key={a}
-                            className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary inline-flex items-center gap-1"
+                            className="text-[10px] px-2 py-0.5 rounded bg-primary/10 text-primary"
                           >
-                            {getActivityIcon(a)} {getActivityLabel(a)}
+                            {getActivityLabel(a)}
                           </span>
                         ))}
                       </div>
