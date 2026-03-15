@@ -329,7 +329,7 @@ const ProfilePage = () => {
                 )}
               </div>
             ) : profile?.bio ? (
-              <p className="mt-1 text-sm text-muted-foreground italic">"{profile.bio}"</p>
+              <p className="mt-1 text-[13px]" style={{ color: '#7A6A85' }}>{profile.bio}</p>
             ) : null}
           </div>
         </div>
