@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, SendHorizontal, BarChart3 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +7,8 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import CreatePollSheet from "@/components/chat/CreatePollSheet";
 import PollCard from "@/components/chat/PollCard";
+import DateSuggestionCard from "@/components/chat/DateSuggestionCard";
+import { recognizeDates, type RecognizedDate } from "@/utils/dateRecognition";
 
 interface Message {
   id: string;
@@ -42,6 +44,27 @@ type TimelineItem =
   | { type: "message"; data: Message }
   | { type: "poll"; data: Poll };
 
+interface PendingSuggestion extends RecognizedDate {
+  sourceMessageId: string;
+}
+
+const DISMISSED_KEY = "dismissed_date_suggestions";
+
+function getDismissedSet(): Set<string> {
+  try {
+    const raw = localStorage.getItem(DISMISSED_KEY);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function addDismissed(key: string) {
+  const set = getDismissedSet();
+  set.add(key);
+  localStorage.setItem(DISMISSED_KEY, JSON.stringify([...set]));
+}
+
 const GroupChatPage = () => {
   const { groupId } = useParams();
   const navigate = useNavigate();
@@ -54,6 +77,7 @@ const GroupChatPage = () => {
   const [polls, setPolls] = useState<Poll[]>([]);
   const [pollVotes, setPollVotes] = useState<PollVote[]>([]);
   const [pollSheetOpen, setPollSheetOpen] = useState(false);
+  const [dismissedSuggestions, setDismissedSuggestions] = useState<Set<string>>(getDismissedSet);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -61,6 +85,7 @@ const GroupChatPage = () => {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
   };
 
+  // --- Data fetching ---
   const fetchGroupInfo = useCallback(async () => {
     if (!groupId) return;
     const { data: group } = await supabase
@@ -132,151 +157,133 @@ const GroupChatPage = () => {
     fetchPolls();
   }, [fetchGroupInfo, fetchMessages, fetchPolls]);
 
-  // Realtime subscriptions
+  // --- Realtime ---
   useEffect(() => {
     if (!groupId) return;
-
     const channel = supabase
       .channel(`group-chat-${groupId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "group_messages",
-          filter: `group_id=eq.${groupId}`,
-        },
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "group_messages", filter: `group_id=eq.${groupId}` },
+        (payload) => { setMessages((prev) => [...prev, payload.new as Message]); scrollToBottom(); })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "group_polls", filter: `group_id=eq.${groupId}` },
+        (payload) => { setPolls((prev) => [...prev, payload.new as Poll]); scrollToBottom(); })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "poll_votes" },
         (payload) => {
-          setMessages((prev) => [...prev, payload.new as Message]);
-          scrollToBottom();
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "group_polls",
-          filter: `group_id=eq.${groupId}`,
-        },
-        (payload) => {
-          setPolls((prev) => [...prev, payload.new as Poll]);
-          scrollToBottom();
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "poll_votes",
-        },
-        (payload) => {
-          const newVote = payload.new as PollVote;
-          setPollVotes((prev) => {
-            if (prev.some((v) => v.id === newVote.id)) return prev;
-            return [...prev, newVote];
-          });
-        }
-      )
+          const nv = payload.new as PollVote;
+          setPollVotes((prev) => prev.some((v) => v.id === nv.id) ? prev : [...prev, nv]);
+        })
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [groupId]);
 
+  // --- Date recognition ---
+  const activeSuggestion: PendingSuggestion | null = useMemo(() => {
+    // Scan messages from newest to oldest for the first un-dismissed date
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const msg = messages[i];
+      const dates = recognizeDates(msg.content);
+      for (const d of dates) {
+        const key = `${groupId}_${d.startDate}`;
+        if (!dismissedSuggestions.has(key)) {
+          return { ...d, sourceMessageId: msg.id };
+        }
+      }
+      // Only check the last few messages
+      if (messages.length - 1 - i > 10) break;
+    }
+    return null;
+  }, [messages, dismissedSuggestions, groupId]);
+
+  const handleDismissSuggestion = () => {
+    if (!activeSuggestion) return;
+    const key = `${groupId}_${activeSuggestion.startDate}`;
+    addDismissed(key);
+    setDismissedSuggestions((prev) => new Set([...prev, key]));
+  };
+
+  const handleAddToCalendar = async () => {
+    if (!activeSuggestion || !user) return;
+    const label = activeSuggestion.label || groupName;
+
+    // Insert start date
+    await supabase.from("hangout_availability").insert({
+      user_id: user.id,
+      date: activeSuggestion.startDate,
+      activities: [label],
+      custom_note: `Från gruppen "${groupName}"`,
+    });
+
+    // If range, also insert end date
+    if (activeSuggestion.endDate && activeSuggestion.endDate !== activeSuggestion.startDate) {
+      // Insert each date in the range
+      const start = new Date(activeSuggestion.startDate);
+      const end = new Date(activeSuggestion.endDate);
+      const current = new Date(start);
+      current.setDate(current.getDate() + 1); // start already inserted
+
+      while (current <= end) {
+        await supabase.from("hangout_availability").insert({
+          user_id: user.id,
+          date: current.toISOString().split("T")[0],
+          activities: [label],
+          custom_note: `Från gruppen "${groupName}"`,
+        });
+        current.setDate(current.getDate() + 1);
+      }
+    }
+
+    // Dismiss after adding
+    handleDismissSuggestion();
+  };
+
+  // --- Actions ---
   const handleSend = async () => {
     if (!newMessage.trim() || !user || !groupId || sending) return;
     setSending(true);
     const content = newMessage.trim();
     setNewMessage("");
-
-    await supabase.from("group_messages").insert({
-      group_id: groupId,
-      user_id: user.id,
-      content,
-    });
-
+    await supabase.from("group_messages").insert({ group_id: groupId, user_id: user.id, content });
     setSending(false);
     inputRef.current?.focus();
   };
 
   const handleCreatePoll = async (question: string, options: string[]) => {
     if (!user || !groupId) return;
-    await supabase.from("group_polls").insert({
-      group_id: groupId,
-      user_id: user.id,
-      question,
-      options,
-    });
+    await supabase.from("group_polls").insert({ group_id: groupId, user_id: user.id, question, options });
   };
 
   const handleVote = async (pollId: string, optionIndex: number) => {
     if (!user) return;
-    await supabase.from("poll_votes").insert({
-      poll_id: pollId,
-      user_id: user.id,
-      option_index: optionIndex,
-    });
+    await supabase.from("poll_votes").insert({ poll_id: pollId, user_id: user.id, option_index: optionIndex });
   };
 
-  const getMember = (userId: string) =>
-    members.find((m) => m.user_id === userId);
+  const getMember = (userId: string) => members.find((m) => m.user_id === userId);
+  const formatTime = (dateStr: string) => format(new Date(dateStr), "HH:mm", { locale: sv });
 
-  const formatTime = (dateStr: string) =>
-    format(new Date(dateStr), "HH:mm", { locale: sv });
-
-  // Merge messages and polls into a timeline
   const timeline: TimelineItem[] = [
     ...messages.map((m) => ({ type: "message" as const, data: m })),
     ...polls.map((p) => ({ type: "poll" as const, data: p })),
-  ].sort(
-    (a, b) =>
-      new Date(a.data.created_at).getTime() - new Date(b.data.created_at).getTime()
-  );
+  ].sort((a, b) => new Date(a.data.created_at).getTime() - new Date(b.data.created_at).getTime());
 
   return (
-    <div
-      className="min-h-screen flex flex-col"
-      style={{ backgroundColor: "#F7F3EF" }}
-    >
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F3EF" }}>
       {/* Header */}
-      <header
-        className="sticky top-0 z-50 flex items-center px-4 py-3 gap-3"
-        style={{ backgroundColor: "#3C2A4D" }}
-      >
+      <header className="sticky top-0 z-50 flex items-center px-4 py-3 gap-3" style={{ backgroundColor: "#3C2A4D" }}>
         <button onClick={() => navigate("/groups")} className="shrink-0 p-1">
           <ChevronLeft className="w-5 h-5" style={{ color: "#C9B8D8" }} />
         </button>
         <div className="flex-1 text-center">
-          <p className="text-[13px] font-medium" style={{ color: "#C9B8D8" }}>
-            {groupName}
-          </p>
+          <p className="text-[13px] font-medium" style={{ color: "#C9B8D8" }}>{groupName}</p>
         </div>
         <div className="shrink-0 flex items-center -space-x-2">
           {members.slice(0, 4).map((m) => (
-            <div
-              key={m.user_id}
-              className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
-              style={{
-                backgroundColor: "#C9B8D8",
-                color: "#3C2A4D",
-                borderColor: "#3C2A4D",
-              }}
-            >
+            <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
+              style={{ backgroundColor: "#C9B8D8", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
               {m.initial}
             </div>
           ))}
           {members.length > 4 && (
-            <div
-              className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
-              style={{
-                backgroundColor: "#7A6A85",
-                color: "#F7F3EF",
-                borderColor: "#3C2A4D",
-              }}
-            >
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
+              style={{ backgroundColor: "#7A6A85", color: "#F7F3EF", borderColor: "#3C2A4D" }}>
               +{members.length - 4}
             </div>
           )}
@@ -287,9 +294,7 @@ const GroupChatPage = () => {
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {timeline.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-[13px]" style={{ color: "#7A6A85" }}>
-              Inga meddelanden ännu. Skriv det första!
-            </p>
+            <p className="text-[13px]" style={{ color: "#7A6A85" }}>Inga meddelanden ännu. Skriv det första!</p>
           </div>
         )}
 
@@ -298,114 +303,67 @@ const GroupChatPage = () => {
             const msg = item.data;
             const isOwn = msg.user_id === user?.id;
             const member = getMember(msg.user_id);
-
             return (
-              <div
-                key={msg.id}
-                className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}
-              >
-                <div
-                  className="px-3 py-2"
-                  style={{
-                    maxWidth: 200,
-                    borderRadius: isOwn
-                      ? "14px 14px 4px 14px"
-                      : "14px 14px 14px 4px",
-                    backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
-                    color: isOwn ? "#FFFFFF" : "#3C2A4D",
-                    border: isOwn ? "none" : "0.5px solid #DDD5CC",
-                    fontSize: 13,
-                    lineHeight: "18px",
-                  }}
-                >
+              <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}>
+                <div className="px-3 py-2" style={{
+                  maxWidth: 200,
+                  borderRadius: isOwn ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
+                  backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
+                  color: isOwn ? "#FFFFFF" : "#3C2A4D",
+                  border: isOwn ? "none" : "0.5px solid #DDD5CC",
+                  fontSize: 13, lineHeight: "18px",
+                }}>
                   {msg.content}
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 px-1">
-                  {!isOwn && (
-                    <span className="text-[10px]" style={{ color: "#7A6A85" }}>
-                      {member?.display_name || "Anonym"}
-                    </span>
-                  )}
-                  <span className="text-[10px]" style={{ color: "#9B8BA5" }}>
-                    {formatTime(msg.created_at)}
-                  </span>
+                  {!isOwn && <span className="text-[10px]" style={{ color: "#7A6A85" }}>{member?.display_name || "Anonym"}</span>}
+                  <span className="text-[10px]" style={{ color: "#9B8BA5" }}>{formatTime(msg.created_at)}</span>
                 </div>
               </div>
             );
           }
-
-          // Poll item
           const poll = item.data as Poll;
           const votes = pollVotes.filter((v) => v.poll_id === poll.id);
           const creator = getMember(poll.user_id);
-
           return (
-            <PollCard
-              key={poll.id}
-              question={poll.question}
-              options={poll.options}
-              votes={votes}
-              currentUserId={user?.id || ""}
-              onVote={(idx) => handleVote(poll.id, idx)}
-              creatorName={creator?.display_name || "Anonym"}
-              time={formatTime(poll.created_at)}
-            />
+            <PollCard key={poll.id} question={poll.question} options={poll.options} votes={votes}
+              currentUserId={user?.id || ""} onVote={(idx) => handleVote(poll.id, idx)}
+              creatorName={creator?.display_name || "Anonym"} time={formatTime(poll.created_at)} />
           );
         })}
         <div ref={bottomRef} />
       </div>
 
+      {/* Date suggestion */}
+      {activeSuggestion && (
+        <DateSuggestionCard
+          startDate={activeSuggestion.startDate}
+          endDate={activeSuggestion.endDate}
+          label={activeSuggestion.label}
+          groupName={groupName}
+          onAdd={handleAddToCalendar}
+          onDismiss={handleDismissSuggestion}
+        />
+      )}
+
       {/* Input field */}
-      <div
-        className="sticky bottom-0 px-4 py-3 safe-area-bottom"
-        style={{ backgroundColor: "#F7F3EF" }}
-      >
-        <div
-          className="flex items-center gap-2 px-4 py-2"
-          style={{
-            backgroundColor: "#FFFFFF",
-            borderRadius: 20,
-            border: "0.5px solid #DDD5CC",
-          }}
-        >
-          <button
-            onClick={() => setPollSheetOpen(true)}
-            className="shrink-0 flex items-center justify-center"
-          >
+      <div className="sticky bottom-0 px-4 py-3 safe-area-bottom" style={{ backgroundColor: "#F7F3EF" }}>
+        <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "#FFFFFF", borderRadius: 20, border: "0.5px solid #DDD5CC" }}>
+          <button onClick={() => setPollSheetOpen(true)} className="shrink-0 flex items-center justify-center">
             <BarChart3 className="w-5 h-5" style={{ color: "#3C2A4D" }} />
           </button>
-          <input
-            ref={inputRef}
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Skriv något..."
-            className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#9B8BA5]"
-            style={{ color: "#3C2A4D" }}
-          />
-          <button
-            onClick={handleSend}
-            disabled={!newMessage.trim() || sending}
+          <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder="Skriv något..."
+            className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#9B8BA5]" style={{ color: "#3C2A4D" }} />
+          <button onClick={handleSend} disabled={!newMessage.trim() || sending}
             className="shrink-0 flex items-center justify-center rounded-full disabled:opacity-40 transition-opacity"
-            style={{
-              width: 32,
-              height: 32,
-              backgroundColor: "#3C2A4D",
-            }}
-          >
+            style={{ width: 32, height: 32, backgroundColor: "#3C2A4D" }}>
             <SendHorizontal className="w-4 h-4" style={{ color: "#FFFFFF" }} />
           </button>
         </div>
       </div>
 
-      {/* Poll creation sheet */}
-      <CreatePollSheet
-        open={pollSheetOpen}
-        onOpenChange={setPollSheetOpen}
-        onSubmit={handleCreatePoll}
-        sending={sending}
-      />
+      <CreatePollSheet open={pollSheetOpen} onOpenChange={setPollSheetOpen} onSubmit={handleCreatePoll} sending={sending} />
     </div>
   );
 };
