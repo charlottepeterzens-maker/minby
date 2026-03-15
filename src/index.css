@@ -113,14 +113,14 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: 500;
   }
 }
 
