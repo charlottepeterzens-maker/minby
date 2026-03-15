@@ -15,6 +15,7 @@ import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import ConfirmSheet from "@/components/ConfirmSheet";
 
 interface ShareNewSheetProps {
   open: boolean;
