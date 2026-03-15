@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -84,36 +83,37 @@ const NotificationsPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <span className="font-display text-lg font-normal tracking-[0.35em] text-foreground">{t("notifications").toUpperCase()}</span>
+      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
+          <span className="font-display text-lg font-medium tracking-[0.35em] text-foreground">{t("notifications").toUpperCase()}</span>
           {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" onClick={markAllRead} className="text-xs gap-1">
-              <Check className="w-3 h-3" /> {t("markAllRead")}
+            <Button variant="ghost" size="sm" onClick={markAllRead} className="text-xs gap-1 text-muted-foreground">
+              <Check className="w-3 h-3" strokeWidth={1.5} /> {t("markAllRead")}
             </Button>
           )}
         </div>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-4 py-4">
+      <main className="max-w-2xl mx-auto px-5 py-5">
         {loading ? (
-          <div className="text-center py-16 text-muted-foreground">{t("loading")}</div>
+          <div className="space-y-3">
+            {[1,2,3].map(i => (
+              <div key={i} className="bg-muted rounded-[14px] h-16 animate-pulse" />
+            ))}
+          </div>
         ) : notifications.length === 0 ? (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+          <div className="text-center py-20">
             <p className="font-display text-lg text-muted-foreground">{t("noNotificationsYet")}</p>
-            <p className="text-sm text-muted-foreground/70 mt-1">{t("notificationsHint")}</p>
-          </motion.div>
+            <p className="text-sm text-muted-foreground mt-2">{t("notificationsHint")}</p>
+          </div>
         ) : (
           <div className="space-y-2">
-            {notifications.map((n, i) => (
-              <motion.div
+            {notifications.map((n) => (
+              <div
                 key={n.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.02 }}
                 onClick={() => markRead(n.id)}
-                className={`w-full text-left p-4 border transition-all cursor-pointer ${
-                  n.read ? "bg-card border-border/30" : "bg-primary/5 border-primary/20 shadow-soft"
+                className={`w-full text-left p-4 rounded-[14px] border-[0.5px] transition-colors duration-150 cursor-pointer ${
+                  n.read ? "bg-card border-border" : "bg-lavender-bg border-secondary"
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -122,25 +122,25 @@ const NotificationsPage = () => {
                       {n.title}
                     </p>
                     {n.body && <p className="text-xs text-muted-foreground mt-0.5">{n.body}</p>}
-                    <p className="text-[10px] text-muted-foreground/50 mt-1">
+                    <p className="text-[10px] text-muted-foreground mt-1">
                       {new Date(n.created_at).toLocaleDateString()}
                     </p>
                   </div>
                   {n.type === "friend_request" && !n.read && n.from_user_id && (
                     <Button
-                      variant="default"
                       size="sm"
-                      className="text-xs h-7 gap-1 shrink-0"
+                      className="text-xs h-7 gap-1 shrink-0 rounded-[10px] bg-salvia-bg text-accent-foreground border-[0.5px] border-accent hover:bg-accent"
+                      variant="outline"
                       onClick={(e) => { e.stopPropagation(); acceptFriendRequest(n); }}
                     >
-                      <UserCheck className="w-3 h-3" /> {t("accept")}
+                      <UserCheck className="w-3 h-3" strokeWidth={1.5} /> {t("accept")}
                     </Button>
                   )}
                   {!n.read && n.type !== "friend_request" && (
-                    <div className="w-2 h-2 bg-primary shrink-0 mt-2" />
+                    <div className="w-2 h-2 rounded-full bg-primary shrink-0 mt-2" />
                   )}
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}

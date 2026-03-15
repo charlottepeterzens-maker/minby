@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,10 +26,10 @@ const FriendsPage = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const tierLabels: Record<string, { label: string; badge: string }> = {
-    close: { label: t("close"), badge: "bg-primary/15 text-primary" },
-    inner: { label: t("innerCircle"), badge: "bg-secondary/20 text-secondary-foreground" },
-    outer: { label: t("everyone"), badge: "bg-muted text-muted-foreground" },
+  const tierLabels: Record<string, { label: string; color: string }> = {
+    close: { label: t("close"), color: "bg-lavender-bg text-secondary-foreground" },
+    inner: { label: t("innerCircle"), color: "bg-dusty-rose-bg text-foreground" },
+    outer: { label: t("everyone"), color: "bg-muted text-muted-foreground" },
   };
 
   const fetchFriends = useCallback(async () => {
@@ -98,69 +97,70 @@ const FriendsPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-        <div className="max-w-2xl mx-auto px-4 py-3">
-          <span className="font-display text-lg font-normal tracking-[0.35em] text-foreground">{t("friends").toUpperCase()}</span>
+      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+        <div className="max-w-2xl mx-auto px-5 py-4">
+          <span className="font-display text-lg font-medium tracking-[0.35em] text-foreground">{t("friends").toUpperCase()}</span>
         </div>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-4 py-4">
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+      <main className="max-w-2xl mx-auto px-5 py-5">
+        <div className="relative mb-5">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("searchFriends")}
-            className="pl-9 bg-muted/50 border-border/50"
+            className="pl-9 bg-card border-[0.5px] border-border rounded-[10px]"
           />
         </div>
 
         {loading ? (
-          <div className="text-center py-16 text-muted-foreground">{t("loading")}</div>
+          <div className="space-y-3">
+            {[1,2,3].map(i => (
+              <div key={i} className="bg-muted rounded-[14px] h-16 animate-pulse" />
+            ))}
+          </div>
         ) : filtered.length === 0 ? (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+          <div className="text-center py-20">
             <p className="font-display text-lg text-muted-foreground">
               {friends.length === 0 ? t("noFriendsYet") : t("noMatches")}
             </p>
-            <p className="text-sm text-muted-foreground/70 mt-1">
+            <p className="text-sm text-muted-foreground mt-2">
               {t("joinCirclesHint")}
             </p>
-          </motion.div>
+          </div>
         ) : (
           <div className="space-y-2">
-            {filtered.map((f, i) => (
-              <motion.div
+            {filtered.map((f) => (
+              <div
                 key={f.friend_user_id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.03 }}
-                className="flex items-center gap-3 p-3 bg-card border border-border/50 shadow-soft"
+                className="flex items-center gap-3 p-3 bg-card rounded-[14px] border-[0.5px] border-border"
               >
                 <button
                   onClick={() => navigate(`/profile/${f.friend_user_id}`)}
-                  className="w-10 h-10 bg-primary/10 border border-primary/30 flex items-center justify-center shrink-0 hover:scale-105 transition-transform"
+                  className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0"
                 >
                   {f.avatar_url ? (
-                    <img src={f.avatar_url} alt="" className="w-full h-full object-cover" />
+                    <img src={f.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
                   ) : (
-                    <span className="text-sm font-display font-bold text-primary">{f.initial}</span>
+                    <span className="text-sm font-display text-secondary">{f.initial}</span>
                   )}
                 </button>
                 <div className="flex-1 min-w-0">
                   <button
                     onClick={() => navigate(`/profile/${f.friend_user_id}`)}
-                    className="font-medium text-foreground text-sm hover:text-primary transition-colors truncate block"
+                    className="font-medium text-foreground text-sm hover:underline truncate block"
                   >
                     {f.display_name}
                   </button>
                   {f.tier && (
-                    <span className={`text-[10px] font-medium px-2 py-0.5 ${tierLabels[f.tier]?.badge || ""}`}>
+                    <span className={`text-[10px] font-medium px-2 py-0.5 rounded-[20px] inline-block mt-0.5 ${tierLabels[f.tier]?.color || ""}`}>
                       {tierLabels[f.tier]?.label}
                     </span>
                   )}
                 </div>
                 <Select value={f.tier || "none"} onValueChange={(val) => val !== "none" && setTier(f.friend_user_id, val)}>
-                  <SelectTrigger className="w-[130px] h-8 text-xs">
+                  <SelectTrigger className="w-[120px] h-8 text-xs rounded-[10px] border-[0.5px]">
                     <SelectValue placeholder={t("setTier")} />
                   </SelectTrigger>
                   <SelectContent>
@@ -170,7 +170,7 @@ const FriendsPage = () => {
                     <SelectItem value="outer">{t("everyone")}</SelectItem>
                   </SelectContent>
                 </Select>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}
