@@ -120,13 +120,15 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: 400;
   }
 }
 
 @layer utilities {
   .font-display {
     font-family: var(--font-display);
+    font-weight: 400 !important;
+    font-style: normal !important;
   }
   .font-body {
     font-family: var(--font-body);
