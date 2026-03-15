@@ -40,9 +40,22 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
   const [minTier, setMinTier] = useState("outer");
   const [loading, setLoading] = useState(false);
 
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+
   const handlePreset = (preset: typeof presets[0]) => {
-    setName(preset.name);
+    if (selectedPreset === preset.name) {
+      setSelectedPreset(null);
+      setName("");
+      setSectionType("posts");
+      return;
+    }
+    setSelectedPreset(preset.name);
     setSectionType(preset.type);
+    if (preset.name === "Övrigt") {
+      setName("");
+    } else {
+      setName(preset.name);
+    }
   };
 
   const handleCreate = async () => {
