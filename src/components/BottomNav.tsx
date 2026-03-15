@@ -25,11 +25,15 @@ const BottomNav = () => {
               className="flex flex-col items-center gap-1 px-4 py-1.5 relative transition-colors duration-150"
             >
               <item.icon
-                className={`w-5 h-5 ${isActive ? "text-primary" : "text-accent"}`}
+                className="w-5 h-5"
                 strokeWidth={1.5}
+                style={{ color: isActive ? "#3C2A4D" : "#9B8BA5" }}
               />
               {isActive && (
-                <span className="absolute bottom-0.5 w-1 h-1 rounded-full bg-primary" />
+                <span
+                  className="absolute bottom-0.5 w-1 h-1 rounded-full"
+                  style={{ backgroundColor: "#3C2A4D" }}
+                />
               )}
             </button>
           );
