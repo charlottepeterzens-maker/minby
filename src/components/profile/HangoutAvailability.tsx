@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
 import { sv } from "date-fns/locale";
 import {
-  CalendarIcon, Plus, X, Pencil,
+  CalendarIcon, Plus, X, Pencil, MoreHorizontal,
   MessageCircle, UserPlus, Send, Trash2,
 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import ConfirmSheet from "@/components/ConfirmSheet";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
