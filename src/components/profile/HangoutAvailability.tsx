@@ -290,10 +290,6 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           <CalendarIcon className="w-4 h-4 text-muted-foreground" />
           {t("hangoutAvailability")}
         </h3>
-        <p className="text-xs text-muted-foreground -mt-1 mb-1">När vill du hitta på något?</p>
-        <div className="flex items-center justify-between">
-          <span />
-        </h3>
         {isOwner && (
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowAdd(!showAdd)}>
             <Plus className="w-3.5 h-3.5" />
