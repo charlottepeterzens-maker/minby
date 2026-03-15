@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +6,7 @@ import PlanCard, { type PlanWithDetails } from "@/components/PlanCard";
 import CreatePlanDialog from "@/components/CreatePlanDialog";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
 import { Button } from "@/components/ui/button";
-import { Users, Sparkles, ChevronLeft } from "lucide-react";
+import { Users, ChevronLeft } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 
 interface Group {
@@ -19,11 +18,11 @@ interface Group {
 }
 
 const vibeFilters = [
-  { label: "All", value: "all" },
+  { label: "Alla", value: "all" },
   { label: "Chill", value: "chill" },
-  { label: "Adventure", value: "adventure" },
-  { label: "Creative", value: "creative" },
-  { label: "Self-care", value: "selfcare" },
+  { label: "Äventyr", value: "adventure" },
+  { label: "Kreativt", value: "creative" },
+  { label: "Egentid", value: "selfcare" },
 ];
 
 const Index = () => {
@@ -108,45 +107,42 @@ const Index = () => {
   if (!selectedGroup) {
     return (
       <div className="min-h-screen bg-background pb-20">
-        <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-          <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Users className="w-5 h-5 text-primary" />
-              <span className="font-display text-lg font-bold tracking-widest text-foreground">MY CIRCLES</span>
-            </div>
+        <nav className="sticky top-0 z-50 bg-background border-b border-border">
+          <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
+            <span className="font-display text-lg font-medium tracking-[0.35em] text-foreground">GRUPPER</span>
             <CreateGroupDialog onGroupCreated={fetchGroups} />
           </div>
         </nav>
 
-        <main className="max-w-2xl mx-auto px-4 py-4">
+        <main className="max-w-2xl mx-auto px-5 py-5">
           {loading ? (
-            <div className="text-center py-16 text-muted-foreground">Loading...</div>
+            <div className="space-y-3">
+              {[1,2,3].map(i => (
+                <div key={i} className="bg-muted rounded-[14px] h-20 animate-pulse" />
+              ))}
+            </div>
           ) : groups.length === 0 ? (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-              <Sparkles className="w-10 h-10 text-primary/30 mx-auto mb-4" />
-              <p className="font-display text-lg text-muted-foreground">No circles yet</p>
-              <p className="text-sm text-muted-foreground/70 mt-1">Create your first friend group to start planning!</p>
-            </motion.div>
+            <div className="text-center py-20">
+              <p className="font-display text-lg text-muted-foreground">Inga grupper ännu</p>
+              <p className="text-sm text-muted-foreground mt-2">Skapa din första grupp för att börja planera!</p>
+            </div>
           ) : (
-            <div className="grid gap-3">
-              {groups.map((g, i) => (
-                <motion.button
+            <div className="space-y-2">
+              {groups.map((g) => (
+                <button
                   key={g.id}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
                   onClick={() => setSelectedGroup(g)}
-                  className="bg-card rounded-2xl p-5 shadow-card hover:shadow-elevated transition-all duration-300 border border-border/50 text-left flex items-center gap-4"
+                  className="w-full bg-card rounded-[14px] p-4 border-[0.5px] border-border text-left flex items-center gap-4 hover:bg-muted/50 transition-colors duration-150"
                 >
-                  <div className="w-8 h-8 bg-muted flex items-center justify-center rounded">
-                    <Users className="w-4 h-4 text-muted-foreground" />
+                  <div className="w-10 h-10 bg-lavender-bg rounded-lg flex items-center justify-center">
+                    <Users className="w-4 h-4 text-secondary-foreground" strokeWidth={1.5} />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-display text-lg font-semibold text-card-foreground">{g.name}</h3>
-                    <p className="text-sm text-muted-foreground">{g.member_count} member{g.member_count !== 1 ? "s" : ""}</p>
+                    <h3 className="font-display text-base font-medium text-card-foreground">{g.name}</h3>
+                    <p className="text-xs text-muted-foreground">{g.member_count} medlem{g.member_count !== 1 ? "mar" : ""}</p>
                   </div>
-                  <span className="text-muted-foreground/50">→</span>
-                </motion.button>
+                  <span className="text-muted-foreground">›</span>
+                </button>
               ))}
             </div>
           )}
@@ -158,46 +154,45 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-          <button onClick={() => setSelectedGroup(null)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors">
-            <ChevronLeft className="w-5 h-5" />
-            <span className="font-display text-lg font-bold text-foreground">{selectedGroup.name}</span>
-            <span className="font-display text-lg font-bold text-foreground">{selectedGroup.name}</span>
+      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
+          <button onClick={() => setSelectedGroup(null)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150">
+            <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
+            <span className="font-display text-lg font-medium text-foreground">{selectedGroup.name}</span>
           </button>
           <CreatePlanDialog groupId={selectedGroup.id} onPlanCreated={fetchPlans} />
         </div>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 pb-20">
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
+      <main className="max-w-2xl mx-auto px-5 py-5 pb-20">
+        {/* Vibe filter pills */}
+        <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
           {vibeFilters.map((f) => (
             <button
               key={f.value}
               onClick={() => setActiveFilter(f.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
-                activeFilter === f.value ? "bg-primary text-primary-foreground shadow-soft" : "bg-muted text-muted-foreground hover:bg-muted/80"
+              className={`px-4 py-1.5 rounded-[20px] text-xs font-medium whitespace-nowrap transition-colors duration-150 ${
+                activeFilter === f.value
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-card text-muted-foreground border-[0.5px] border-border hover:text-foreground"
               }`}
             >
               {f.label}
             </button>
           ))}
-        </motion.div>
+        </div>
 
-        <div className="flex flex-col gap-4">
-          {filteredPlans.map((plan, i) => (
-            <motion.div key={plan.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}>
-              <PlanCard plan={plan} onRsvpChange={fetchPlans} />
-            </motion.div>
+        <div className="space-y-3">
+          {filteredPlans.map((plan) => (
+            <PlanCard key={plan.id} plan={plan} onRsvpChange={fetchPlans} />
           ))}
         </div>
 
         {filteredPlans.length === 0 && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-            <Sparkles className="w-10 h-10 text-primary/30 mx-auto mb-4" />
-            <p className="font-display text-lg text-muted-foreground">No plans yet</p>
-            <p className="text-sm text-muted-foreground/70 mt-1">Be the first to suggest something!</p>
-          </motion.div>
+          <div className="text-center py-20">
+            <p className="font-display text-lg text-muted-foreground">Inga planer ännu</p>
+            <p className="text-sm text-muted-foreground mt-2">Var först med att föreslå något!</p>
+          </div>
         )}
       </main>
       <BottomNav />

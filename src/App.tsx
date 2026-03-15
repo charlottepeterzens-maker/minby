@@ -22,7 +22,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="text-xl animate-float font-display font-normal tracking-[0.35em] text-primary">MINBY</span>
+        <span className="text-lg font-display font-medium tracking-[0.35em] text-foreground">MINBY</span>
       </div>
     );
   }
