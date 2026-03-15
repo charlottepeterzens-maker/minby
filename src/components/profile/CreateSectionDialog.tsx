@@ -100,22 +100,23 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
 
         {/* Presets */}
         <div className="flex flex-wrap gap-2 mb-4">
-          {presets.map((p) => {
-            const Icon = p.icon;
-            return (
-              <button
-                key={p.name}
-                onClick={() => handlePreset(p)}
-                className={`px-3 py-1.5 text-xs font-medium border transition-all inline-flex items-center gap-1.5 ${
-                  name === p.name
-                    ? "bg-primary text-primary-foreground border-primary"
-                    : "bg-muted text-muted-foreground border-border/50 hover:bg-muted/80"
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" /> {p.name}
-              </button>
-            );
-          })}
+          {presets.map((p) => (
+            <button
+              key={p.name}
+              onClick={() => handlePreset(p)}
+              style={{
+                borderRadius: 20,
+                fontSize: 13,
+                padding: "6px 14px",
+                border: "0.5px solid #DDD5CC",
+                backgroundColor: selectedPreset === p.name ? "#3C2A4D" : "#FFFFFF",
+                color: selectedPreset === p.name ? "#FFFFFF" : "#3C2A4D",
+              }}
+              className="font-medium transition-all"
+            >
+              {p.name}
+            </button>
+          ))}
         </div>
 
         <div className="space-y-3">
