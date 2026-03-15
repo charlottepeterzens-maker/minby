@@ -709,6 +709,16 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           </AnimatePresence>
         </div>
       )}
+
+      <ConfirmSheet
+        open={!!deleteConfirmId}
+        onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}
+        title="Ta bort datum"
+        description="Vill du ta bort detta datum?"
+        confirmLabel="Ta bort"
+        confirmStyle={{ backgroundColor: "#A32D2D" }}
+        onConfirm={() => { if (deleteConfirmId) handleRemove(deleteConfirmId); setDeleteConfirmId(null); }}
+      />
     </div>
   );
 };
