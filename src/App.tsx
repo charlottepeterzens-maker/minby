@@ -19,6 +19,8 @@ import GroupChatPage from "./pages/GroupChatPage";
 import SettingsPage from "./pages/SettingsPage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
 
 const queryClient = new QueryClient();
 
