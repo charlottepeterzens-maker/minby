@@ -291,6 +291,9 @@ const GroupChatPage = () => {
             </div>
           )}
         </div>
+        <button onClick={() => setLeaveConfirmOpen(true)} className="shrink-0 p-1">
+          <LogOut className="w-4 h-4" style={{ color: "#C9B8D8" }} />
+        </button>
       </header>
 
       {/* Timeline */}
