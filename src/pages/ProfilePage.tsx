@@ -23,6 +23,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
+import CurvedSeparator from "@/components/CurvedSeparator";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
 import SectionGridCard from "@/components/profile/SectionGridCard";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";

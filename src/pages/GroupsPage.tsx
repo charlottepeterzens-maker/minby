@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
+import CurvedSeparator from "@/components/CurvedSeparator";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
 
 interface Group {

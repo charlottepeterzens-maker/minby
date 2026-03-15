@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
+import CurvedSeparator from "@/components/CurvedSeparator";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import FeedPostCard from "@/components/feed/FeedPostCard";
 import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
