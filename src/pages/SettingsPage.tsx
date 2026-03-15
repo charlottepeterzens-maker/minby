@@ -141,15 +141,15 @@ const SettingsPage = () => {
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
               <Label className="text-sm">{t("friendRequests")}</Label>
-              <Switch checked={notifFriendRequests} onCheckedChange={setNotifFriendRequests} />
+              <Switch checked={notifFriendRequests} onCheckedChange={(v) => { setNotifFriendRequests(v); updateNotifPref("friend_request_notifications", v); }} />
             </div>
             <div className="flex items-center justify-between">
               <Label className="text-sm">{t("gatheringInvites")}</Label>
-              <Switch checked={notifGatherings} onCheckedChange={setNotifGatherings} />
+              <Switch checked={notifGatherings} onCheckedChange={(v) => { setNotifGatherings(v); updateNotifPref("meetup_notifications", v); }} />
             </div>
             <div className="flex items-center justify-between">
               <Label className="text-sm">{t("newLifeUpdates")}</Label>
-              <Switch checked={notifUpdates} onCheckedChange={setNotifUpdates} />
+              <Switch checked={notifUpdates} onCheckedChange={(v) => { setNotifUpdates(v); updateNotifPref("update_notifications", v); }} />
             </div>
           </CardContent>
         </Card>
