@@ -209,21 +209,24 @@ const FeedPage = () => {
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 px-6">
-            <Heart className="w-8 h-8 text-muted-foreground/40 mb-5" />
+            <Heart className="w-8 h-8 text-muted-foreground/40 mb-5 animate-breathe" />
             {(() => {
               const hour = new Date().getHours();
               const firstName = currentUserName ? currentUserName.split(" ")[0] : "";
               let greeting: string;
               let subtitle: string;
               if (hour >= 5 && hour < 12) {
-                greeting = firstName ? `God morgon, ${firstName}.` : "God morgon.";
-                subtitle = "Din by är tyst just nu.";
+                greeting = firstName ? `God morgon, ${firstName}` : "God morgon";
+                const mornings = ["Din by är tyst just nu.", "Vad ska du hitta på idag?", "En ny dag i byn."];
+                subtitle = mornings[new Date().getDate() % mornings.length];
               } else if (hour >= 12 && hour < 18) {
-                greeting = firstName ? `God eftermiddag, ${firstName}.` : "God eftermiddag.";
-                subtitle = "Inget nytt från byn ännu.";
+                greeting = firstName ? `God eftermiddag, ${firstName}` : "God eftermiddag";
+                const afternoons = ["Inget nytt från byn ännu.", "Lugnt i byn just nu.", "Kanske dags att ses?"];
+                subtitle = afternoons[new Date().getDate() % afternoons.length];
               } else {
-                greeting = firstName ? `God kväll, ${firstName}.` : "God kväll.";
-                subtitle = "Lugnt i byn ikväll.";
+                greeting = firstName ? `God kväll, ${firstName}` : "God kväll";
+                const evenings = ["Lugnt i byn ikväll.", "Mysig kväll i byn.", "Byn vilar."];
+                subtitle = evenings[new Date().getDate() % evenings.length];
               }
               return (
                 <>
@@ -248,14 +251,20 @@ const FeedPage = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredItems.map((item) => {
+            {filteredItems.map((item, idx) => {
               const profile = getProfile(item.userId);
               const key = `${item.type}-${item.data.id}`;
 
+              const animDelay = `${Math.min(idx * 80, 400)}ms`;
+              const wrapper = (child: React.ReactNode) => (
+                <div key={key} className="animate-fade-up" style={{ animationDelay: animDelay }}>
+                  {child}
+                </div>
+              );
+
               if (item.type === "post") {
-                return (
+                return wrapper(
                   <FeedPostCard
-                    key={key}
                     post={item.data}
                     profile={profile}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
@@ -264,9 +273,8 @@ const FeedPage = () => {
               }
 
               if (item.type === "hangout") {
-                return (
+                return wrapper(
                   <FeedHangoutCard
-                    key={key}
                     hangout={item.data}
                     profile={profile}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
@@ -275,9 +283,8 @@ const FeedPage = () => {
               }
 
               if (item.type === "health") {
-                return (
+                return wrapper(
                   <FeedHealthCard
-                    key={key}
                     post={item.data}
                     profile={profile}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}

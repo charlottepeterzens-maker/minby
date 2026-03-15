@@ -95,12 +95,12 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
       <div className="relative w-full">
         <button
           onClick={onClick}
-          className={`w-full flex items-center gap-2.5 bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all ${
+          className={`group w-full flex items-center gap-2.5 bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all active:scale-[0.97] ${
             isExpanded ? "ring-1 ring-primary/20" : ""
           }`}
         >
           <div
-            className="shrink-0 flex items-center justify-center rounded-[7px]"
+            className="shrink-0 flex items-center justify-center rounded-[7px] group-hover:animate-emoji-wobble"
             style={{ width: 26, height: 26, backgroundColor: colors.bg }}
           >
             <IconComponent className="w-3.5 h-3.5" strokeWidth={1.5} style={{ color: colors.icon }} />

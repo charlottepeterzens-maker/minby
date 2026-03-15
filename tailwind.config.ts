@@ -88,10 +88,26 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "fade-up": {
+          "0%": { opacity: "0", transform: "translateY(8px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "breathe": {
+          "0%, 100%": { transform: "scale(1)", opacity: "0.4" },
+          "50%": { transform: "scale(1.15)", opacity: "0.6" },
+        },
+        "emoji-wobble": {
+          "0%, 100%": { transform: "rotate(0deg)" },
+          "25%": { transform: "rotate(-6deg)" },
+          "75%": { transform: "rotate(6deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-up": "fade-up 0.4s ease-out both",
+        "breathe": "breathe 3s ease-in-out infinite",
+        "emoji-wobble": "emoji-wobble 0.6s ease-in-out",
       },
     },
   },
