@@ -241,7 +241,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
             <Input
               value={roomName}
               onChange={(e) => setRoomName(e.target.value)}
-              placeholder="Namnge ditt rum"
+              placeholder="T.ex. Jobb, Familj, Resor..."
               className="rounded-[10px] bg-card border-[0.5px] border-border text-center"
             />
             <div className="flex flex-wrap justify-center gap-2">
