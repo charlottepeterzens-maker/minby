@@ -560,8 +560,11 @@ export type Database = {
           bio: string | null
           created_at: string
           display_name: string | null
+          friend_request_notifications: boolean
           id: string
+          meetup_notifications: boolean
           onboarded_at: string | null
+          update_notifications: boolean
           updated_at: string
           user_id: string
         }
@@ -570,8 +573,11 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          friend_request_notifications?: boolean
           id?: string
+          meetup_notifications?: boolean
           onboarded_at?: string | null
+          update_notifications?: boolean
           updated_at?: string
           user_id: string
         }
@@ -580,8 +586,11 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          friend_request_notifications?: boolean
           id?: string
+          meetup_notifications?: boolean
           onboarded_at?: string | null
+          update_notifications?: boolean
           updated_at?: string
           user_id?: string
         }
