@@ -117,11 +117,8 @@ const ProfilePage = () => {
   const targetUserId = userId || user?.id;
   const isOwnProfile = !userId || userId === user?.id;
 
-  const tierLabels: Record<string, { label: string; color: string }> = {
-    close: { label: t("close"), color: "text-primary" },
-    inner: { label: t("innerCircle"), color: "text-secondary-foreground" },
-    outer: { label: t("everyone"), color: "text-muted-foreground" },
-  };
+
+
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
