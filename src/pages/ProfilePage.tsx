@@ -327,40 +327,10 @@ const ProfilePage = () => {
               <p className="mt-1 text-sm text-muted-foreground italic">"{profile.bio}"</p>
             ) : null}
           </div>
-        </div>
-
-        {/* Friend Tier Manager */}
-        <AnimatePresence>
-          {showTierManager && isOwnProfile && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden mb-6"
-            >
-              <FriendTierManager />
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Invite friend */}
         {isOwnProfile && (
           <div className="mb-6 flex justify-start">
             <InviteFriendDialog />
-          </div>
-        )}
-
-        {/* Hangout Availability */}
-        {targetUserId && (
-          <div className="mb-6">
-            <HangoutAvailability userId={targetUserId} isOwner={isOwnProfile} />
-          </div>
-        )}
-
-        {/* Group Hangout Suggestions */}
-        {isOwnProfile && (
-          <div className="mb-6">
-            <GroupHangoutSuggestions />
           </div>
         )}
 
@@ -375,6 +345,13 @@ const ProfilePage = () => {
           </div>
           <Lock className="w-4 h-4 shrink-0" style={{ color: '#C9B8D8' }} />
         </div>
+
+        {/* Hangout Availability */}
+        {targetUserId && (
+          <div className="mb-6">
+            <HangoutAvailability userId={targetUserId} isOwner={isOwnProfile} />
+          </div>
+        )}
 
         {/* Life sections as thumbnail grid */}
         <div className="mb-4">
@@ -464,22 +441,6 @@ const ProfilePage = () => {
               </div>
             </SortableContext>
           </DndContext>
-        )}
-
-        {/* Tier legend */}
-        {isOwnProfile && sections.length > 0 && (
-          <div className="mt-8 p-4 bg-card rounded-[14px] border-[0.5px] border-border">
-            <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1">
-              <Lock className="w-3 h-3" /> {t("accessLevels")}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {Object.entries(tierLabels).map(([key, val]) => (
-                <span key={key} className={`text-xs ${val.color}`}>
-                  {val.label}
-                </span>
-              ))}
-            </div>
-          </div>
         )}
       </main>
       <ScrollToTopButton />
