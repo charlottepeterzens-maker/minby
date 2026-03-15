@@ -314,7 +314,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedDate ? format(selectedDate, "PPP") : t("selectDate")}
+                    {selectedDate ? format(selectedDate, "PPP", { locale: sv }) : t("selectDate")}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
