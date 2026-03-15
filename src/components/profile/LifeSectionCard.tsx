@@ -39,7 +39,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [posting, setPosting] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
-
+  const [deletePostId, setDeletePostId] = useState<string | null>(null);
   // Edit state
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(section.name);
