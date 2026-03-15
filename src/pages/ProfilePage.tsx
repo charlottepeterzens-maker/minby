@@ -327,6 +327,8 @@ const ProfilePage = () => {
               <p className="mt-1 text-sm text-muted-foreground italic">"{profile.bio}"</p>
             ) : null}
           </div>
+        </div>
+
         {/* Invite friend */}
         {isOwnProfile && (
           <div className="mb-6 flex justify-start">
