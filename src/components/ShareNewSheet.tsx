@@ -53,6 +53,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [customNote, setCustomNote] = useState("");
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
+  const [deleteEntryId, setDeleteEntryId] = useState<string | null>(null);
 
   const vibes = [
     { value: "chill", label: t("vibeChill") },
