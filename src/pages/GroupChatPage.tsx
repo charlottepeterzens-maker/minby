@@ -316,7 +316,7 @@ const GroupChatPage = () => {
                   borderRadius: isOwn ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
                   backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
                   color: isOwn ? "#FFFFFF" : "#3C2A4D",
-                  border: isOwn ? "none" : "0.5px solid #DDD5CC",
+                  border: isOwn ? "none" : "0.5px solid #EDE8F4",
                   fontSize: 13, lineHeight: "18px",
                 }}>
                   {msg.content}
