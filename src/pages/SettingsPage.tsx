@@ -73,9 +73,33 @@ const SettingsPage = () => {
     }
   };
 
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   const handleLogout = async () => {
     await signOut();
     navigate("/auth");
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    setDeleting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("delete-account", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (res.error) {
+        toast({ title: t("error"), description: "Kunde inte radera kontot.", variant: "destructive" });
+        setDeleting(false);
+        return;
+      }
+      await supabase.auth.signOut();
+      navigate("/auth");
+    } catch {
+      toast({ title: t("error"), description: "Något gick fel.", variant: "destructive" });
+      setDeleting(false);
+    }
   };
 
   return (

@@ -36,7 +36,7 @@ const ConfirmSheet = ({ open, onOpenChange, title, description, confirmLabel = "
           <button
             onClick={() => { onConfirm(); onOpenChange(false); }}
             className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px] text-white"
-            style={{ backgroundColor: "#3C2A4D" }}
+            style={confirmStyle || { backgroundColor: "#3C2A4D" }}
           >
             {confirmLabel}
           </button>
