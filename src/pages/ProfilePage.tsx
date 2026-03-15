@@ -33,6 +33,7 @@ import HangoutAvailability from "@/components/profile/HangoutAvailability";
 import ProfileShareDialog from "@/components/profile/ProfileShareDialog";
 import FriendRequestButton from "@/components/profile/FriendRequestButton";
 import GroupHangoutSuggestions from "@/components/profile/GroupHangoutSuggestions";
+import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import BottomNav from "@/components/BottomNav";
 import { toast } from "@/hooks/use-toast";
 
@@ -347,6 +348,13 @@ const ProfilePage = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Invite friend */}
+        {isOwnProfile && (
+          <div className="mb-6 flex justify-start">
+            <InviteFriendDialog />
+          </div>
+        )}
 
         {/* Hangout Availability */}
         {targetUserId && (
