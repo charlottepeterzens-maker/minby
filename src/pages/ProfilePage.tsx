@@ -193,14 +193,14 @@ const ProfilePage = () => {
     const ext = file.name.split(".").pop();
     const path = `${user.id}/avatar.${ext}`;
     const { error: uploadError } = await supabase.storage
-      .from("life-images")
+      .from("avatars")
       .upload(path, file, { upsert: true });
     if (uploadError) {
       toast({ title: t("error"), description: uploadError.message, variant: "destructive" });
       setUploadingAvatar(false);
       return;
     }
-    const { data: urlData } = supabase.storage.from("life-images").getPublicUrl(path);
+    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
     const { error: updateError } = await supabase
       .from("profiles")
       .update({ avatar_url: urlData.publicUrl })
