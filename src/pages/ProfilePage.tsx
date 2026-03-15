@@ -355,7 +355,7 @@ const ProfilePage = () => {
         {/* Life sections as thumbnail grid */}
         <div className="mb-4">
           <h2 className="text-xs font-medium text-muted-foreground font-body">
-            Vardagsrum
+            Min vardag
           </h2>
         </div>
 
