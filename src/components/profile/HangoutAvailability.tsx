@@ -362,7 +362,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                         borderRadius: 20,
                         fontSize: 13,
                         padding: "6px 14px",
-                        border: "0.5px solid #DDD5CC",
+                        border: "0.5px solid #EDE8F4",
                         backgroundColor: selectedActivities.includes(opt.key) ? "#3C2A4D" : "#FFFFFF",
                         color: selectedActivities.includes(opt.key) ? "#FFFFFF" : "#3C2A4D",
                       }}
