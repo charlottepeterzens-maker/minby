@@ -259,11 +259,11 @@ const ProfilePage = () => {
         {/* Profile header with avatar */}
         <div className="flex items-start gap-4 mb-8">
           <div className="relative shrink-0">
-            <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center overflow-hidden">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#EDE8F4' }}>
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-lg font-display font-medium text-secondary">{initial}</span>
+                <span className="text-lg font-display font-medium" style={{ color: '#3C2A4D' }}>{initial}</span>
               )}
             </div>
             {isOwnProfile && (
