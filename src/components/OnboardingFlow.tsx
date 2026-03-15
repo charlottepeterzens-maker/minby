@@ -85,6 +85,14 @@ const OnboardingFlow = ({ onComplete }: Props) => {
     setStep(4);
   };
 
+  const markOnboarded = async () => {
+    if (!user) return;
+    await supabase
+      .from("profiles")
+      .update({ onboarded_at: new Date().toISOString() } as any)
+      .eq("user_id", user.id);
+  };
+
   const handleCreateRoom = async () => {
     if (!user) return;
     setLoading(true);
@@ -99,7 +107,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
       });
     }
 
-    localStorage.setItem(`onboarding_done_${user.id}`, "true");
+    await markOnboarded();
     setLoading(false);
     onComplete();
   };
