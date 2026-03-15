@@ -403,6 +403,8 @@ const ProfilePage = () => {
                         isOwner={isOwnProfile}
                         isExpanded={expandedSection === section.id}
                         onClick={() => toggleSection(section.id)}
+                        onDeleted={fetchSections}
+                        onRenamed={fetchSections}
                         index={i}
                         reordering={reordering}
                       />
