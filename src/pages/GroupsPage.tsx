@@ -181,7 +181,7 @@ const GroupsPage = () => {
               onGroupCreated={fetchGroups}
               trigger={
                 <button
-                  className="w-full flex items-center gap-3 rounded-[12px] p-3 text-left transition-colors hover:opacity-80 outline-none focus:outline-none"
+                  className="w-full flex items-center gap-3 rounded-[16px] p-3 text-left transition-colors hover:opacity-80 outline-none focus:outline-none"
                   style={{ border: "1.5px dashed #EDE8F4" }}
                 >
                   <div

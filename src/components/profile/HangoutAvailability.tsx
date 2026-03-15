@@ -512,7 +512,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             {isOwner && (
               <button
                 onClick={() => setShowAdd(!showAdd)}
-                className="w-full flex items-center justify-center gap-2 rounded-[12px] border-[0.5px] border-dashed border-border p-3 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+                className="w-full flex items-center justify-center gap-2 rounded-[16px] border-[0.5px] border-dashed border-border p-3 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span className="text-xs font-medium">Lägg till</span>
