@@ -187,6 +187,29 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     }
   };
 
+  const startEditEntry = (entry: AvailabilityEntry) => {
+    setEditingEntryId(entry.id);
+    setEditActivities([...entry.activities]);
+    setEditNote(entry.custom_note || "");
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingEntryId || !user) return;
+    await supabase.from("hangout_availability").update({
+      activities: editActivities,
+      custom_note: editNote.trim() || null,
+    }).eq("id", editingEntryId);
+    setEditingEntryId(null);
+    await fetchEntries();
+    toast({ title: "Uppdaterat" });
+  };
+
+  const toggleEditActivity = (activity: string) => {
+    setEditActivities((prev) =>
+      prev.includes(activity) ? prev.filter((a) => a !== activity) : [...prev, activity]
+    );
+  };
+
   const handleAddComment = async () => {
     if (!commentText.trim() || !user || !expandedId) return;
     setSendingComment(true);
