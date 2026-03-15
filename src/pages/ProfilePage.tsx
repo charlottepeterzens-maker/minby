@@ -319,7 +319,7 @@ const ProfilePage = () => {
                     style={{ wordBreak: "break-word" }}
                   >
                     {profile?.bio ? (
-                      <span>"{profile.bio}"</span>
+                      <span>{profile.bio}</span>
                     ) : (
                       <span className="not-italic">{t("addQuoteOrBio")}</span>
                     )}
