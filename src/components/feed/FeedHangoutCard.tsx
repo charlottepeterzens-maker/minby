@@ -76,6 +76,11 @@ const FeedHangoutCard = ({ hangout, profile, onProfileClick, onJoin, onMaybe }: 
             ))}
           </div>
         )}
+
+        {/* Custom note */}
+        {hangout.custom_note && (
+          <p className="text-[12px] text-primary-foreground/80 mt-2">{hangout.custom_note}</p>
+        )}
       </div>
 
       {/* Action buttons */}
