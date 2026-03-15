@@ -412,75 +412,99 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               const dateTitle = format(dateObj, "EEEE d MMMM", { locale: sv });
 
               return (
-                <button
-                  key={entry.id}
-                  onClick={() => toggleExpand(entry.id)}
-                  className={cn(
-                    "w-full flex items-center gap-3 bg-card rounded-[12px] border-[0.5px] border-border p-2.5 text-left transition-all",
-                    isExpanded && "ring-1 ring-primary/20"
-                  )}
-                >
-                  {/* Date icon */}
-                  <div
-                    className="shrink-0 flex flex-col items-center justify-center rounded-[10px]"
-                    style={{
-                      width: 38,
-                      height: 38,
-                      backgroundColor: "hsl(var(--primary))",
-                    }}
-                  >
-                    <span className="text-[9px] font-medium leading-none" style={{ color: "hsl(var(--secondary))" }}>
-                      {monthLabel}
-                    </span>
-                    <span className="text-[15px] font-bold leading-none mt-0.5" style={{ color: "hsl(var(--background))" }}>
-                      {dayLabel}
-                    </span>
-                  </div>
-
-                  {/* Middle: date title + activity pills */}
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium text-foreground leading-tight truncate">
-                      {dateTitle}
-                    </p>
-                    {entry.activities.length > 0 && (
-                      <div className="flex flex-wrap gap-1 mt-1">
-                        {entry.activities.slice(0, 3).map((a) => (
-                          <span
-                            key={a}
-                            className="text-[10px] font-medium px-2 py-0.5 rounded-[20px]"
+                <div key={entry.id} className="relative">
+                  {/* Edit inline form */}
+                  {editingEntryId === entry.id && isOwner ? (
+                    <div className="bg-muted/50 rounded-[12px] border-[0.5px] border-border p-3 space-y-3">
+                      <p className="text-[13px] font-medium text-foreground">{dateTitle}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {ACTIVITY_OPTIONS.map((opt) => (
+                          <button
+                            key={opt.key}
+                            onClick={() => toggleEditActivity(opt.key)}
                             style={{
-                              backgroundColor: "hsl(270 20% 94%)",
-                              color: "hsl(var(--primary))",
+                              borderRadius: 20,
+                              fontSize: 13,
+                              padding: "6px 14px",
+                              border: "0.5px solid #DDD5CC",
+                              backgroundColor: editActivities.includes(opt.key) ? "#3C2A4D" : "#FFFFFF",
+                              color: editActivities.includes(opt.key) ? "#FFFFFF" : "#3C2A4D",
                             }}
+                            className="font-medium transition-all"
                           >
-                            {getActivityLabel(a)}
-                          </span>
+                            {opt.label}
+                          </button>
                         ))}
-                        {entry.activities.length > 3 && (
-                          <span className="text-[10px] text-muted-foreground">
-                            +{entry.activities.length - 3}
-                          </span>
-                        )}
                       </div>
-                    )}
-                    {entry.custom_note && (
-                      <p className="text-[11px] text-muted-foreground mt-1 truncate">{entry.custom_note}</p>
-                    )}
-                  </div>
-
-                  {/* Right: Ja! button */}
-                  {!isOwner && (
-                    <span
-                      className="shrink-0 text-[11px] font-medium px-3 py-1.5 rounded-[8px]"
-                      style={{
-                        backgroundColor: "hsl(145 20% 94%)",
-                        color: "hsl(150 40% 20%)",
-                      }}
+                      <textarea
+                        value={editNote}
+                        onChange={(e) => setEditNote(e.target.value.slice(0, 150))}
+                        placeholder="Berätta lite mer..."
+                        className="w-full text-sm rounded-md border border-border bg-background px-3 py-2 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+                        maxLength={150}
+                        rows={2}
+                      />
+                      <div className="flex gap-2">
+                        <button onClick={() => setEditingEntryId(null)} className="flex-1 py-2 text-[13px] font-medium rounded-[10px]" style={{ border: "0.5px solid #DDD5CC", color: "#3C2A4D" }}>Avbryt</button>
+                        <button onClick={handleSaveEdit} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] text-white" style={{ backgroundColor: "#3C2A4D" }}>Spara</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => toggleExpand(entry.id)}
+                      className={cn(
+                        "w-full flex items-center gap-3 bg-card rounded-[12px] border-[0.5px] border-border p-2.5 text-left transition-all",
+                        isExpanded && "ring-1 ring-primary/20"
+                      )}
                     >
-                      Ja!
-                    </span>
+                      {/* Date icon */}
+                      <div
+                        className="shrink-0 flex flex-col items-center justify-center rounded-[10px]"
+                        style={{ width: 38, height: 38, backgroundColor: "hsl(var(--primary))" }}
+                      >
+                        <span className="text-[9px] font-medium leading-none" style={{ color: "hsl(var(--secondary))" }}>{monthLabel}</span>
+                        <span className="text-[15px] font-bold leading-none mt-0.5" style={{ color: "hsl(var(--background))" }}>{dayLabel}</span>
+                      </div>
+
+                      {/* Middle */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-medium text-foreground leading-tight truncate pr-5">{dateTitle}</p>
+                        {entry.activities.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {entry.activities.slice(0, 3).map((a) => (
+                              <span key={a} className="text-[10px] font-medium px-2 py-0.5 rounded-[20px]" style={{ backgroundColor: "hsl(270 20% 94%)", color: "hsl(var(--primary))" }}>{getActivityLabel(a)}</span>
+                            ))}
+                            {entry.activities.length > 3 && <span className="text-[10px] text-muted-foreground">+{entry.activities.length - 3}</span>}
+                          </div>
+                        )}
+                        {entry.custom_note && <p className="text-[11px] text-muted-foreground mt-1 truncate">{entry.custom_note}</p>}
+                      </div>
+
+                      {/* Right: Ja! button */}
+                      {!isOwner && (
+                        <span className="shrink-0 text-[11px] font-medium px-3 py-1.5 rounded-[8px]" style={{ backgroundColor: "hsl(145 20% 94%)", color: "hsl(150 40% 20%)" }}>Ja!</span>
+                      )}
+                    </button>
                   )}
-                </button>
+
+                  {/* ... menu for owner */}
+                  {isOwner && editingEntryId !== entry.id && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          className="absolute top-2.5 right-2.5 z-10 w-5 h-5 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="min-w-[120px]">
+                        <DropdownMenuItem onClick={() => startEditEntry(entry)}>Redigera</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setDeleteConfirmId(entry.id)} className="text-destructive focus:text-destructive">Ta bort</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
+                </div>
               );
             })}
 
