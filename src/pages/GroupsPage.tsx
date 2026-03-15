@@ -132,7 +132,7 @@ const GroupsPage = () => {
               <button
                 key={g.id}
                 onClick={() => navigate(`/groups/${g.id}`)}
-                className="w-full flex items-center gap-3 rounded-[12px] p-3 text-left transition-colors hover:opacity-90"
+                className="w-full flex items-center gap-3 rounded-[16px] p-3 text-left transition-colors hover:opacity-90"
                 style={{
                   backgroundColor: "#FFFFFF",
                   border: "0.5px solid #EDE8F4",
