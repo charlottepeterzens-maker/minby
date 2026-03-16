@@ -264,6 +264,8 @@ const translations = {
     tipCat_workout: "Workout",
     tipCat_product: "Product",
     tipCat_other: "Other",
+    tipFetchingPreview: "Fetching preview...",
+    tipPreviewFound: "Preview image from link",
   },
   sv: {
     // Nav
