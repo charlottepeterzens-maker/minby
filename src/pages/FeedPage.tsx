@@ -107,6 +107,8 @@ const FeedPage = () => {
     });
 
     hangouts.forEach((h: any) => {
+      // Skip private visibility posts (only visible to tagged friends)
+      if (h.visibility === "private" && h.user_id !== user.id) return;
       items.push({
         type: "hangout",
         data: {
@@ -115,6 +117,7 @@ const FeedPage = () => {
           activities: h.activities || [],
           custom_note: h.custom_note,
           created_at: h.created_at,
+          entry_type: h.entry_type,
         },
         userId: h.user_id,
         created_at: h.created_at,

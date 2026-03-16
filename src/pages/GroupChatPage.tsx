@@ -349,6 +349,7 @@ const GroupChatPage = () => {
           endDate={activeSuggestion.endDate}
           label={activeSuggestion.label}
           groupName={groupName}
+          suggestedType={activeSuggestion.suggestedType}
           onAdd={handleAddToCalendar}
           onDismiss={handleDismissSuggestion}
         />
