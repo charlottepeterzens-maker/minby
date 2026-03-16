@@ -336,8 +336,13 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
   const renderEntryRow = (entry: AvailabilityEntry) => {
     if (editingEntryId === entry.id && isOwner) return renderEditForm(entry);
     const type = entry.entry_type;
+    const tagCount = confirmedCounts.get(entry.id) || 0;
+    const isConfirmedByFriends = tagCount >= 2;
     return (
-      <div className="relative">
+      <div
+        className="relative"
+        style={isConfirmedByFriends ? { borderLeft: '3px solid #B5CCBF', paddingLeft: 8 } : undefined}
+      >
         {type === "confirmed" ? renderPlanRow(entry) : type === "activity" ? renderActivityRow(entry) : renderLedigRow(entry)}
         {isOwner && editingEntryId !== entry.id && (
           <DropdownMenu>
