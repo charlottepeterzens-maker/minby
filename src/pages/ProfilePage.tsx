@@ -33,6 +33,8 @@ import HangoutAvailability from "@/components/profile/HangoutAvailability";
 import ProfileShareDialog from "@/components/profile/ProfileShareDialog";
 import TipsFavorites from "@/components/profile/TipsFavorites";
 import FriendRequestButton from "@/components/profile/FriendRequestButton";
+import HangoutNotificationList from "@/components/profile/HangoutNotificationList";
+import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import BottomNav from "@/components/BottomNav";
@@ -121,6 +123,8 @@ const ProfilePage = () => {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [reordering, setReordering] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [notifHangoutId, setNotifHangoutId] = useState<string | null>(null);
+  const { refresh: refreshUnread } = useUnreadNotifications();
 
   const targetUserId = userId || user?.id;
   const isOwnProfile = !userId || userId === user?.id;
@@ -435,6 +439,14 @@ const GridWithExpansion = ({
           </div>
         )}
 
+        {/* Hangout notifications */}
+        {isOwnProfile && (
+          <HangoutNotificationList
+            onOpenHangout={(hangoutId) => setNotifHangoutId(hangoutId)}
+            onNotificationsRead={refreshUnread}
+          />
+        )}
+
         {/* Health coming soon placeholder */}
         <div className="mb-6 flex items-center gap-3 rounded-[16px] border-[0.5px] border-[#EDE8F4] bg-[#FFFFFF] p-3">
           <div className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 36, height: 36, backgroundColor: '#FCF0F3' }}>
@@ -450,10 +462,14 @@ const GridWithExpansion = ({
         {/* Hangout Availability */}
         {targetUserId && (
           <div className="mb-6">
-            <HangoutAvailability userId={targetUserId} isOwner={isOwnProfile} />
+            <HangoutAvailability
+              userId={targetUserId}
+              isOwner={isOwnProfile}
+              openEntryId={notifHangoutId}
+              onOpenedEntry={() => setNotifHangoutId(null)}
+            />
           </div>
         )}
-
 
         {/* Life sections as thumbnail grid */}
         <div className="mb-4">

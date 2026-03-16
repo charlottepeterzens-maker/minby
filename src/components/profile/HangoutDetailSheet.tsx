@@ -171,9 +171,30 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
   const handleRSVP = async (status: "yes" | "maybe") => {
     if (!user) return;
     const existing = taggedFriends.find(t => t.tagged_user_id === user.id);
-    if (!existing) {
+    if (!existing && status === "yes") {
       await supabase.from("hangout_tagged_friends").insert({ availability_id: entry.id, tagged_user_id: user.id, tagged_by: user.id });
     }
+
+    // Send notification to the hangout owner
+    if (entry.user_id !== user.id) {
+      const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+      const name = myProfile?.display_name || "Någon";
+      const actLabel = activityName || entry.custom_note || "häng";
+      const dateLabel = `${shortWeekday} ${day}/${shortMonth}`;
+      const title = status === "yes"
+        ? `${name} vill hänga med på ${actLabel} ${dateLabel}`
+        : `${name} sa kanske till ${actLabel} ${dateLabel}`;
+
+      await supabase.from("notifications").insert({
+        user_id: entry.user_id,
+        from_user_id: user.id,
+        type: status === "yes" ? "hangout_yes" : "hangout_maybe",
+        title,
+        body: null,
+        reference_id: entry.id,
+      });
+    }
+
     await fetchDetails();
   };
 

@@ -33,9 +33,11 @@ const ACTIVITY_MAP: Record<string, string> = {
 interface Props {
   userId: string;
   isOwner: boolean;
+  openEntryId?: string | null;
+  onOpenedEntry?: () => void;
 }
 
-const HangoutAvailability = ({ userId, isOwner }: Props) => {
+const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Props) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [entries, setEntries] = useState<AvailabilityEntry[]>([]);
@@ -72,6 +74,18 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
   }, [userId]);
 
   useEffect(() => { fetchEntries(); }, [fetchEntries]);
+
+  // Open a specific entry from notification
+  useEffect(() => {
+    if (openEntryId && entries.length > 0) {
+      const entry = entries.find(e => e.id === openEntryId);
+      if (entry) {
+        setSelectedEntry(entry);
+        setSheetOpen(true);
+        onOpenedEntry?.();
+      }
+    }
+  }, [openEntryId, entries, onOpenedEntry]);
 
   const handleCardClick = (entry: AvailabilityEntry) => {
     setSelectedEntry(entry);
