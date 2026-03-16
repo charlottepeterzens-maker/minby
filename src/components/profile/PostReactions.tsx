@@ -3,8 +3,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const REACTION_EMOJIS = ["❤️", "🥂", "😮", "🙌"];
+
+const REACTION_TOASTS: Record<string, string> = {
+  "❤️": "Du skickade kärlek",
+  "🥂": "Du firade med dem",
+  "🙌": "Du hejade på dem",
+  "😮": "Du blev berörd",
+};
 
 interface Reaction {
   emoji: string;
