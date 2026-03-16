@@ -242,7 +242,6 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     <Send className="w-3 h-3" />
                   </Button>
                 </div>
-                </div>
               </div>
             </motion.div>
           )}
