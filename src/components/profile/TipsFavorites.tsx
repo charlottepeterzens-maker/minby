@@ -446,6 +446,7 @@ const TipCard = ({
 }) => {
   const { t } = useLanguage();
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
 
   useEffect(() => {
     if (!tip.image_url) return;
@@ -464,87 +465,174 @@ const TipCard = ({
   const hasImage = !!signedUrl;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ delay: index * 0.08 }}
-      className="relative shrink-0 w-[160px] h-[200px] rounded-[16px] overflow-hidden border-[0.5px] border-border group"
-    >
-      {/* Background */}
-      {hasImage ? (
-        <img
-          src={signedUrl!}
-          alt={tip.title}
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-muted flex items-center justify-center">
-          <span className="text-3xl">{categoryEmoji(tip.category)}</span>
-        </div>
-      )}
-
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-      {/* Three-dot menu (top right) */}
-      <div className="absolute top-2 right-2 z-10">
-        {isOwner ? (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors">
-                <MoreHorizontal className="w-3.5 h-3.5 text-white" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-[120px]">
-              <DropdownMenuItem onClick={onEdit} className="gap-2 text-xs">
-                <Pencil className="w-3.5 h-3.5" />
-                {t("tipEdit")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={onDelete} className="gap-2 text-xs text-destructive">
-                <Trash2 className="w-3.5 h-3.5" />
-                {t("tipDelete")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ delay: index * 0.08 }}
+        className="relative shrink-0 w-[160px] h-[200px] rounded-[16px] overflow-hidden border-[0.5px] border-border group cursor-pointer"
+        onClick={() => setDetailOpen(true)}
+      >
+        {/* Background */}
+        {hasImage ? (
+          <img
+            src={signedUrl!}
+            alt={tip.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
         ) : (
-          <button
-            onClick={onSave}
-            className="w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
-          >
-            {isSaved ? (
-              <BookmarkCheck className="w-3.5 h-3.5 text-white" />
-            ) : (
-              <Bookmark className="w-3.5 h-3.5 text-white" />
-            )}
-          </button>
+          <div className="absolute inset-0 bg-muted flex items-center justify-center">
+            <span className="text-3xl">{categoryEmoji(tip.category)}</span>
+          </div>
         )}
-      </div>
 
-      {/* Link icon (top left) */}
-      {tip.url && (
-        <a
-          href={tip.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute top-2 left-2 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
-        >
-          <ExternalLink className="w-3.5 h-3.5 text-white" />
-        </a>
-      )}
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-      {/* Text content (bottom) */}
-      <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
-        <p className="text-[13px] font-medium text-white leading-tight line-clamp-2">
-          {tip.title}
-        </p>
-        {tip.comment && (
-          <p className="text-[11px] text-white/75 mt-1 leading-snug line-clamp-2">
-            {tip.comment}
+        {/* Three-dot menu (top right) - stop propagation so it doesn't open detail */}
+        <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+          {isOwner ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors">
+                  <MoreHorizontal className="w-3.5 h-3.5 text-white" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[120px]">
+                <DropdownMenuItem onClick={onEdit} className="gap-2 text-xs">
+                  <Pencil className="w-3.5 h-3.5" />
+                  {t("tipEdit")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onDelete} className="gap-2 text-xs text-destructive">
+                  <Trash2 className="w-3.5 h-3.5" />
+                  {t("tipDelete")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <button
+              onClick={onSave}
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
+            >
+              {isSaved ? (
+                <BookmarkCheck className="w-3.5 h-3.5 text-white" />
+              ) : (
+                <Bookmark className="w-3.5 h-3.5 text-white" />
+              )}
+            </button>
+          )}
+        </div>
+
+        {/* Text content (bottom) */}
+        <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
+          <p className="text-[13px] font-medium text-white leading-tight line-clamp-2">
+            {tip.title}
           </p>
-        )}
-      </div>
-    </motion.div>
+          {tip.comment && (
+            <p className="text-[11px] text-white/75 mt-1 leading-snug line-clamp-2">
+              {tip.comment}
+            </p>
+          )}
+        </div>
+      </motion.div>
+
+      {/* Detail Sheet */}
+      <Sheet open={detailOpen} onOpenChange={setDetailOpen}>
+        <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))] p-0 max-h-[85vh]">
+          {/* Hero image */}
+          {hasImage ? (
+            <div className="relative w-full aspect-[4/3] overflow-hidden rounded-t-[20px]">
+              <img
+                src={signedUrl!}
+                alt={tip.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            </div>
+          ) : (
+            <div className="w-full aspect-[4/3] bg-muted rounded-t-[20px] flex items-center justify-center">
+              <span className="text-5xl">{categoryEmoji(tip.category)}</span>
+            </div>
+          )}
+
+          {/* Content */}
+          <div className="p-5 space-y-3">
+            {/* Category pill */}
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-muted text-[11px] font-medium text-muted-foreground">
+              {categoryEmoji(tip.category)} {t(`tipCat_${tip.category}` as any) || tip.category}
+            </span>
+
+            {/* Title */}
+            <h3 className="text-[17px] font-medium text-foreground leading-snug">
+              {tip.title}
+            </h3>
+
+            {/* Comment */}
+            {tip.comment && (
+              <p className="text-[13px] text-muted-foreground leading-relaxed">
+                {tip.comment}
+              </p>
+            )}
+
+            {/* Link */}
+            {tip.url && (
+              <a
+                href={tip.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-[13px] text-primary hover:underline"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                {(() => {
+                  try { return new URL(tip.url).hostname.replace("www.", ""); } catch { return tip.url; }
+                })()}
+              </a>
+            )}
+
+            {/* Actions */}
+            <div className="flex items-center gap-2 pt-2">
+              {isOwner ? (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 text-xs"
+                    onClick={() => { setDetailOpen(false); onEdit(); }}
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    {t("tipEdit")}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 text-xs text-destructive hover:text-destructive"
+                    onClick={() => { setDetailOpen(false); onDelete(); }}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    {t("tipDelete")}
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 text-xs"
+                  onClick={onSave}
+                >
+                  {isSaved ? (
+                    <BookmarkCheck className="w-4 h-4 text-primary" />
+                  ) : (
+                    <Bookmark className="w-4 h-4" />
+                  )}
+                  {isSaved ? t("tipSave") : t("tipAddImage").replace("bild", "spara")}
+                </Button>
+              )}
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 };
 
