@@ -111,6 +111,20 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
           role: "member"
         }))
       );
+      // Send group_invite notifications
+      if (selectedFriends.length > 0) {
+        const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+        const myName = myProfile?.display_name || "Någon";
+        await Promise.all(selectedFriends.map(fId =>
+          sendNotification({
+            recipientUserId: fId,
+            fromUserId: user.id,
+            type: "group_invite",
+            referenceId: group.id,
+            message: `${myName} bjöd in dig till gruppen ${name}`,
+          })
+        ));
+      }
     }
 
     toast.success("Grupp skapad!");
