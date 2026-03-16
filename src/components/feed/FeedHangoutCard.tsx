@@ -208,7 +208,7 @@ const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedH
               <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {isOwn ? "Du" : (profile.display_name || "Någon")}
               </button>
-              <p className="text-[11px] text-muted-foreground leading-tight">Vill göra något · {timeAgo}</p>
+              <p className="text-[11px] text-muted-foreground leading-tight">sugen på · {timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
