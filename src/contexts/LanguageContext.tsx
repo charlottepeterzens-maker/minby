@@ -88,9 +88,9 @@ const translations = {
 
     // Auth page
     joinMinby: "Join MINBY",
-    welcomeBack: "Welcome back",
+    welcomeBack: "Sign in",
     startPlanning: "Start planning real moments with your people",
-    yourFriendsWaiting: "Your friends are waiting",
+    yourFriendsWaiting: "Sign in to continue",
     yourName: "Your name",
     howFriendsKnowYou: "How your friends know you",
     email: "Email",
@@ -327,9 +327,9 @@ const translations = {
 
     // Auth page
     joinMinby: "Gå med i MINBY",
-    welcomeBack: "Välkommen tillbaka",
+    welcomeBack: "Logga in",
     startPlanning: "Börja planera riktiga stunder med dina nära",
-    yourFriendsWaiting: "Dina vänner väntar",
+    yourFriendsWaiting: "Logga in för att fortsätta",
     yourName: "Ditt namn",
     howFriendsKnowYou: "Vad dina vänner kallar dig",
     email: "E-post",
