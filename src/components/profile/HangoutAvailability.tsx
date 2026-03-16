@@ -428,7 +428,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     <div className="bg-card border-[0.5px] rounded-[16px] p-4" style={{ borderColor: '#EDE8F4' }}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-display text-base font-medium text-foreground">
-          {t("hangoutAvailability")}
+          Hitta på något
         </h3>
         {isOwner && (
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowAdd(true)}>
