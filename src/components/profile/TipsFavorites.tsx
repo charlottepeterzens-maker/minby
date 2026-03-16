@@ -5,6 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
@@ -13,10 +14,10 @@ import {
   BookmarkCheck,
   ExternalLink,
   Camera,
-  
   Trash2,
   Loader2,
   Pencil,
+  MoreHorizontal,
 } from "lucide-react";
 import {
   Sheet,
@@ -25,6 +26,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Tip {
   id: string;
@@ -32,6 +39,7 @@ interface Tip {
   title: string;
   url: string | null;
   image_url: string | null;
+  comment: string | null;
   category: string;
   sort_order: number;
   created_at: string;
@@ -66,9 +74,9 @@ const TipsFavorites = ({
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingTip, setEditingTip] = useState<Tip | null>(null);
 
-  // Add form state
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
+  const [comment, setComment] = useState("");
   const [category, setCategory] = useState("other");
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -82,7 +90,7 @@ const TipsFavorites = ({
       .select("*")
       .eq("user_id", userId)
       .order("sort_order", { ascending: true });
-    if (data) setTips(data);
+    if (data) setTips(data as Tip[]);
     setLoading(false);
   }, [userId]);
 
@@ -103,12 +111,12 @@ const TipsFavorites = ({
   const fetchLinkPreview = useCallback(async (linkUrl: string) => {
     if (!linkUrl.trim()) return;
     let formatted = linkUrl.trim();
-    if (!formatted.startsWith('http')) formatted = `https://${formatted}`;
+    if (!formatted.startsWith("http")) formatted = `https://${formatted}`;
     try { new URL(formatted); } catch { return; }
 
     setFetchingPreview(true);
     try {
-      const { data, error } = await supabase.functions.invoke('fetch-link-preview', {
+      const { data, error } = await supabase.functions.invoke("fetch-link-preview", {
         body: { url: formatted },
       });
       if (!error && data) {
@@ -143,6 +151,7 @@ const TipsFavorites = ({
   const resetForm = () => {
     setTitle("");
     setUrl("");
+    setComment("");
     setCategory("other");
     setCustomImage(null);
     setPreviewImage(null);
@@ -153,6 +162,7 @@ const TipsFavorites = ({
     setEditingTip(tip);
     setTitle(tip.title);
     setUrl(tip.url || "");
+    setComment(tip.comment || "");
     setCategory(tip.category);
     setCustomImage(tip.image_url && !tip.image_url.startsWith("http") ? tip.image_url : null);
     setPreviewImage(tip.image_url && tip.image_url.startsWith("http") ? tip.image_url : null);
@@ -161,21 +171,19 @@ const TipsFavorites = ({
 
   const handleAddOrUpdate = async () => {
     if (!user || !title.trim()) return;
-
     const imageUrl = customImage || previewImage || null;
 
     if (editingTip) {
-      // Update existing tip
       const { error } = await supabase
         .from("user_tips")
         .update({
           title: title.trim(),
           url: url.trim() || null,
           image_url: imageUrl,
+          comment: comment.trim() || null,
           category,
         })
         .eq("id", editingTip.id);
-
       if (error) {
         toast({ title: t("error"), description: error.message, variant: "destructive" });
       } else {
@@ -184,21 +192,19 @@ const TipsFavorites = ({
         await fetchTips();
       }
     } else {
-      // Insert new tip
       if (tips.length >= MAX_TIPS) {
         toast({ title: t("tipLimitReached"), description: t("tipLimitDesc"), variant: "destructive" });
         return;
       }
-
       const { error } = await supabase.from("user_tips").insert({
         user_id: user.id,
         title: title.trim(),
         url: url.trim() || null,
         image_url: imageUrl,
+        comment: comment.trim() || null,
         category,
         sort_order: tips.length,
       });
-
       if (error) {
         toast({ title: t("error"), description: error.message, variant: "destructive" });
       } else {
@@ -241,16 +247,103 @@ const TipsFavorites = ({
 
   if (loading) return null;
 
+  const formContent = (
+    <div className="space-y-4 mt-4">
+      {/* Category picker */}
+      <div className="flex flex-wrap gap-2">
+        {CATEGORIES.map((cat) => (
+          <button
+            key={cat.key}
+            onClick={() => setCategory(cat.key)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+              category === cat.key
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {cat.emoji} {t(`tipCat_${cat.key}` as any) || cat.key}
+          </button>
+        ))}
+      </div>
+
+      <Input
+        placeholder={t("tipTitlePlaceholder")}
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        maxLength={80}
+      />
+
+      <Input
+        placeholder={t("tipUrlPlaceholder")}
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        onBlur={() => fetchLinkPreview(url)}
+        onPaste={(e) => {
+          const pasted = e.clipboardData.getData("text");
+          setTimeout(() => fetchLinkPreview(pasted), 100);
+        }}
+        type="url"
+      />
+
+      <Textarea
+        placeholder={t("tipCommentPlaceholder")}
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        maxLength={200}
+        className="min-h-[60px] resize-none"
+      />
+
+      {fetchingPreview && (
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          {t("tipFetchingPreview")}
+        </div>
+      )}
+      {previewImage && !customImage && (
+        <div className="flex items-center gap-3 rounded-[12px] border border-border p-2">
+          <img src={previewImage} alt="" className="w-14 h-14 rounded-[8px] object-cover" />
+          <p className="text-[11px] text-muted-foreground flex-1">{t("tipPreviewFound")}</p>
+          <button onClick={() => setPreviewImage(null)} className="text-muted-foreground hover:text-foreground">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+        >
+          <Camera className="w-4 h-4" />
+          {customImage ? t("tipImageChanged") : t("tipAddImage")}
+        </button>
+        {customImage && (
+          <button onClick={() => setCustomImage(null)} className="text-muted-foreground hover:text-foreground">
+            <X className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+      <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+
+      <Button onClick={handleAddOrUpdate} disabled={!title.trim()} className="w-full">
+        {editingTip ? t("tipSave") : t("addTip")}
+      </Button>
+
+      <p className="text-[11px] text-center text-muted-foreground">
+        {t("tipCountInfo", tips.length, MAX_TIPS)}
+      </p>
+    </div>
+  );
+
   return (
     <div className="mb-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <h2 className="text-xs font-medium text-muted-foreground font-body">
-            {t("tipsSectionTitle")}
-          </h2>
-        </div>
-        {isOwner && (tips.length < MAX_TIPS || editingTip) && (
+        <h2 className="text-xs font-medium text-muted-foreground font-body">
+          {t("tipsSectionTitle")}
+        </h2>
+        {isOwner && tips.length < MAX_TIPS && (
           <Sheet open={sheetOpen} onOpenChange={(open) => { setSheetOpen(open); if (!open) resetForm(); }}>
             <SheetTrigger asChild>
               <button className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
@@ -258,105 +351,13 @@ const TipsFavorites = ({
                 {t("addTip")}
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-[20px] bg-[#F7F3EF]">
+            <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))]">
               <SheetHeader>
                 <SheetTitle className="font-display text-base">
-                  {t("addTip")}
+                  {editingTip ? t("tipSave") : t("addTip")}
                 </SheetTitle>
               </SheetHeader>
-              <div className="space-y-4 mt-4">
-                {/* Category picker */}
-                <div className="flex flex-wrap gap-2">
-                  {CATEGORIES.map((cat) => (
-                    <button
-                      key={cat.key}
-                      onClick={() => setCategory(cat.key)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                        category === cat.key
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {cat.emoji} {t(`tipCat_${cat.key}` as any) || cat.key}
-                    </button>
-                  ))}
-                </div>
-
-                <Input
-                  placeholder={t("tipTitlePlaceholder")}
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  maxLength={80}
-                />
-
-                <Input
-                  placeholder={t("tipUrlPlaceholder")}
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  onBlur={() => fetchLinkPreview(url)}
-                  onPaste={(e) => {
-                    const pasted = e.clipboardData.getData('text');
-                    setTimeout(() => fetchLinkPreview(pasted), 100);
-                  }}
-                  type="url"
-                />
-
-                {/* Link preview */}
-                {fetchingPreview && (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    {t("tipFetchingPreview")}
-                  </div>
-                )}
-                {previewImage && !customImage && (
-                  <div className="flex items-center gap-3 rounded-[12px] border border-border p-2">
-                    <img src={previewImage} alt="" className="w-14 h-14 rounded-[8px] object-cover" />
-                    <p className="text-[11px] text-muted-foreground flex-1">{t("tipPreviewFound")}</p>
-                    <button onClick={() => setPreviewImage(null)} className="text-muted-foreground hover:text-foreground">
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                )}
-
-                {/* Image upload */}
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
-                  >
-                    <Camera className="w-4 h-4" />
-                    {customImage ? t("tipImageChanged") : t("tipAddImage")}
-                  </button>
-                  {customImage && (
-                    <button
-                      onClick={() => setCustomImage(null)}
-                      className="text-muted-foreground hover:text-foreground"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageUpload}
-                />
-
-                <Button
-                  onClick={handleAddOrUpdate}
-                  disabled={!title.trim()}
-                  className="w-full"
-                >
-                  {editingTip ? t("tipSave") : t("addTip")}
-                </Button>
-
-                <p className="text-[11px] text-center text-muted-foreground">
-                  {t("tipCountInfo", tips.length, MAX_TIPS)}
-                </p>
-              </div>
+              {formContent}
             </SheetContent>
           </Sheet>
         )}
@@ -377,54 +378,18 @@ const TipsFavorites = ({
                 </div>
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-[20px] bg-[#F7F3EF]">
+            <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))]">
               <SheetHeader>
                 <SheetTitle className="font-display text-base">
                   {t("addTip")}
                 </SheetTitle>
               </SheetHeader>
-              <div className="space-y-4 mt-4">
-                <div className="flex flex-wrap gap-2">
-                  {CATEGORIES.map((cat) => (
-                    <button
-                      key={cat.key}
-                      onClick={() => setCategory(cat.key)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                        category === cat.key
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {cat.emoji} {t(`tipCat_${cat.key}` as any) || cat.key}
-                    </button>
-                  ))}
-                </div>
-                <Input placeholder={t("tipTitlePlaceholder")} value={title} onChange={(e) => setTitle(e.target.value)} maxLength={80} />
-                <Input placeholder={t("tipUrlPlaceholder")} value={url} onChange={(e) => setUrl(e.target.value)} onBlur={() => fetchLinkPreview(url)} onPaste={(e) => { const pasted = e.clipboardData.getData('text'); setTimeout(() => fetchLinkPreview(pasted), 100); }} type="url" />
-                {fetchingPreview && <div className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="w-3.5 h-3.5 animate-spin" />{t("tipFetchingPreview")}</div>}
-                {previewImage && !customImage && (
-                  <div className="flex items-center gap-3 rounded-[12px] border border-border p-2">
-                    <img src={previewImage} alt="" className="w-14 h-14 rounded-[8px] object-cover" />
-                    <p className="text-[11px] text-muted-foreground flex-1">{t("tipPreviewFound")}</p>
-                    <button onClick={() => setPreviewImage(null)} className="text-muted-foreground hover:text-foreground"><X className="w-3.5 h-3.5" /></button>
-                  </div>
-                )}
-                <div className="flex items-center gap-3">
-                  <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
-                    <Camera className="w-4 h-4" />
-                    {customImage ? t("tipImageChanged") : t("tipAddImage")}
-                  </button>
-                  {customImage && <button onClick={() => setCustomImage(null)} className="text-muted-foreground hover:text-foreground"><X className="w-4 h-4" /></button>}
-                </div>
-                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-                <Button onClick={handleAddOrUpdate} disabled={!title.trim()} className="w-full">{editingTip ? t("tipSave") : t("addTip")}</Button>
-                <p className="text-[11px] text-center text-muted-foreground">{t("tipCountInfo", tips.length, MAX_TIPS)}</p>
-              </div>
+              {formContent}
             </SheetContent>
           </Sheet>
         ) : null
       ) : (
-        <div className="space-y-2">
+        <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
           <AnimatePresence>
             {tips.map((tip, i) => (
               <TipCard
@@ -441,6 +406,20 @@ const TipsFavorites = ({
             ))}
           </AnimatePresence>
         </div>
+      )}
+
+      {/* Hidden sheet for editing (triggered programmatically) */}
+      {isOwner && editingTip && (
+        <Sheet open={sheetOpen} onOpenChange={(open) => { setSheetOpen(open); if (!open) resetForm(); }}>
+          <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))]">
+            <SheetHeader>
+              <SheetTitle className="font-display text-base">
+                {t("tipSave")}
+              </SheetTitle>
+            </SheetHeader>
+            {formContent}
+          </SheetContent>
+        </Sheet>
       )}
     </div>
   );
@@ -470,7 +449,6 @@ const TipCard = ({
 
   useEffect(() => {
     if (!tip.image_url) return;
-    // If it's a storage path (not a full URL), get signed URL
     if (!tip.image_url.startsWith("http")) {
       supabase.storage
         .from("life-images")
@@ -483,74 +461,87 @@ const TipCard = ({
     }
   }, [tip.image_url]);
 
+  const hasImage = !!signedUrl;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
-      transition={{ delay: index * 0.05 }}
-      className="flex items-center gap-3 rounded-[16px] border-[0.5px] border-border bg-card p-3"
+      transition={{ delay: index * 0.08 }}
+      className="relative shrink-0 w-[160px] h-[200px] rounded-[16px] overflow-hidden border-[0.5px] border-border group"
     >
-      {/* Thumbnail */}
-      <div className="shrink-0 w-12 h-12 rounded-[10px] overflow-hidden flex items-center justify-center"
-        style={{ backgroundColor: "#EDE8F4" }}
-      >
-        {signedUrl ? (
-          <img src={signedUrl} alt="" className="w-full h-full object-cover" />
-        ) : (
-          <span className="text-lg">{categoryEmoji(tip.category)}</span>
-        )}
-      </div>
+      {/* Background */}
+      {hasImage ? (
+        <img
+          src={signedUrl!}
+          alt={tip.title}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-muted flex items-center justify-center">
+          <span className="text-3xl">{categoryEmoji(tip.category)}</span>
+        </div>
+      )}
 
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        <p className="text-[13px] font-medium text-foreground truncate">
-          {tip.title}
-        </p>
-        <p className="text-[11px] text-muted-foreground">
-          {categoryEmoji(tip.category)}{" "}
-          {t(`tipCat_${tip.category}` as any) || tip.category}
-        </p>
-      </div>
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-      {/* Actions */}
-      <div className="flex items-center gap-1 shrink-0">
-        {tip.url && (
-          <a
-            href={tip.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
-          >
-            <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
-          </a>
-        )}
+      {/* Three-dot menu (top right) */}
+      <div className="absolute top-2 right-2 z-10">
         {isOwner ? (
-          <>
-            <button
-              onClick={onEdit}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
-            >
-              <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
-            </button>
-            <button
-              onClick={onDelete}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
-            >
-              <Trash2 className="w-3.5 h-3.5 text-muted-foreground" />
-            </button>
-          </>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors">
+                <MoreHorizontal className="w-3.5 h-3.5 text-white" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[120px]">
+              <DropdownMenuItem onClick={onEdit} className="gap-2 text-xs">
+                <Pencil className="w-3.5 h-3.5" />
+                {t("tipEdit")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onDelete} className="gap-2 text-xs text-destructive">
+                <Trash2 className="w-3.5 h-3.5" />
+                {t("tipDelete")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : (
           <button
             onClick={onSave}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+            className="w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
           >
             {isSaved ? (
-              <BookmarkCheck className="w-4 h-4 text-primary" />
+              <BookmarkCheck className="w-3.5 h-3.5 text-white" />
             ) : (
-              <Bookmark className="w-4 h-4 text-muted-foreground" />
+              <Bookmark className="w-3.5 h-3.5 text-white" />
             )}
           </button>
+        )}
+      </div>
+
+      {/* Link icon (top left) */}
+      {tip.url && (
+        <a
+          href={tip.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute top-2 left-2 z-10 w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
+        >
+          <ExternalLink className="w-3.5 h-3.5 text-white" />
+        </a>
+      )}
+
+      {/* Text content (bottom) */}
+      <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
+        <p className="text-[13px] font-medium text-white leading-tight line-clamp-2">
+          {tip.title}
+        </p>
+        {tip.comment && (
+          <p className="text-[11px] text-white/75 mt-1 leading-snug line-clamp-2">
+            {tip.comment}
+          </p>
         )}
       </div>
     </motion.div>

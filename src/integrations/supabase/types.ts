@@ -719,6 +719,7 @@ export type Database = {
       user_tips: {
         Row: {
           category: string
+          comment: string | null
           created_at: string
           id: string
           image_url: string | null
@@ -729,6 +730,7 @@ export type Database = {
         }
         Insert: {
           category?: string
+          comment?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
@@ -739,6 +741,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          comment?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
