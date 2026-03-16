@@ -539,6 +539,14 @@ const translations = {
     tipFetchingPreview: "Hämtar förhandsgranskning...",
     tipPreviewFound: "Förhandsvisningsbild från länk",
     tipSave: "Spara ändringar",
+
+    // Hangout sections
+    hangoutAvailable: "Ledig",
+    hangoutConfirmed: "Bekräftad dejt",
+    hangoutConfirmedLabel: "Planerade dejter",
+    hangoutAvailableLabel: "Ledig & vill ses",
+    hangoutNoConfirmed: "Inga bekräftade dejter än",
+    hangoutNoAvailable: "Inga lediga datum än",
   },
 } as const;
 
