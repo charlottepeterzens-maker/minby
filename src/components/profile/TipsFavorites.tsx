@@ -527,12 +527,20 @@ const TipCard = ({
           </a>
         )}
         {isOwner ? (
-          <button
-            onClick={onDelete}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
-          >
-            <Trash2 className="w-3.5 h-3.5 text-muted-foreground" />
-          </button>
+          <>
+            <button
+              onClick={onEdit}
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+            >
+              <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
+            </button>
+            <button
+              onClick={onDelete}
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-muted-foreground" />
+            </button>
+          </>
         ) : (
           <button
             onClick={onSave}
