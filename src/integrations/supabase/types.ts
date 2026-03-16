@@ -663,6 +663,35 @@ export type Database = {
           },
         ]
       }
+      saved_tips: {
+        Row: {
+          created_at: string
+          id: string
+          original_tip_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          original_tip_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          original_tip_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_tips_original_tip_id_fkey"
+            columns: ["original_tip_id"]
+            isOneToOne: false
+            referencedRelation: "user_tips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -680,6 +709,39 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_tips: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          image_url: string | null
+          sort_order: number
+          title: string
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          sort_order?: number
+          title: string
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          sort_order?: number
+          title?: string
+          url?: string | null
           user_id?: string
         }
         Relationships: []
