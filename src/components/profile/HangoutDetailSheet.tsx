@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import { toast } from "@/hooks/use-toast";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 interface AvailabilityEntry {
   id: string;
@@ -69,6 +70,7 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [ownerProfile, setOwnerProfile] = useState<{ display_name: string | null } | null>(null);
   const [creatingGroup, setCreatingGroup] = useState(false);
+  const { subscribe: subscribePush, subscribed: pushSubscribed, permission: pushPermission, isSupported: pushSupported } = usePushNotifications();
 
   const fetchDetails = useCallback(async () => {
     if (!entry) return;
@@ -193,6 +195,23 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
         body: null,
         reference_id: entry.id,
       });
+      // Also send push notification
+      try {
+        await supabase.functions.invoke("send-push", {
+          body: {
+            userId: entry.user_id,
+            title: `${name} vill hänga med!`,
+            body: title,
+          },
+        });
+      } catch {
+        // Push is best-effort, in-app notification is the fallback
+      }
+    }
+
+    // Prompt for push permission on first RSVP (for the responder too)
+    if (pushSupported && pushPermission === "default" && !pushSubscribed) {
+      subscribePush();
     }
 
     await fetchDetails();
