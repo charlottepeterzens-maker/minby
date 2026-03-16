@@ -503,6 +503,28 @@ const translations = {
     friendAdded: "Vän tillagd!",
     hangoutSuggestions: "Hangout-matchningar",
     reorderSections: "Ordna om",
+
+    // Tips & Favorites
+    tipsSectionTitle: "Tips & favoriter",
+    addTip: "Lägg till tips",
+    tipTitlePlaceholder: "Vad rekommenderar du?",
+    tipUrlPlaceholder: "Länk (valfritt)",
+    tipAddImage: "Lägg till bild",
+    tipImageChanged: "Bild tillagd",
+    tipLimitReached: "Max antal nått",
+    tipLimitDesc: "Du kan ha max 5 favoriter åt gången. Ta bort en först.",
+    tipCountInfo: "{0} av {1} tips",
+    tipEmptyTitle: "Dela dina bästa tips",
+    tipEmptyDesc: "Hudvård, restauranger, poddar, böcker...",
+    tipCat_skincare: "Hudvård",
+    tipCat_food: "Mat & dryck",
+    tipCat_podcast: "Podd",
+    tipCat_book: "Bok",
+    tipCat_show: "Serie/film",
+    tipCat_salon: "Salong",
+    tipCat_workout: "Träning",
+    tipCat_product: "Produkt",
+    tipCat_other: "Övrigt",
   },
 } as const;
 
