@@ -527,6 +527,8 @@ const translations = {
     tipCat_workout: "Träning",
     tipCat_product: "Produkt",
     tipCat_other: "Övrigt",
+    tipFetchingPreview: "Hämtar förhandsgranskning...",
+    tipPreviewFound: "Förhandsvisningsbild från länk",
   },
 } as const;
 
