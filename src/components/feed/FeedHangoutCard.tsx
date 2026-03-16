@@ -81,7 +81,7 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
               <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {isOwn ? "Du" : (profile.display_name || "Någon")}
               </button>
-              <p className="text-[11px] text-muted-foreground leading-tight">Vill ses · {timeAgo}</p>
+              <p className="text-[11px] text-muted-foreground leading-tight">vill ses · {timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
