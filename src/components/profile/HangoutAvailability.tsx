@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import { format, isBefore, startOfDay } from "date-fns";
+import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import {
-  CalendarIcon, Plus, X, Pencil, MoreHorizontal,
-  MessageCircle, UserPlus, Send, Trash2 } from
-"lucide-react";
+  Plus, MoreHorizontal, MessageCircle, UserPlus, Send, Trash2, X
+} from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +16,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { isBefore, startOfDay } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
 interface AvailabilityEntry {
   id: string;
@@ -32,7 +33,7 @@ interface Comment {
   user_id: string;
   content: string;
   created_at: string;
-  profile?: {display_name: string | null;avatar_url: string | null;};
+  profile?: { display_name: string | null; avatar_url: string | null };
 }
 
 interface TaggedFriend {
@@ -40,10 +41,10 @@ interface TaggedFriend {
   availability_id: string;
   tagged_user_id: string;
   tagged_by: string;
-  profile?: {display_name: string | null;avatar_url: string | null;};
+  profile?: { display_name: string | null; avatar_url: string | null };
 }
 
-const ACTIVITY_OPTIONS: {key: TranslationKey;label: string;}[] = [
+const ACTIVITY_OPTIONS: { key: TranslationKey; label: string }[] = [
   { key: "activityNature", label: "Natur" },
   { key: "activityFoodOut", label: "Äta ute" },
   { key: "activityRelax", label: "Hänga" },
@@ -69,7 +70,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [customNote, setCustomNote] = useState("");
   const [saving, setSaving] = useState(false);
-  const [entryType, setEntryType] = useState<"available" | "confirmed">("available");
+  const [entryType, setEntryType] = useState<"available" | "confirmed" | "activity">("available");
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
   const [editActivities, setEditActivities] = useState<string[]>([]);
@@ -81,7 +82,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
 
   const [taggedFriends, setTaggedFriends] = useState<TaggedFriend[]>([]);
   const [friendSearch, setFriendSearch] = useState("");
-  const [friendResults, setFriendResults] = useState<{user_id: string;display_name: string | null;avatar_url: string | null;}[]>([]);
+  const [friendResults, setFriendResults] = useState<{ user_id: string; display_name: string | null; avatar_url: string | null }[]>([]);
   const [showTagInput, setShowTagInput] = useState(false);
 
   const fetchEntries = useCallback(async () => {
@@ -239,59 +240,171 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     setCommentText(""); setShowTagInput(false); setFriendSearch(""); setFriendResults([]);
   };
 
-  const renderEntryRow = (entry: AvailabilityEntry) => {
-    const isExpanded = expandedId === entry.id;
-    const dateObj = new Date(entry.date + "T00:00:00");
-    const monthLabel = format(dateObj, "MMM", { locale: sv }).toUpperCase();
-    const dayLabel = format(dateObj, "d");
-    const dateTitle = format(dateObj, "EEEE d MMMM", { locale: sv });
+  // Date column helper
+  const DateColumn = ({ dateStr }: { dateStr: string }) => {
+    const dateObj = new Date(dateStr + "T00:00:00");
+    const weekday = format(dateObj, "EEE", { locale: sv }).replace(".", "");
+    const day = format(dateObj, "d");
+    const month = format(dateObj, "MMM", { locale: sv }).replace(".", "");
+    return (
+      <div className="shrink-0 flex flex-col items-center justify-center w-10">
+        <span className="text-[10px] font-medium leading-none uppercase text-foreground">{weekday}</span>
+        <span className="text-[22px] leading-none font-medium text-foreground mt-0.5">{day}</span>
+        <span className="text-[10px] font-medium leading-none mt-0.5 uppercase" style={{ color: '#C9B8D8' }}>{month}</span>
+      </div>
+    );
+  };
+
+  // --- TYPE 1: Ledig (available) ---
+  const renderLedigRow = (entry: AvailabilityEntry) => (
+    <button
+      onClick={() => toggleExpand(entry.id)}
+      className="w-full flex items-center py-3 text-left"
+    >
+      <DateColumn dateStr={entry.date} />
+      <div className="shrink-0 mx-3 self-stretch w-px" style={{ backgroundColor: '#EDE8F4' }} />
+      <div className="flex-1 min-w-0 pr-8">
+        <p className="text-[13px] leading-snug text-foreground">
+          {entry.custom_note || (entry.activities.length > 0
+            ? entry.activities.map(a => getActivityLabel(a)).join(", ")
+            : "Ledig")}
+        </p>
+      </div>
+    </button>
+  );
+
+  // --- TYPE 2: Plan (confirmed) ---
+  const renderPlanRow = (entry: AvailabilityEntry) => {
+    const activityName = entry.custom_note || (entry.activities.length > 0
+      ? getActivityLabel(entry.activities[0])
+      : "Plan");
+    const friendCount = taggedFriends.filter(t => t.availability_id === entry.id).length;
+    const entryFriends = taggedFriends.filter(t => t.availability_id === entry.id);
 
     return (
-      <div key={entry.id} className="relative">
-        {editingEntryId === entry.id && isOwner ? (
-          <div className="bg-muted/50 rounded-[16px] border-[0.5px] border-border p-3 space-y-3">
-            <p className="text-[13px] font-medium text-foreground">{dateTitle}</p>
-            <div className="flex flex-wrap gap-2">
-              {ACTIVITY_OPTIONS.map((opt) => (
-                <button key={opt.key} onClick={() => toggleEditActivity(opt.key)}
-                  className={cn("font-medium transition-all rounded-[20px] text-[13px] px-3.5 py-1.5 border-[0.5px] border-border",
-                    editActivities.includes(opt.key) ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
-                  )}>{opt.label}</button>
+      <button
+        onClick={() => toggleExpand(entry.id)}
+        className="w-full flex items-center py-3 text-left"
+      >
+        <DateColumn dateStr={entry.date} />
+        <div className="shrink-0 mx-3 self-stretch w-px" style={{ backgroundColor: '#EDE8F4' }} />
+        <div className="flex-1 min-w-0 pr-2">
+          <p className="text-[13px] font-medium leading-snug text-foreground">{activityName}</p>
+          <div className="flex items-center gap-1.5 mt-1">
+            {/* Small friend initials */}
+            <div className="flex -space-x-1">
+              {entryFriends.slice(0, 3).map((tf) => (
+                <div
+                  key={tf.id}
+                  className="w-4 h-4 rounded-full flex items-center justify-center text-[7px] font-medium border border-card"
+                  style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }}
+                >
+                  {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
+                </div>
               ))}
             </div>
-            <textarea value={editNote} onChange={(e) => setEditNote(e.target.value.slice(0, 150))} placeholder="Berätta lite mer..."
-              className="w-full text-sm rounded-md border border-border bg-background px-3 py-2 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none" maxLength={150} rows={2} />
-            <div className="flex gap-2">
-              <button onClick={() => setEditingEntryId(null)} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] border-[0.5px] border-border text-foreground">Avbryt</button>
-              <button onClick={handleSaveEdit} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] bg-primary text-primary-foreground">Spara</button>
+            <span className="text-[10px] text-muted-foreground truncate">
+              {entryFriends.length > 0
+                ? `Du + ${entryFriends[0]?.profile?.display_name || "?"} · kom med!`
+                : "Kom med!"}
+            </span>
+          </div>
+        </div>
+        {friendCount > 0 && (
+          <span className="shrink-0 text-[11px] font-medium" style={{ color: '#1F4A1A' }}>
+            {friendCount} med
+          </span>
+        )}
+      </button>
+    );
+  };
+
+  // --- TYPE 3: Aktivitet ---
+  const renderActivityRow = (entry: AvailabilityEntry) => {
+    const activityName = entry.activities.length > 0
+      ? getActivityLabel(entry.activities[0])
+      : (entry.custom_note || "Aktivitet");
+    const dateObj = new Date(entry.date + "T00:00:00");
+    const dateChip = `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}`;
+
+    return (
+      <button
+        onClick={() => toggleExpand(entry.id)}
+        className="w-full flex items-start py-3 text-left"
+      >
+        <div className="flex items-start gap-2.5 flex-1 min-w-0">
+          <div
+            className="shrink-0 flex items-center justify-center"
+            style={{
+              width: 22,
+              height: 22,
+              borderRadius: 6,
+              backgroundColor: '#EDE8F4',
+            }}
+          >
+            <span className="text-[9px] font-medium" style={{ color: '#3C2A4D' }}>
+              {activityName.charAt(0).toUpperCase()}
+            </span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-medium leading-snug text-foreground">{activityName}</p>
+            <div className="flex flex-wrap gap-1 mt-1">
+              <span
+                className="text-[10px] font-medium px-2 py-0.5 rounded-[10px]"
+                style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }}
+              >
+                {dateChip}
+              </span>
             </div>
           </div>
-        ) : (
-          <button onClick={() => toggleExpand(entry.id)}
-            className={cn("w-full flex items-center bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all active:scale-[0.98]", isExpanded && "ring-1 ring-primary/20")}>
-            <div className="shrink-0 flex flex-col items-center justify-center w-10">
-              <span className="text-[22px] leading-none font-medium text-foreground">{dayLabel}</span>
-              <span className="text-[10px] font-medium leading-none mt-0.5 uppercase text-secondary tracking-wide">{monthLabel}</span>
-            </div>
-            <div className="shrink-0 mx-2.5 self-stretch w-px bg-border" />
-            <div className="flex-1 min-w-0 pr-5">
-              <p className="text-[13px] leading-tight truncate font-medium text-foreground">{dateTitle}</p>
-              {(entry.activities.length > 0 || entry.custom_note) && (
-                <div className="flex items-center flex-wrap gap-1 mt-1">
-                  {entry.activities.slice(0, 3).map((a) => <span key={a} className="text-[10px] font-medium px-2 py-0.5 rounded-[20px] bg-lavender-bg text-foreground">{getActivityLabel(a)}</span>)}
-                  {entry.activities.length > 3 && <span className="text-[10px] text-muted-foreground">+{entry.activities.length - 3}</span>}
-                  {entry.activities.length > 0 && entry.custom_note && <span className="text-[10px] text-muted-foreground">·</span>}
-                  {entry.custom_note && <span className="text-[12px] truncate text-muted-foreground">{entry.custom_note}</span>}
-                </div>
-              )}
-            </div>
-            {!isOwner && <span className="shrink-0 text-[11px] font-medium px-3 py-1.5 rounded-[8px] bg-salvia-bg text-accent-foreground">Ja!</span>}
-          </button>
-        )}
+        </div>
+        <span className="shrink-0 text-[11px] text-muted-foreground mt-0.5">
+          {taggedFriends.filter(t => t.availability_id === entry.id).length} svar
+        </span>
+      </button>
+    );
+  };
+
+  // Edit form (shared across types)
+  const renderEditForm = (entry: AvailabilityEntry) => {
+    const dateObj = new Date(entry.date + "T00:00:00");
+    const dateTitle = format(dateObj, "EEEE d MMMM", { locale: sv });
+    return (
+      <div className="bg-muted/50 rounded-[16px] border-[0.5px] border-border p-3 space-y-3">
+        <p className="text-[13px] font-medium text-foreground">{dateTitle}</p>
+        <div className="flex flex-wrap gap-2">
+          {ACTIVITY_OPTIONS.map((opt) => (
+            <button key={opt.key} onClick={() => toggleEditActivity(opt.key)}
+              className={cn("font-medium transition-all rounded-[20px] text-[13px] px-3.5 py-1.5 border-[0.5px] border-border",
+                editActivities.includes(opt.key) ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
+              )}>{opt.label}</button>
+          ))}
+        </div>
+        <textarea value={editNote} onChange={(e) => setEditNote(e.target.value.slice(0, 150))} placeholder="Berätta lite mer..."
+          className="w-full text-sm rounded-md border border-border bg-background px-3 py-2 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none" maxLength={150} rows={2} />
+        <div className="flex gap-2">
+          <button onClick={() => setEditingEntryId(null)} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] border-[0.5px] border-border text-foreground">Avbryt</button>
+          <button onClick={handleSaveEdit} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] bg-primary text-primary-foreground">Spara</button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderEntryRow = (entry: AvailabilityEntry) => {
+    if (editingEntryId === entry.id && isOwner) {
+      return renderEditForm(entry);
+    }
+
+    const type = entry.entry_type;
+    return (
+      <div className="relative">
+        {type === "confirmed" ? renderPlanRow(entry)
+          : type === "activity" ? renderActivityRow(entry)
+          : renderLedigRow(entry)}
         {isOwner && editingEntryId !== entry.id && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="absolute top-1/2 -translate-y-1/2 right-2.5 z-10 w-5 h-5 flex items-center justify-center rounded-full hover:bg-muted transition-colors" onClick={(e) => e.stopPropagation()}>
+              <button className="absolute top-1/2 -translate-y-1/2 right-0 z-10 w-5 h-5 flex items-center justify-center rounded-full hover:bg-muted transition-colors" onClick={(e) => e.stopPropagation()}>
                 <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
               </button>
             </DropdownMenuTrigger>
@@ -310,27 +423,14 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     const entry = entries.find((e) => e.id === expandedId);
     if (!entry) return null;
     return (
-      <motion.div key={expandedId} initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }} className="overflow-hidden mt-3">
-        <div className="bg-muted/40 rounded-md p-3 space-y-3">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="font-display text-sm font-bold text-foreground">{format(new Date(entry.date + "T00:00:00"), "EEEE d MMMM", { locale: sv })}</p>
-              {entry.custom_note && <p className="text-xs text-muted-foreground italic mt-0.5">"{entry.custom_note}"</p>}
-            </div>
-            {isOwner && (
-              <div className="flex gap-1">
-                <button onClick={() => { setSelectedDate(new Date(entry.date + "T00:00:00")); setSelectedActivities([...entry.activities]); setCustomNote(entry.custom_note || ""); setShowAdd(true); }} className="text-muted-foreground hover:text-foreground transition-colors p-1"><Pencil className="w-3.5 h-3.5" /></button>
-                <button onClick={() => handleRemove(entry.id)} className="text-muted-foreground hover:text-destructive transition-colors p-1"><X className="w-3.5 h-3.5" /></button>
-              </div>
-            )}
-          </div>
-          {entry.activities.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {entry.activities.map((a) => <span key={a} className="text-[10px] px-2 py-0.5 rounded bg-lavender-bg text-foreground">{getActivityLabel(a)}</span>)}
-            </div>
-          )}
+      <motion.div key={expandedId} initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }} className="overflow-hidden">
+        <div className="bg-muted/40 rounded-md p-3 space-y-3 mb-1">
+          {/* Tagged friends */}
           <div>
-            <div className="flex items-center gap-1.5 mb-1.5"><UserPlus className="w-3 h-3 text-muted-foreground" /><span className="text-[10px] font-medium text-muted-foreground">{t("friends") || "Friends"}</span></div>
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <UserPlus className="w-3 h-3 text-muted-foreground" />
+              <span className="text-[10px] font-medium text-muted-foreground">{t("friends") || "Vänner"}</span>
+            </div>
             <div className="flex flex-wrap gap-1.5">
               {taggedFriends.map((tf) => (
                 <span key={tf.id} className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground inline-flex items-center gap-1">
@@ -340,7 +440,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               ))}
               {user && (showTagInput ? (
                 <div className="relative">
-                  <Input value={friendSearch} onChange={(e) => searchFriends(e.target.value)} placeholder={t("searchFriends") || "Search friends..."} className="text-xs h-6 w-36" autoFocus onBlur={() => setTimeout(() => { setShowTagInput(false); setFriendResults([]); }, 200)} />
+                  <Input value={friendSearch} onChange={(e) => searchFriends(e.target.value)} placeholder="Sök vänner..." className="text-xs h-6 w-36" autoFocus onBlur={() => setTimeout(() => { setShowTagInput(false); setFriendResults([]); }, 200)} />
                   {friendResults.length > 0 && (
                     <div className="absolute top-7 left-0 z-20 bg-popover border border-border rounded-md shadow-elevated w-40 py-1">
                       {friendResults.map((fr) => <button key={fr.user_id} onMouseDown={() => handleTagFriend(fr.user_id)} className="w-full text-left px-2 py-1 text-xs hover:bg-accent transition-colors truncate">{fr.display_name || "?"}</button>)}
@@ -348,18 +448,22 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                   )}
                 </div>
               ) : (
-                <button onClick={() => setShowTagInput(true)} className="text-[10px] px-2 py-0.5 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors inline-flex items-center gap-1"><Plus className="w-2.5 h-2.5" /> Add</button>
+                <button onClick={() => setShowTagInput(true)} className="text-[10px] px-2 py-0.5 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors inline-flex items-center gap-1"><Plus className="w-2.5 h-2.5" /> Lägg till</button>
               ))}
             </div>
           </div>
+          {/* Comments */}
           <div>
-            <div className="flex items-center gap-1.5 mb-1.5"><MessageCircle className="w-3 h-3 text-muted-foreground" /><span className="text-[10px] font-medium text-muted-foreground">{t("comments") || "Comments"}</span></div>
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <MessageCircle className="w-3 h-3 text-muted-foreground" />
+              <span className="text-[10px] font-medium text-muted-foreground">{t("comments") || "Kommentarer"}</span>
+            </div>
             {comments.length > 0 && (
               <div className="space-y-1.5 mb-2">
                 {comments.map((c) => (
                   <div key={c.id} className="flex items-start gap-2 group">
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-lavender-bg">
-                      {c.profile?.avatar_url ? <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> : <span className="text-[8px] font-bold text-foreground">{c.profile?.display_name?.charAt(0).toUpperCase() || "?"}</span>}
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: '#EDE8F4' }}>
+                      {c.profile?.avatar_url ? <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> : <span className="text-[8px] font-bold" style={{ color: '#3C2A4D' }}>{c.profile?.display_name?.charAt(0).toUpperCase() || "?"}</span>}
                     </div>
                     <div className="flex-1 min-w-0"><p className="text-[10px]"><span className="font-semibold text-foreground">{c.profile?.display_name || "?"}</span> <span className="text-muted-foreground">{c.content}</span></p></div>
                     {user?.id === c.user_id && <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all p-0.5"><Trash2 className="w-2.5 h-2.5" /></button>}
@@ -369,7 +473,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             )}
             {user && (
               <div className="flex gap-1.5">
-                <Input value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder={t("addComment") || "Add a comment..."} className="text-xs h-7 flex-1" maxLength={200} onKeyDown={(e) => e.key === "Enter" && handleAddComment()} />
+                <Input value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="Skriv en kommentar..." className="text-xs h-7 flex-1" maxLength={200} onKeyDown={(e) => e.key === "Enter" && handleAddComment()} />
                 <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" disabled={!commentText.trim() || sendingComment} onClick={handleAddComment}><Send className="w-3 h-3" /></Button>
               </div>
             )}
@@ -379,13 +483,10 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     );
   };
 
-  const confirmedEntries = entries.filter(e => e.entry_type === 'confirmed');
-  const availableEntries = entries.filter(e => e.entry_type !== 'confirmed');
-
   return (
-    <div className="bg-card border border-border/50 rounded-lg p-4">
+    <div className="bg-card border-[0.5px] rounded-[16px] p-4" style={{ borderColor: '#EDE8F4' }}>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
+        <h3 className="font-display text-base font-medium text-foreground">
           {t("hangoutAvailability")}
         </h3>
         {isOwner && (
@@ -400,18 +501,19 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
         {showAdd && isOwner && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden mb-4">
             <div className="space-y-3 p-3 bg-muted/50 rounded-lg">
-              {/* Entry type toggle */}
-              <div className="flex gap-2">
-                <button onClick={() => setEntryType("available")}
-                  className={cn("flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all border-[0.5px] border-border",
-                    entryType === "available" ? "bg-primary text-primary-foreground" : "bg-card text-foreground")}>
-                  {t("hangoutAvailable")}
-                </button>
-                <button onClick={() => setEntryType("confirmed")}
-                  className={cn("flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all border-[0.5px] border-border",
-                    entryType === "confirmed" ? "bg-primary text-primary-foreground" : "bg-card text-foreground")}>
-                  {t("hangoutConfirmed")}
-                </button>
+              {/* Entry type toggle – 3 options */}
+              <div className="flex gap-1.5">
+                {([
+                  { value: "available" as const, label: "Ledig" },
+                  { value: "confirmed" as const, label: "Plan" },
+                  { value: "activity" as const, label: "Aktivitet" },
+                ]).map((opt) => (
+                  <button key={opt.value} onClick={() => setEntryType(opt.value)}
+                    className={cn("flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all border-[0.5px] border-border",
+                      entryType === opt.value ? "bg-primary text-primary-foreground" : "bg-card text-foreground")}>
+                    {opt.label}
+                  </button>
+                ))}
               </div>
 
               <Popover>
@@ -426,19 +528,22 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 </PopoverContent>
               </Popover>
 
-              <div>
-                <p className="text-xs font-medium text-muted-foreground mb-2">{t("activities")}</p>
-                <div className="flex flex-wrap gap-2">
-                  {ACTIVITY_OPTIONS.map((opt) => (
-                    <button key={opt.key} onClick={() => toggleActivity(opt.key)}
-                      className={cn("font-medium transition-all rounded-[20px] text-[13px] px-3.5 py-1.5 border-[0.5px] border-border",
-                        selectedActivities.includes(opt.key) ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
-                      )}>{opt.label}</button>
-                  ))}
+              {entryType !== "available" && (
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground mb-2">Aktiviteter</p>
+                  <div className="flex flex-wrap gap-2">
+                    {ACTIVITY_OPTIONS.map((opt) => (
+                      <button key={opt.key} onClick={() => toggleActivity(opt.key)}
+                        className={cn("font-medium transition-all rounded-[20px] text-[13px] px-3.5 py-1.5 border-[0.5px] border-border",
+                          selectedActivities.includes(opt.key) ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
+                        )}>{opt.label}</button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              <textarea value={customNote} onChange={(e) => setCustomNote(e.target.value.slice(0, 150))} placeholder="Berätta lite mer... t.ex. var, vad du är sugen på eller annat."
+              <textarea value={customNote} onChange={(e) => setCustomNote(e.target.value.slice(0, 150))}
+                placeholder={entryType === "available" ? "Vad vill du göra?" : "Berätta lite mer..."}
                 className="w-full text-sm rounded-md border border-border bg-background px-3 py-2 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none" maxLength={150} rows={2} />
               <p className="text-[10px] text-muted-foreground text-right">{customNote.length}/150</p>
 
@@ -450,61 +555,31 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
         )}
       </AnimatePresence>
 
-      {/* Entries split into sections */}
+      {/* Flat entry list */}
       {entries.length === 0 ? (
         <p className="text-sm text-muted-foreground text-center py-3">{t("noAvailability")}</p>
       ) : (
-        <div className="space-y-4">
-          {/* Confirmed dates */}
-          {(confirmedEntries.length > 0 || isOwner) && (
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-wide mb-2 text-dusty-rose">
-                {t("hangoutConfirmedLabel")}
-              </p>
-              <div className="space-y-2">
-                {confirmedEntries.length === 0 ? (
-                  <p className="text-[12px] text-muted-foreground py-1">{t("hangoutNoConfirmed")}</p>
-                ) : confirmedEntries.map((entry) => (
-                  <div key={entry.id}>
-                    {renderEntryRow(entry)}
-                    <AnimatePresence>
-                      {expandedId === entry.id && renderExpandedDetail()}
-                    </AnimatePresence>
-                  </div>
-                ))}
-              </div>
+        <div>
+          {entries.map((entry, i) => (
+            <div key={entry.id}>
+              {i > 0 && <div className="w-full h-px" style={{ backgroundColor: '#EDE8F4' }} />}
+              {renderEntryRow(entry)}
+              <AnimatePresence>
+                {expandedId === entry.id && renderExpandedDetail()}
+              </AnimatePresence>
             </div>
-          )}
+          ))}
 
-          {/* Available dates */}
-          {(availableEntries.length > 0 || isOwner) && (
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-wide mb-2 text-muted-foreground">
-                {t("hangoutAvailableLabel")}
-              </p>
-              <div className="space-y-2">
-                {availableEntries.length === 0 ? (
-                  <p className="text-[12px] text-muted-foreground py-1">{t("hangoutNoAvailable")}</p>
-                ) : availableEntries.map((entry) => (
-                  <div key={entry.id}>
-                    {renderEntryRow(entry)}
-                    <AnimatePresence>
-                      {expandedId === entry.id && renderExpandedDetail()}
-                    </AnimatePresence>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Add date row */}
+          {/* Add row */}
           {isOwner && (
-            <button onClick={() => setShowAdd(!showAdd)} className="w-full flex items-center justify-center gap-2 rounded-[16px] border-[0.5px] border-dashed border-border p-3 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
-              <Plus className="w-3.5 h-3.5" />
-              <span className="text-xs font-medium">Lägg till</span>
-            </button>
+            <>
+              <div className="w-full h-px" style={{ backgroundColor: '#EDE8F4' }} />
+              <button onClick={() => setShowAdd(!showAdd)} className="w-full flex items-center justify-center gap-2 py-3 text-muted-foreground hover:text-foreground transition-colors">
+                <Plus className="w-3.5 h-3.5" />
+                <span className="text-xs font-medium">Lägg till</span>
+              </button>
+            </>
           )}
-
         </div>
       )}
 
