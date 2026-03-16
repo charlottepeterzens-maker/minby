@@ -327,9 +327,9 @@ const translations = {
 
     // Auth page
     joinMinby: "Gå med i MINBY",
-    welcomeBack: "Välkommen tillbaka",
+    welcomeBack: "Logga in",
     startPlanning: "Börja planera riktiga stunder med dina nära",
-    yourFriendsWaiting: "Dina vänner väntar",
+    yourFriendsWaiting: "Logga in för att fortsätta",
     yourName: "Ditt namn",
     howFriendsKnowYou: "Vad dina vänner kallar dig",
     email: "E-post",

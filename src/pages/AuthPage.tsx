@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const AuthPage = () => {
   const { t } = useLanguage();
-  const [isSignUp, setIsSignUp] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
