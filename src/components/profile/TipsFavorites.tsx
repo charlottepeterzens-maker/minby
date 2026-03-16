@@ -148,8 +148,8 @@ const TipsFavorites = ({
       return;
     }
 
-    // Try to get OG image from URL if no custom image
-    let imageUrl = customImage;
+    // Use custom image, or OG preview image, or null
+    let imageUrl = customImage || previewImage || null;
 
     const { error } = await supabase.from("user_tips").insert({
       user_id: user.id,
