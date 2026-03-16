@@ -80,6 +80,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
         <PWAInstallBanner />
+        <PushPermissionDialog />
         </LanguageProvider>
       </AuthProvider>
     </TooltipProvider>
