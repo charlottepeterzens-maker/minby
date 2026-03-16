@@ -12,12 +12,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
-import { isBefore, startOfDay } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 
 interface AvailabilityEntry {
   id: string;
@@ -66,11 +63,6 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
   const [entries, setEntries] = useState<AvailabilityEntry[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
-  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
-  const [customNote, setCustomNote] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [entryType, setEntryType] = useState<"available" | "confirmed" | "activity">("available");
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
   const [editActivities, setEditActivities] = useState<string[]>([]);
@@ -122,32 +114,6 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     };
     fetchDetails();
   }, [expandedId]);
-
-  const toggleActivity = (activity: string) => {
-    setSelectedActivities((prev) => prev.includes(activity) ? prev.filter((a) => a !== activity) : [...prev, activity]);
-  };
-
-  const handleSave = async () => {
-    if (!selectedDate || !user) return;
-    setSaving(true);
-    const dateStr = format(selectedDate, "yyyy-MM-dd");
-    const { error } = await supabase.from("hangout_availability").upsert(
-      { user_id: user.id, date: dateStr, activities: selectedActivities, custom_note: customNote.trim() || null, entry_type: entryType },
-      { onConflict: "user_id,date" }
-    );
-    if (error) {
-      toast({ title: t("error"), description: t("couldNotSaveAvailability"), variant: "destructive" });
-    } else {
-      toast({ title: t("availabilitySaved") });
-      setShowAdd(false);
-      setSelectedDate(undefined);
-      setSelectedActivities([]);
-      setCustomNote("");
-      setEntryType("available");
-      await fetchEntries();
-    }
-    setSaving(false);
-  };
 
   const handleRemove = async (id: string) => {
     const { error } = await supabase.from("hangout_availability").delete().eq("id", id);
@@ -255,65 +221,46 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     );
   };
 
-  // --- TYPE 1: Ledig (available) ---
+  // --- TYPE 1: Ledig ---
   const renderLedigRow = (entry: AvailabilityEntry) => (
-    <button
-      onClick={() => toggleExpand(entry.id)}
-      className="w-full flex items-center py-3 text-left"
-    >
+    <button onClick={() => toggleExpand(entry.id)} className="w-full flex items-center py-3 text-left">
       <DateColumn dateStr={entry.date} />
       <div className="shrink-0 mx-3 self-stretch w-px" style={{ backgroundColor: '#EDE8F4' }} />
       <div className="flex-1 min-w-0 pr-8">
         <p className="text-[13px] leading-snug text-foreground">
-          {entry.custom_note || (entry.activities.length > 0
-            ? entry.activities.map(a => getActivityLabel(a)).join(", ")
-            : "Ledig")}
+          {entry.custom_note || (entry.activities.length > 0 ? entry.activities.map(a => getActivityLabel(a)).join(", ") : "Ledig")}
         </p>
       </div>
     </button>
   );
 
-  // --- TYPE 2: Plan (confirmed) ---
+  // --- TYPE 2: Plan ---
   const renderPlanRow = (entry: AvailabilityEntry) => {
-    const activityName = entry.custom_note || (entry.activities.length > 0
-      ? getActivityLabel(entry.activities[0])
-      : "Plan");
-    const friendCount = taggedFriends.filter(t => t.availability_id === entry.id).length;
+    const activityName = entry.custom_note || (entry.activities.length > 0 ? getActivityLabel(entry.activities[0]) : "Plan");
     const entryFriends = taggedFriends.filter(t => t.availability_id === entry.id);
+    const friendCount = entryFriends.length;
 
     return (
-      <button
-        onClick={() => toggleExpand(entry.id)}
-        className="w-full flex items-center py-3 text-left"
-      >
+      <button onClick={() => toggleExpand(entry.id)} className="w-full flex items-center py-3 text-left">
         <DateColumn dateStr={entry.date} />
         <div className="shrink-0 mx-3 self-stretch w-px" style={{ backgroundColor: '#EDE8F4' }} />
         <div className="flex-1 min-w-0 pr-2">
           <p className="text-[13px] font-medium leading-snug text-foreground">{activityName}</p>
           <div className="flex items-center gap-1.5 mt-1">
-            {/* Small friend initials */}
             <div className="flex -space-x-1">
               {entryFriends.slice(0, 3).map((tf) => (
-                <div
-                  key={tf.id}
-                  className="w-4 h-4 rounded-full flex items-center justify-center text-[7px] font-medium border border-card"
-                  style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }}
-                >
+                <div key={tf.id} className="w-4 h-4 rounded-full flex items-center justify-center text-[7px] font-medium border border-card" style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }}>
                   {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                 </div>
               ))}
             </div>
             <span className="text-[10px] text-muted-foreground truncate">
-              {entryFriends.length > 0
-                ? `Du + ${entryFriends[0]?.profile?.display_name || "?"} · kom med!`
-                : "Kom med!"}
+              {entryFriends.length > 0 ? `Du + ${entryFriends[0]?.profile?.display_name || "?"} · kom med!` : "Kom med!"}
             </span>
           </div>
         </div>
         {friendCount > 0 && (
-          <span className="shrink-0 text-[11px] font-medium" style={{ color: '#1F4A1A' }}>
-            {friendCount} med
-          </span>
+          <span className="shrink-0 text-[11px] font-medium" style={{ color: '#1F4A1A' }}>{friendCount} med</span>
         )}
       </button>
     );
@@ -321,40 +268,20 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
 
   // --- TYPE 3: Aktivitet ---
   const renderActivityRow = (entry: AvailabilityEntry) => {
-    const activityName = entry.activities.length > 0
-      ? getActivityLabel(entry.activities[0])
-      : (entry.custom_note || "Aktivitet");
+    const activityName = entry.activities.length > 0 ? getActivityLabel(entry.activities[0]) : (entry.custom_note || "Aktivitet");
     const dateObj = new Date(entry.date + "T00:00:00");
     const dateChip = `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}`;
 
     return (
-      <button
-        onClick={() => toggleExpand(entry.id)}
-        className="w-full flex items-start py-3 text-left"
-      >
+      <button onClick={() => toggleExpand(entry.id)} className="w-full flex items-start py-3 text-left">
         <div className="flex items-start gap-2.5 flex-1 min-w-0">
-          <div
-            className="shrink-0 flex items-center justify-center"
-            style={{
-              width: 22,
-              height: 22,
-              borderRadius: 6,
-              backgroundColor: '#EDE8F4',
-            }}
-          >
-            <span className="text-[9px] font-medium" style={{ color: '#3C2A4D' }}>
-              {activityName.charAt(0).toUpperCase()}
-            </span>
+          <div className="shrink-0 flex items-center justify-center" style={{ width: 22, height: 22, borderRadius: 6, backgroundColor: '#EDE8F4' }}>
+            <span className="text-[9px] font-medium" style={{ color: '#3C2A4D' }}>{activityName.charAt(0).toUpperCase()}</span>
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-medium leading-snug text-foreground">{activityName}</p>
             <div className="flex flex-wrap gap-1 mt-1">
-              <span
-                className="text-[10px] font-medium px-2 py-0.5 rounded-[10px]"
-                style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }}
-              >
-                {dateChip}
-              </span>
+              <span className="text-[10px] font-medium px-2 py-0.5 rounded-[10px]" style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }}>{dateChip}</span>
             </div>
           </div>
         </div>
@@ -365,7 +292,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     );
   };
 
-  // Edit form (shared across types)
+  // Edit form
   const renderEditForm = (entry: AvailabilityEntry) => {
     const dateObj = new Date(entry.date + "T00:00:00");
     const dateTitle = format(dateObj, "EEEE d MMMM", { locale: sv });
@@ -391,16 +318,11 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
   };
 
   const renderEntryRow = (entry: AvailabilityEntry) => {
-    if (editingEntryId === entry.id && isOwner) {
-      return renderEditForm(entry);
-    }
-
+    if (editingEntryId === entry.id && isOwner) return renderEditForm(entry);
     const type = entry.entry_type;
     return (
       <div className="relative">
-        {type === "confirmed" ? renderPlanRow(entry)
-          : type === "activity" ? renderActivityRow(entry)
-          : renderLedigRow(entry)}
+        {type === "confirmed" ? renderPlanRow(entry) : type === "activity" ? renderActivityRow(entry) : renderLedigRow(entry)}
         {isOwner && editingEntryId !== entry.id && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -425,11 +347,10 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     return (
       <motion.div key={expandedId} initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }} className="overflow-hidden">
         <div className="bg-muted/40 rounded-md p-3 space-y-3 mb-1">
-          {/* Tagged friends */}
           <div>
             <div className="flex items-center gap-1.5 mb-1.5">
               <UserPlus className="w-3 h-3 text-muted-foreground" />
-              <span className="text-[10px] font-medium text-muted-foreground">{t("friends") || "Vänner"}</span>
+              <span className="text-[10px] font-medium text-muted-foreground">Vänner</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
               {taggedFriends.map((tf) => (
@@ -452,11 +373,10 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               ))}
             </div>
           </div>
-          {/* Comments */}
           <div>
             <div className="flex items-center gap-1.5 mb-1.5">
               <MessageCircle className="w-3 h-3 text-muted-foreground" />
-              <span className="text-[10px] font-medium text-muted-foreground">{t("comments") || "Kommentarer"}</span>
+              <span className="text-[10px] font-medium text-muted-foreground">Kommentarer</span>
             </div>
             {comments.length > 0 && (
               <div className="space-y-1.5 mb-2">
@@ -490,70 +410,14 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           {t("hangoutAvailability")}
         </h3>
         {isOwner && (
-          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowAdd(!showAdd)}>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowAdd(true)}>
             <Plus className="w-3.5 h-3.5" />
           </Button>
         )}
       </div>
 
-      {/* Add form */}
-      <AnimatePresence>
-        {showAdd && isOwner && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden mb-4">
-            <div className="space-y-3 p-3 bg-muted/50 rounded-lg">
-              {/* Entry type toggle – 3 options */}
-              <div className="flex gap-1.5">
-                {([
-                  { value: "available" as const, label: "Ledig" },
-                  { value: "confirmed" as const, label: "Plan" },
-                  { value: "activity" as const, label: "Aktivitet" },
-                ]).map((opt) => (
-                  <button key={opt.value} onClick={() => setEntryType(opt.value)}
-                    className={cn("flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all border-[0.5px] border-border",
-                      entryType === opt.value ? "bg-primary text-primary-foreground" : "bg-card text-foreground")}>
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}>
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {selectedDate ? format(selectedDate, "PPP", { locale: sv }) : t("selectDate")}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar mode="single" selected={selectedDate} onSelect={setSelectedDate} disabled={(date) => isBefore(date, startOfDay(new Date()))} initialFocus className={cn("p-3 pointer-events-auto")} />
-                </PopoverContent>
-              </Popover>
-
-              {entryType !== "available" && (
-                <div>
-                  <p className="text-xs font-medium text-muted-foreground mb-2">Aktiviteter</p>
-                  <div className="flex flex-wrap gap-2">
-                    {ACTIVITY_OPTIONS.map((opt) => (
-                      <button key={opt.key} onClick={() => toggleActivity(opt.key)}
-                        className={cn("font-medium transition-all rounded-[20px] text-[13px] px-3.5 py-1.5 border-[0.5px] border-border",
-                          selectedActivities.includes(opt.key) ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
-                        )}>{opt.label}</button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <textarea value={customNote} onChange={(e) => setCustomNote(e.target.value.slice(0, 150))}
-                placeholder={entryType === "available" ? "Vad vill du göra?" : "Berätta lite mer..."}
-                className="w-full text-sm rounded-md border border-border bg-background px-3 py-2 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none" maxLength={150} rows={2} />
-              <p className="text-[10px] text-muted-foreground text-right">{customNote.length}/150</p>
-
-              <Button size="sm" className="w-full bg-primary text-primary-foreground" disabled={!selectedDate || saving} onClick={handleSave}>
-                {t("save")}
-              </Button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Add sheet */}
+      <AddHangoutSheet open={showAdd} onOpenChange={setShowAdd} onCreated={fetchEntries} />
 
       {/* Flat entry list */}
       {entries.length === 0 ? (
@@ -569,12 +433,10 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               </AnimatePresence>
             </div>
           ))}
-
-          {/* Add row */}
           {isOwner && (
             <>
               <div className="w-full h-px" style={{ backgroundColor: '#EDE8F4' }} />
-              <button onClick={() => setShowAdd(!showAdd)} className="w-full flex items-center justify-center gap-2 py-3 text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => setShowAdd(true)} className="w-full flex items-center justify-center gap-2 py-3 text-muted-foreground hover:text-foreground transition-colors">
                 <Plus className="w-3.5 h-3.5" />
                 <span className="text-xs font-medium">Lägg till</span>
               </button>
