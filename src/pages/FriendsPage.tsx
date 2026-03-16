@@ -175,10 +175,18 @@ const FriendsPage = () => {
               Bjud in en vän
             </Button>
           </div>
-        ) : (
-          /* Friend list */
+        ) : (() => {
+          const filtered = friends.filter((f) =>
+            f.display_name.toLowerCase().includes(search.toLowerCase())
+          );
+          return (
           <div className="space-y-2">
-            {friends.map((f) => {
+            {filtered.length === 0 ? (
+              <p className="text-center py-8 text-[13px]" style={{ color: "#9B8BA5" }}>
+                Inga vänner matchar sökningen
+              </p>
+            ) : (
+            filtered.map((f) => {
               const activityText = f.last_activity
                 ? `Lade upp något ${timeAgo(f.last_activity)}`
                 : null;
