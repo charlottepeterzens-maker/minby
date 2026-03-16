@@ -31,6 +31,7 @@ import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
 import WorkoutTracker from "@/components/profile/WorkoutTracker";
 import HangoutAvailability from "@/components/profile/HangoutAvailability";
 import ProfileShareDialog from "@/components/profile/ProfileShareDialog";
+import TipsFavorites from "@/components/profile/TipsFavorites";
 import FriendRequestButton from "@/components/profile/FriendRequestButton";
 
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
