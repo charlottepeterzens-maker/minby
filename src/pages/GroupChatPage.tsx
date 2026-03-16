@@ -48,6 +48,7 @@ type TimelineItem =
 
 interface PendingSuggestion extends RecognizedDate {
   sourceMessageId: string;
+  suggestedType: "available" | "confirmed";
 }
 
 const DISMISSED_KEY = "dismissed_date_suggestions";
