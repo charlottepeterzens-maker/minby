@@ -125,6 +125,98 @@ const ProfilePage = () => {
   const targetUserId = userId || user?.id;
   const isOwnProfile = !userId || userId === user?.id;
 
+// Grid with row-aware expansion
+const GridWithExpansion = ({
+  sections, expandedSection, reordering, isOwnProfile,
+  toggleSection, fetchSections, sensors, handleDragEnd,
+}: {
+  sections: LifeSection[];
+  expandedSection: string | null;
+  reordering: boolean;
+  isOwnProfile: boolean;
+  toggleSection: (id: string) => void;
+  fetchSections: () => void;
+  sensors: any;
+  handleDragEnd: (event: DragEndEvent) => void;
+}) => {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [cols, setCols] = useState(3);
+
+  useEffect(() => {
+    const measure = () => {
+      if (!gridRef.current) return;
+      const style = getComputedStyle(gridRef.current);
+      const colCount = style.gridTemplateColumns.split(" ").length;
+      setCols(colCount);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  // Build items with expansion inserted after the last item in the expanded item's row
+  const expandedIdx = expandedSection ? sections.findIndex((s) => s.id === expandedSection) : -1;
+  const expandedRowEnd = expandedIdx >= 0 ? Math.floor(expandedIdx / cols) * cols + cols - 1 : -1;
+  // Clamp to last index
+  const insertAfterIdx = Math.min(expandedRowEnd, sections.length - 1);
+
+  return (
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
+        <div ref={gridRef} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+          {sections.map((section, i) => (
+            <div key={section.id} className="contents">
+              <div className="animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
+                <SortableGridCard
+                  section={section}
+                  isOwner={isOwnProfile}
+                  isExpanded={expandedSection === section.id}
+                  onClick={() => toggleSection(section.id)}
+                  onDeleted={fetchSections}
+                  onRenamed={fetchSections}
+                  index={i}
+                  reordering={reordering}
+                />
+              </div>
+              {i === insertAfterIdx && expandedSection && !reordering && (
+                <div className="col-span-3 sm:col-span-4 md:col-span-5">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={expandedSection}
+                      id={`section-${expandedSection}`}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      {(() => {
+                        const sec = sections.find((s) => s.id === expandedSection);
+                        if (!sec) return null;
+                        if (sec.section_type === "workout")
+                          return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
+                        return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
+                      })()}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              )}
+            </div>
+          ))}
+          {isOwnProfile && (
+            <CreateSectionDialog onCreated={fetchSections} trigger={
+              <button className="w-full aspect-[4/5] flex flex-col items-center justify-center gap-1 rounded-[16px] border-[0.5px] border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
+                <Plus className="w-4 h-4" />
+                <span className="text-[11px] font-medium">Lägg till</span>
+              </button>
+            } />
+          )}
+        </div>
+      </SortableContext>
+    </DndContext>
+  );
+};
+
 
 
 
