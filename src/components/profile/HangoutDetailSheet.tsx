@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { X, Send, Trash2, Plus } from "lucide-react";
+import { X, Send, Trash2, Plus, Users } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,6 +10,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import ConfirmSheet from "@/components/ConfirmSheet";
+import { toast } from "@/hooks/use-toast";
 
 interface AvailabilityEntry {
   id: string;
@@ -32,7 +34,6 @@ interface TaggedFriend {
   tagged_user_id: string;
   tagged_by: string;
   profile?: { display_name: string | null; avatar_url: string | null };
-  status?: string;
 }
 
 const ACTIVITY_MAP: Record<string, string> = {
@@ -57,6 +58,7 @@ interface Props {
 
 const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onEdited }: Props) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [comments, setComments] = useState<Comment[]>([]);
   const [taggedFriends, setTaggedFriends] = useState<TaggedFriend[]>([]);
   const [commentText, setCommentText] = useState("");
@@ -66,6 +68,7 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
   const [friendResults, setFriendResults] = useState<any[]>([]);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [ownerProfile, setOwnerProfile] = useState<{ display_name: string | null } | null>(null);
+  const [creatingGroup, setCreatingGroup] = useState(false);
 
   const fetchDetails = useCallback(async () => {
     if (!entry) return;
@@ -76,9 +79,13 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
 
     if (commentsRes.data) {
       const uids = [...new Set(commentsRes.data.map((c: any) => c.user_id))];
-      const { data: profiles } = await supabase.from("profiles").select("user_id, display_name").in("user_id", uids);
-      const pm = new Map((profiles || []).map((p: any) => [p.user_id, p]));
-      setComments(commentsRes.data.map((c: any) => ({ ...c, profile: pm.get(c.user_id) })));
+      if (uids.length > 0) {
+        const { data: profiles } = await supabase.from("profiles").select("user_id, display_name").in("user_id", uids);
+        const pm = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+        setComments(commentsRes.data.map((c: any) => ({ ...c, profile: pm.get(c.user_id) })));
+      } else {
+        setComments(commentsRes.data.map((c: any) => ({ ...c, profile: undefined })));
+      }
     }
 
     if (tagsRes.data) {
@@ -92,7 +99,6 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
       }
     }
 
-    // Fetch owner profile if not own post
     if (!isOwner && entry.user_id) {
       const { data } = await supabase.from("profiles").select("display_name").eq("user_id", entry.user_id).single();
       if (data) setOwnerProfile(data);
@@ -111,8 +117,10 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
 
   const dateObj = new Date(entry.date + "T00:00:00");
   const weekday = format(dateObj, "EEEE", { locale: sv });
+  const shortWeekday = format(dateObj, "EEE", { locale: sv }).replace(".", "");
   const day = format(dateObj, "d");
   const month = format(dateObj, "MMMM", { locale: sv });
+  const shortMonth = format(dateObj, "M");
   const typeLabel = entry.entry_type === "confirmed" ? "kom med" : entry.entry_type === "activity" ? "sugen på" : "vill ses";
   const activityName = entry.activities.length > 0 ? entry.activities.map(a => ACTIVITY_MAP[a] || a).join(", ") : null;
 
@@ -162,7 +170,6 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
 
   const handleRSVP = async (status: "yes" | "maybe") => {
     if (!user) return;
-    // Tag self as friend
     const existing = taggedFriends.find(t => t.tagged_user_id === user.id);
     if (!existing) {
       await supabase.from("hangout_tagged_friends").insert({ availability_id: entry.id, tagged_user_id: user.id, tagged_by: user.id });
@@ -170,12 +177,56 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
     await fetchDetails();
   };
 
+  const handleCreateGroup = async () => {
+    if (!user || creatingGroup) return;
+    setCreatingGroup(true);
+    try {
+      const groupName = `${activityName || "Häng"} ${shortWeekday} ${day}/${shortMonth}`;
+      
+      // Create group
+      const { data: group, error: groupError } = await supabase
+        .from("friend_groups")
+        .insert({ name: groupName, owner_id: user.id, emoji: "🎉" })
+        .select("id")
+        .single();
+
+      if (groupError || !group) {
+        toast({ title: "Kunde inte skapa grupp", variant: "destructive" });
+        setCreatingGroup(false);
+        return;
+      }
+
+      // Add tagged friends as members (owner is auto-added via trigger)
+      const memberInserts = taggedFriends
+        .filter(tf => tf.tagged_user_id !== user.id)
+        .map(tf => ({
+          group_id: group.id,
+          user_id: tf.tagged_user_id,
+          role: "member",
+        }));
+
+      if (memberInserts.length > 0) {
+        await supabase.from("group_memberships").insert(memberInserts);
+      }
+
+      onOpenChange(false);
+      navigate(`/groups/${group.id}`);
+    } catch {
+      toast({ title: "Något gick fel", variant: "destructive" });
+    }
+    setCreatingGroup(false);
+  };
+
   const isSelfTagged = taggedFriends.some(t => t.tagged_user_id === user?.id);
+  const hasYesResponses = taggedFriends.length > 0;
 
   return (
     <>
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="mx-auto max-w-lg border-0 max-h-[85vh]" style={{ backgroundColor: "#F7F3EF", borderRadius: "20px 20px 0 0" }}>
+        <DrawerContent 
+          className="mx-auto max-w-lg border-0 max-h-[85vh]" 
+          style={{ backgroundColor: "#F7F3EF", borderRadius: "20px 20px 0 0" }}
+        >
           {/* Handle + Close */}
           <div className="flex justify-end px-4 pt-2">
             <button onClick={() => onOpenChange(false)} className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-muted/50 transition-colors">
@@ -187,7 +238,7 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
             {/* Date block */}
             <div className="flex flex-col items-center gap-0.5">
               <span className="text-[9px] uppercase tracking-wider" style={{ color: "#B0A8B5" }}>{weekday}</span>
-              <span className="text-[44px] font-medium leading-none text-foreground">{day}</span>
+              <span className="text-[40px] font-medium leading-none" style={{ color: "#3C2A4D" }}>{day}</span>
               <span className="text-[13px] font-medium" style={{ color: "#C9B8D8" }}>{month}</span>
               <span className="text-[9px] uppercase tracking-wider mt-1" style={{ color: "#B0A8B5" }}>{typeLabel}</span>
               {!isOwner && ownerProfile && (
@@ -203,10 +254,10 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
               </div>
             )}
 
-            {/* Friends section */}
+            {/* Owner: Svar section */}
             {isOwner ? (
               <div className="space-y-2">
-                <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "#B0A8B5" }}>Med på dejten</p>
+                <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "#B0A8B5" }}>Svar</p>
                 {taggedFriends.length > 0 && (
                   <div className="space-y-1.5">
                     {taggedFriends.map(tf => (
@@ -225,6 +276,8 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
                     ))}
                   </div>
                 )}
+
+                {/* Invite friends - always visible */}
                 {showInvite ? (
                   <div className="space-y-1.5">
                     <Input
@@ -253,8 +306,29 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
                     <span className="text-[12px]" style={{ color: "#7A6A85" }}>Bjud in fler vänner</span>
                   </button>
                 )}
+
+                {/* Create group row - only if at least one friend responded */}
+                {hasYesResponses && (
+                  <button
+                    onClick={handleCreateGroup}
+                    disabled={creatingGroup}
+                    className="flex items-center gap-2.5 w-full p-2.5 transition-colors hover:opacity-90 disabled:opacity-60"
+                    style={{ backgroundColor: "#EDE8F4", borderRadius: 9 }}
+                  >
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: "#3C2A4D" }}>
+                      <Users className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    <div className="flex-1 text-left min-w-0">
+                      <p className="text-[12px] font-medium text-foreground">Skapa en grupp</p>
+                      <p className="text-[10px] truncate" style={{ color: "#7A6A85" }}>
+                        För {activityName || "häng"} {shortWeekday} {day}/{shortMonth}
+                      </p>
+                    </div>
+                  </button>
+                )}
               </div>
             ) : (
+              /* Friend view: Redan med + RSVP */
               <div className="space-y-2">
                 <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "#B0A8B5" }}>Redan med</p>
                 {taggedFriends.length > 0 && (
