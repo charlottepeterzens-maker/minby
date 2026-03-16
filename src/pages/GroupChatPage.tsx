@@ -248,6 +248,25 @@ const GroupChatPage = () => {
     const content = newMessage.trim();
     setNewMessage("");
     await supabase.from("group_messages").insert({ group_id: groupId, user_id: user.id, content });
+    
+    // Send group_message notification to other members
+    try {
+      const otherMembers = members.filter(m => m.user_id !== user.id);
+      if (otherMembers.length > 0) {
+        await Promise.all(otherMembers.map(m =>
+          sendNotification({
+            recipientUserId: m.user_id,
+            fromUserId: user.id,
+            type: "group_message",
+            referenceId: groupId,
+            message: `Nytt meddelande i ${groupName}`,
+          })
+        ));
+      }
+    } catch {
+      // Best effort
+    }
+
     setSending(false);
     inputRef.current?.focus();
   };
