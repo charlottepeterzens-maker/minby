@@ -385,24 +385,12 @@ const ProfilePage = () => {
             )}
           </motion.div>
         ) : (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-                {sections.map((section, i) => {
-                  const cols = 3;
-                  const isLastInRow = (i + 1) % cols === 0 || i === sections.length - 1;
-
-                  let expandAfter = false;
-                  if (expandedSection && isLastInRow && !reordering) {
-                    const expandedIdx = sections.findIndex((s) => s.id === expandedSection);
-                    const rowStart = Math.floor(i / cols) * cols;
-                    if (expandedIdx >= rowStart && expandedIdx <= i) {
-                      expandAfter = true;
-                    }
-                  }
-
-                  return (
-                    <div key={section.id} className="contents animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
+          <>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                  {sections.map((section, i) => (
+                    <div key={section.id} className="animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
                       <SortableGridCard
                         section={section}
                         isOwner={isOwnProfile}
@@ -413,46 +401,42 @@ const ProfilePage = () => {
                         index={i}
                         reordering={reordering}
                       />
-                      {expandAfter && (
-                        <div className="col-span-2">
-                          <AnimatePresence mode="wait">
-                            <motion.div
-                              key={expandedSection}
-                              id={`section-${expandedSection}`}
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: "auto", opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.25, ease: "easeInOut" }}
-                              className="overflow-hidden"
-                            >
-                              {(() => {
-                                const sec = sections.find((s) => s.id === expandedSection);
-                                if (!sec) return null;
-                                if (sec.section_type === "workout")
-                                  return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
-                                return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
-                              })()}
-                            </motion.div>
-                          </AnimatePresence>
-                        </div>
-                      )}
                     </div>
-                  );
-                })}
-                {/* Add card */}
-                {isOwnProfile && (
-                  <CreateSectionDialog onCreated={fetchSections} trigger={
-                    <button className="w-full flex items-center gap-2.5 rounded-[16px] border-[0.5px] border-dashed border-border p-2.5 text-left text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
-                      <div className="shrink-0 flex items-center justify-center rounded-[7px] border-[0.5px] border-dashed border-current" style={{ width: 26, height: 26 }}>
-                        <Plus className="w-3.5 h-3.5" />
-                      </div>
-                      <span className="text-[12px] font-medium">Lägg till</span>
-                    </button>
-                  } />
-                )}
-              </div>
-            </SortableContext>
-          </DndContext>
+                  ))}
+                  {isOwnProfile && (
+                    <CreateSectionDialog onCreated={fetchSections} trigger={
+                      <button className="w-full aspect-[4/5] flex flex-col items-center justify-center gap-1 rounded-[16px] border-[0.5px] border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
+                        <Plus className="w-4 h-4" />
+                        <span className="text-[11px] font-medium">Lägg till</span>
+                      </button>
+                    } />
+                  )}
+                </div>
+              </SortableContext>
+            </DndContext>
+
+            {expandedSection && !reordering && (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={expandedSection}
+                  id={`section-${expandedSection}`}
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="overflow-hidden mt-2"
+                >
+                  {(() => {
+                    const sec = sections.find((s) => s.id === expandedSection);
+                    if (!sec) return null;
+                    if (sec.section_type === "workout")
+                      return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
+                    return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
+                  })()}
+                </motion.div>
+              </AnimatePresence>
+            )}
+          </>
         )}
 
         {/* Tips & Favorites */}
