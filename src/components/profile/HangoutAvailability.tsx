@@ -162,7 +162,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     setSaving(true);
     const dateStr = format(selectedDate, "yyyy-MM-dd");
     const { error } = await supabase.from("hangout_availability").upsert(
-      { user_id: user.id, date: dateStr, activities: selectedActivities, custom_note: customNote.trim() || null },
+      { user_id: user.id, date: dateStr, activities: selectedActivities, custom_note: customNote.trim() || null, entry_type: entryType },
       { onConflict: "user_id,date" }
     );
     if (error) {
@@ -173,6 +173,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
       setSelectedDate(undefined);
       setSelectedActivities([]);
       setCustomNote("");
+      setEntryType("available");
       await fetchEntries();
     }
     setSaving(false);
