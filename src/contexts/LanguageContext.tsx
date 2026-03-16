@@ -57,7 +57,7 @@ const translations = {
     plan: "Plan",
 
     // Profile
-    profileTitle: "Profile",
+    profileTitle: "My Page",
     sections: "Sections",
     noSectionsYet: "No sections yet",
     addFirstSection: "Add your first life section",
