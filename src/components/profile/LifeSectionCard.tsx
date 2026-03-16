@@ -197,13 +197,41 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   placeholder={t("whatsNew")}
                   className="bg-background/50 border-border/30 min-h-[60px] text-sm"
                 />
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center flex-wrap">
                   <label className="cursor-pointer">
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
                     <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 border transition-colors ${imageFile ? "bg-primary/10 text-primary border-primary/30" : "text-muted-foreground border-border/50 hover:bg-muted"}`}>
                       <Image className="w-3 h-3" /> {imageFile ? imageFile.name.slice(0, 15) : t("photo")}
                     </span>
                   </label>
+                  {imageFile && (
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setPhotoLayout("large")}
+                        className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+                        style={{
+                          backgroundColor: photoLayout === "large" ? "#3C2A4D" : "#FFFFFF",
+                          border: "1px solid #3C2A4D",
+                        }}
+                        title="Stort foto"
+                      >
+                        <RectangleHorizontal className="w-3.5 h-3.5" style={{ color: photoLayout === "large" ? "#FFFFFF" : "#3C2A4D" }} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPhotoLayout("small")}
+                        className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+                        style={{
+                          backgroundColor: photoLayout === "small" ? "#3C2A4D" : "#FFFFFF",
+                          border: "1px solid #3C2A4D",
+                        }}
+                        title="Litet foto"
+                      >
+                        <LayoutList className="w-3.5 h-3.5" style={{ color: photoLayout === "small" ? "#FFFFFF" : "#3C2A4D" }} />
+                      </button>
+                    </div>
+                  )}
                   <Input
                     value={linkUrl}
                     onChange={(e) => setLinkUrl(e.target.value)}
@@ -213,6 +241,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   <Button size="sm" disabled={posting} onClick={handlePost} className="h-7 px-3">
                     <Send className="w-3 h-3" />
                   </Button>
+                </div>
                 </div>
               </div>
             </motion.div>
