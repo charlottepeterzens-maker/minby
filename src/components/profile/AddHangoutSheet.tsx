@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+import { sendNotification } from "@/utils/notifications";
+import { format as fmtDate } from "date-fns";
 
 type EntryType = "available" | "confirmed" | "activity";
 type Visibility = "all" | "selected" | "private";
