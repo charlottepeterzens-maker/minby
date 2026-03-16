@@ -443,7 +443,7 @@ const translations = {
     couldNotPost: "Kunde inte publicera",
     couldNotUpdateSection: "Kunde inte uppdatera sektion",
     sectionUpdated: "Sektion uppdaterad",
-    hangoutAvailability: "Hitta på något",
+    hangoutAvailability: "Jag vill ses!",
     addAvailability: "Lägg till ett datum",
     selectDate: "Välj ett datum",
     activities: "Aktiviteter",
