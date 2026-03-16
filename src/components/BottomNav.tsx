@@ -1,10 +1,10 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, User, UsersRound, Settings } from "lucide-react";
+import { Home, User, UserPlus, Settings } from "lucide-react";
 
 const navItems = [
   { label: "Hem", icon: Home, path: "/" },
   { label: "Profil", icon: User, path: "/profile" },
-  { label: "Grupper", icon: UsersRound, path: "/groups" },
+  { label: "Vänner", icon: UserPlus, path: "/friends" },
   { label: "Inställningar", icon: Settings, path: "/settings" },
 ];
 
