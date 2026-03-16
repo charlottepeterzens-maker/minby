@@ -310,7 +310,8 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         </SheetContent>
       </Sheet>
     </Card>
-  );
+};
+
 /** Helper: renders an image from a storage path/URL via signed URL */
 const SignedImage = ({ imageRef, onClick, className, imgClassName }: { imageRef: string; onClick?: () => void; className?: string; imgClassName?: string }) => {
   const url = useSignedImageUrl(imageRef);
