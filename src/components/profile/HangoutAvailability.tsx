@@ -142,10 +142,9 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                   onClick={() => handleCardClick(entry)}
                   className="snap-start shrink-0 flex flex-col text-left transition-all relative overflow-hidden"
                   style={{
-                    minWidth: 120,
-                    height: 110,
-                    minHeight: 110,
-                    maxHeight: 110,
+                    width: 110,
+                    minWidth: 110,
+                    maxWidth: 110,
                     borderRadius: 12,
                     padding: 10,
                     backgroundColor: style.bg,
