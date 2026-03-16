@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { UserPlus, Users } from "lucide-react";
+import { UserPlus, Users, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
@@ -37,6 +37,7 @@ const FriendsPage = () => {
   const [friends, setFriends] = useState<FriendRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   const fetchFriends = useCallback(async () => {
     if (!user) return;
@@ -120,6 +121,27 @@ const FriendsPage = () => {
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-5">
+        {/* Search */}
+        {!loading && friends.length > 0 && (
+          <div className="relative mb-4">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+              style={{ color: "#9B8BA5" }}
+              strokeWidth={1.5}
+            />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Sök bland vänner..."
+              className="w-full pl-9 pr-3 py-2.5 rounded-[10px] text-[13px] outline-none placeholder:text-[#9B8BA5]"
+              style={{
+                backgroundColor: "#FFFFFF",
+                border: "0.5px solid #EDE8F4",
+                color: "#3C2A4D",
+              }}
+            />
+          </div>
+        )}
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
@@ -153,10 +175,18 @@ const FriendsPage = () => {
               Bjud in en vän
             </Button>
           </div>
-        ) : (
-          /* Friend list */
+        ) : (() => {
+          const filtered = friends.filter((f) =>
+            f.display_name.toLowerCase().includes(search.toLowerCase())
+          );
+          return (
           <div className="space-y-2">
-            {friends.map((f) => {
+            {filtered.length === 0 ? (
+              <p className="text-center py-8 text-[13px]" style={{ color: "#9B8BA5" }}>
+                Inga vänner matchar sökningen
+              </p>
+            ) : (
+            filtered.map((f) => {
               const activityText = f.last_activity
                 ? `Lade upp något ${timeAgo(f.last_activity)}`
                 : null;
@@ -208,7 +238,8 @@ const FriendsPage = () => {
                   </div>
                 </button>
               );
-            })}
+            })
+            )}
 
             {/* Invite row */}
             <button
@@ -230,7 +261,8 @@ const FriendsPage = () => {
               </span>
             </button>
           </div>
-        )}
+          );
+        })()}
       </main>
 
       {/* Reuse InviteFriendDialog in controlled mode */}
