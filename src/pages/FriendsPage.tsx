@@ -126,7 +126,8 @@ const FriendsPage = () => {
       ),
     ];
 
-    const [{ data: profiles }, { data: posts }] = await Promise.all([
+    const today = format(new Date(), "yyyy-MM-dd");
+    const [{ data: profiles }, { data: posts }, { data: hangouts }] = await Promise.all([
       supabase
         .from("profiles")
         .select("user_id, display_name, avatar_url")
@@ -136,6 +137,12 @@ const FriendsPage = () => {
         .select("user_id, created_at")
         .in("user_id", friendIds)
         .order("created_at", { ascending: false }),
+      supabase
+        .from("hangout_availability")
+        .select("user_id, entry_type, date, activities, custom_note")
+        .in("user_id", friendIds)
+        .gte("date", today)
+        .order("date", { ascending: true }),
     ]);
 
     const latestPostMap = new Map<string, string>();
@@ -145,12 +152,26 @@ const FriendsPage = () => {
       }
     });
 
+    // Get nearest upcoming hangout per friend
+    const hangoutMap = new Map<string, HangoutStatus>();
+    hangouts?.forEach((h: any) => {
+      if (!hangoutMap.has(h.user_id)) {
+        hangoutMap.set(h.user_id, {
+          entry_type: h.entry_type || "available",
+          date: h.date,
+          activities: h.activities || [],
+          custom_note: h.custom_note,
+        });
+      }
+    });
+
     const list: FriendRow[] = (profiles || []).map((p) => ({
       user_id: p.user_id,
       display_name: p.display_name || "Okänd",
       avatar_url: p.avatar_url,
       initial: (p.display_name || "?").charAt(0).toUpperCase(),
       last_activity: latestPostMap.get(p.user_id) || null,
+      hangout_status: hangoutMap.get(p.user_id) || null,
     }));
 
     list.sort((a, b) => {
