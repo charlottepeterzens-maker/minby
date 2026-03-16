@@ -541,6 +541,9 @@ const translations = {
     tipCat_other: "Övrigt",
     tipFetchingPreview: "Hämtar förhandsgranskning...",
     tipPreviewFound: "Förhandsvisningsbild från länk",
+    tipCommentPlaceholder: "Din kommentar om detta tips",
+    tipEdit: "Redigera",
+    tipDelete: "Ta bort",
     tipSave: "Spara ändringar",
 
     // Hangout sections
