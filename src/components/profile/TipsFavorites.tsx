@@ -16,6 +16,7 @@ import {
   Sparkles,
   Trash2,
   Loader2,
+  Pencil,
 } from "lucide-react";
 import {
   Sheet,
