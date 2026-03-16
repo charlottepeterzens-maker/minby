@@ -1,0 +1,2 @@
+ALTER TABLE public.hangout_availability ADD COLUMN IF NOT EXISTS visibility text NOT NULL DEFAULT 'all';
+COMMENT ON COLUMN public.hangout_availability.visibility IS 'Visibility: all (all friends), selected, private (only tagged friends)';
