@@ -271,7 +271,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       {/* Image lightbox */}
       <Dialog open={!!expandedImage} onOpenChange={() => setExpandedImage(null)}>
         <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-background">
-          {expandedImage && <img src={expandedImage} alt="" className="w-full h-full object-contain rounded-lg" />}
+          {expandedImage && <SignedImage imageRef={expandedImage} className="w-full h-full" imgClassName="w-full h-full object-contain rounded-lg" />}
         </DialogContent>
       </Dialog>
 
