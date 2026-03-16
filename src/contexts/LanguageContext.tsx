@@ -266,6 +266,7 @@ const translations = {
     tipCat_other: "Other",
     tipFetchingPreview: "Fetching preview...",
     tipPreviewFound: "Preview image from link",
+    tipSave: "Save changes",
   },
   sv: {
     // Nav
