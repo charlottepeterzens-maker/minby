@@ -113,6 +113,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       content: content.trim() || null,
       image_url,
       link_url: linkUrl.trim() || null,
+      photo_layout: image_url ? photoLayout : "large",
     });
 
     if (error) {
