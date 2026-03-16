@@ -32,6 +32,7 @@ import WorkoutTracker from "@/components/profile/WorkoutTracker";
 import HangoutAvailability from "@/components/profile/HangoutAvailability";
 import ProfileShareDialog from "@/components/profile/ProfileShareDialog";
 import TipsFavorites from "@/components/profile/TipsFavorites";
+import FriendRequestButton from "@/components/profile/FriendRequestButton";
 import HangoutNotificationList from "@/components/profile/HangoutNotificationList";
 import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 
