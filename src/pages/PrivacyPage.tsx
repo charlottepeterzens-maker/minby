@@ -49,6 +49,11 @@ const PrivacyPage = () => {
           </section>
 
           <section>
+            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Push-notiser</h2>
+            <p>Vi skickar push-notiser för att hålla dig uppdaterad om dina vänners aktiviteter. Du kan när som helst stänga av notiser i Inställningar eller i din enhets inställningar.</p>
+          </section>
+
+          <section>
             <p>Svensk lag tillämpas och GDPR efterföljs.</p>
           </section>
 
