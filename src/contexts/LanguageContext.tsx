@@ -296,7 +296,7 @@ const translations = {
     plan: "Plan",
 
     // Profile
-    profileTitle: "Profil",
+    profileTitle: "Min sida",
     sections: "Sektioner",
     noSectionsYet: "Inga sektioner ännu",
     addFirstSection: "Lägg till din första livssektion",
