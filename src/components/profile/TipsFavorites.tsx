@@ -434,6 +434,7 @@ const TipsFavorites = ({
                 isOwner={isOwner}
                 isSaved={savedTipIds.has(tip.id)}
                 onDelete={() => handleDelete(tip.id)}
+                onEdit={() => handleEdit(tip)}
                 onSave={() => handleSave(tip.id)}
                 index={i}
                 categoryEmoji={categoryEmoji}
