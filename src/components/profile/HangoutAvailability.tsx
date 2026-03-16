@@ -86,7 +86,22 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
       .eq("user_id", userId)
       .gte("date", today)
       .order("date", { ascending: true });
-    if (data) setEntries(data as AvailabilityEntry[]);
+    if (data) {
+      setEntries(data as AvailabilityEntry[]);
+      // Fetch tag counts for green border
+      const ids = data.map((e: any) => e.id);
+      if (ids.length > 0) {
+        const { data: tags } = await supabase
+          .from("hangout_tagged_friends")
+          .select("availability_id")
+          .in("availability_id", ids);
+        const counts = new Map<string, number>();
+        tags?.forEach((t: any) => {
+          counts.set(t.availability_id, (counts.get(t.availability_id) || 0) + 1);
+        });
+        setConfirmedCounts(counts);
+      }
+    }
   }, [userId]);
 
   useEffect(() => { fetchEntries(); }, [fetchEntries]);
