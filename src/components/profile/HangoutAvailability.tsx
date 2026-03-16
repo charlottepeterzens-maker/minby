@@ -464,7 +464,14 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               <div className="space-y-2">
                 {confirmedEntries.length === 0 ? (
                   <p className="text-[12px] text-muted-foreground py-1">{t("hangoutNoConfirmed")}</p>
-                ) : confirmedEntries.map((entry) => renderEntryRow(entry))}
+                ) : confirmedEntries.map((entry) => (
+                  <div key={entry.id}>
+                    {renderEntryRow(entry)}
+                    <AnimatePresence>
+                      {expandedId === entry.id && renderExpandedDetail()}
+                    </AnimatePresence>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -478,7 +485,14 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               <div className="space-y-2">
                 {availableEntries.length === 0 ? (
                   <p className="text-[12px] text-muted-foreground py-1">{t("hangoutNoAvailable")}</p>
-                ) : availableEntries.map((entry) => renderEntryRow(entry))}
+                ) : availableEntries.map((entry) => (
+                  <div key={entry.id}>
+                    {renderEntryRow(entry)}
+                    <AnimatePresence>
+                      {expandedId === entry.id && renderExpandedDetail()}
+                    </AnimatePresence>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -491,10 +505,6 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             </button>
           )}
 
-          {/* Expanded detail */}
-          <AnimatePresence>
-            {renderExpandedDetail()}
-          </AnimatePresence>
         </div>
       )}
 
