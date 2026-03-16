@@ -362,10 +362,6 @@ const ProfilePage = () => {
           </div>
         )}
 
-        {/* Tips & Favorites */}
-        {targetUserId && (
-          <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />
-        )}
 
         {/* Life sections as thumbnail grid */}
         <div className="mb-4">
