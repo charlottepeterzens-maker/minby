@@ -37,14 +37,14 @@ const PrivacyPage = () => {
           <section>
             <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Dina rättigheter</h2>
             <p>Du har rätt att begära ut, korrigera eller radera din data genom att kontakta oss på{" "}
-              <a href="mailto:charlotte.peterzens@gmail.com" className="underline" style={{ color: "#3C2A4D" }}>charlotte.peterzens@gmail.com</a>.
+              <a href="mailto:hi@minby.online" className="underline" style={{ color: "#3C2A4D" }}>hi@minby.online</a>.
             </p>
           </section>
 
           <section>
             <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Kontakt</h2>
             <p>Charlotte Peterzéns,{" "}
-              <a href="mailto:charlotte.peterzens@gmail.com" className="underline" style={{ color: "#3C2A4D" }}>charlotte.peterzens@gmail.com</a>
+              <a href="mailto:hi@minby.online" className="underline" style={{ color: "#3C2A4D" }}>hi@minby.online</a>
             </p>
           </section>
 

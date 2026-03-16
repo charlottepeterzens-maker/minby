@@ -41,7 +41,7 @@ const TermsPage = () => {
 
           <section>
             <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "#3C2A4D" }}>Kontakt</h2>
-            <p><a href="mailto:charlotte.peterzens@gmail.com" className="underline" style={{ color: "#3C2A4D" }}>charlotte.peterzens@gmail.com</a></p>
+            <p><a href="mailto:hi@minby.online" className="underline" style={{ color: "#3C2A4D" }}>hi@minby.online</a></p>
           </section>
 
           <p className="text-[11px] pt-2" style={{ color: "#9B8BA5" }}>Senast uppdaterad: mars 2026</p>
