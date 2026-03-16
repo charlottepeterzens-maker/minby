@@ -66,7 +66,7 @@ const PushPermissionDialog = () => {
           </div>
           <div>
             <h3 className="font-display text-lg font-medium" style={{ color: "#3C2A4D" }}>
-              Missa inget från byn
+              Missa inget från dina nära
             </h3>
             <p className="text-[13px] mt-2 leading-relaxed" style={{ color: "#7A6A85" }}>
               Få en notis när en vän vill hänga med, kommenterar eller bjuder in dig.
