@@ -69,6 +69,8 @@ const TipsFavorites = ({
   const [category, setCategory] = useState("other");
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [fetchingPreview, setFetchingPreview] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchTips = useCallback(async () => {
