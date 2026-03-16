@@ -195,6 +195,23 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
         body: null,
         reference_id: entry.id,
       });
+      // Also send push notification
+      try {
+        await supabase.functions.invoke("send-push", {
+          body: {
+            userId: entry.user_id,
+            title: `${name} vill hänga med!`,
+            body: title,
+          },
+        });
+      } catch {
+        // Push is best-effort, in-app notification is the fallback
+      }
+    }
+
+    // Prompt for push permission on first RSVP (for the responder too)
+    if (pushSupported && pushPermission === "default" && !pushSubscribed) {
+      subscribePush();
     }
 
     await fetchDetails();
