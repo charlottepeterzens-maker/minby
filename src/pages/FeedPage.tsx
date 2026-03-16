@@ -173,7 +173,7 @@ const FeedPage = () => {
   });
 
   const handleSendHug = (userId: string) => {
-    toast.success("Kram skickad! 💛");
+    toast.success("Du skickade kärlek 💛");
   };
 
   return (

@@ -215,7 +215,7 @@ const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedH
             {isOwn && (
               <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
-            <CategoryPill label="aktivitet" variant="light" />
+            <CategoryPill label="sugen på" variant="light" />
           </div>
         </div>
       </div>

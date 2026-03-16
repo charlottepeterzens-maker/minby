@@ -160,7 +160,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               className="font-display"
               style={{ fontWeight: 500, fontSize: "20px", color: "#3C2A4D" }}
             >
-              Vad vill dina vänner kalla dig?
+              Vad ska dina vänner kalla dig?
             </h1>
             <Input
               value={displayName}

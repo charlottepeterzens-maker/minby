@@ -216,7 +216,7 @@ const GroupsPage = () => {
                   Inga grupper ännu
                 </p>
                 <p className="text-[12px] mt-1" style={{ color: "#9B8BA5" }}>
-                  Skapa din första grupp för att börja planera!
+                  Inga grupper ännu – skapa en från en bekräftad dejt
                 </p>
               </div>
           }

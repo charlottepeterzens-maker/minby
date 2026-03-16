@@ -367,12 +367,12 @@ const FriendsPage = () => {
                         const dateObj = new Date(h.date + "T00:00:00");
                         const dateLabel = `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}`;
                         if (h.entry_type === "confirmed") {
-                          statusText = `Plan ${dateLabel}`;
+                         statusText = `häng med ${dateLabel}`;
                         } else if (h.entry_type === "activity") {
                           const actName = h.activities.length > 0 ? h.activities[0] : "Aktivitet";
-                          statusText = `Vill: ${actName} ${dateLabel}`;
+                          statusText = `sugen på: ${actName} ${dateLabel}`;
                         } else {
-                          statusText = `Ledig ${dateLabel}`;
+                          statusText = `vill ses ${dateLabel}`;
                         }
                       } else if (f.last_activity) {
                         statusText = `Lade upp något ${timeAgo(f.last_activity)}`;

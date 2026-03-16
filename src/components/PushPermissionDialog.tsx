@@ -78,7 +78,7 @@ const PushPermissionDialog = () => {
               className="w-full py-3 rounded-[12px] text-[14px] font-medium text-white transition-colors"
               style={{ backgroundColor: "#3C2A4D" }}
             >
-              Aktivera notiser
+              Håll mig uppdaterad
             </button>
             <button
               onClick={handleLater}

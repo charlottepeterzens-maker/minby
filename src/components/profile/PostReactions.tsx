@@ -69,6 +69,8 @@ const PostReactions = ({ postId, readOnly }: Props) => {
         user_id: user.id,
         emoji,
       });
+      const toastMsg = REACTION_TOASTS[emoji];
+      if (toastMsg) toast.success(toastMsg);
     }
     setShowPicker(false);
     fetchReactions();
