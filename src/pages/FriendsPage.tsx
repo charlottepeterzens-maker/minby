@@ -267,7 +267,7 @@ const FriendsPage = () => {
               className="rounded-[10px] text-sm font-medium px-6"
               style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
             >
-              Bjud in en vän
+              Bjud in en vän till din vardag
             </Button>
           </div>
         ) : (
