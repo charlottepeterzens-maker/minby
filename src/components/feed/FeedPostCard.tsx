@@ -109,6 +109,9 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProp
       ) : (
         <PostReactions postId={post.id} />
       )}
+
+      {/* Comments */}
+      <PostComments postId={post.id} isOwner={!!isOwn} />
     </div>
   );
 };
