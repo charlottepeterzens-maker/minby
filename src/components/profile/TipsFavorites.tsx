@@ -64,6 +64,7 @@ const TipsFavorites = ({
   const [savedTipIds, setSavedTipIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [editingTip, setEditingTip] = useState<Tip | null>(null);
 
   // Add form state
   const [title, setTitle] = useState("");
