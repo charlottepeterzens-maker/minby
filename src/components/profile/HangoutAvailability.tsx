@@ -122,7 +122,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             ref={scrollRef}
             onScroll={handleScroll}
             className="flex gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none", paddingRight: 20 }}
           >
             {entries.map((entry) => {
               const style = getTypeStyle(entry.entry_type);
@@ -142,9 +142,12 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                   onClick={() => handleCardClick(entry)}
                   className="snap-start shrink-0 flex flex-col text-left transition-all relative overflow-hidden"
                   style={{
-                    width: 110,
-                    minWidth: 110,
-                    maxWidth: 110,
+                    width: 140,
+                    minWidth: 140,
+                    maxWidth: 140,
+                    height: 110,
+                    minHeight: 110,
+                    maxHeight: 110,
                     borderRadius: 12,
                     padding: 10,
                     backgroundColor: style.bg,
@@ -154,14 +157,14 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                   <span className="text-[9px] uppercase tracking-wider" style={{ color: "#B0A8B5" }}>
                     {getTypeLabel(entry.entry_type)}
                   </span>
-                  <div className="flex-1 flex flex-col justify-center mt-1 min-h-0">
+                  <div className="flex-1 flex flex-col justify-center mt-0.5 min-h-0">
                     <span className="text-[10px] uppercase" style={{ color: "#7A6A85" }}>{weekday}</span>
                     <span className="text-[22px] font-medium leading-tight text-foreground">{day}</span>
                     <span className="text-[10px]" style={{ color: "#C9B8D8" }}>{month}</span>
                   </div>
                   {activityName && (
                     <p
-                      className="text-[10px] leading-tight text-foreground mt-1"
+                      className="text-[10px] leading-tight text-foreground mt-0.5"
                       style={{
                         display: "-webkit-box",
                         WebkitLineClamp: 2,
@@ -192,8 +195,12 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 onClick={() => setShowAdd(true)}
                 className="snap-start shrink-0 flex flex-col items-center justify-center transition-colors hover:bg-muted/30"
                 style={{
-                  minWidth: 120,
-                  minHeight: 100,
+                  width: 140,
+                  minWidth: 140,
+                  maxWidth: 140,
+                  height: 110,
+                  minHeight: 110,
+                  maxHeight: 110,
                   borderRadius: 12,
                   padding: 10,
                   border: "1.5px dashed #C9B8D8",
