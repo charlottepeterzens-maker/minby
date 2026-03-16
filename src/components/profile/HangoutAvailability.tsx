@@ -308,7 +308,97 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     setFriendResults([]);
   };
 
-  return (
+  const renderEntryRow = (entry: AvailabilityEntry) => {
+    const isExpanded = expandedId === entry.id;
+    const dateObj = new Date(entry.date + "T00:00:00");
+    const monthLabel = format(dateObj, "MMM", { locale: sv }).toUpperCase();
+    const dayLabel = format(dateObj, "d");
+    const dateTitle = format(dateObj, "EEEE d MMMM", { locale: sv });
+
+    return (
+      <div key={entry.id} className="relative">
+        {editingEntryId === entry.id && isOwner ? (
+          <div className="bg-muted/50 rounded-[16px] border-[0.5px] border-border p-3 space-y-3">
+            <p className="text-[13px] font-medium text-foreground">{dateTitle}</p>
+            <div className="flex flex-wrap gap-2">
+              {ACTIVITY_OPTIONS.map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => toggleEditActivity(opt.key)}
+                  style={{
+                    borderRadius: 20, fontSize: 13, padding: "6px 14px",
+                    border: "0.5px solid #EDE8F4",
+                    backgroundColor: editActivities.includes(opt.key) ? "#3C2A4D" : "#FFFFFF",
+                    color: editActivities.includes(opt.key) ? "#FFFFFF" : "#3C2A4D"
+                  }}
+                  className="font-medium transition-all"
+                >{opt.label}</button>
+              ))}
+            </div>
+            <textarea
+              value={editNote}
+              onChange={(e) => setEditNote(e.target.value.slice(0, 150))}
+              placeholder="Berätta lite mer..."
+              className="w-full text-sm rounded-md border border-border bg-background px-3 py-2 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+              maxLength={150} rows={2}
+            />
+            <div className="flex gap-2">
+              <button onClick={() => setEditingEntryId(null)} className="flex-1 py-2 text-[13px] font-medium rounded-[10px]" style={{ border: "0.5px solid #EDE8F4", color: "#3C2A4D" }}>Avbryt</button>
+              <button onClick={handleSaveEdit} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] text-white" style={{ backgroundColor: "#3C2A4D" }}>Spara</button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={() => toggleExpand(entry.id)}
+            className={cn(
+              "w-full flex items-center bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all active:scale-[0.98]",
+              isExpanded && "ring-1 ring-primary/20"
+            )}
+          >
+            <div className="shrink-0 flex flex-col items-center justify-center" style={{ width: 40 }}>
+              <span className="text-[22px] leading-none" style={{ color: "#3C2A4D", fontWeight: 500 }}>{dayLabel}</span>
+              <span className="text-[10px] font-medium leading-none mt-0.5 uppercase" style={{ color: "#C9B8D8", letterSpacing: "0.05em" }}>{monthLabel}</span>
+            </div>
+            <div className="shrink-0 mx-2.5 self-stretch" style={{ width: 1, backgroundColor: "#EDE8F4" }} />
+            <div className="flex-1 min-w-0 pr-5">
+              <p className="text-[13px] leading-tight truncate" style={{ color: "#3C2A4D", fontWeight: 500 }}>{dateTitle}</p>
+              {(entry.activities.length > 0 || entry.custom_note) && (
+                <div className="flex items-center flex-wrap gap-1 mt-1">
+                  {entry.activities.slice(0, 3).map((a) => (
+                    <span key={a} className="text-[10px] font-medium px-2 py-0.5 rounded-[20px]" style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}>{getActivityLabel(a)}</span>
+                  ))}
+                  {entry.activities.length > 3 && <span className="text-[10px] text-muted-foreground">+{entry.activities.length - 3}</span>}
+                  {entry.activities.length > 0 && entry.custom_note && <span className="text-[10px]" style={{ color: "#7A6A85" }}>·</span>}
+                  {entry.custom_note && <span className="text-[12px] truncate" style={{ color: "#7A6A85" }}>{entry.custom_note}</span>}
+                </div>
+              )}
+            </div>
+            {!isOwner && (
+              <span className="shrink-0 text-[11px] font-medium px-3 py-1.5 rounded-[8px]" style={{ backgroundColor: "hsl(145 20% 94%)", color: "hsl(150 40% 20%)" }}>Ja!</span>
+            )}
+          </button>
+        )}
+
+        {isOwner && editingEntryId !== entry.id && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="absolute top-1/2 -translate-y-1/2 right-2.5 z-10 w-5 h-5 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[120px]">
+              <DropdownMenuItem onClick={() => startEditEntry(entry)}>Redigera</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setDeleteConfirmId(entry.id)} className="text-destructive focus:text-destructive">Ta bort</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+      </div>
+    );
+  };
+
     <div className="bg-card border border-border/50 rounded-lg p-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-display text-base font-semibold text-foreground flex items-center gap-2">
