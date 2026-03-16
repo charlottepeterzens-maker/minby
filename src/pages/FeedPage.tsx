@@ -61,7 +61,7 @@ const FeedPage = () => {
         .limit(50),
       supabase
         .from("hangout_availability")
-        .select("id, date, activities, custom_note, created_at, user_id")
+        .select("id, date, activities, custom_note, created_at, user_id, entry_type")
         .order("created_at", { ascending: false })
         .limit(20),
     ]);
