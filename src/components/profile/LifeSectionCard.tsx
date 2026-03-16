@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Plus, Image, Link, Trash2, Send, Pencil, Check, X } from "lucide-react";
+import { Plus, Image, Link, Trash2, Send, Pencil, Check, X, RectangleHorizontal, LayoutList } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PostReactions from "@/components/profile/PostReactions";
 import ConfirmSheet from "@/components/ConfirmSheet";
