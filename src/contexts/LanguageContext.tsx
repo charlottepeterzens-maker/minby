@@ -267,6 +267,14 @@ const translations = {
     tipFetchingPreview: "Fetching preview...",
     tipPreviewFound: "Preview image from link",
     tipSave: "Save changes",
+
+    // Hangout sections
+    hangoutAvailable: "Available",
+    hangoutConfirmed: "Confirmed date",
+    hangoutConfirmedLabel: "Confirmed dates",
+    hangoutAvailableLabel: "Available & want to meet",
+    hangoutNoConfirmed: "No confirmed dates yet",
+    hangoutNoAvailable: "No available dates yet",
   },
   sv: {
     // Nav
