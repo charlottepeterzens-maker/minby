@@ -11,11 +11,12 @@ interface FeedHealthCardProps {
     display_name: string | null;
     initials: string;
   };
+  isOwn?: boolean;
   onProfileClick: () => void;
   onSendHug?: () => void;
 }
 
-const FeedHealthCard = ({ post, profile, onProfileClick, onSendHug }: FeedHealthCardProps) => {
+const FeedHealthCard = ({ post, profile, isOwn, onProfileClick, onSendHug }: FeedHealthCardProps) => {
   const timeAgo = getTimeAgo(post.created_at);
 
   return (
@@ -32,28 +33,40 @@ const FeedHealthCard = ({ post, profile, onProfileClick, onSendHug }: FeedHealth
             </button>
             <div>
               <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
-                {profile.display_name || "Någon"}
+                {isOwn ? "Du" : (profile.display_name || "Någon")}
               </button>
               <p className="text-[11px] text-muted-foreground leading-tight">
                 {post.content || "Behöver lite ro"}
               </p>
             </div>
           </div>
-          <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px] bg-dusty-rose text-foreground">
-            PMS
-          </span>
+          <div className="flex items-center gap-1.5">
+            {isOwn && (
+              <span
+                className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
+                style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}
+              >
+                Ditt inlägg
+              </span>
+            )}
+            <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px] bg-dusty-rose text-foreground">
+              PMS
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Send hug button */}
-      <div className="px-4 pb-4">
-        <button
-          onClick={onSendHug}
-          className="text-[13px] font-medium px-4 py-2 rounded-[10px] bg-dusty-rose-bg text-foreground border-[0.5px] border-dusty-rose transition-colors hover:bg-dusty-rose"
-        >
-          Skicka en kram
-        </button>
-      </div>
+      {/* Send hug button - hide for own posts */}
+      {!isOwn && (
+        <div className="px-4 pb-4">
+          <button
+            onClick={onSendHug}
+            className="text-[13px] font-medium px-4 py-2 rounded-[10px] bg-dusty-rose-bg text-foreground border-[0.5px] border-dusty-rose transition-colors hover:bg-dusty-rose"
+          >
+            Skicka en kram
+          </button>
+        </div>
+      )}
     </div>
   );
 };
