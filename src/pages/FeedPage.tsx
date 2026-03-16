@@ -222,15 +222,13 @@ const FeedPage = () => {
               let subtitle: string;
               if (hour >= 5 && hour < 12) {
                 greeting = firstName ? `God morgon, ${firstName}` : "God morgon";
-                const mornings = ["Din by är tyst just nu.", "Vad ska du hitta på idag?", "En ny dag i byn."];
-                subtitle = mornings[new Date().getDate() % mornings.length];
+                subtitle = "Din krets är tyst just nu.";
               } else if (hour >= 12 && hour < 18) {
                 greeting = firstName ? `God eftermiddag, ${firstName}` : "God eftermiddag";
-                const afternoons = ["Inget nytt från byn ännu.", "Lugnt i byn just nu.", "Kanske dags att ses?"];
-                subtitle = afternoons[new Date().getDate() % afternoons.length];
+                subtitle = "Inget nytt från kretsen ännu.";
               } else {
                 greeting = firstName ? `God kväll, ${firstName}` : "God kväll";
-                const evenings = ["Lugnt i byn ikväll.", "Mysig kväll i byn.", "Byn vilar."];
+                const evenings = ["Lugnt i kretsen ikväll."];
                 subtitle = evenings[new Date().getDate() % evenings.length];
               }
               return (
