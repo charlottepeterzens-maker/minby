@@ -471,7 +471,7 @@ const TipCard = ({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ delay: index * 0.08 }}
-        className="relative shrink-0 w-[160px] h-[200px] rounded-[16px] overflow-hidden border-[0.5px] border-border group cursor-pointer"
+        className="relative w-full aspect-[4/5] rounded-[16px] overflow-hidden border-[0.5px] border-border group cursor-pointer"
         onClick={() => setDetailOpen(true)}
       >
         {/* Background */}
