@@ -15,6 +15,7 @@ import {
   Camera,
   Sparkles,
   Trash2,
+  Loader2,
 } from "lucide-react";
 import {
   Sheet,
