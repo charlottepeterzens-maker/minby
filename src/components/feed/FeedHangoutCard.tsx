@@ -100,7 +100,7 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
           <div className="shrink-0 mx-3 self-stretch w-px" style={{ backgroundColor: '#EDE8F4' }} />
           <div className="flex-1 min-w-0">
             <p className="text-[13px] leading-snug" style={{ color: '#3C2A4D' }}>
-              {hangout.custom_note || "Ledig"}
+              {hangout.custom_note || "Vill ses"}
             </p>
           </div>
         </div>

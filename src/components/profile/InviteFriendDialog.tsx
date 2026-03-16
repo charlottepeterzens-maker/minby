@@ -56,7 +56,7 @@ const InviteFriendDialog = () => {
       <DialogTrigger asChild>
         <button className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <UserPlus className="w-3.5 h-3.5" />
-          <span>​Bjud in en vän till din vardag   </span>
+          <span>Bjud in en vän till din vardag</span>
         </button>
       </DialogTrigger>
       <DialogContent className="rounded-[14px] border-[0.5px] border-border max-w-sm">
