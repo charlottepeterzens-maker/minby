@@ -11,46 +11,16 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  try {
-    // Check if VAPID keys already exist
-    const existing = Deno.env.get("VAPID_PUBLIC_KEY");
-    if (existing) {
-      return new Response(
-        JSON.stringify({ publicKey: existing }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // Generate VAPID keys using Web Crypto API
-    const keyPair = await crypto.subtle.generateKey(
-      { name: "ECDSA", namedCurve: "P-256" },
-      true,
-      ["sign", "verify"]
-    );
-
-    const publicKeyRaw = await crypto.subtle.exportKey("raw", keyPair.publicKey);
-    const privateKeyJwk = await crypto.subtle.exportKey("jwk", keyPair.privateKey);
-
-    const publicKeyBase64 = btoa(String.fromCharCode(...new Uint8Array(publicKeyRaw)))
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, "");
-
-    // The private key in base64url format (d parameter from JWK)
-    const privateKeyBase64 = privateKeyJwk.d!;
-
+  const publicKey = Deno.env.get("VAPID_PUBLIC_KEY");
+  if (!publicKey) {
     return new Response(
-      JSON.stringify({
-        publicKey: publicKeyBase64,
-        privateKey: privateKeyBase64,
-        message: "Store these as VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY secrets",
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-  } catch (error) {
-    return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "VAPID_PUBLIC_KEY not configured" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
+
+  return new Response(
+    JSON.stringify({ publicKey }),
+    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+  );
 });
