@@ -405,17 +405,38 @@ const ProfilePage = () => {
                 {/* Add card */}
                 {isOwnProfile && (
                   <CreateSectionDialog onCreated={fetchSections} trigger={
-                    <button className="w-full flex items-center gap-2.5 rounded-[16px] border-[0.5px] border-dashed border-border p-2.5 text-left text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
-                      <div className="shrink-0 flex items-center justify-center rounded-[7px] border-[0.5px] border-dashed border-current" style={{ width: 26, height: 26 }}>
-                        <Plus className="w-3.5 h-3.5" />
-                      </div>
-                      <span className="text-[12px] font-medium">Lägg till</span>
+                    <button className="w-full aspect-[4/5] flex flex-col items-center justify-center gap-1 rounded-[16px] border-[0.5px] border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
+                      <Plus className="w-4 h-4" />
+                      <span className="text-[11px] font-medium">Lägg till</span>
                     </button>
                   } />
                 )}
               </div>
             </SortableContext>
           </DndContext>
+
+          {/* Expanded section content below grid */}
+          {expandedSection && !reordering && (
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={expandedSection}
+                id={`section-${expandedSection}`}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="overflow-hidden mt-2"
+              >
+                {(() => {
+                  const sec = sections.find((s) => s.id === expandedSection);
+                  if (!sec) return null;
+                  if (sec.section_type === "workout")
+                    return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
+                  return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
+                })()}
+              </motion.div>
+            </AnimatePresence>
+          )}
         )}
 
         {/* Tips & Favorites */}
