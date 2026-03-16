@@ -112,7 +112,7 @@ const GroupsPage = () => {
     <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
       <nav className="sticky top-0 z-50" style={{ backgroundColor: "#F7F3EF" }}>
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
-          <span className="font-display text-[20px] font-medium text-foreground">Mina grupper  – utan brus    </span>
+          <span className="font-display text-[20px] font-medium text-foreground">Grupper</span>
         </div>
         <CurvedSeparator />
       </nav>
@@ -216,7 +216,7 @@ const GroupsPage = () => {
                   Inga grupper ännu
                 </p>
                 <p className="text-[12px] mt-1" style={{ color: "#9B8BA5" }}>
-                  Skapa din första grupp för att börja planera!
+                  Inga grupper ännu – skapa en från en bekräftad dejt
                 </p>
               </div>
           }

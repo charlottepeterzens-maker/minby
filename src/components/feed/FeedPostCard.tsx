@@ -137,7 +137,7 @@ const OwnPostReactionLink = ({ postId, onShow }: { postId: string; onShow: () =>
       onClick={onShow}
       className="text-[11px] text-muted-foreground hover:underline mt-1.5"
     >
-      Se reaktioner ({count})
+      {count} {count === 1 ? "reaktion" : "reaktioner"}
     </button>
   );
 };

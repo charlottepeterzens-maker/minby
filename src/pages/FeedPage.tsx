@@ -43,9 +43,9 @@ const FeedPage = () => {
   }, [user]);
 
   const filters = [
-    { label: t("all"), value: "all" },
-    { label: t("posts"), value: "posts" },
-    { label: "Dejter", value: "hangout" },
+    { label: "Allt", value: "all" },
+    { label: "Vardagen", value: "posts" },
+    { label: "Ses?", value: "hangout" },
     { label: "Hälsa", value: "health" },
   ];
 
@@ -173,7 +173,7 @@ const FeedPage = () => {
   });
 
   const handleSendHug = (userId: string) => {
-    toast.success("Kram skickad! 💛");
+    toast.success("Du skickade kärlek 💛");
   };
 
   return (
@@ -181,8 +181,8 @@ const FeedPage = () => {
       {/* Header */}
       <nav className="sticky top-0 z-50 bg-background">
         <div className="max-w-2xl mx-auto px-5 py-4 text-center">
-          <span className="font-display text-[26px] font-light tracking-[-0.5px] text-foreground lowercase">
-            minby
+          <span className="font-display text-[20px] font-medium text-foreground">
+            Nyheter från kretsen
           </span>
         </div>
         <CurvedSeparator />
@@ -222,15 +222,13 @@ const FeedPage = () => {
               let subtitle: string;
               if (hour >= 5 && hour < 12) {
                 greeting = firstName ? `God morgon, ${firstName}` : "God morgon";
-                const mornings = ["Din by är tyst just nu.", "Vad ska du hitta på idag?", "En ny dag i byn."];
-                subtitle = mornings[new Date().getDate() % mornings.length];
+                subtitle = "Din krets är tyst just nu.";
               } else if (hour >= 12 && hour < 18) {
                 greeting = firstName ? `God eftermiddag, ${firstName}` : "God eftermiddag";
-                const afternoons = ["Inget nytt från byn ännu.", "Lugnt i byn just nu.", "Kanske dags att ses?"];
-                subtitle = afternoons[new Date().getDate() % afternoons.length];
+                subtitle = "Inget nytt från kretsen ännu.";
               } else {
                 greeting = firstName ? `God kväll, ${firstName}` : "God kväll";
-                const evenings = ["Lugnt i byn ikväll.", "Mysig kväll i byn.", "Byn vilar."];
+                const evenings = ["Lugnt i kretsen ikväll."];
                 subtitle = evenings[new Date().getDate() % evenings.length];
               }
               return (
@@ -251,7 +249,7 @@ const FeedPage = () => {
               onClick={() => navigate("/friends")}
               className="mt-6 px-5 py-2.5 rounded-[10px] text-[13px] font-medium bg-primary text-primary-foreground transition-opacity hover:opacity-90"
             >
-              Bjud in en vän
+              Bjud in en vän till din vardag
             </button>
           </div>
         ) : (

@@ -63,7 +63,7 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick, onSendHug }: Fee
             onClick={onSendHug}
             className="text-[13px] font-medium px-4 py-2 rounded-[10px] bg-dusty-rose-bg text-foreground border-[0.5px] border-dusty-rose transition-colors hover:bg-dusty-rose"
           >
-            Skicka en kram
+            Skicka kärlek
           </button>
         </div>
       )}

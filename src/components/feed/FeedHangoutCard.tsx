@@ -81,14 +81,14 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
               <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {isOwn ? "Du" : (profile.display_name || "Någon")}
               </button>
-              <p className="text-[11px] text-muted-foreground leading-tight">Vill ses · {timeAgo}</p>
+              <p className="text-[11px] text-muted-foreground leading-tight">vill ses · {timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
               <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
-            <CategoryPill label="ledig" variant="light" />
+            <CategoryPill label="vill ses" variant="light" />
           </div>
         </div>
       </div>
@@ -100,7 +100,7 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
           <div className="shrink-0 mx-3 self-stretch w-px" style={{ backgroundColor: '#EDE8F4' }} />
           <div className="flex-1 min-w-0">
             <p className="text-[13px] leading-snug" style={{ color: '#3C2A4D' }}>
-              {hangout.custom_note || "Ledig"}
+              {hangout.custom_note || "Vill ses"}
             </p>
           </div>
         </div>
@@ -139,14 +139,14 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
               <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {isOwn ? "Du" : (profile.display_name || "Någon")}
               </button>
-              <p className="text-[11px] text-muted-foreground leading-tight">Har en plan · {timeAgo}</p>
+              <p className="text-[11px] text-muted-foreground leading-tight">häng med · {timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
               <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
-            <CategoryPill label="plan" variant="dark" />
+            <CategoryPill label="häng med" variant="dark" />
           </div>
         </div>
       </div>
@@ -166,7 +166,7 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
                 </div>
               </div>
               <span style={{ color: '#C9B8D8', fontSize: '10px' }}>
-                {profile.display_name || "Någon"} · <span style={{ color: '#7A6A85', fontSize: '10px' }}>kom med!</span>
+                {profile.display_name || "Någon"} · <span style={{ color: '#7A6A85', fontSize: '10px' }}>häng med!</span>
               </span>
             </div>
           </div>
@@ -208,14 +208,14 @@ const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedH
               <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {isOwn ? "Du" : (profile.display_name || "Någon")}
               </button>
-              <p className="text-[11px] text-muted-foreground leading-tight">Vill göra något · {timeAgo}</p>
+              <p className="text-[11px] text-muted-foreground leading-tight">sugen på · {timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
               <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
-            <CategoryPill label="aktivitet" variant="light" />
+            <CategoryPill label="sugen på" variant="light" />
           </div>
         </div>
       </div>

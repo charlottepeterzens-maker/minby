@@ -124,7 +124,7 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
   const day = format(dateObj, "d");
   const month = format(dateObj, "MMMM", { locale: sv });
   const shortMonth = format(dateObj, "M");
-  const typeLabel = entry.entry_type === "confirmed" ? "kom med" : entry.entry_type === "activity" ? "sugen på" : "vill ses";
+  const typeLabel = entry.entry_type === "confirmed" ? "häng med" : entry.entry_type === "activity" ? "sugen på" : "vill ses";
   const activityName = entry.activities.length > 0 ? entry.activities.map(a => ACTIVITY_MAP[a] || a).join(", ") : null;
 
   const handleAddComment = async () => {

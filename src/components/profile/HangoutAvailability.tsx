@@ -113,7 +113,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case "confirmed": return "kom med";
+      case "confirmed": return "häng med";
       case "activity": return "sugen på";
       default: return "vill ses";
     }
@@ -176,7 +176,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
       style={{ borderColor: "#EDE8F4", border: "0.5px solid #EDE8F4", padding: "20px 16px" }}
     >
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-display text-base font-medium text-foreground">Hitta på något</h3>
+        <h3 className="font-display text-base font-medium text-foreground">Ses vi?</h3>
       </div>
 
       <AddHangoutSheet open={showAdd} onOpenChange={setShowAdd} onCreated={fetchEntries} />

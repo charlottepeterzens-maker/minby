@@ -238,7 +238,7 @@ const FriendsPage = () => {
       <nav className="sticky top-0 z-50 border-b" style={{ backgroundColor: "#F7F3EF", borderColor: "#EDE8F4" }}>
         <div className="max-w-2xl mx-auto px-5 py-4">
           <span className="font-display text-[20px] font-medium" style={{ color: "#3C2A4D" }}>
-            Vänner
+            Min krets
           </span>
         </div>
       </nav>
@@ -257,17 +257,17 @@ const FriendsPage = () => {
               <Users className="w-7 h-7" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
             </div>
             <p className="font-display text-[16px] font-medium mb-1.5" style={{ color: "#3C2A4D" }}>
-              Din by är tom ännu
+              Din krets är tom – bjud in dina närmaste
             </p>
             <p className="text-[13px] mb-6" style={{ color: "#9B8BA5" }}>
-              Bjud in dina närmaste så börjar byn leva
+              Bjud in dina närmaste så börjar kretsen leva
             </p>
             <Button
               onClick={() => setInviteOpen(true)}
               className="rounded-[10px] text-sm font-medium px-6"
               style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
             >
-              Bjud in en vän
+              Bjud in en vän till din vardag
             </Button>
           </div>
         ) : (
@@ -367,12 +367,12 @@ const FriendsPage = () => {
                         const dateObj = new Date(h.date + "T00:00:00");
                         const dateLabel = `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}`;
                         if (h.entry_type === "confirmed") {
-                          statusText = `Plan ${dateLabel}`;
+                         statusText = `häng med ${dateLabel}`;
                         } else if (h.entry_type === "activity") {
                           const actName = h.activities.length > 0 ? h.activities[0] : "Aktivitet";
-                          statusText = `Vill: ${actName} ${dateLabel}`;
+                          statusText = `sugen på: ${actName} ${dateLabel}`;
                         } else {
-                          statusText = `Ledig ${dateLabel}`;
+                          statusText = `vill ses ${dateLabel}`;
                         }
                       } else if (f.last_activity) {
                         statusText = `Lade upp något ${timeAgo(f.last_activity)}`;
