@@ -358,8 +358,8 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               <div className="space-y-1.5 mb-2">
                 {comments.map((c) => (
                   <div key={c.id} className="flex items-start gap-2 group">
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: '#EDE8F4' }}>
-                      {c.profile?.avatar_url ? <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> : <span className="text-[8px] font-bold" style={{ color: '#3C2A4D' }}>{c.profile?.display_name?.charAt(0).toUpperCase() || "?"}</span>}
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-lavender-bg">
+                      {c.profile?.avatar_url ? <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> : <span className="text-[8px] font-bold text-foreground">{c.profile?.display_name?.charAt(0).toUpperCase() || "?"}</span>}
                     </div>
                     <div className="flex-1 min-w-0"><p className="text-[10px]"><span className="font-semibold text-foreground">{c.profile?.display_name || "?"}</span> <span className="text-muted-foreground">{c.content}</span></p></div>
                     {user?.id === c.user_id && <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all p-0.5"><Trash2 className="w-2.5 h-2.5" /></button>}
