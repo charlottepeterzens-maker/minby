@@ -9,6 +9,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import OnboardingFlow from "@/components/OnboardingFlow";
+import PushPermissionDialog from "@/components/PushPermissionDialog";
 import FeedPage from "./pages/FeedPage";
 import AuthPage from "./pages/AuthPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -79,6 +80,7 @@ const App = () => (
           </Routes>
         </BrowserRouter>
         <PWAInstallBanner />
+        <PushPermissionDialog />
         </LanguageProvider>
       </AuthProvider>
     </TooltipProvider>

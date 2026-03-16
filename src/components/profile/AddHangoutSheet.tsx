@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+import { sendNotification } from "@/utils/notifications";
+import { format as fmtDate } from "date-fns";
 
 type EntryType = "available" | "confirmed" | "activity";
 type Visibility = "all" | "selected" | "private";
@@ -161,6 +163,33 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
         }));
         const { error } = await supabase.from("hangout_availability").insert(inserts);
         if (error) throw error;
+      }
+
+      // Send hangout_new notification to close friends
+      try {
+        const { data: closeFriends } = await supabase
+          .from("friend_access_tiers")
+          .select("friend_user_id")
+          .eq("owner_id", user.id)
+          .eq("tier", "close");
+
+        if (closeFriends && closeFriends.length > 0) {
+          const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+          const name = myProfile?.display_name || "Någon";
+          const dateStr = selectedDate ? fmtDate(selectedDate, "EEEE d/M", { locale: sv }) : activityDates.length > 0 ? fmtDate(activityDates[0], "EEEE d/M", { locale: sv }) : "";
+          
+          await Promise.all(closeFriends.map(f =>
+            sendNotification({
+              recipientUserId: f.friend_user_id,
+              fromUserId: user.id,
+              type: "hangout_new",
+              referenceId: user.id,
+              message: `${name} är ledig ${dateStr} – vill ses!`,
+            })
+          ));
+        }
+      } catch {
+        // Best effort
       }
 
       toast({ title: "Sparat" });

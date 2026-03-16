@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send, Trash2 } from "lucide-react";
+import { sendNotification } from "@/utils/notifications";
 
 interface Comment {
   id: string;
@@ -71,6 +72,27 @@ const PostComments = ({ postId, isOwner }: Props) => {
       user_id: user.id,
       content: text.trim(),
     });
+
+    // Send life_comment notification to post owner
+    try {
+      const { data: post } = await supabase.from("life_posts").select("user_id, section_id").eq("id", postId).single();
+      if (post && post.user_id !== user.id) {
+        const { data: section } = await supabase.from("life_sections").select("name").eq("id", post.section_id).single();
+        const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+        const name = myProfile?.display_name || "Någon";
+        const sectionName = section?.name || "ditt inlägg";
+        await sendNotification({
+          recipientUserId: post.user_id,
+          fromUserId: user.id,
+          type: "life_comment",
+          referenceId: postId,
+          message: `${name} kommenterade ditt inlägg i ${sectionName}`,
+        });
+      }
+    } catch {
+      // Best effort
+    }
+
     setText("");
     setShowInput(false);
     fetchComments();

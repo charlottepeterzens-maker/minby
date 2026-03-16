@@ -15,6 +15,30 @@ import BottomNav from "@/components/BottomNav";
 import CurvedSeparator from "@/components/CurvedSeparator";
 import ConfirmSheet from "@/components/ConfirmSheet";
 
+interface NotificationSettings {
+  hangout_yes: boolean;
+  hangout_maybe: boolean;
+  hangout_comment: boolean;
+  hangout_new: boolean;
+  group_invite: boolean;
+  group_message: boolean;
+  life_comment: boolean;
+  daily_digest_enabled: boolean;
+  daily_digest_time: string;
+}
+
+const DEFAULT_SETTINGS: NotificationSettings = {
+  hangout_yes: true,
+  hangout_maybe: true,
+  hangout_comment: true,
+  hangout_new: true,
+  group_invite: true,
+  group_message: true,
+  life_comment: true,
+  daily_digest_enabled: false,
+  daily_digest_time: "07:30",
+};
+
 const SettingsPage = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
@@ -25,33 +49,34 @@ const SettingsPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
 
-  const [notifFriendRequests, setNotifFriendRequests] = useState(true);
-  const [notifGatherings, setNotifGatherings] = useState(true);
-  const [notifUpdates, setNotifUpdates] = useState(true);
+  const [notifSettings, setNotifSettings] = useState<NotificationSettings>(DEFAULT_SETTINGS);
 
   useEffect(() => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("friend_request_notifications, meetup_notifications, update_notifications")
+      .select("notification_settings")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
         if (data) {
-          setNotifFriendRequests((data as any).friend_request_notifications ?? true);
-          setNotifGatherings((data as any).meetup_notifications ?? true);
-          setNotifUpdates((data as any).update_notifications ?? true);
+          const s = (data as any).notification_settings;
+          if (s && typeof s === "object") {
+            setNotifSettings({ ...DEFAULT_SETTINGS, ...s });
+          }
         }
       });
   }, [user]);
 
-  const updateNotifPref = useCallback(async (column: string, value: boolean) => {
+  const updateNotifSetting = useCallback(async (key: keyof NotificationSettings, value: boolean | string) => {
     if (!user) return;
+    const updated = { ...notifSettings, [key]: value };
+    setNotifSettings(updated);
     await supabase
       .from("profiles")
-      .update({ [column]: value } as any)
+      .update({ notification_settings: updated } as any)
       .eq("user_id", user.id);
-  }, [user]);
+  }, [user, notifSettings]);
 
   const handleChangePassword = async () => {
     if (newPassword.length < 6) {
@@ -102,6 +127,20 @@ const SettingsPage = () => {
       setDeleting(false);
     }
   };
+
+  const NOTIF_TOGGLES: { key: keyof NotificationSettings; label: string }[] = [
+    { key: "hangout_yes", label: "Någon vill hänga med" },
+    { key: "hangout_maybe", label: "Någon kanske hänger med" },
+    { key: "hangout_comment", label: "Kommentarer på dina dejter" },
+    { key: "hangout_new", label: "Vän är ledig" },
+    { key: "group_invite", label: "Gruppinbjudningar" },
+    { key: "group_message", label: "Gruppmeddelanden" },
+    { key: "life_comment", label: "Kommentarer på dina inlägg" },
+  ];
+
+  const TIME_OPTIONS = Array.from({ length: 24 }, (_, h) =>
+    [`${String(h).padStart(2, "0")}:00`, `${String(h).padStart(2, "0")}:30`]
+  ).flat();
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -162,21 +201,51 @@ const SettingsPage = () => {
         <Card className="rounded-[14px] border-[0.5px] border-border">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">
-              {t("notificationPreferences")}
+              Notiser
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">{t("friendRequests")}</Label>
-              <Switch checked={notifFriendRequests} onCheckedChange={(v) => { setNotifFriendRequests(v); updateNotifPref("friend_request_notifications", v); }} />
-            </div>
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">{t("gatheringInvites")}</Label>
-              <Switch checked={notifGatherings} onCheckedChange={(v) => { setNotifGatherings(v); updateNotifPref("meetup_notifications", v); }} />
-            </div>
-            <div className="flex items-center justify-between">
-              <Label className="text-sm">{t("newLifeUpdates")}</Label>
-              <Switch checked={notifUpdates} onCheckedChange={(v) => { setNotifUpdates(v); updateNotifPref("update_notifications", v); }} />
+            {NOTIF_TOGGLES.map(({ key, label }) => (
+              <div key={key} className="flex items-center justify-between">
+                <Label className="text-sm">{label}</Label>
+                <Switch
+                  checked={notifSettings[key] as boolean}
+                  onCheckedChange={(v) => updateNotifSetting(key, v)}
+                />
+              </div>
+            ))}
+
+            {/* Separator */}
+            <div className="border-t border-border pt-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-sm">Morgonrapport</Label>
+                  <p className="text-[10px] mt-0.5" style={{ color: "#B0A8B5" }}>Kommer snart</p>
+                </div>
+                <Switch
+                  checked={notifSettings.daily_digest_enabled}
+                  onCheckedChange={(v) => updateNotifSetting("daily_digest_enabled", v)}
+                />
+              </div>
+
+              {notifSettings.daily_digest_enabled && (
+                <div className="mt-3">
+                  <Label className="text-xs text-muted-foreground">Tid för morgonrapport</Label>
+                  <Select
+                    value={notifSettings.daily_digest_time}
+                    onValueChange={(v) => updateNotifSetting("daily_digest_time", v)}
+                  >
+                    <SelectTrigger className="w-full mt-1 rounded-[10px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TIME_OPTIONS.map(t => (
+                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -192,6 +261,7 @@ const SettingsPage = () => {
             <p>{t("dataPrivacy1")}</p>
             <p>{t("dataPrivacy2")}</p>
             <p>{t("dataPrivacy3")}</p>
+            <p>Vi skickar push-notiser för att hålla dig uppdaterad om dina vänners aktiviteter. Du kan när som helst stänga av notiser i Inställningar eller i din enhets inställningar.</p>
           </CardContent>
         </Card>
 

@@ -604,6 +604,8 @@ export type Database = {
           friend_request_notifications: boolean
           id: string
           meetup_notifications: boolean
+          notification_permission_asked: boolean
+          notification_settings: Json
           onboarded_at: string | null
           update_notifications: boolean
           updated_at: string
@@ -617,6 +619,8 @@ export type Database = {
           friend_request_notifications?: boolean
           id?: string
           meetup_notifications?: boolean
+          notification_permission_asked?: boolean
+          notification_settings?: Json
           onboarded_at?: string | null
           update_notifications?: boolean
           updated_at?: string
@@ -630,6 +634,8 @@ export type Database = {
           friend_request_notifications?: boolean
           id?: string
           meetup_notifications?: boolean
+          notification_permission_asked?: boolean
+          notification_settings?: Json
           onboarded_at?: string | null
           update_notifications?: boolean
           updated_at?: string
@@ -644,6 +650,7 @@ export type Database = {
           endpoint: string
           id: string
           p256dh: string
+          subscription: Json | null
           user_id: string
         }
         Insert: {
@@ -652,6 +659,7 @@ export type Database = {
           endpoint: string
           id?: string
           p256dh: string
+          subscription?: Json | null
           user_id: string
         }
         Update: {
@@ -660,6 +668,7 @@ export type Database = {
           endpoint?: string
           id?: string
           p256dh?: string
+          subscription?: Json | null
           user_id?: string
         }
         Relationships: []
