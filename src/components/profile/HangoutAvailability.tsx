@@ -458,7 +458,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           {/* Confirmed dates */}
           {(confirmedEntries.length > 0 || isOwner) && (
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wide mb-2" style={{ color: "#993556" }}>
+              <p className="text-[11px] font-medium uppercase tracking-wide mb-2 text-dusty-rose">
                 {t("hangoutConfirmedLabel")}
               </p>
               <div className="space-y-2">
