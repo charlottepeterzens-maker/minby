@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const REACTION_EMOJIS = ["❤️", "🔥", "😂", "👀", "💯"];
+const REACTION_EMOJIS = ["❤️", "🥂", "😮", "🙌"];
 
 interface Reaction {
   emoji: string;
