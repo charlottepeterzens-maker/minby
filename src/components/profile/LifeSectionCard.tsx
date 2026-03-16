@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
 import ConfirmSheet from "@/components/ConfirmSheet";
+import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 
 interface LifePost {
   id: string;
