@@ -57,7 +57,7 @@ const translations = {
     plan: "Plan",
 
     // Profile
-    profileTitle: "Profile",
+    profileTitle: "My Page",
     sections: "Sections",
     noSectionsYet: "No sections yet",
     addFirstSection: "Add your first life section",
@@ -296,7 +296,7 @@ const translations = {
     plan: "Plan",
 
     // Profile
-    profileTitle: "Profil",
+    profileTitle: "Min sida",
     sections: "Sektioner",
     noSectionsYet: "Inga sektioner ännu",
     addFirstSection: "Lägg till din första livssektion",
