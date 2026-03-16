@@ -70,6 +70,7 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [ownerProfile, setOwnerProfile] = useState<{ display_name: string | null } | null>(null);
   const [creatingGroup, setCreatingGroup] = useState(false);
+  const { subscribe: subscribePush, subscribed: pushSubscribed, permission: pushPermission, isSupported: pushSupported } = usePushNotifications();
 
   const fetchDetails = useCallback(async () => {
     if (!entry) return;
