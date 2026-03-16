@@ -122,6 +122,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       setContent("");
       setLinkUrl("");
       setImageFile(null);
+      setPhotoLayout("large");
       setShowCompose(false);
       fetchPosts();
     }
