@@ -251,8 +251,8 @@ const TipsFavorites = ({
             {t("tipsSectionTitle")}
           </h2>
         </div>
-        {isOwner && tips.length < MAX_TIPS && (
-          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        {isOwner && (tips.length < MAX_TIPS || editingTip) && (
+          <Sheet open={sheetOpen} onOpenChange={(open) => { setSheetOpen(open); if (!open) resetForm(); }}>
             <SheetTrigger asChild>
               <button className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
                 <Plus className="w-3.5 h-3.5" />
