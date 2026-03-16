@@ -10,6 +10,7 @@ interface FeedPostCardProps {
     created_at: string;
     sectionName: string;
     sectionType: string;
+    photo_layout?: string;
   };
   profile: {
     display_name: string | null;
