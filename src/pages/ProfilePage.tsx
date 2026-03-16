@@ -458,6 +458,13 @@ const GridWithExpansion = ({
           </div>
         )}
 
+        {/* Hangout notifications */}
+        {isOwnProfile && (
+          <HangoutNotificationList
+            onOpenHangout={(hangoutId) => setNotifHangoutId(hangoutId)}
+            onNotificationsRead={refreshUnread}
+          />
+        )}
 
         {/* Life sections as thumbnail grid */}
         <div className="mb-4">
