@@ -13,7 +13,7 @@ import {
   BookmarkCheck,
   ExternalLink,
   Camera,
-  Sparkles,
+  
   Trash2,
   Loader2,
   Pencil,
