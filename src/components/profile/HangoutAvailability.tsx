@@ -270,7 +270,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 </div>
               ))}
             </div>
-            <span className="text-[10px] text-muted-foreground truncate">
+            <span className="text-[10px] truncate" style={{ color: '#7A6A85' }}>
               {entryFriends.length > 0 ? `Du + ${entryFriends[0]?.profile?.display_name || "?"} · kom med!` : "Kom med!"}
             </span>
           </div>

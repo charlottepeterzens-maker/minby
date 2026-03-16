@@ -165,8 +165,8 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
                   {profile.initials.charAt(0)}
                 </div>
               </div>
-              <span className="text-[10px]" style={{ color: '#C9B8D8' }}>
-                {profile.display_name || "Någon"} · kom med!
+              <span style={{ color: '#C9B8D8', fontSize: '10px' }}>
+                {profile.display_name || "Någon"} · <span style={{ color: '#7A6A85', fontSize: '10px' }}>kom med!</span>
               </span>
             </div>
           </div>

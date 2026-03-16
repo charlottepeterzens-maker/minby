@@ -214,11 +214,6 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
           </div>
         ) : (
           <div className="space-y-5">
-            {/* Back */}
-            <button onClick={() => setStep("type")} className="text-[13px] font-medium" style={{ color: '#7A6A85' }}>
-              ← Tillbaka
-            </button>
-
             {/* Selected type indicator */}
             <div
               className="w-full text-left p-3 rounded-[12px] bg-white"
