@@ -238,7 +238,7 @@ const FriendsPage = () => {
       <nav className="sticky top-0 z-50 border-b" style={{ backgroundColor: "#F7F3EF", borderColor: "#EDE8F4" }}>
         <div className="max-w-2xl mx-auto px-5 py-4">
           <span className="font-display text-[20px] font-medium" style={{ color: "#3C2A4D" }}>
-            Vänner
+            Min krets
           </span>
         </div>
       </nav>
