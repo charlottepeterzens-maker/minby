@@ -104,8 +104,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       const filePath = `${user.id}/${Date.now()}-${imageFile.name}`;
       const { error: uploadErr } = await supabase.storage.from("life-images").upload(filePath, imageFile);
       if (uploadErr) { toast.error(t("couldNotPost")); setPosting(false); return; }
-      const { data: urlData } = supabase.storage.from("life-images").getPublicUrl(filePath);
-      image_url = urlData.publicUrl;
+      image_url = filePath;
     }
     const { error } = await supabase.from("life_posts").insert({
       section_id: section.id, user_id: user.id,
