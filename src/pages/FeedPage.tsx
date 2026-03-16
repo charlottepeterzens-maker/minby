@@ -249,7 +249,7 @@ const FeedPage = () => {
               onClick={() => navigate("/friends")}
               className="mt-6 px-5 py-2.5 rounded-[10px] text-[13px] font-medium bg-primary text-primary-foreground transition-opacity hover:opacity-90"
             >
-              Bjud in en vän
+              Bjud in en vän till din vardag
             </button>
           </div>
         ) : (
