@@ -362,6 +362,11 @@ const ProfilePage = () => {
           </div>
         )}
 
+        {/* Tips & Favorites */}
+        {targetUserId && (
+          <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />
+        )}
+
         {/* Life sections as thumbnail grid */}
         <div className="mb-4">
           <h2 className="text-xs font-medium text-muted-foreground font-body">
