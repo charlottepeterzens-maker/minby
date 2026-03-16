@@ -37,6 +37,7 @@ const FriendsPage = () => {
   const [friends, setFriends] = useState<FriendRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [search, setSearch] = useState("");
 
   const fetchFriends = useCallback(async () => {
     if (!user) return;
