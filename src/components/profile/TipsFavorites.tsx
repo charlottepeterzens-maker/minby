@@ -246,7 +246,6 @@ const TipsFavorites = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4" style={{ color: "#993556" }} />
           <h2 className="text-xs font-medium text-muted-foreground font-body">
             {t("tipsSectionTitle")}
           </h2>

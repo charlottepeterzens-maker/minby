@@ -454,6 +454,11 @@ const ProfilePage = () => {
             </SortableContext>
           </DndContext>
         )}
+
+        {/* Tips & Favorites */}
+        {targetUserId && (
+          <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />
+        )}
       </main>
       <ScrollToTopButton />
       <BottomNav />
