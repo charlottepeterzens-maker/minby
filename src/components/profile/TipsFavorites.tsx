@@ -140,39 +140,72 @@ const TipsFavorites = ({
     setUploading(false);
   };
 
-  const handleAdd = async () => {
+  const resetForm = () => {
+    setTitle("");
+    setUrl("");
+    setCategory("other");
+    setCustomImage(null);
+    setPreviewImage(null);
+    setEditingTip(null);
+  };
+
+  const handleEdit = (tip: Tip) => {
+    setEditingTip(tip);
+    setTitle(tip.title);
+    setUrl(tip.url || "");
+    setCategory(tip.category);
+    setCustomImage(tip.image_url && !tip.image_url.startsWith("http") ? tip.image_url : null);
+    setPreviewImage(tip.image_url && tip.image_url.startsWith("http") ? tip.image_url : null);
+    setSheetOpen(true);
+  };
+
+  const handleAddOrUpdate = async () => {
     if (!user || !title.trim()) return;
-    if (tips.length >= MAX_TIPS) {
-      toast({
-        title: t("tipLimitReached"),
-        description: t("tipLimitDesc"),
-        variant: "destructive",
-      });
-      return;
-    }
 
-    // Use custom image, or OG preview image, or null
-    let imageUrl = customImage || previewImage || null;
+    const imageUrl = customImage || previewImage || null;
 
-    const { error } = await supabase.from("user_tips").insert({
-      user_id: user.id,
-      title: title.trim(),
-      url: url.trim() || null,
-      image_url: imageUrl,
-      category,
-      sort_order: tips.length,
-    });
+    if (editingTip) {
+      // Update existing tip
+      const { error } = await supabase
+        .from("user_tips")
+        .update({
+          title: title.trim(),
+          url: url.trim() || null,
+          image_url: imageUrl,
+          category,
+        })
+        .eq("id", editingTip.id);
 
-    if (error) {
-      toast({ title: t("error"), description: error.message, variant: "destructive" });
+      if (error) {
+        toast({ title: t("error"), description: error.message, variant: "destructive" });
+      } else {
+        resetForm();
+        setSheetOpen(false);
+        await fetchTips();
+      }
     } else {
-      setTitle("");
-      setUrl("");
-      setCategory("other");
-      setCustomImage(null);
-      setPreviewImage(null);
-      setSheetOpen(false);
-      await fetchTips();
+      // Insert new tip
+      if (tips.length >= MAX_TIPS) {
+        toast({ title: t("tipLimitReached"), description: t("tipLimitDesc"), variant: "destructive" });
+        return;
+      }
+
+      const { error } = await supabase.from("user_tips").insert({
+        user_id: user.id,
+        title: title.trim(),
+        url: url.trim() || null,
+        image_url: imageUrl,
+        category,
+        sort_order: tips.length,
+      });
+
+      if (error) {
+        toast({ title: t("error"), description: error.message, variant: "destructive" });
+      } else {
+        resetForm();
+        setSheetOpen(false);
+        await fetchTips();
+      }
     }
   };
 
