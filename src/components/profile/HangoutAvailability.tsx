@@ -12,12 +12,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
-import { isBefore, startOfDay } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 
 interface AvailabilityEntry {
   id: string;
