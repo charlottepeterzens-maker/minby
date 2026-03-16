@@ -204,7 +204,7 @@ const translations = {
     couldNotPost: "Could not post",
     couldNotUpdateSection: "Could not update section",
     sectionUpdated: "Section updated",
-    hangoutAvailability: "Hang out",
+    hangoutAvailability: "I want to hang out!",
     addAvailability: "Add a date",
     selectDate: "Select a date",
     activities: "Activities",
