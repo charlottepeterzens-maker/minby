@@ -167,6 +167,7 @@ const TipsFavorites = ({
       setUrl("");
       setCategory("other");
       setCustomImage(null);
+      setPreviewImage(null);
       setSheetOpen(false);
       await fetchTips();
     }
