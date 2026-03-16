@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Layers, Activity, Droplets, Baby, Home, Heart, Briefcase, BookOpen, Users, Utensils, MoreHorizontal } from "lucide-react";
+import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import ConfirmSheet from "@/components/ConfirmSheet";
@@ -16,45 +17,46 @@ interface Props {
   index: number;
 }
 
-const ICON_COLORS = [
-  { bg: "hsl(var(--lavender-bg))", icon: "hsl(var(--primary))" },
-  { bg: "hsl(var(--salvia-bg))", icon: "hsl(var(--accent-foreground))" },
-  { bg: "hsl(var(--dusty-rose-bg))", icon: "hsl(var(--foreground))" },
-  { bg: "hsl(var(--lavender-bg))", icon: "hsl(var(--secondary))" },
+const BG_COLORS = [
+  "hsl(var(--lavender-bg))",
+  "hsl(var(--salvia-bg))",
+  "hsl(var(--dusty-rose-bg))",
+  "hsl(var(--muted))",
 ];
-
-function getSectionIcon(name: string, sectionType: string) {
-  const lower = name.toLowerCase();
-  if (sectionType === "period") return Droplets;
-  if (sectionType === "workout") return Activity;
-  if (lower.includes("barn") || lower.includes("kid")) return Baby;
-  if (lower.includes("familj") || lower.includes("family")) return Users;
-  if (lower.includes("hus") || lower.includes("hem") || lower.includes("home")) return Home;
-  if (lower.includes("hälsa") || lower.includes("health")) return Heart;
-  if (lower.includes("jobb") || lower.includes("work") || lower.includes("projekt")) return Briefcase;
-  if (lower.includes("mat") || lower.includes("food")) return Utensils;
-  if (lower.includes("läs") || lower.includes("read") || lower.includes("book")) return BookOpen;
-  return Layers;
-}
 
 const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onRenamed, index }: Props) => {
   const [postCount, setPostCount] = useState<number>(0);
+  const [latestImageRef, setLatestImageRef] = useState<string | null>(null);
   const [showDelete, setShowDelete] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(section.name);
-  const colors = ICON_COLORS[index % ICON_COLORS.length];
-  const IconComponent = getSectionIcon(section.name, section.section_type);
+  const bgColor = BG_COLORS[index % BG_COLORS.length];
 
+  // Fetch post count and latest image
   useEffect(() => {
-    const fetchCount = async () => {
+    const fetch = async () => {
       const { count } = await supabase
         .from("life_posts")
         .select("id", { count: "exact", head: true })
         .eq("section_id", section.id);
       setPostCount(count || 0);
+
+      // Get latest post with an image
+      const { data } = await supabase
+        .from("life_posts")
+        .select("image_url")
+        .eq("section_id", section.id)
+        .not("image_url", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (data?.[0]?.image_url) {
+        setLatestImageRef(data[0].image_url);
+      }
     };
-    fetchCount();
+    fetch();
   }, [section.id]);
+
+  const signedUrl = useSignedImageUrl(latestImageRef);
 
   const handleRename = async () => {
     if (!editName.trim() || editName.trim() === section.name) {
@@ -68,7 +70,6 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
   };
 
   const handleDelete = async () => {
-    // Delete posts first, then section
     await supabase.from("life_posts").delete().eq("section_id", section.id);
     await supabase.from("life_sections").delete().eq("id", section.id);
     toast.success("Borttagen");
@@ -90,50 +91,68 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
     );
   }
 
+  const hasImage = !!signedUrl;
+
   return (
     <>
       <div className="relative w-full">
         <button
           onClick={onClick}
-          className={`group w-full flex items-center gap-2.5 bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all active:scale-[0.97] ${
+          className={`group relative w-full aspect-[4/5] rounded-[16px] overflow-hidden border-[0.5px] border-border text-left transition-all active:scale-[0.97] ${
             isExpanded ? "ring-1 ring-primary/20" : ""
           }`}
         >
-          <div
-            className="shrink-0 flex items-center justify-center rounded-[7px] group-hover:animate-emoji-wobble"
-            style={{ width: 26, height: 26, backgroundColor: colors.bg }}
-          >
-            <IconComponent className="w-3.5 h-3.5" strokeWidth={1.5} style={{ color: colors.icon }} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[12px] font-medium text-foreground leading-tight truncate pr-5">
+          {/* Background: image or color */}
+          {hasImage ? (
+            <img
+              src={signedUrl!}
+              alt={section.name}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          ) : (
+            <div
+              className="absolute inset-0 flex items-center justify-center"
+              style={{ backgroundColor: bgColor }}
+            >
+              <span className="text-3xl">{section.emoji}</span>
+            </div>
+          )}
+
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+
+          {/* Text content (bottom) */}
+          <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
+            <p className="text-[13px] font-medium text-white leading-tight truncate">
               {section.name}
             </p>
-            <p className="text-[11px] text-muted-foreground leading-tight">
+            <p className="text-[11px] text-white/70 leading-tight mt-0.5">
               {postCount} inlägg
             </p>
           </div>
         </button>
 
+        {/* Three-dot menu (top right) */}
         {isOwner && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                className="absolute top-2 right-2 z-10 w-5 h-5 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-[140px]">
-              <DropdownMenuItem onClick={() => { setEditName(section.name); setEditing(true); }}>
-                Redigera namn
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setShowDelete(true)} className="text-destructive focus:text-destructive">
-                Ta bort
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors">
+                  <MoreHorizontal className="w-3.5 h-3.5 text-white" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[140px]">
+                <DropdownMenuItem onClick={() => { setEditName(section.name); setEditing(true); }} className="gap-2 text-xs">
+                  <Pencil className="w-3.5 h-3.5" />
+                  Redigera namn
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setShowDelete(true)} className="gap-2 text-xs text-destructive focus:text-destructive">
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Ta bort
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         )}
       </div>
 
