@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import { toast } from "@/hooks/use-toast";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { sendNotification } from "@/utils/notifications";
 
 interface AvailabilityEntry {
   id: string;
