@@ -418,7 +418,7 @@ const TipsFavorites = ({
                   {customImage && <button onClick={() => setCustomImage(null)} className="text-muted-foreground hover:text-foreground"><X className="w-4 h-4" /></button>}
                 </div>
                 <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-                <Button onClick={handleAdd} disabled={!title.trim()} className="w-full">{t("addTip")}</Button>
+                <Button onClick={handleAddOrUpdate} disabled={!title.trim()} className="w-full">{editingTip ? t("tipSave") : t("addTip")}</Button>
                 <p className="text-[11px] text-center text-muted-foreground">{t("tipCountInfo", tips.length, MAX_TIPS)}</p>
               </div>
             </SheetContent>
