@@ -1,0 +1,1 @@
+ALTER TABLE public.hangout_availability ADD COLUMN entry_type text NOT NULL DEFAULT 'available';

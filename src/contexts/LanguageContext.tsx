@@ -267,6 +267,14 @@ const translations = {
     tipFetchingPreview: "Fetching preview...",
     tipPreviewFound: "Preview image from link",
     tipSave: "Save changes",
+
+    // Hangout sections
+    hangoutAvailable: "Available",
+    hangoutConfirmed: "Confirmed date",
+    hangoutConfirmedLabel: "Confirmed dates",
+    hangoutAvailableLabel: "Available & want to meet",
+    hangoutNoConfirmed: "No confirmed dates yet",
+    hangoutNoAvailable: "No available dates yet",
   },
   sv: {
     // Nav
@@ -531,6 +539,14 @@ const translations = {
     tipFetchingPreview: "Hämtar förhandsgranskning...",
     tipPreviewFound: "Förhandsvisningsbild från länk",
     tipSave: "Spara ändringar",
+
+    // Hangout sections
+    hangoutAvailable: "Ledig",
+    hangoutConfirmed: "Bekräftad dejt",
+    hangoutConfirmedLabel: "Planerade dejter",
+    hangoutAvailableLabel: "Ledig & vill ses",
+    hangoutNoConfirmed: "Inga bekräftade dejter än",
+    hangoutNoAvailable: "Inga lediga datum än",
   },
 } as const;
 

@@ -221,6 +221,7 @@ export type Database = {
           created_at: string
           custom_note: string | null
           date: string
+          entry_type: string
           id: string
           user_id: string
         }
@@ -229,6 +230,7 @@ export type Database = {
           created_at?: string
           custom_note?: string | null
           date: string
+          entry_type?: string
           id?: string
           user_id: string
         }
@@ -237,6 +239,7 @@ export type Database = {
           created_at?: string
           custom_note?: string | null
           date?: string
+          entry_type?: string
           id?: string
           user_id?: string
         }
