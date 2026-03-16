@@ -139,7 +139,7 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
               <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {isOwn ? "Du" : (profile.display_name || "Någon")}
               </button>
-              <p className="text-[11px] text-muted-foreground leading-tight">Har en plan · {timeAgo}</p>
+              <p className="text-[11px] text-muted-foreground leading-tight">häng med · {timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
