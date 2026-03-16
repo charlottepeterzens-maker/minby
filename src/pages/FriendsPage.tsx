@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { UserPlus, Users, Search, Check, X } from "lucide-react";
@@ -11,12 +13,20 @@ import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 
+interface HangoutStatus {
+  entry_type: string;
+  date: string;
+  activities: string[];
+  custom_note: string | null;
+}
+
 interface FriendRow {
   user_id: string;
   display_name: string;
   avatar_url: string | null;
   initial: string;
   last_activity: string | null;
+  hangout_status: HangoutStatus | null;
 }
 
 interface PendingRequest {
@@ -116,7 +126,8 @@ const FriendsPage = () => {
       ),
     ];
 
-    const [{ data: profiles }, { data: posts }] = await Promise.all([
+    const today = format(new Date(), "yyyy-MM-dd");
+    const [{ data: profiles }, { data: posts }, { data: hangouts }] = await Promise.all([
       supabase
         .from("profiles")
         .select("user_id, display_name, avatar_url")
@@ -126,6 +137,12 @@ const FriendsPage = () => {
         .select("user_id, created_at")
         .in("user_id", friendIds)
         .order("created_at", { ascending: false }),
+      supabase
+        .from("hangout_availability")
+        .select("user_id, entry_type, date, activities, custom_note")
+        .in("user_id", friendIds)
+        .gte("date", today)
+        .order("date", { ascending: true }),
     ]);
 
     const latestPostMap = new Map<string, string>();
@@ -135,12 +152,26 @@ const FriendsPage = () => {
       }
     });
 
+    // Get nearest upcoming hangout per friend
+    const hangoutMap = new Map<string, HangoutStatus>();
+    hangouts?.forEach((h: any) => {
+      if (!hangoutMap.has(h.user_id)) {
+        hangoutMap.set(h.user_id, {
+          entry_type: h.entry_type || "available",
+          date: h.date,
+          activities: h.activities || [],
+          custom_note: h.custom_note,
+        });
+      }
+    });
+
     const list: FriendRow[] = (profiles || []).map((p) => ({
       user_id: p.user_id,
       display_name: p.display_name || "Okänd",
       avatar_url: p.avatar_url,
       initial: (p.display_name || "?").charAt(0).toUpperCase(),
       last_activity: latestPostMap.get(p.user_id) || null,
+      hangout_status: hangoutMap.get(p.user_id) || null,
     }));
 
     list.sort((a, b) => {
@@ -329,7 +360,23 @@ const FriendsPage = () => {
                     </p>
                   ) : (
                     filtered.map((f) => {
-                      const activityText = f.last_activity ? `Lade upp något ${timeAgo(f.last_activity)}` : null;
+                      // Build hangout status text
+                      let statusText: string | null = null;
+                      if (f.hangout_status) {
+                        const h = f.hangout_status;
+                        const dateObj = new Date(h.date + "T00:00:00");
+                        const dateLabel = `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}`;
+                        if (h.entry_type === "confirmed") {
+                          statusText = `Plan ${dateLabel}`;
+                        } else if (h.entry_type === "activity") {
+                          const actName = h.activities.length > 0 ? h.activities[0] : "Aktivitet";
+                          statusText = `Vill: ${actName} ${dateLabel}`;
+                        } else {
+                          statusText = `Ledig ${dateLabel}`;
+                        }
+                      } else if (f.last_activity) {
+                        statusText = `Lade upp något ${timeAgo(f.last_activity)}`;
+                      }
                       return (
                         <button
                           key={f.user_id}
@@ -346,8 +393,8 @@ const FriendsPage = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
-                            {activityText && (
-                              <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{activityText}</p>
+                            {statusText && (
+                              <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{statusText}</p>
                             )}
                           </div>
                         </button>

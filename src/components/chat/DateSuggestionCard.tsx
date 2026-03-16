@@ -6,6 +6,7 @@ interface DateSuggestionCardProps {
   endDate?: string;
   label: string;
   groupName: string;
+  suggestedType: "available" | "confirmed";
   onAdd: () => void;
   onDismiss: () => void;
 }
@@ -15,15 +16,18 @@ const DateSuggestionCard = ({
   endDate,
   label,
   groupName,
+  suggestedType,
   onAdd,
   onDismiss,
 }: DateSuggestionCardProps) => {
   const formatDate = (d: string) =>
-    format(parseISO(d), "d MMM", { locale: sv });
+    format(parseISO(d), "EEE d MMM", { locale: sv }).replace(".", "");
 
   const dateText = endDate
     ? `${formatDate(startDate)} – ${formatDate(endDate)}`
     : formatDate(startDate);
+
+  const typeLabel = suggestedType === "confirmed" ? "Plan" : "Ledig";
 
   return (
     <div
@@ -35,17 +39,26 @@ const DateSuggestionCard = ({
       }}
     >
       <p className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
-        📅 Vill du lägga till detta i din kalender?
+        Lägg till i Hitta på något?
       </p>
       <div className="flex items-center gap-2">
         <span
           className="text-[11px] font-medium px-2 py-0.5 rounded-full"
-          style={{ backgroundColor: "#EDE8F3", color: "#3C2A4D" }}
+          style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
         >
           {dateText}
         </span>
+        <span
+          className="text-[10px] font-medium px-2 py-0.5 rounded-full"
+          style={{
+            backgroundColor: suggestedType === "confirmed" ? "#3C2A4D" : "#EDE8F4",
+            color: suggestedType === "confirmed" ? "#C9B8D8" : "#3C2A4D",
+          }}
+        >
+          {typeLabel}
+        </span>
         <span className="text-[11px]" style={{ color: "#7A6A85" }}>
-          {label} · {groupName}
+          {label}
         </span>
       </div>
       <div className="flex items-center gap-2 pt-0.5">

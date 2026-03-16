@@ -67,6 +67,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
   const [editActivities, setEditActivities] = useState<string[]>([]);
   const [editNote, setEditNote] = useState("");
+  const [confirmedCounts, setConfirmedCounts] = useState<Map<string, number>>(new Map());
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentText, setCommentText] = useState("");
@@ -85,7 +86,22 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
       .eq("user_id", userId)
       .gte("date", today)
       .order("date", { ascending: true });
-    if (data) setEntries(data as AvailabilityEntry[]);
+    if (data) {
+      setEntries(data as AvailabilityEntry[]);
+      // Fetch tag counts for green border
+      const ids = data.map((e: any) => e.id);
+      if (ids.length > 0) {
+        const { data: tags } = await supabase
+          .from("hangout_tagged_friends")
+          .select("availability_id")
+          .in("availability_id", ids);
+        const counts = new Map<string, number>();
+        tags?.forEach((t: any) => {
+          counts.set(t.availability_id, (counts.get(t.availability_id) || 0) + 1);
+        });
+        setConfirmedCounts(counts);
+      }
+    }
   }, [userId]);
 
   useEffect(() => { fetchEntries(); }, [fetchEntries]);
@@ -320,8 +336,13 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
   const renderEntryRow = (entry: AvailabilityEntry) => {
     if (editingEntryId === entry.id && isOwner) return renderEditForm(entry);
     const type = entry.entry_type;
+    const tagCount = confirmedCounts.get(entry.id) || 0;
+    const isConfirmedByFriends = tagCount >= 2;
     return (
-      <div className="relative">
+      <div
+        className="relative"
+        style={isConfirmedByFriends ? { borderLeft: '3px solid #B5CCBF', paddingLeft: 8 } : undefined}
+      >
         {type === "confirmed" ? renderPlanRow(entry) : type === "activity" ? renderActivityRow(entry) : renderLedigRow(entry)}
         {isOwner && editingEntryId !== entry.id && (
           <DropdownMenu>

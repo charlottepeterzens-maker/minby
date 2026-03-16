@@ -224,6 +224,7 @@ export type Database = {
           entry_type: string
           id: string
           user_id: string
+          visibility: string
         }
         Insert: {
           activities?: string[]
@@ -233,6 +234,7 @@ export type Database = {
           entry_type?: string
           id?: string
           user_id: string
+          visibility?: string
         }
         Update: {
           activities?: string[]
@@ -242,6 +244,7 @@ export type Database = {
           entry_type?: string
           id?: string
           user_id?: string
+          visibility?: string
         }
         Relationships: []
       }

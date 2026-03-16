@@ -48,6 +48,7 @@ type TimelineItem =
 
 interface PendingSuggestion extends RecognizedDate {
   sourceMessageId: string;
+  suggestedType: "available" | "confirmed";
 }
 
 const DISMISSED_KEY = "dismissed_date_suggestions";
@@ -178,19 +179,22 @@ const GroupChatPage = () => {
     return () => { supabase.removeChannel(channel); };
   }, [groupId]);
 
-  // --- Date recognition ---
+  // --- Date recognition with context detection ---
   const activeSuggestion: PendingSuggestion | null = useMemo(() => {
-    // Scan messages from newest to oldest for the first un-dismissed date
+    const pluralPatterns = /\b(vi|oss|alla|tillsammans)\b/i;
+    const namePatterns = /\b(och|med|plus|\+)\s+[A-ZÅÄÖ]\w+/i;
+
     for (let i = messages.length - 1; i >= 0; i--) {
       const msg = messages[i];
       const dates = recognizeDates(msg.content);
       for (const d of dates) {
         const key = `${groupId}_${d.startDate}`;
         if (!dismissedSuggestions.has(key)) {
-          return { ...d, sourceMessageId: msg.id };
+          // Detect if message implies multiple people → plan type
+          const impliesGroup = pluralPatterns.test(msg.content) || namePatterns.test(msg.content);
+          return { ...d, sourceMessageId: msg.id, suggestedType: impliesGroup ? "confirmed" : "available" };
         }
       }
-      // Only check the last few messages
       if (messages.length - 1 - i > 10) break;
     }
     return null;
@@ -206,35 +210,33 @@ const GroupChatPage = () => {
   const handleAddToCalendar = async () => {
     if (!activeSuggestion || !user) return;
     const label = activeSuggestion.label || groupName;
+    const entryType = activeSuggestion.suggestedType;
 
-    // Insert start date
     await supabase.from("hangout_availability").insert({
       user_id: user.id,
       date: activeSuggestion.startDate,
       activities: [label],
       custom_note: `Från gruppen "${groupName}"`,
+      entry_type: entryType,
     });
 
-    // If range, also insert end date
     if (activeSuggestion.endDate && activeSuggestion.endDate !== activeSuggestion.startDate) {
-      // Insert each date in the range
       const start = new Date(activeSuggestion.startDate);
       const end = new Date(activeSuggestion.endDate);
       const current = new Date(start);
-      current.setDate(current.getDate() + 1); // start already inserted
-
+      current.setDate(current.getDate() + 1);
       while (current <= end) {
         await supabase.from("hangout_availability").insert({
           user_id: user.id,
           date: current.toISOString().split("T")[0],
           activities: [label],
           custom_note: `Från gruppen "${groupName}"`,
+          entry_type: entryType,
         });
         current.setDate(current.getDate() + 1);
       }
     }
 
-    // Dismiss after adding
     handleDismissSuggestion();
   };
 
@@ -347,6 +349,7 @@ const GroupChatPage = () => {
           endDate={activeSuggestion.endDate}
           label={activeSuggestion.label}
           groupName={groupName}
+          suggestedType={activeSuggestion.suggestedType}
           onAdd={handleAddToCalendar}
           onDismiss={handleDismissSuggestion}
         />
