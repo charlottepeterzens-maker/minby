@@ -23,6 +23,7 @@ interface AvailabilityEntry {
   date: string;
   activities: string[];
   custom_note: string | null;
+  entry_type: string;
 }
 
 interface Comment {
