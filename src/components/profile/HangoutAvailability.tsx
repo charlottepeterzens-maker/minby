@@ -402,12 +402,14 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             <div className="space-y-3 p-3 bg-muted/50 rounded-lg">
               {/* Entry type toggle */}
               <div className="flex gap-2">
-                <button onClick={() => setEntryType("available")} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all"
-                  style={{ backgroundColor: entryType === "available" ? "#3C2A4D" : "#FFFFFF", color: entryType === "available" ? "#FFFFFF" : "#3C2A4D", border: "0.5px solid #EDE8F4" }}>
+                <button onClick={() => setEntryType("available")}
+                  className={cn("flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all border-[0.5px] border-border",
+                    entryType === "available" ? "bg-primary text-primary-foreground" : "bg-card text-foreground")}>
                   {t("hangoutAvailable")}
                 </button>
-                <button onClick={() => setEntryType("confirmed")} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all"
-                  style={{ backgroundColor: entryType === "confirmed" ? "#3C2A4D" : "#FFFFFF", color: entryType === "confirmed" ? "#FFFFFF" : "#3C2A4D", border: "0.5px solid #EDE8F4" }}>
+                <button onClick={() => setEntryType("confirmed")}
+                  className={cn("flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all border-[0.5px] border-border",
+                    entryType === "confirmed" ? "bg-primary text-primary-foreground" : "bg-card text-foreground")}>
                   {t("hangoutConfirmed")}
                 </button>
               </div>
@@ -429,10 +431,9 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 <div className="flex flex-wrap gap-2">
                   {ACTIVITY_OPTIONS.map((opt) => (
                     <button key={opt.key} onClick={() => toggleActivity(opt.key)}
-                      style={{ borderRadius: 20, fontSize: 13, padding: "6px 14px", border: "0.5px solid #EDE8F4",
-                        backgroundColor: selectedActivities.includes(opt.key) ? "#3C2A4D" : "#FFFFFF",
-                        color: selectedActivities.includes(opt.key) ? "#FFFFFF" : "#3C2A4D" }}
-                      className="font-medium transition-all">{opt.label}</button>
+                      className={cn("font-medium transition-all rounded-[20px] text-[13px] px-3.5 py-1.5 border-[0.5px] border-border",
+                        selectedActivities.includes(opt.key) ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
+                      )}>{opt.label}</button>
                   ))}
                 </div>
               </div>
@@ -441,7 +442,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 className="w-full text-sm rounded-md border border-border bg-background px-3 py-2 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none" maxLength={150} rows={2} />
               <p className="text-[10px] text-muted-foreground text-right">{customNote.length}/150</p>
 
-              <Button size="sm" className="w-full text-white" style={{ backgroundColor: "#3C2A4D" }} disabled={!selectedDate || saving} onClick={handleSave}>
+              <Button size="sm" className="w-full bg-primary text-primary-foreground" disabled={!selectedDate || saving} onClick={handleSave}>
                 {t("save")}
               </Button>
             </div>
