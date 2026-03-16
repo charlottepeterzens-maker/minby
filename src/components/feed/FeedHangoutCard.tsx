@@ -166,7 +166,7 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
                 </div>
               </div>
               <span style={{ color: '#C9B8D8', fontSize: '10px' }}>
-                {profile.display_name || "Någon"} · <span style={{ color: '#7A6A85', fontSize: '10px' }}>kom med!</span>
+                {profile.display_name || "Någon"} · <span style={{ color: '#7A6A85', fontSize: '10px' }}>häng med!</span>
               </span>
             </div>
           </div>
