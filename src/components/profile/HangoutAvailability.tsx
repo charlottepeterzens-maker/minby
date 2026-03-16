@@ -583,179 +583,89 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.25, ease: "easeInOut" }}
                 className="overflow-hidden mt-3">
-                
                   <div className="bg-muted/40 rounded-md p-3 space-y-3">
-                    {/* Header */}
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="font-display text-sm font-bold text-foreground">
                           {format(new Date(entry.date + "T00:00:00"), "EEEE d MMMM", { locale: sv })}
                         </p>
-                        {entry.custom_note &&
-                      <p className="text-xs text-muted-foreground italic mt-0.5">"{entry.custom_note}"</p>
-                      }
+                        {entry.custom_note && <p className="text-xs text-muted-foreground italic mt-0.5">"{entry.custom_note}"</p>}
                       </div>
-                      {isOwner &&
-                    <div className="flex gap-1">
-                          <button
-                        onClick={() => {
-                          setSelectedDate(new Date(entry.date + "T00:00:00"));
-                          setSelectedActivities([...entry.activities]);
-                          setCustomNote(entry.custom_note || "");
-                          setShowAdd(true);
-                        }}
-                        className="text-muted-foreground hover:text-foreground transition-colors p-1">
-                        
+                      {isOwner && (
+                        <div className="flex gap-1">
+                          <button onClick={() => { setSelectedDate(new Date(entry.date + "T00:00:00")); setSelectedActivities([...entry.activities]); setCustomNote(entry.custom_note || ""); setShowAdd(true); }} className="text-muted-foreground hover:text-foreground transition-colors p-1">
                             <Pencil className="w-3.5 h-3.5" />
                           </button>
-                          <button
-                        onClick={() => handleRemove(entry.id)}
-                        className="text-muted-foreground hover:text-destructive transition-colors p-1">
-                        
+                          <button onClick={() => handleRemove(entry.id)} className="text-muted-foreground hover:text-destructive transition-colors p-1">
                             <X className="w-3.5 h-3.5" />
                           </button>
                         </div>
-                    }
+                      )}
                     </div>
-
-                    {/* Activities */}
-                    {entry.activities.length > 0 &&
-                  <div className="flex flex-wrap gap-1.5">
-                        {entry.activities.map((a) =>
-                    <span
-                      key={a}
-                      className="text-[10px] px-2 py-0.5 rounded"
-                      style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}>
-                      
-                            {getActivityLabel(a)}
-                          </span>
-                    )}
+                    {entry.activities.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {entry.activities.map((a) => <span key={a} className="text-[10px] px-2 py-0.5 rounded" style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}>{getActivityLabel(a)}</span>)}
                       </div>
-                  }
-
-                    {/* Tagged friends */}
+                    )}
                     <div>
                       <div className="flex items-center gap-1.5 mb-1.5">
                         <UserPlus className="w-3 h-3 text-muted-foreground" />
-                        <span className="text-[10px] font-medium text-muted-foreground">
-                          {t("friends") || "Friends"}
-                        </span>
+                        <span className="text-[10px] font-medium text-muted-foreground">{t("friends") || "Friends"}</span>
                       </div>
                       <div className="flex flex-wrap gap-1.5">
-                        {taggedFriends.map((tf) =>
-                      <span
-                        key={tf.id}
-                        className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground inline-flex items-center gap-1">
-                        
+                        {taggedFriends.map((tf) => (
+                          <span key={tf.id} className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground inline-flex items-center gap-1">
                             {tf.profile?.display_name || "?"}
-                            {(user?.id === tf.tagged_by || isOwner) &&
-                        <button onClick={() => handleRemoveTag(tf.id)} className="hover:text-destructive">
-                                <X className="w-2.5 h-2.5" />
-                              </button>
-                        }
+                            {(user?.id === tf.tagged_by || isOwner) && <button onClick={() => handleRemoveTag(tf.id)} className="hover:text-destructive"><X className="w-2.5 h-2.5" /></button>}
                           </span>
-                      )}
-                        {user && (
-                      showTagInput ?
-                      <div className="relative">
-                              <Input
-                          value={friendSearch}
-                          onChange={(e) => searchFriends(e.target.value)}
-                          placeholder={t("searchFriends") || "Search friends..."}
-                          className="text-xs h-6 w-36"
-                          autoFocus
-                          onBlur={() => setTimeout(() => {setShowTagInput(false);setFriendResults([]);}, 200)} />
-                        
-                              {friendResults.length > 0 &&
-                        <div className="absolute top-7 left-0 z-20 bg-popover border border-border rounded-md shadow-elevated w-40 py-1">
-                                  {friendResults.map((fr) =>
-                          <button
-                            key={fr.user_id}
-                            onMouseDown={() => handleTagFriend(fr.user_id)}
-                            className="w-full text-left px-2 py-1 text-xs hover:bg-accent transition-colors truncate">
-                            
-                                      {fr.display_name || "?"}
-                                    </button>
-                          )}
-                                </div>
-                        }
-                            </div> :
-
-                      <button
-                        onClick={() => setShowTagInput(true)}
-                        className="text-[10px] px-2 py-0.5 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors inline-flex items-center gap-1">
-                        
-                              <Plus className="w-2.5 h-2.5" /> {t("addAvailability") ? "Add" : "Add"}
-                            </button>)
-
-                      }
+                        ))}
+                        {user && (showTagInput ? (
+                          <div className="relative">
+                            <Input value={friendSearch} onChange={(e) => searchFriends(e.target.value)} placeholder={t("searchFriends") || "Search friends..."} className="text-xs h-6 w-36" autoFocus onBlur={() => setTimeout(() => {setShowTagInput(false);setFriendResults([]);}, 200)} />
+                            {friendResults.length > 0 && (
+                              <div className="absolute top-7 left-0 z-20 bg-popover border border-border rounded-md shadow-elevated w-40 py-1">
+                                {friendResults.map((fr) => <button key={fr.user_id} onMouseDown={() => handleTagFriend(fr.user_id)} className="w-full text-left px-2 py-1 text-xs hover:bg-accent transition-colors truncate">{fr.display_name || "?"}</button>)}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <button onClick={() => setShowTagInput(true)} className="text-[10px] px-2 py-0.5 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors inline-flex items-center gap-1">
+                            <Plus className="w-2.5 h-2.5" /> Add
+                          </button>
+                        ))}
                       </div>
                     </div>
-
-                    {/* Comments */}
                     <div>
                       <div className="flex items-center gap-1.5 mb-1.5">
                         <MessageCircle className="w-3 h-3 text-muted-foreground" />
-                        <span className="text-[10px] font-medium text-muted-foreground">
-                          {t("comments") || "Comments"}
-                        </span>
+                        <span className="text-[10px] font-medium text-muted-foreground">{t("comments") || "Comments"}</span>
                       </div>
-                      {comments.length > 0 &&
-                    <div className="space-y-1.5 mb-2">
-                          {comments.map((c) =>
-                      <div key={c.id} className="flex items-start gap-2 group">
+                      {comments.length > 0 && (
+                        <div className="space-y-1.5 mb-2">
+                          {comments.map((c) => (
+                            <div key={c.id} className="flex items-start gap-2 group">
                               <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: '#EDE8F4' }}>
-                                {c.profile?.avatar_url ?
-                          <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> :
-
-                          <span className="text-[8px] font-bold" style={{ color: '#3C2A4D' }}>
-                                    {c.profile?.display_name?.charAt(0).toUpperCase() || "?"}
-                                  </span>
-                          }
+                                {c.profile?.avatar_url ? <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> : <span className="text-[8px] font-bold" style={{ color: '#3C2A4D' }}>{c.profile?.display_name?.charAt(0).toUpperCase() || "?"}</span>}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="text-[10px]">
-                                  <span className="font-semibold text-foreground">{c.profile?.display_name || "?"}</span>{" "}
-                                  <span className="text-muted-foreground">{c.content}</span>
-                                </p>
+                                <p className="text-[10px]"><span className="font-semibold text-foreground">{c.profile?.display_name || "?"}</span> <span className="text-muted-foreground">{c.content}</span></p>
                               </div>
-                              {user?.id === c.user_id &&
-                        <button
-                          onClick={() => handleDeleteComment(c.id)}
-                          className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all p-0.5">
-                          
-                                  <Trash2 className="w-2.5 h-2.5" />
-                                </button>
-                        }
+                              {user?.id === c.user_id && <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all p-0.5"><Trash2 className="w-2.5 h-2.5" /></button>}
                             </div>
-                      )}
+                          ))}
                         </div>
-                    }
-                      {user &&
-                    <div className="flex gap-1.5">
-                          <Input
-                        value={commentText}
-                        onChange={(e) => setCommentText(e.target.value)}
-                        placeholder={t("addComment") || "Add a comment..."}
-                        className="text-xs h-7 flex-1"
-                        maxLength={200}
-                        onKeyDown={(e) => e.key === "Enter" && handleAddComment()} />
-                      
-                          <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-7 w-7 shrink-0"
-                        disabled={!commentText.trim() || sendingComment}
-                        onClick={handleAddComment}>
-                        
+                      )}
+                      {user && (
+                        <div className="flex gap-1.5">
+                          <Input value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder={t("addComment") || "Add a comment..."} className="text-xs h-7 flex-1" maxLength={200} onKeyDown={(e) => e.key === "Enter" && handleAddComment()} />
+                          <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" disabled={!commentText.trim() || sendingComment} onClick={handleAddComment}>
                             <Send className="w-3 h-3" />
                           </Button>
                         </div>
-                    }
+                      )}
                     </div>
                   </div>
                 </motion.div>);
-
           })()}
           </AnimatePresence>
         </div>
