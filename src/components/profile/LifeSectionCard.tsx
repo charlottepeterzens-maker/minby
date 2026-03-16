@@ -237,16 +237,12 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
 
                 {/* Large layout image */}
                 {post.image_url && post.photo_layout !== "small" && (
-                  <button onClick={() => setExpandedImage(post.image_url)} className="w-full mb-2 rounded-[10px] overflow-hidden hover:opacity-90 transition-opacity">
-                    <img src={post.image_url} alt="" className="w-full max-h-72 object-cover" />
-                  </button>
+                  <SignedImage imageRef={post.image_url} onClick={() => setExpandedImage(post.image_url)} className="w-full mb-2 rounded-[10px] overflow-hidden hover:opacity-90 transition-opacity" imgClassName="w-full max-h-72 object-cover" />
                 )}
                 <div className={`flex gap-3`}>
                   {/* Small layout thumbnail */}
                   {post.image_url && post.photo_layout === "small" && (
-                    <button onClick={() => setExpandedImage(post.image_url)} className="shrink-0 w-20 h-20 rounded-[10px] overflow-hidden hover:opacity-80 transition-opacity">
-                      <img src={post.image_url} alt="" className="w-full h-full object-cover" />
-                    </button>
+                    <SignedImage imageRef={post.image_url} onClick={() => setExpandedImage(post.image_url)} className="shrink-0 w-20 h-20 rounded-[10px] overflow-hidden hover:opacity-80 transition-opacity" imgClassName="w-full h-full object-cover" />
                   )}
                   <div className="flex-1 min-w-0">
                     {post.content && <p className="text-[13px] text-foreground leading-[1.55]">{post.content}</p>}
