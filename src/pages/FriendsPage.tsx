@@ -121,6 +121,27 @@ const FriendsPage = () => {
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-5">
+        {/* Search */}
+        {!loading && friends.length > 0 && (
+          <div className="relative mb-4">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+              style={{ color: "#9B8BA5" }}
+              strokeWidth={1.5}
+            />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Sök bland vänner..."
+              className="w-full pl-9 pr-3 py-2.5 rounded-[10px] text-[13px] outline-none placeholder:text-[#9B8BA5]"
+              style={{
+                backgroundColor: "#FFFFFF",
+                border: "0.5px solid #EDE8F4",
+                color: "#3C2A4D",
+              }}
+            />
+          </div>
+        )}
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
