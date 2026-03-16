@@ -414,7 +414,7 @@ const ProfilePage = () => {
                         reordering={reordering}
                       />
                       {expandAfter && (
-                        <div className="col-span-2">
+                        <div className="col-span-3 sm:col-span-4 md:col-span-5">
                           <AnimatePresence mode="wait">
                             <motion.div
                               key={expandedSection}
