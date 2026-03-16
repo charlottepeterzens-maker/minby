@@ -238,7 +238,8 @@ const FriendsPage = () => {
                   </div>
                 </button>
               );
-            })}
+            })
+            )}
 
             {/* Invite row */}
             <button
@@ -260,7 +261,8 @@ const FriendsPage = () => {
               </span>
             </button>
           </div>
-        )}
+          );
+        })()}
       </main>
 
       {/* Reuse InviteFriendDialog in controlled mode */}
