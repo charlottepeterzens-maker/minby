@@ -16,6 +16,7 @@ import {
   Sparkles,
   Trash2,
   Loader2,
+  Pencil,
 } from "lucide-react";
 import {
   Sheet,
@@ -63,6 +64,7 @@ const TipsFavorites = ({
   const [savedTipIds, setSavedTipIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [editingTip, setEditingTip] = useState<Tip | null>(null);
 
   // Add form state
   const [title, setTitle] = useState("");
@@ -138,39 +140,72 @@ const TipsFavorites = ({
     setUploading(false);
   };
 
-  const handleAdd = async () => {
+  const resetForm = () => {
+    setTitle("");
+    setUrl("");
+    setCategory("other");
+    setCustomImage(null);
+    setPreviewImage(null);
+    setEditingTip(null);
+  };
+
+  const handleEdit = (tip: Tip) => {
+    setEditingTip(tip);
+    setTitle(tip.title);
+    setUrl(tip.url || "");
+    setCategory(tip.category);
+    setCustomImage(tip.image_url && !tip.image_url.startsWith("http") ? tip.image_url : null);
+    setPreviewImage(tip.image_url && tip.image_url.startsWith("http") ? tip.image_url : null);
+    setSheetOpen(true);
+  };
+
+  const handleAddOrUpdate = async () => {
     if (!user || !title.trim()) return;
-    if (tips.length >= MAX_TIPS) {
-      toast({
-        title: t("tipLimitReached"),
-        description: t("tipLimitDesc"),
-        variant: "destructive",
-      });
-      return;
-    }
 
-    // Use custom image, or OG preview image, or null
-    let imageUrl = customImage || previewImage || null;
+    const imageUrl = customImage || previewImage || null;
 
-    const { error } = await supabase.from("user_tips").insert({
-      user_id: user.id,
-      title: title.trim(),
-      url: url.trim() || null,
-      image_url: imageUrl,
-      category,
-      sort_order: tips.length,
-    });
+    if (editingTip) {
+      // Update existing tip
+      const { error } = await supabase
+        .from("user_tips")
+        .update({
+          title: title.trim(),
+          url: url.trim() || null,
+          image_url: imageUrl,
+          category,
+        })
+        .eq("id", editingTip.id);
 
-    if (error) {
-      toast({ title: t("error"), description: error.message, variant: "destructive" });
+      if (error) {
+        toast({ title: t("error"), description: error.message, variant: "destructive" });
+      } else {
+        resetForm();
+        setSheetOpen(false);
+        await fetchTips();
+      }
     } else {
-      setTitle("");
-      setUrl("");
-      setCategory("other");
-      setCustomImage(null);
-      setPreviewImage(null);
-      setSheetOpen(false);
-      await fetchTips();
+      // Insert new tip
+      if (tips.length >= MAX_TIPS) {
+        toast({ title: t("tipLimitReached"), description: t("tipLimitDesc"), variant: "destructive" });
+        return;
+      }
+
+      const { error } = await supabase.from("user_tips").insert({
+        user_id: user.id,
+        title: title.trim(),
+        url: url.trim() || null,
+        image_url: imageUrl,
+        category,
+        sort_order: tips.length,
+      });
+
+      if (error) {
+        toast({ title: t("error"), description: error.message, variant: "destructive" });
+      } else {
+        resetForm();
+        setSheetOpen(false);
+        await fetchTips();
+      }
     }
   };
 
@@ -216,8 +251,8 @@ const TipsFavorites = ({
             {t("tipsSectionTitle")}
           </h2>
         </div>
-        {isOwner && tips.length < MAX_TIPS && (
-          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+        {isOwner && (tips.length < MAX_TIPS || editingTip) && (
+          <Sheet open={sheetOpen} onOpenChange={(open) => { setSheetOpen(open); if (!open) resetForm(); }}>
             <SheetTrigger asChild>
               <button className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
                 <Plus className="w-3.5 h-3.5" />
@@ -312,11 +347,11 @@ const TipsFavorites = ({
                 />
 
                 <Button
-                  onClick={handleAdd}
+                  onClick={handleAddOrUpdate}
                   disabled={!title.trim()}
                   className="w-full"
                 >
-                  {t("addTip")}
+                  {editingTip ? t("tipSave") : t("addTip")}
                 </Button>
 
                 <p className="text-[11px] text-center text-muted-foreground">
@@ -383,7 +418,7 @@ const TipsFavorites = ({
                   {customImage && <button onClick={() => setCustomImage(null)} className="text-muted-foreground hover:text-foreground"><X className="w-4 h-4" /></button>}
                 </div>
                 <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-                <Button onClick={handleAdd} disabled={!title.trim()} className="w-full">{t("addTip")}</Button>
+                <Button onClick={handleAddOrUpdate} disabled={!title.trim()} className="w-full">{editingTip ? t("tipSave") : t("addTip")}</Button>
                 <p className="text-[11px] text-center text-muted-foreground">{t("tipCountInfo", tips.length, MAX_TIPS)}</p>
               </div>
             </SheetContent>
@@ -399,6 +434,7 @@ const TipsFavorites = ({
                 isOwner={isOwner}
                 isSaved={savedTipIds.has(tip.id)}
                 onDelete={() => handleDelete(tip.id)}
+                onEdit={() => handleEdit(tip)}
                 onSave={() => handleSave(tip.id)}
                 index={i}
                 categoryEmoji={categoryEmoji}
@@ -416,6 +452,7 @@ const TipCard = ({
   isOwner,
   isSaved,
   onDelete,
+  onEdit,
   onSave,
   index,
   categoryEmoji,
@@ -424,6 +461,7 @@ const TipCard = ({
   isOwner: boolean;
   isSaved: boolean;
   onDelete: () => void;
+  onEdit: () => void;
   onSave: () => void;
   index: number;
   categoryEmoji: (key: string) => string;
@@ -489,12 +527,20 @@ const TipCard = ({
           </a>
         )}
         {isOwner ? (
-          <button
-            onClick={onDelete}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
-          >
-            <Trash2 className="w-3.5 h-3.5 text-muted-foreground" />
-          </button>
+          <>
+            <button
+              onClick={onEdit}
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+            >
+              <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
+            </button>
+            <button
+              onClick={onDelete}
+              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted transition-colors"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-muted-foreground" />
+            </button>
+          </>
         ) : (
           <button
             onClick={onSave}

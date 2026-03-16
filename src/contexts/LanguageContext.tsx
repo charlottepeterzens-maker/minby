@@ -266,6 +266,7 @@ const translations = {
     tipCat_other: "Other",
     tipFetchingPreview: "Fetching preview...",
     tipPreviewFound: "Preview image from link",
+    tipSave: "Save changes",
   },
   sv: {
     // Nav
@@ -529,6 +530,7 @@ const translations = {
     tipCat_other: "Övrigt",
     tipFetchingPreview: "Hämtar förhandsgranskning...",
     tipPreviewFound: "Förhandsvisningsbild från länk",
+    tipSave: "Spara ändringar",
   },
 } as const;
 
