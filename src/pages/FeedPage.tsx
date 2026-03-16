@@ -181,8 +181,8 @@ const FeedPage = () => {
       {/* Header */}
       <nav className="sticky top-0 z-50 bg-background">
         <div className="max-w-2xl mx-auto px-5 py-4 text-center">
-          <span className="font-display text-[26px] font-light tracking-[-0.5px] text-foreground lowercase">
-            minby
+          <span className="font-display text-[20px] font-medium text-foreground">
+            Nyheter från kretsen
           </span>
         </div>
         <CurvedSeparator />
