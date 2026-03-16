@@ -97,6 +97,28 @@ const TipsFavorites = ({
     fetchSavedTips();
   }, [fetchTips, fetchSavedTips]);
 
+  const fetchLinkPreview = useCallback(async (linkUrl: string) => {
+    if (!linkUrl.trim()) return;
+    let formatted = linkUrl.trim();
+    if (!formatted.startsWith('http')) formatted = `https://${formatted}`;
+    try { new URL(formatted); } catch { return; }
+
+    setFetchingPreview(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('fetch-link-preview', {
+        body: { url: formatted },
+      });
+      if (!error && data) {
+        if (data.title && !title) setTitle(data.title);
+        if (data.image && !customImage) setPreviewImage(data.image);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setFetchingPreview(false);
+    }
+  }, [title, customImage]);
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
@@ -110,6 +132,7 @@ const TipsFavorites = ({
       toast({ title: t("error"), description: error.message, variant: "destructive" });
     } else {
       setCustomImage(path);
+      setPreviewImage(null);
     }
     setUploading(false);
   };
