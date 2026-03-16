@@ -254,39 +254,38 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             <div className="flex flex-wrap gap-2">
               {ACTIVITY_OPTIONS.map((opt) => (
                 <button key={opt.key} onClick={() => toggleEditActivity(opt.key)}
-                  style={{ borderRadius: 20, fontSize: 13, padding: "6px 14px", border: "0.5px solid #EDE8F4",
-                    backgroundColor: editActivities.includes(opt.key) ? "#3C2A4D" : "#FFFFFF",
-                    color: editActivities.includes(opt.key) ? "#FFFFFF" : "#3C2A4D" }}
-                  className="font-medium transition-all">{opt.label}</button>
+                  className={cn("font-medium transition-all rounded-[20px] text-[13px] px-3.5 py-1.5 border-[0.5px] border-border",
+                    editActivities.includes(opt.key) ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
+                  )}>{opt.label}</button>
               ))}
             </div>
             <textarea value={editNote} onChange={(e) => setEditNote(e.target.value.slice(0, 150))} placeholder="Berätta lite mer..."
               className="w-full text-sm rounded-md border border-border bg-background px-3 py-2 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none" maxLength={150} rows={2} />
             <div className="flex gap-2">
-              <button onClick={() => setEditingEntryId(null)} className="flex-1 py-2 text-[13px] font-medium rounded-[10px]" style={{ border: "0.5px solid #EDE8F4", color: "#3C2A4D" }}>Avbryt</button>
-              <button onClick={handleSaveEdit} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] text-white" style={{ backgroundColor: "#3C2A4D" }}>Spara</button>
+              <button onClick={() => setEditingEntryId(null)} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] border-[0.5px] border-border text-foreground">Avbryt</button>
+              <button onClick={handleSaveEdit} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] bg-primary text-primary-foreground">Spara</button>
             </div>
           </div>
         ) : (
           <button onClick={() => toggleExpand(entry.id)}
             className={cn("w-full flex items-center bg-card rounded-[16px] border-[0.5px] border-border p-2.5 text-left transition-all active:scale-[0.98]", isExpanded && "ring-1 ring-primary/20")}>
-            <div className="shrink-0 flex flex-col items-center justify-center" style={{ width: 40 }}>
-              <span className="text-[22px] leading-none" style={{ color: "#3C2A4D", fontWeight: 500 }}>{dayLabel}</span>
-              <span className="text-[10px] font-medium leading-none mt-0.5 uppercase" style={{ color: "#C9B8D8", letterSpacing: "0.05em" }}>{monthLabel}</span>
+            <div className="shrink-0 flex flex-col items-center justify-center w-10">
+              <span className="text-[22px] leading-none font-medium text-foreground">{dayLabel}</span>
+              <span className="text-[10px] font-medium leading-none mt-0.5 uppercase text-secondary tracking-wide">{monthLabel}</span>
             </div>
-            <div className="shrink-0 mx-2.5 self-stretch" style={{ width: 1, backgroundColor: "#EDE8F4" }} />
+            <div className="shrink-0 mx-2.5 self-stretch w-px bg-border" />
             <div className="flex-1 min-w-0 pr-5">
-              <p className="text-[13px] leading-tight truncate" style={{ color: "#3C2A4D", fontWeight: 500 }}>{dateTitle}</p>
+              <p className="text-[13px] leading-tight truncate font-medium text-foreground">{dateTitle}</p>
               {(entry.activities.length > 0 || entry.custom_note) && (
                 <div className="flex items-center flex-wrap gap-1 mt-1">
-                  {entry.activities.slice(0, 3).map((a) => <span key={a} className="text-[10px] font-medium px-2 py-0.5 rounded-[20px]" style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}>{getActivityLabel(a)}</span>)}
+                  {entry.activities.slice(0, 3).map((a) => <span key={a} className="text-[10px] font-medium px-2 py-0.5 rounded-[20px] bg-lavender-bg text-foreground">{getActivityLabel(a)}</span>)}
                   {entry.activities.length > 3 && <span className="text-[10px] text-muted-foreground">+{entry.activities.length - 3}</span>}
-                  {entry.activities.length > 0 && entry.custom_note && <span className="text-[10px]" style={{ color: "#7A6A85" }}>·</span>}
-                  {entry.custom_note && <span className="text-[12px] truncate" style={{ color: "#7A6A85" }}>{entry.custom_note}</span>}
+                  {entry.activities.length > 0 && entry.custom_note && <span className="text-[10px] text-muted-foreground">·</span>}
+                  {entry.custom_note && <span className="text-[12px] truncate text-muted-foreground">{entry.custom_note}</span>}
                 </div>
               )}
             </div>
-            {!isOwner && <span className="shrink-0 text-[11px] font-medium px-3 py-1.5 rounded-[8px]" style={{ backgroundColor: "hsl(145 20% 94%)", color: "hsl(150 40% 20%)" }}>Ja!</span>}
+            {!isOwner && <span className="shrink-0 text-[11px] font-medium px-3 py-1.5 rounded-[8px] bg-salvia-bg text-accent-foreground">Ja!</span>}
           </button>
         )}
         {isOwner && editingEntryId !== entry.id && (
@@ -327,7 +326,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           </div>
           {entry.activities.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
-              {entry.activities.map((a) => <span key={a} className="text-[10px] px-2 py-0.5 rounded" style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}>{getActivityLabel(a)}</span>)}
+              {entry.activities.map((a) => <span key={a} className="text-[10px] px-2 py-0.5 rounded bg-lavender-bg text-foreground">{getActivityLabel(a)}</span>)}
             </div>
           )}
           <div>
@@ -359,8 +358,8 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               <div className="space-y-1.5 mb-2">
                 {comments.map((c) => (
                   <div key={c.id} className="flex items-start gap-2 group">
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: '#EDE8F4' }}>
-                      {c.profile?.avatar_url ? <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> : <span className="text-[8px] font-bold" style={{ color: '#3C2A4D' }}>{c.profile?.display_name?.charAt(0).toUpperCase() || "?"}</span>}
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 bg-lavender-bg">
+                      {c.profile?.avatar_url ? <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> : <span className="text-[8px] font-bold text-foreground">{c.profile?.display_name?.charAt(0).toUpperCase() || "?"}</span>}
                     </div>
                     <div className="flex-1 min-w-0"><p className="text-[10px]"><span className="font-semibold text-foreground">{c.profile?.display_name || "?"}</span> <span className="text-muted-foreground">{c.content}</span></p></div>
                     {user?.id === c.user_id && <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all p-0.5"><Trash2 className="w-2.5 h-2.5" /></button>}
@@ -403,12 +402,14 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             <div className="space-y-3 p-3 bg-muted/50 rounded-lg">
               {/* Entry type toggle */}
               <div className="flex gap-2">
-                <button onClick={() => setEntryType("available")} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all"
-                  style={{ backgroundColor: entryType === "available" ? "#3C2A4D" : "#FFFFFF", color: entryType === "available" ? "#FFFFFF" : "#3C2A4D", border: "0.5px solid #EDE8F4" }}>
+                <button onClick={() => setEntryType("available")}
+                  className={cn("flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all border-[0.5px] border-border",
+                    entryType === "available" ? "bg-primary text-primary-foreground" : "bg-card text-foreground")}>
                   {t("hangoutAvailable")}
                 </button>
-                <button onClick={() => setEntryType("confirmed")} className="flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all"
-                  style={{ backgroundColor: entryType === "confirmed" ? "#3C2A4D" : "#FFFFFF", color: entryType === "confirmed" ? "#FFFFFF" : "#3C2A4D", border: "0.5px solid #EDE8F4" }}>
+                <button onClick={() => setEntryType("confirmed")}
+                  className={cn("flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all border-[0.5px] border-border",
+                    entryType === "confirmed" ? "bg-primary text-primary-foreground" : "bg-card text-foreground")}>
                   {t("hangoutConfirmed")}
                 </button>
               </div>
@@ -430,10 +431,9 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 <div className="flex flex-wrap gap-2">
                   {ACTIVITY_OPTIONS.map((opt) => (
                     <button key={opt.key} onClick={() => toggleActivity(opt.key)}
-                      style={{ borderRadius: 20, fontSize: 13, padding: "6px 14px", border: "0.5px solid #EDE8F4",
-                        backgroundColor: selectedActivities.includes(opt.key) ? "#3C2A4D" : "#FFFFFF",
-                        color: selectedActivities.includes(opt.key) ? "#FFFFFF" : "#3C2A4D" }}
-                      className="font-medium transition-all">{opt.label}</button>
+                      className={cn("font-medium transition-all rounded-[20px] text-[13px] px-3.5 py-1.5 border-[0.5px] border-border",
+                        selectedActivities.includes(opt.key) ? "bg-primary text-primary-foreground" : "bg-card text-foreground"
+                      )}>{opt.label}</button>
                   ))}
                 </div>
               </div>
@@ -442,7 +442,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 className="w-full text-sm rounded-md border border-border bg-background px-3 py-2 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none" maxLength={150} rows={2} />
               <p className="text-[10px] text-muted-foreground text-right">{customNote.length}/150</p>
 
-              <Button size="sm" className="w-full text-white" style={{ backgroundColor: "#3C2A4D" }} disabled={!selectedDate || saving} onClick={handleSave}>
+              <Button size="sm" className="w-full bg-primary text-primary-foreground" disabled={!selectedDate || saving} onClick={handleSave}>
                 {t("save")}
               </Button>
             </div>
@@ -458,7 +458,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           {/* Confirmed dates */}
           {(confirmedEntries.length > 0 || isOwner) && (
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wide mb-2" style={{ color: "#993556" }}>
+              <p className="text-[11px] font-medium uppercase tracking-wide mb-2 text-dusty-rose">
                 {t("hangoutConfirmedLabel")}
               </p>
               <div className="space-y-2">
@@ -472,7 +472,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           {/* Available dates */}
           {(availableEntries.length > 0 || isOwner) && (
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-wide mb-2" style={{ color: "#7A6A85" }}>
+              <p className="text-[11px] font-medium uppercase tracking-wide mb-2 text-muted-foreground">
                 {t("hangoutAvailableLabel")}
               </p>
               <div className="space-y-2">
