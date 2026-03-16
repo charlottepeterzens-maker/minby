@@ -43,9 +43,9 @@ const FeedPage = () => {
   }, [user]);
 
   const filters = [
-    { label: t("all"), value: "all" },
-    { label: t("posts"), value: "posts" },
-    { label: "Dejter", value: "hangout" },
+    { label: "Allt", value: "all" },
+    { label: "Vardagen", value: "posts" },
+    { label: "Ses?", value: "hangout" },
     { label: "Hälsa", value: "health" },
   ];
 
