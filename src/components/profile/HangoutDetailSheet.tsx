@@ -183,31 +183,17 @@ const HangoutDetailSheet = ({ entry, open, onOpenChange, isOwner, onDeleted, onE
       const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
       const name = myProfile?.display_name || "Någon";
       const actLabel = activityName || entry.custom_note || "häng";
-      const dateLabel = `${shortWeekday} ${day}/${shortMonth}`;
-      const title = status === "yes"
-        ? `${name} vill hänga med på ${actLabel} ${dateLabel}`
-        : `${name} sa kanske till ${actLabel} ${dateLabel}`;
+      const message = status === "yes"
+        ? `${name} vill hänga med på ${actLabel}!`
+        : `${name} kanske hänger med på ${actLabel}`;
 
-      await supabase.from("notifications").insert({
-        user_id: entry.user_id,
-        from_user_id: user.id,
+      await sendNotification({
+        recipientUserId: entry.user_id,
+        fromUserId: user.id,
         type: status === "yes" ? "hangout_yes" : "hangout_maybe",
-        title,
-        body: null,
-        reference_id: entry.id,
+        referenceId: entry.id,
+        message,
       });
-      // Also send push notification
-      try {
-        await supabase.functions.invoke("send-push", {
-          body: {
-            userId: entry.user_id,
-            title: `${name} vill hänga med!`,
-            body: title,
-          },
-        });
-      } catch {
-        // Push is best-effort, in-app notification is the fallback
-      }
     }
 
     // Prompt for push permission on first RSVP (for the responder too)
