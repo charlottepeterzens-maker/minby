@@ -97,6 +97,7 @@ const FeedPage = () => {
             created_at: p.created_at,
             sectionName: section?.name || "Uppdatering",
             sectionType,
+            photo_layout: (p as any).photo_layout || "large",
           },
           userId: p.user_id,
           created_at: p.created_at,

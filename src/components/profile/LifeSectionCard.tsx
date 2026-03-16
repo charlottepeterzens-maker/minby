@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Plus, Image, Link, Trash2, Send, Pencil, Check, X } from "lucide-react";
+import { Plus, Image, Link, Trash2, Send, Pencil, Check, X, RectangleHorizontal, LayoutList } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PostReactions from "@/components/profile/PostReactions";
 import ConfirmSheet from "@/components/ConfirmSheet";
@@ -21,6 +21,7 @@ interface LifePost {
   link_url: string | null;
   link_title: string | null;
   created_at: string;
+  photo_layout: string;
 }
 
 interface Props {
@@ -37,6 +38,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const [content, setContent] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [photoLayout, setPhotoLayout] = useState<"large" | "small">("large");
   const [posting, setPosting] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
@@ -111,6 +113,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       content: content.trim() || null,
       image_url,
       link_url: linkUrl.trim() || null,
+      photo_layout: image_url ? photoLayout : "large",
     });
 
     if (error) {
@@ -119,6 +122,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       setContent("");
       setLinkUrl("");
       setImageFile(null);
+      setPhotoLayout("large");
       setShowCompose(false);
       fetchPosts();
     }
@@ -193,13 +197,41 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   placeholder={t("whatsNew")}
                   className="bg-background/50 border-border/30 min-h-[60px] text-sm"
                 />
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center flex-wrap">
                   <label className="cursor-pointer">
                     <input type="file" accept="image/*" className="hidden" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
                     <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 border transition-colors ${imageFile ? "bg-primary/10 text-primary border-primary/30" : "text-muted-foreground border-border/50 hover:bg-muted"}`}>
                       <Image className="w-3 h-3" /> {imageFile ? imageFile.name.slice(0, 15) : t("photo")}
                     </span>
                   </label>
+                  {imageFile && (
+                    <div className="flex gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setPhotoLayout("large")}
+                        className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+                        style={{
+                          backgroundColor: photoLayout === "large" ? "#3C2A4D" : "#FFFFFF",
+                          border: "1px solid #3C2A4D",
+                        }}
+                        title="Stort foto"
+                      >
+                        <RectangleHorizontal className="w-3.5 h-3.5" style={{ color: photoLayout === "large" ? "#FFFFFF" : "#3C2A4D" }} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPhotoLayout("small")}
+                        className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+                        style={{
+                          backgroundColor: photoLayout === "small" ? "#3C2A4D" : "#FFFFFF",
+                          border: "1px solid #3C2A4D",
+                        }}
+                        title="Litet foto"
+                      >
+                        <LayoutList className="w-3.5 h-3.5" style={{ color: photoLayout === "small" ? "#FFFFFF" : "#3C2A4D" }} />
+                      </button>
+                    </div>
+                  )}
                   <Input
                     value={linkUrl}
                     onChange={(e) => setLinkUrl(e.target.value)}
@@ -221,26 +253,38 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         ) : (
           <div className="space-y-3">
             {posts.map((post) => (
-              <div key={post.id} className="group relative flex gap-3">
-                {post.image_url && (
+              <div key={post.id} className="group relative">
+                {/* Large layout: full-width image on top */}
+                {post.image_url && post.photo_layout !== "small" && (
                   <button
                     onClick={() => setExpandedImage(post.image_url)}
-                    className="shrink-0 w-16 h-16 rounded-lg overflow-hidden hover:opacity-80 transition-opacity"
+                    className="w-full mb-2 rounded-[10px] overflow-hidden hover:opacity-90 transition-opacity"
                   >
-                    <img src={post.image_url} alt="" className="w-full h-full object-cover" />
+                    <img src={post.image_url} alt="" className="w-full max-h-72 object-cover" />
                   </button>
                 )}
-                <div className="flex-1 min-w-0">
-                  {post.content && <p className="text-sm text-foreground">{post.content}</p>}
-                  {post.link_url && (
-                    <a href={post.link_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1 mt-1">
-                      <Link className="w-3 h-3" /> {post.link_url.slice(0, 40)}...
-                    </a>
+                <div className={`flex gap-3 ${post.image_url && post.photo_layout === "small" ? "" : ""}`}>
+                  {/* Small layout: thumbnail left */}
+                  {post.image_url && post.photo_layout === "small" && (
+                    <button
+                      onClick={() => setExpandedImage(post.image_url)}
+                      className="shrink-0 w-20 h-20 rounded-[10px] overflow-hidden hover:opacity-80 transition-opacity"
+                    >
+                      <img src={post.image_url} alt="" className="w-full h-full object-cover" />
+                    </button>
                   )}
-                  <p className="text-xs text-muted-foreground/50 mt-1">
-                    {new Date(post.created_at).toLocaleDateString("sv-SE")}
-                  </p>
-                  <PostReactions postId={post.id} />
+                  <div className="flex-1 min-w-0">
+                    {post.content && <p className="text-sm text-foreground">{post.content}</p>}
+                    {post.link_url && (
+                      <a href={post.link_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1 mt-1">
+                        <Link className="w-3 h-3" /> {post.link_url.slice(0, 40)}...
+                      </a>
+                    )}
+                    <p className="text-xs text-muted-foreground/50 mt-1">
+                      {new Date(post.created_at).toLocaleDateString("sv-SE")}
+                    </p>
+                    <PostReactions postId={post.id} />
+                  </div>
                 </div>
                 {isOwner && (
                   <button
