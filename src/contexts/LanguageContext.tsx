@@ -530,6 +530,7 @@ const translations = {
     tipCat_other: "Övrigt",
     tipFetchingPreview: "Hämtar förhandsgranskning...",
     tipPreviewFound: "Förhandsvisningsbild från länk",
+    tipSave: "Spara ändringar",
   },
 } as const;
 
