@@ -112,7 +112,7 @@ const GroupsPage = () => {
     <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
       <nav className="sticky top-0 z-50" style={{ backgroundColor: "#F7F3EF" }}>
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
-          <span className="font-display text-[20px] font-medium text-foreground">Mina grupper  – utan brus    </span>
+          <span className="font-display text-[20px] font-medium text-foreground">Grupper</span>
         </div>
         <CurvedSeparator />
       </nav>
