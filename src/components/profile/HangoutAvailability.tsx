@@ -143,7 +143,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                   className="flex-shrink-0 flex flex-col text-left transition-all relative overflow-hidden"
                   style={{
                     width: 130,
-                    height: 120,
+                    height: 110,
                     borderRadius: 12,
                     padding: 10,
                     backgroundColor: style.bg,
