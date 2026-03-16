@@ -270,7 +270,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 </div>
               ))}
             </div>
-            <span className="text-[10px] text-muted-foreground truncate">
+            <span className="text-[10px] truncate" style={{ color: '#7A6A85' }}>
               {entryFriends.length > 0 ? `Du + ${entryFriends[0]?.profile?.display_name || "?"} · kom med!` : "Kom med!"}
             </span>
           </div>
@@ -428,7 +428,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     <div className="bg-card border-[0.5px] rounded-[16px] p-4" style={{ borderColor: '#EDE8F4' }}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-display text-base font-medium text-foreground">
-          {t("hangoutAvailability")}
+          Hitta på något
         </h3>
         {isOwner && (
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowAdd(true)}>
@@ -454,15 +454,6 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
               </AnimatePresence>
             </div>
           ))}
-          {isOwner && (
-            <>
-              <div className="w-full h-px" style={{ backgroundColor: '#EDE8F4' }} />
-              <button onClick={() => setShowAdd(true)} className="w-full flex items-center justify-center gap-2 py-3 text-muted-foreground hover:text-foreground transition-colors">
-                <Plus className="w-3.5 h-3.5" />
-                <span className="text-xs font-medium">Lägg till</span>
-              </button>
-            </>
-          )}
         </div>
       )}
 
