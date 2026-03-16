@@ -140,10 +140,12 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 <button
                   key={entry.id}
                   onClick={() => handleCardClick(entry)}
-                  className="snap-start shrink-0 flex flex-col justify-between text-left transition-all"
+                  className="snap-start shrink-0 flex flex-col text-left transition-all relative overflow-hidden"
                   style={{
                     minWidth: 120,
-                    minHeight: 100,
+                    height: 110,
+                    minHeight: 110,
+                    maxHeight: 110,
                     borderRadius: 12,
                     padding: 10,
                     backgroundColor: style.bg,
@@ -153,17 +155,34 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                   <span className="text-[9px] uppercase tracking-wider" style={{ color: "#B0A8B5" }}>
                     {getTypeLabel(entry.entry_type)}
                   </span>
-                  <div className="flex-1 flex flex-col justify-center mt-1">
+                  <div className="flex-1 flex flex-col justify-center mt-1 min-h-0">
                     <span className="text-[10px] uppercase" style={{ color: "#7A6A85" }}>{weekday}</span>
                     <span className="text-[22px] font-medium leading-tight text-foreground">{day}</span>
                     <span className="text-[10px]" style={{ color: "#C9B8D8" }}>{month}</span>
                   </div>
                   {activityName && (
-                    <p className="text-[10px] leading-tight text-foreground truncate mt-1">{activityName}</p>
+                    <p
+                      className="text-[10px] leading-tight text-foreground mt-1"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >{activityName}</p>
                   )}
                   {friendCount > 0 && (
                     <span className="text-[10px] font-medium mt-0.5" style={{ color: "#1F4A1A" }}>{friendCount} med</span>
                   )}
+                  {/* Fade gradient at bottom */}
+                  <div
+                    className="absolute bottom-0 left-0 right-0 pointer-events-none"
+                    style={{
+                      height: 24,
+                      background: `linear-gradient(to bottom, transparent, ${style.bg})`,
+                      borderRadius: "0 0 12px 12px",
+                    }}
+                  />
                 </button>
               );
             })}
