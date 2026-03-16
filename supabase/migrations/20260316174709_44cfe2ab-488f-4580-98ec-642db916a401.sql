@@ -1,0 +1,1 @@
+ALTER TABLE public.user_tips ADD COLUMN comment text DEFAULT null;
