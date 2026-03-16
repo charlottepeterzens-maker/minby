@@ -387,9 +387,9 @@ const ProfilePage = () => {
         ) : (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
                 {sections.map((section, i) => {
-                  const cols = 2;
+                  const cols = 3;
                   const isLastInRow = (i + 1) % cols === 0 || i === sections.length - 1;
 
                   let expandAfter = false;
