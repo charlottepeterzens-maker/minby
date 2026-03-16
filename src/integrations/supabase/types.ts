@@ -314,6 +314,7 @@ export type Database = {
           image_url: string | null
           link_title: string | null
           link_url: string | null
+          photo_layout: string
           section_id: string
           user_id: string
         }
@@ -324,6 +325,7 @@ export type Database = {
           image_url?: string | null
           link_title?: string | null
           link_url?: string | null
+          photo_layout?: string
           section_id: string
           user_id: string
         }
@@ -334,6 +336,7 @@ export type Database = {
           image_url?: string | null
           link_title?: string | null
           link_url?: string | null
+          photo_layout?: string
           section_id?: string
           user_id?: string
         }

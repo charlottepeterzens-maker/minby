@@ -1,0 +1,1 @@
+ALTER TABLE public.life_posts ADD COLUMN photo_layout text NOT NULL DEFAULT 'large';
