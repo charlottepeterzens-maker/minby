@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { supabase } from "@/integrations/supabase/client";
 import PostReactions from "@/components/profile/PostReactions";
 
 interface FeedPostCardProps {
@@ -17,11 +19,13 @@ interface FeedPostCardProps {
     avatar_url: string | null;
     initials: string;
   };
+  isOwn?: boolean;
   onProfileClick: () => void;
 }
 
-const FeedPostCard = ({ post, profile, onProfileClick }: FeedPostCardProps) => {
+const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProps) => {
   const timeAgo = getTimeAgo(post.created_at);
+  const [showReactions, setShowReactions] = useState(false);
 
   return (
     <div className="bg-card rounded-[14px] border-[0.5px] border-border p-4">
@@ -37,16 +41,26 @@ const FeedPostCard = ({ post, profile, onProfileClick }: FeedPostCardProps) => {
           </button>
           <div>
             <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
-              {profile.display_name || "Någon"}
+              {isOwn ? "Du" : (profile.display_name || "Någon")}
             </button>
             <p className="text-[11px] text-muted-foreground leading-tight">
               {post.sectionName} · {timeAgo}
             </p>
           </div>
         </div>
-        <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px] border-[0.5px] border-border bg-muted text-foreground">
-          {post.sectionName}
-        </span>
+        <div className="flex items-center gap-1.5">
+          {isOwn && (
+            <span
+              className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
+              style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}
+            >
+              Ditt inlägg
+            </span>
+          )}
+          <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px] border-[0.5px] border-border bg-muted text-foreground">
+            {post.sectionName}
+          </span>
+        </div>
       </div>
 
       {/* Large photo layout (default) */}
@@ -83,8 +97,42 @@ const FeedPostCard = ({ post, profile, onProfileClick }: FeedPostCardProps) => {
       )}
 
       {/* Reactions */}
-      <PostReactions postId={post.id} />
+      {isOwn ? (
+        <>
+          {showReactions ? (
+            <PostReactions postId={post.id} readOnly />
+          ) : (
+            <OwnPostReactionLink postId={post.id} onShow={() => setShowReactions(true)} />
+          )}
+        </>
+      ) : (
+        <PostReactions postId={post.id} />
+      )}
     </div>
+  );
+};
+
+/** Small link that shows reaction count for own posts */
+const OwnPostReactionLink = ({ postId, onShow }: { postId: string; onShow: () => void }) => {
+  const [count, setCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    supabase
+      .from("post_reactions")
+      .select("id", { count: "exact", head: true })
+      .eq("post_id", postId)
+      .then(({ count: c }) => setCount(c ?? 0));
+  }, [postId]);
+
+  if (count === null || count === 0) return null;
+
+  return (
+    <button
+      onClick={onShow}
+      className="text-[11px] text-muted-foreground hover:underline mt-1.5"
+    >
+      Se reaktioner ({count})
+    </button>
   );
 };
 

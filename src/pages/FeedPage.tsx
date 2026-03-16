@@ -13,7 +13,10 @@ import FeedHealthCard from "@/components/feed/FeedHealthCard";
 import { toast } from "sonner";
 
 interface ProfileMap {
-  [userId: string]: { display_name: string | null; avatar_url: string | null };
+  [userId: string]: {
+    display_name: string | null;
+    avatar_url: string | null;
+  };
 }
 
 type FeedItem =
@@ -53,14 +56,12 @@ const FeedPage = () => {
     const [postsRes, hangoutsRes] = await Promise.all([
       supabase
         .from("life_posts")
-        .select("id, content, image_url, link_url, created_at, section_id, user_id, life_sections(name, emoji, section_type, min_tier, user_id)")
-        .neq("user_id", user.id)
+        .select("id, content, image_url, link_url, created_at, section_id, user_id, photo_layout, life_sections(name, emoji, section_type, min_tier, user_id)")
         .order("created_at", { ascending: false })
         .limit(50),
       supabase
         .from("hangout_availability")
         .select("id, date, activities, custom_note, created_at, user_id")
-        .neq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(20),
     ]);
@@ -255,6 +256,7 @@ const FeedPage = () => {
             {filteredItems.map((item, idx) => {
               const profile = getProfile(item.userId);
               const key = `${item.type}-${item.data.id}`;
+              const isOwn = item.userId === user?.id;
 
               const animDelay = `${Math.min(idx * 80, 400)}ms`;
               const wrapper = (child: React.ReactNode) => (
@@ -268,6 +270,7 @@ const FeedPage = () => {
                   <FeedPostCard
                     post={item.data}
                     profile={profile}
+                    isOwn={isOwn}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
                   />
                 );
@@ -278,6 +281,7 @@ const FeedPage = () => {
                   <FeedHangoutCard
                     hangout={item.data}
                     profile={profile}
+                    isOwn={isOwn}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
                   />
                 );
@@ -288,6 +292,7 @@ const FeedPage = () => {
                   <FeedHealthCard
                     post={item.data}
                     profile={profile}
+                    isOwn={isOwn}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
                     onSendHug={() => handleSendHug(item.userId)}
                   />

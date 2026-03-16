@@ -13,12 +13,13 @@ interface FeedHangoutCardProps {
     display_name: string | null;
     initials: string;
   };
+  isOwn?: boolean;
   onProfileClick: () => void;
   onJoin?: () => void;
   onMaybe?: () => void;
 }
 
-const FeedHangoutCard = ({ hangout, profile, onProfileClick, onJoin, onMaybe }: FeedHangoutCardProps) => {
+const FeedHangoutCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: FeedHangoutCardProps) => {
   const { t } = useLanguage();
   const timeAgo = getTimeAgo(hangout.created_at);
 
@@ -43,27 +44,35 @@ const FeedHangoutCard = ({ hangout, profile, onProfileClick, onJoin, onMaybe }: 
             </button>
             <div>
               <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
-                {profile.display_name || "Någon"}
+                {isOwn ? "Du" : (profile.display_name || "Någon")}
               </button>
               <p className="text-[11px] text-muted-foreground leading-tight">
                 Vill ses · {timeAgo}
               </p>
             </div>
           </div>
-          <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px] border-[0.5px] border-border bg-muted text-foreground">
-            dejt
-          </span>
+          <div className="flex items-center gap-1.5">
+            {isOwn && (
+              <span
+                className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
+                style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}
+              >
+                Ditt inlägg
+              </span>
+            )}
+            <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px] border-[0.5px] border-border bg-muted text-foreground">
+              dejt
+            </span>
+          </div>
         </div>
       </div>
 
       {/* Dark purple content area */}
       <div className="mx-4 mb-3 rounded-[10px] bg-primary p-3.5">
-        {/* Date chip */}
         <span className="inline-block text-[11px] font-medium px-3 py-1 rounded-[20px] bg-secondary text-secondary-foreground mb-2.5">
           {formattedDate}
         </span>
 
-        {/* Activity pills */}
         {hangout.activities.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {hangout.activities.map((activity) => (
@@ -78,27 +87,28 @@ const FeedHangoutCard = ({ hangout, profile, onProfileClick, onJoin, onMaybe }: 
           </div>
         )}
 
-        {/* Custom note */}
         {hangout.custom_note && (
           <p className="text-[12px] text-primary-foreground/80 mt-2">{hangout.custom_note}</p>
         )}
       </div>
 
-      {/* Action buttons */}
-      <div className="px-4 pb-4 flex gap-2">
-        <button
-          onClick={onJoin}
-          className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-salvia-bg text-accent-foreground border-[0.5px] border-accent/30 transition-colors hover:bg-salvia"
-        >
-          Ja, jag är med!
-        </button>
-        <button
-          onClick={onMaybe}
-          className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border-[0.5px] border-border transition-colors hover:bg-muted"
-        >
-          Kanske
-        </button>
-      </div>
+      {/* Action buttons - hide for own posts */}
+      {!isOwn && (
+        <div className="px-4 pb-4 flex gap-2">
+          <button
+            onClick={onJoin}
+            className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-salvia-bg text-accent-foreground border-[0.5px] border-accent/30 transition-colors hover:bg-salvia"
+          >
+            Ja, jag är med!
+          </button>
+          <button
+            onClick={onMaybe}
+            className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border-[0.5px] border-border transition-colors hover:bg-muted"
+          >
+            Kanske
+          </button>
+        </div>
+      )}
     </div>
   );
 };
