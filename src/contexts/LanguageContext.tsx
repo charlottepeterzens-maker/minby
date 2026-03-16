@@ -242,6 +242,28 @@ const translations = {
     friendAdded: "Friend added!",
     hangoutSuggestions: "Hangout matches",
     reorderSections: "Reorder",
+
+    // Tips & Favorites
+    tipsSectionTitle: "Tips & favorites",
+    addTip: "Add tip",
+    tipTitlePlaceholder: "What do you recommend?",
+    tipUrlPlaceholder: "Link (optional)",
+    tipAddImage: "Add image",
+    tipImageChanged: "Image added",
+    tipLimitReached: "Limit reached",
+    tipLimitDesc: "You can have max 5 favorites at a time. Remove one first.",
+    tipCountInfo: "{0} of {1} tips",
+    tipEmptyTitle: "Share your best tips",
+    tipEmptyDesc: "Skincare, restaurants, podcasts, books...",
+    tipCat_skincare: "Skincare",
+    tipCat_food: "Food & drink",
+    tipCat_podcast: "Podcast",
+    tipCat_book: "Book",
+    tipCat_show: "Show",
+    tipCat_salon: "Salon",
+    tipCat_workout: "Workout",
+    tipCat_product: "Product",
+    tipCat_other: "Other",
   },
   sv: {
     // Nav
