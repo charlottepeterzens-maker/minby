@@ -365,60 +365,23 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     if (!expandedId) return null;
     const entry = entries.find((e) => e.id === expandedId);
     if (!entry) return null;
+    const dateObj = new Date(entry.date + "T00:00:00");
+    const dateTitle = format(dateObj, "EEEE d MMMM", { locale: sv });
+    const entryFriendCount = confirmedCounts.get(entry.id) || 0;
+
     return (
       <motion.div key={expandedId} initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.25, ease: "easeInOut" }} className="overflow-hidden">
-        <div className="bg-muted/40 rounded-md p-3 space-y-3 mb-1">
-          <div>
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <UserPlus className="w-3 h-3 text-muted-foreground" />
-              <span className="text-[10px] font-medium text-muted-foreground">Vänner</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {taggedFriends.map((tf) => (
-                <span key={tf.id} className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground inline-flex items-center gap-1">
-                  {tf.profile?.display_name || "?"}
-                  {(user?.id === tf.tagged_by || isOwner) && <button onClick={() => handleRemoveTag(tf.id)} className="hover:text-destructive"><X className="w-2.5 h-2.5" /></button>}
-                </span>
-              ))}
-              {user && (showTagInput ? (
-                <div className="relative">
-                  <Input value={friendSearch} onChange={(e) => searchFriends(e.target.value)} placeholder="Sök vänner..." className="text-xs h-6 w-36" autoFocus onBlur={() => setTimeout(() => { setShowTagInput(false); setFriendResults([]); }, 200)} />
-                  {friendResults.length > 0 && (
-                    <div className="absolute top-7 left-0 z-20 bg-popover border border-border rounded-md shadow-elevated w-40 py-1">
-                      {friendResults.map((fr) => <button key={fr.user_id} onMouseDown={() => handleTagFriend(fr.user_id)} className="w-full text-left px-2 py-1 text-xs hover:bg-accent transition-colors truncate">{fr.display_name || "?"}</button>)}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <button onClick={() => setShowTagInput(true)} className="text-[10px] px-2 py-0.5 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors inline-flex items-center gap-1"><Plus className="w-2.5 h-2.5" /> Lägg till</button>
-              ))}
-            </div>
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <MessageCircle className="w-3 h-3 text-muted-foreground" />
-              <span className="text-[10px] font-medium text-muted-foreground">Kommentarer</span>
-            </div>
-            {comments.length > 0 && (
-              <div className="space-y-1.5 mb-2">
-                {comments.map((c) => (
-                  <div key={c.id} className="flex items-start gap-2 group">
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5" style={{ backgroundColor: '#EDE8F4' }}>
-                      {c.profile?.avatar_url ? <img src={c.profile.avatar_url} alt="" className="w-full h-full rounded-full object-cover" /> : <span className="text-[8px] font-bold" style={{ color: '#3C2A4D' }}>{c.profile?.display_name?.charAt(0).toUpperCase() || "?"}</span>}
-                    </div>
-                    <div className="flex-1 min-w-0"><p className="text-[10px]"><span className="font-semibold text-foreground">{c.profile?.display_name || "?"}</span> <span className="text-muted-foreground">{c.content}</span></p></div>
-                    {user?.id === c.user_id && <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all p-0.5"><Trash2 className="w-2.5 h-2.5" /></button>}
-                  </div>
-                ))}
-              </div>
-            )}
-            {user && (
-              <div className="flex gap-1.5">
-                <Input value={commentText} onChange={(e) => setCommentText(e.target.value)} placeholder="Skriv en kommentar..." className="text-xs h-7 flex-1" maxLength={200} onKeyDown={(e) => e.key === "Enter" && handleAddComment()} />
-                <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" disabled={!commentText.trim() || sendingComment} onClick={handleAddComment}><Send className="w-3 h-3" /></Button>
-              </div>
-            )}
-          </div>
+        <div className="bg-muted/40 rounded-md p-3 space-y-1.5 mb-1">
+          <p className="text-[12px] font-medium text-foreground capitalize">{dateTitle}</p>
+          {entry.custom_note && (
+            <p className="text-[12px] text-muted-foreground">{entry.custom_note}</p>
+          )}
+          {entry.activities.length > 0 && !entry.custom_note && (
+            <p className="text-[12px] text-muted-foreground">{entry.activities.map(a => getActivityLabel(a)).join(", ")}</p>
+          )}
+          {entryFriendCount > 0 && (
+            <p className="text-[11px] font-medium" style={{ color: '#1F4A1A' }}>{entryFriendCount} med</p>
+          )}
         </div>
       </motion.div>
     );
