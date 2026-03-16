@@ -439,6 +439,14 @@ const GridWithExpansion = ({
           </div>
         )}
 
+        {/* Hangout notifications */}
+        {isOwnProfile && (
+          <HangoutNotificationList
+            onOpenHangout={(hangoutId) => setNotifHangoutId(hangoutId)}
+            onNotificationsRead={refreshUnread}
+          />
+        )}
+
         {/* Health coming soon placeholder */}
         <div className="mb-6 flex items-center gap-3 rounded-[16px] border-[0.5px] border-[#EDE8F4] bg-[#FFFFFF] p-3">
           <div className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 36, height: 36, backgroundColor: '#FCF0F3' }}>
@@ -454,16 +462,13 @@ const GridWithExpansion = ({
         {/* Hangout Availability */}
         {targetUserId && (
           <div className="mb-6">
-            <HangoutAvailability userId={targetUserId} isOwner={isOwnProfile} />
+            <HangoutAvailability
+              userId={targetUserId}
+              isOwner={isOwnProfile}
+              openEntryId={notifHangoutId}
+              onOpenedEntry={() => setNotifHangoutId(null)}
+            />
           </div>
-        )}
-
-        {/* Hangout notifications */}
-        {isOwnProfile && (
-          <HangoutNotificationList
-            onOpenHangout={(hangoutId) => setNotifHangoutId(hangoutId)}
-            onNotificationsRead={refreshUnread}
-          />
         )}
 
         {/* Life sections as thumbnail grid */}

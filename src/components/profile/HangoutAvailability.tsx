@@ -33,9 +33,11 @@ const ACTIVITY_MAP: Record<string, string> = {
 interface Props {
   userId: string;
   isOwner: boolean;
+  openEntryId?: string | null;
+  onOpenedEntry?: () => void;
 }
 
-const HangoutAvailability = ({ userId, isOwner }: Props) => {
+const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Props) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [entries, setEntries] = useState<AvailabilityEntry[]>([]);
