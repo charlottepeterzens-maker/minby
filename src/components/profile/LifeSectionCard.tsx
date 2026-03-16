@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
 import ConfirmSheet from "@/components/ConfirmSheet";
+import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 
 interface LifePost {
   id: string;
@@ -103,8 +104,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       const filePath = `${user.id}/${Date.now()}-${imageFile.name}`;
       const { error: uploadErr } = await supabase.storage.from("life-images").upload(filePath, imageFile);
       if (uploadErr) { toast.error(t("couldNotPost")); setPosting(false); return; }
-      const { data: urlData } = supabase.storage.from("life-images").getPublicUrl(filePath);
-      image_url = urlData.publicUrl;
+      image_url = filePath;
     }
     const { error } = await supabase.from("life_posts").insert({
       section_id: section.id, user_id: user.id,
@@ -237,16 +237,12 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
 
                 {/* Large layout image */}
                 {post.image_url && post.photo_layout !== "small" && (
-                  <button onClick={() => setExpandedImage(post.image_url)} className="w-full mb-2 rounded-[10px] overflow-hidden hover:opacity-90 transition-opacity">
-                    <img src={post.image_url} alt="" className="w-full max-h-72 object-cover" />
-                  </button>
+                  <SignedImage imageRef={post.image_url} onClick={() => setExpandedImage(post.image_url)} className="w-full mb-2 rounded-[10px] overflow-hidden hover:opacity-90 transition-opacity" imgClassName="w-full max-h-72 object-cover" />
                 )}
                 <div className={`flex gap-3`}>
                   {/* Small layout thumbnail */}
                   {post.image_url && post.photo_layout === "small" && (
-                    <button onClick={() => setExpandedImage(post.image_url)} className="shrink-0 w-20 h-20 rounded-[10px] overflow-hidden hover:opacity-80 transition-opacity">
-                      <img src={post.image_url} alt="" className="w-full h-full object-cover" />
-                    </button>
+                    <SignedImage imageRef={post.image_url} onClick={() => setExpandedImage(post.image_url)} className="shrink-0 w-20 h-20 rounded-[10px] overflow-hidden hover:opacity-80 transition-opacity" imgClassName="w-full h-full object-cover" />
                   )}
                   <div className="flex-1 min-w-0">
                     {post.content && <p className="text-[13px] text-foreground leading-[1.55]">{post.content}</p>}
@@ -275,7 +271,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       {/* Image lightbox */}
       <Dialog open={!!expandedImage} onOpenChange={() => setExpandedImage(null)}>
         <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-background">
-          {expandedImage && <img src={expandedImage} alt="" className="w-full h-full object-contain rounded-lg" />}
+          {expandedImage && <SignedImage imageRef={expandedImage} className="w-full h-full" imgClassName="w-full h-full object-contain rounded-lg" />}
         </DialogContent>
       </Dialog>
 
@@ -314,6 +310,18 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         </SheetContent>
       </Sheet>
     </Card>
+  );
+};
+
+/** Helper: renders an image from a storage path/URL via signed URL */
+const SignedImage = ({ imageRef, onClick, className, imgClassName }: { imageRef: string; onClick?: () => void; className?: string; imgClassName?: string }) => {
+  const url = useSignedImageUrl(imageRef);
+  if (!url) return null;
+  const Tag = onClick ? "button" : "div";
+  return (
+    <Tag onClick={onClick} className={className}>
+      <img src={url} alt="" className={imgClassName} />
+    </Tag>
   );
 };
 

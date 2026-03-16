@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
+import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 
 interface FeedPostCardProps {
   post: {
@@ -27,6 +28,7 @@ interface FeedPostCardProps {
 const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProps) => {
   const timeAgo = getTimeAgo(post.created_at);
   const [showReactions, setShowReactions] = useState(false);
+  const signedUrl = useSignedImageUrl(post.image_url);
 
   return (
     <div className="bg-card rounded-[14px] border-[0.5px] border-border p-4">
@@ -65,19 +67,19 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProp
       </div>
 
       {/* Large photo layout (default) */}
-      {post.image_url && post.photo_layout !== "small" && (
+      {signedUrl && post.photo_layout !== "small" && (
         <img
-          src={post.image_url}
+          src={signedUrl}
           alt=""
           className="w-full mb-3 max-h-72 object-cover rounded-[10px]"
         />
       )}
 
       {/* Small photo layout */}
-      {post.image_url && post.photo_layout === "small" ? (
+      {signedUrl && post.photo_layout === "small" ? (
         <div className="flex gap-3 mb-2">
           <img
-            src={post.image_url}
+            src={signedUrl}
             alt=""
             className="shrink-0 w-20 h-20 object-cover rounded-[10px]"
           />
