@@ -311,6 +311,16 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       </Sheet>
     </Card>
   );
+/** Helper: renders an image from a storage path/URL via signed URL */
+const SignedImage = ({ imageRef, onClick, className, imgClassName }: { imageRef: string; onClick?: () => void; className?: string; imgClassName?: string }) => {
+  const url = useSignedImageUrl(imageRef);
+  if (!url) return null;
+  const Tag = onClick ? "button" : "div";
+  return (
+    <Tag onClick={onClick} className={className}>
+      <img src={url} alt="" className={imgClassName} />
+    </Tag>
+  );
 };
 
 export default LifeSectionCard;
