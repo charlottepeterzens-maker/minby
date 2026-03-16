@@ -332,6 +332,32 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
           className="overflow-hidden mb-4">
           
             <div className="space-y-3 p-3 bg-muted/50 rounded-lg">
+              {/* Entry type toggle */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setEntryType("available")}
+                  className="flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all"
+                  style={{
+                    backgroundColor: entryType === "available" ? "#3C2A4D" : "#FFFFFF",
+                    color: entryType === "available" ? "#FFFFFF" : "#3C2A4D",
+                    border: "0.5px solid #EDE8F4",
+                  }}
+                >
+                  {t("hangoutAvailable")}
+                </button>
+                <button
+                  onClick={() => setEntryType("confirmed")}
+                  className="flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-all"
+                  style={{
+                    backgroundColor: entryType === "confirmed" ? "#3C2A4D" : "#FFFFFF",
+                    color: entryType === "confirmed" ? "#FFFFFF" : "#3C2A4D",
+                    border: "0.5px solid #EDE8F4",
+                  }}
+                >
+                  {t("hangoutConfirmed")}
+                </button>
+              </div>
+
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
