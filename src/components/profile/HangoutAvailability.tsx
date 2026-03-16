@@ -87,7 +87,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
     setCurrentIndex(idx);
   };
 
-  const totalCards = entries.length + (isOwner ? 1 : 0);
+  // totalCards moved below after grouping
 
   const getTypeStyle = (type: string) => {
     switch (type) {
