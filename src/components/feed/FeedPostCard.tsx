@@ -115,15 +115,13 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProp
 const OwnPostReactionLink = ({ postId, onShow }: { postId: string; onShow: () => void }) => {
   const [count, setCount] = useState<number | null>(null);
 
-  useState; // trigger fetch on mount
-  import("@/integrations/supabase/client").then(({ supabase }) => {
-    if (count !== null) return;
+  useEffect(() => {
     supabase
       .from("post_reactions")
       .select("id", { count: "exact", head: true })
       .eq("post_id", postId)
       .then(({ count: c }) => setCount(c ?? 0));
-  });
+  }, [postId]);
 
   if (count === null || count === 0) return null;
 
