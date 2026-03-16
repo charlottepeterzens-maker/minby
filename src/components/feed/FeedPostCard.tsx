@@ -49,8 +49,8 @@ const FeedPostCard = ({ post, profile, onProfileClick }: FeedPostCardProps) => {
         </span>
       </div>
 
-      {/* Image */}
-      {post.image_url && (
+      {/* Large photo layout (default) */}
+      {post.image_url && post.photo_layout !== "small" && (
         <img
           src={post.image_url}
           alt=""
@@ -58,11 +58,28 @@ const FeedPostCard = ({ post, profile, onProfileClick }: FeedPostCardProps) => {
         />
       )}
 
-      {/* Content */}
-      {post.content && (
-        <p className="text-[13px] text-foreground leading-[1.55] mb-2">
-          {post.content}
-        </p>
+      {/* Small photo layout */}
+      {post.image_url && post.photo_layout === "small" ? (
+        <div className="flex gap-3 mb-2">
+          <img
+            src={post.image_url}
+            alt=""
+            className="shrink-0 w-20 h-20 object-cover rounded-[10px]"
+          />
+          <div className="flex-1 min-w-0">
+            {post.content && (
+              <p className="text-[13px] text-foreground leading-[1.55]">
+                {post.content}
+              </p>
+            )}
+          </div>
+        </div>
+      ) : (
+        post.content && (
+          <p className="text-[13px] text-foreground leading-[1.55] mb-2">
+            {post.content}
+          </p>
+        )
       )}
 
       {/* Reactions */}
