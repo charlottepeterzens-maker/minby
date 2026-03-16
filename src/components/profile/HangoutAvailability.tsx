@@ -505,10 +505,6 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
             </button>
           )}
 
-          {/* Expanded detail */}
-          <AnimatePresence>
-            {renderExpandedDetail()}
-          </AnimatePresence>
         </div>
       )}
 
