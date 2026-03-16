@@ -143,7 +143,7 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                   className="flex-shrink-0 flex flex-col text-left transition-all relative overflow-hidden"
                   style={{
                     width: 130,
-                    height: 120,
+                    height: 110,
                     borderRadius: 12,
                     padding: 10,
                     backgroundColor: style.bg,
@@ -187,10 +187,10 @@ const HangoutAvailability = ({ userId, isOwner }: Props) => {
                 className="flex-shrink-0 flex flex-col items-center justify-center transition-colors hover:bg-muted/30"
                 style={{
                   width: 130,
-                  height: 120,
+                  height: 110,
                   borderRadius: 12,
                   padding: 10,
-                  border: "1.5px dashed #C9B8D8",
+                  border: "1.5px dashed #DDD5CC",
                   backgroundColor: "transparent",
                 }}
               >
