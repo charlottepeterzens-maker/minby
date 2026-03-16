@@ -11,6 +11,7 @@ import DateSuggestionCard from "@/components/chat/DateSuggestionCard";
 import { recognizeDates, type RecognizedDate } from "@/utils/dateRecognition";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import { toast } from "sonner";
+import { sendNotification } from "@/utils/notifications";
 
 interface Message {
   id: string;
