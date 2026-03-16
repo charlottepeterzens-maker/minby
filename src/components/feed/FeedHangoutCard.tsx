@@ -146,7 +146,7 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
             {isOwn && (
               <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
-            <CategoryPill label="plan" variant="dark" />
+            <CategoryPill label="häng med" variant="dark" />
           </div>
         </div>
       </div>
