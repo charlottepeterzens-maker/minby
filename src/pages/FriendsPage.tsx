@@ -11,12 +11,20 @@ import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 
+interface HangoutStatus {
+  entry_type: string;
+  date: string;
+  activities: string[];
+  custom_note: string | null;
+}
+
 interface FriendRow {
   user_id: string;
   display_name: string;
   avatar_url: string | null;
   initial: string;
   last_activity: string | null;
+  hangout_status: HangoutStatus | null;
 }
 
 interface PendingRequest {
