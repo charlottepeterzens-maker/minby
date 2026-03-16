@@ -310,6 +310,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         </SheetContent>
       </Sheet>
     </Card>
+  );
 };
 
 /** Helper: renders an image from a storage path/URL via signed URL */
