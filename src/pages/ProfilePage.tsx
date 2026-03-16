@@ -385,57 +385,16 @@ const ProfilePage = () => {
             )}
           </motion.div>
         ) : (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-                {sections.map((section, i) => (
-                  <div key={section.id} className="contents">
-                    <div className="animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
-                      <SortableGridCard
-                        section={section}
-                        isOwner={isOwnProfile}
-                        isExpanded={expandedSection === section.id}
-                        onClick={() => toggleSection(section.id)}
-                        onDeleted={fetchSections}
-                        onRenamed={fetchSections}
-                        index={i}
-                        reordering={reordering}
-                      />
-                    </div>
-                    {expandedSection === section.id && !reordering && (
-                      <div className="col-span-3 sm:col-span-4 md:col-span-5">
-                        <AnimatePresence mode="wait">
-                          <motion.div
-                            key={expandedSection}
-                            id={`section-${expandedSection}`}
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.25, ease: "easeInOut" }}
-                            className="overflow-hidden"
-                          >
-                            {(() => {
-                              if (section.section_type === "workout")
-                                return <WorkoutTracker section={section} isOwner={isOwnProfile} />;
-                              return <LifeSectionCard section={section} isOwner={isOwnProfile} onUpdated={fetchSections} />;
-                            })()}
-                          </motion.div>
-                        </AnimatePresence>
-                      </div>
-                    )}
-                  </div>
-                ))}
-                {isOwnProfile && (
-                  <CreateSectionDialog onCreated={fetchSections} trigger={
-                    <button className="w-full aspect-[4/5] flex flex-col items-center justify-center gap-1 rounded-[16px] border-[0.5px] border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
-                      <Plus className="w-4 h-4" />
-                      <span className="text-[11px] font-medium">Lägg till</span>
-                    </button>
-                  } />
-                )}
-              </div>
-            </SortableContext>
-          </DndContext>
+          <GridWithExpansion
+            sections={sections}
+            expandedSection={expandedSection}
+            reordering={reordering}
+            isOwnProfile={isOwnProfile}
+            toggleSection={toggleSection}
+            fetchSections={fetchSections}
+            sensors={sensors}
+            handleDragEnd={handleDragEnd}
+          />
         )}
 
         {/* Tips & Favorites */}
