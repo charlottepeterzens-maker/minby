@@ -171,7 +171,10 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const totalCards = carouselItems.length + (isOwner ? 1 : 0);
 
   return (
-    <div className="bg-card border-[0.5px] rounded-[16px] p-4" style={{ borderColor: "#EDE8F4" }}>
+    <div
+      className="bg-card rounded-[14px]"
+      style={{ borderColor: "#EDE8F4", border: "0.5px solid #EDE8F4", padding: "20px 16px" }}
+    >
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-display text-base font-medium text-foreground">Hitta på något</h3>
       </div>
@@ -180,6 +183,45 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
 
       {entries.length === 0 && !isOwner ? (
         <p className="text-sm text-muted-foreground text-center py-3">{t("noAvailability")}</p>
+      ) : entries.length === 0 && isOwner ? (
+        <div className="flex flex-col items-center py-4">
+          {/* Three overlapping circles */}
+          <div className="flex items-center justify-center mb-3" style={{ height: 40 }}>
+            <div
+              className="rounded-full"
+              style={{ width: 32, height: 32, backgroundColor: "#EDE8F4", marginRight: -10, zIndex: 1 }}
+            />
+            <div
+              className="rounded-full"
+              style={{ width: 32, height: 32, backgroundColor: "#EAF2E8", marginRight: -10, zIndex: 2 }}
+            />
+            <div
+              className="rounded-full"
+              style={{ width: 32, height: 32, backgroundColor: "#FCF0F3", zIndex: 3 }}
+            />
+          </div>
+          <p className="text-center font-medium" style={{ fontSize: 13, color: "#3C2A4D" }}>
+            Vad vill du hitta på den här veckan?
+          </p>
+          <p
+            className="text-center mt-1"
+            style={{ fontSize: 12, color: "#7A6A85", maxWidth: 200 }}
+          >
+            Dela ett datum eller en idé med dina vänner
+          </p>
+          <button
+            onClick={() => setShowAdd(true)}
+            className="mt-3 text-white font-medium"
+            style={{
+              backgroundColor: "#3C2A4D",
+              borderRadius: 20,
+              padding: "8px 20px",
+              fontSize: 13,
+            }}
+          >
+            Kom igång
+          </button>
+        </div>
       ) : (
         <>
           {/* Carousel */}
