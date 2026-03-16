@@ -38,6 +38,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const [content, setContent] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [photoLayout, setPhotoLayout] = useState<"large" | "small">("large");
   const [posting, setPosting] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
