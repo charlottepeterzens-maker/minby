@@ -75,6 +75,18 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
 
   useEffect(() => { fetchEntries(); }, [fetchEntries]);
 
+  // Open a specific entry from notification
+  useEffect(() => {
+    if (openEntryId && entries.length > 0) {
+      const entry = entries.find(e => e.id === openEntryId);
+      if (entry) {
+        setSelectedEntry(entry);
+        setSheetOpen(true);
+        onOpenedEntry?.();
+      }
+    }
+  }, [openEntryId, entries, onOpenedEntry]);
+
   const handleCardClick = (entry: AvailabilityEntry) => {
     setSelectedEntry(entry);
     setSheetOpen(true);
