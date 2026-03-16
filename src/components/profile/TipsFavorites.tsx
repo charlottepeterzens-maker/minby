@@ -389,7 +389,7 @@ const TipsFavorites = ({
           </Sheet>
         ) : null
       ) : (
-        <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
           <AnimatePresence>
             {tips.map((tip, i) => (
               <TipCard
