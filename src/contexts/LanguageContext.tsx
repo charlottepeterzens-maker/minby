@@ -88,9 +88,9 @@ const translations = {
 
     // Auth page
     joinMinby: "Join MINBY",
-    welcomeBack: "Welcome back",
+    welcomeBack: "Sign in",
     startPlanning: "Start planning real moments with your people",
-    yourFriendsWaiting: "Your friends are waiting",
+    yourFriendsWaiting: "Sign in to continue",
     yourName: "Your name",
     howFriendsKnowYou: "How your friends know you",
     email: "Email",
