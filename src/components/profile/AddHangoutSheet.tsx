@@ -126,6 +126,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
           activities: [],
           custom_note: note.trim() || null,
           entry_type: "available",
+          visibility,
         });
         if (error) throw error;
       } else if (entryType === "confirmed") {
@@ -136,9 +137,9 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
           activities: planName.trim() ? [planName.trim()] : [],
           custom_note: planName.trim() || null,
           entry_type: "confirmed",
+          visibility,
         }).select("id").single();
         if (error) throw error;
-        // Tag friends
         if (entry && friends.length > 0) {
           await Promise.all(friends.map(f =>
             supabase.from("hangout_tagged_friends").insert({
@@ -150,13 +151,13 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
         }
       } else if (entryType === "activity") {
         if (activityDates.length === 0) return;
-        // Create one entry per date
         const inserts = activityDates.map(d => ({
           user_id: user.id,
           date: format(d, "yyyy-MM-dd"),
           activities: activityName.trim() ? [activityName.trim()] : [],
           custom_note: note.trim() || null,
           entry_type: "activity",
+          visibility,
         }));
         const { error } = await supabase.from("hangout_availability").insert(inserts);
         if (error) throw error;
