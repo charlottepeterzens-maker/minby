@@ -259,8 +259,30 @@ const TipsFavorites = ({
                   placeholder={t("tipUrlPlaceholder")}
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
+                  onBlur={() => fetchLinkPreview(url)}
+                  onPaste={(e) => {
+                    const pasted = e.clipboardData.getData('text');
+                    setTimeout(() => fetchLinkPreview(pasted), 100);
+                  }}
                   type="url"
                 />
+
+                {/* Link preview */}
+                {fetchingPreview && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    {t("tipFetchingPreview")}
+                  </div>
+                )}
+                {previewImage && !customImage && (
+                  <div className="flex items-center gap-3 rounded-[12px] border border-border p-2">
+                    <img src={previewImage} alt="" className="w-14 h-14 rounded-[8px] object-cover" />
+                    <p className="text-[11px] text-muted-foreground flex-1">{t("tipPreviewFound")}</p>
+                    <button onClick={() => setPreviewImage(null)} className="text-muted-foreground hover:text-foreground">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
 
                 {/* Image upload */}
                 <div className="flex items-center gap-3">
