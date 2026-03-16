@@ -347,11 +347,11 @@ const TipsFavorites = ({
                 />
 
                 <Button
-                  onClick={handleAdd}
+                  onClick={handleAddOrUpdate}
                   disabled={!title.trim()}
                   className="w-full"
                 >
-                  {t("addTip")}
+                  {editingTip ? t("tipSave") : t("addTip")}
                 </Button>
 
                 <p className="text-[11px] text-center text-muted-foreground">
