@@ -1,0 +1,1 @@
+ALTER TABLE public.hangout_availability DROP CONSTRAINT IF EXISTS hangout_availability_user_id_date_key;
