@@ -139,7 +139,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               className="font-display"
               style={{ fontWeight: 500, fontSize: "22px", color: "#3C2A4D" }}
             >
-              Välkommen till din by
+              Välkommen till Minby
             </h1>
             <p className="text-muted-foreground" style={{ fontSize: "14px" }}>
               Din plats för äkta kontakt med de som betyder mest
