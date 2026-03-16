@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import PostReactions from "@/components/profile/PostReactions";
+import PostComments from "@/components/profile/PostComments";
 
 interface FeedPostCardProps {
   post: {
@@ -108,6 +109,9 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProp
       ) : (
         <PostReactions postId={post.id} />
       )}
+
+      {/* Comments */}
+      <PostComments postId={post.id} isOwner={!!isOwn} />
     </div>
   );
 };
