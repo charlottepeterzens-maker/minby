@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_hangout_availability_date ON public.hangout_availability (date);
