@@ -452,6 +452,7 @@ const TipCard = ({
   isOwner,
   isSaved,
   onDelete,
+  onEdit,
   onSave,
   index,
   categoryEmoji,
@@ -460,6 +461,7 @@ const TipCard = ({
   isOwner: boolean;
   isSaved: boolean;
   onDelete: () => void;
+  onEdit: () => void;
   onSave: () => void;
   index: number;
   categoryEmoji: (key: string) => string;
