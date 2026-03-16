@@ -113,7 +113,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case "confirmed": return "kom med";
+      case "confirmed": return "häng med";
       case "activity": return "sugen på";
       default: return "vill ses";
     }
