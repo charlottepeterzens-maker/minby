@@ -15,6 +15,7 @@ import {
   Camera,
   Sparkles,
   Trash2,
+  Loader2,
 } from "lucide-react";
 import {
   Sheet,
@@ -69,6 +70,8 @@ const TipsFavorites = ({
   const [category, setCategory] = useState("other");
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [fetchingPreview, setFetchingPreview] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchTips = useCallback(async () => {
@@ -95,6 +98,28 @@ const TipsFavorites = ({
     fetchSavedTips();
   }, [fetchTips, fetchSavedTips]);
 
+  const fetchLinkPreview = useCallback(async (linkUrl: string) => {
+    if (!linkUrl.trim()) return;
+    let formatted = linkUrl.trim();
+    if (!formatted.startsWith('http')) formatted = `https://${formatted}`;
+    try { new URL(formatted); } catch { return; }
+
+    setFetchingPreview(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('fetch-link-preview', {
+        body: { url: formatted },
+      });
+      if (!error && data) {
+        if (data.title && !title) setTitle(data.title);
+        if (data.image && !customImage) setPreviewImage(data.image);
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setFetchingPreview(false);
+    }
+  }, [title, customImage]);
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
@@ -108,6 +133,7 @@ const TipsFavorites = ({
       toast({ title: t("error"), description: error.message, variant: "destructive" });
     } else {
       setCustomImage(path);
+      setPreviewImage(null);
     }
     setUploading(false);
   };
@@ -123,8 +149,8 @@ const TipsFavorites = ({
       return;
     }
 
-    // Try to get OG image from URL if no custom image
-    let imageUrl = customImage;
+    // Use custom image, or OG preview image, or null
+    let imageUrl = customImage || previewImage || null;
 
     const { error } = await supabase.from("user_tips").insert({
       user_id: user.id,
@@ -142,6 +168,7 @@ const TipsFavorites = ({
       setUrl("");
       setCategory("other");
       setCustomImage(null);
+      setPreviewImage(null);
       setSheetOpen(false);
       await fetchTips();
     }
@@ -232,8 +259,30 @@ const TipsFavorites = ({
                   placeholder={t("tipUrlPlaceholder")}
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
+                  onBlur={() => fetchLinkPreview(url)}
+                  onPaste={(e) => {
+                    const pasted = e.clipboardData.getData('text');
+                    setTimeout(() => fetchLinkPreview(pasted), 100);
+                  }}
                   type="url"
                 />
+
+                {/* Link preview */}
+                {fetchingPreview && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    {t("tipFetchingPreview")}
+                  </div>
+                )}
+                {previewImage && !customImage && (
+                  <div className="flex items-center gap-3 rounded-[12px] border border-border p-2">
+                    <img src={previewImage} alt="" className="w-14 h-14 rounded-[8px] object-cover" />
+                    <p className="text-[11px] text-muted-foreground flex-1">{t("tipPreviewFound")}</p>
+                    <button onClick={() => setPreviewImage(null)} className="text-muted-foreground hover:text-foreground">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
 
                 {/* Image upload */}
                 <div className="flex items-center gap-3">
@@ -317,7 +366,15 @@ const TipsFavorites = ({
                   ))}
                 </div>
                 <Input placeholder={t("tipTitlePlaceholder")} value={title} onChange={(e) => setTitle(e.target.value)} maxLength={80} />
-                <Input placeholder={t("tipUrlPlaceholder")} value={url} onChange={(e) => setUrl(e.target.value)} type="url" />
+                <Input placeholder={t("tipUrlPlaceholder")} value={url} onChange={(e) => setUrl(e.target.value)} onBlur={() => fetchLinkPreview(url)} onPaste={(e) => { const pasted = e.clipboardData.getData('text'); setTimeout(() => fetchLinkPreview(pasted), 100); }} type="url" />
+                {fetchingPreview && <div className="flex items-center gap-2 text-xs text-muted-foreground"><Loader2 className="w-3.5 h-3.5 animate-spin" />{t("tipFetchingPreview")}</div>}
+                {previewImage && !customImage && (
+                  <div className="flex items-center gap-3 rounded-[12px] border border-border p-2">
+                    <img src={previewImage} alt="" className="w-14 h-14 rounded-[8px] object-cover" />
+                    <p className="text-[11px] text-muted-foreground flex-1">{t("tipPreviewFound")}</p>
+                    <button onClick={() => setPreviewImage(null)} className="text-muted-foreground hover:text-foreground"><X className="w-3.5 h-3.5" /></button>
+                  </div>
+                )}
                 <div className="flex items-center gap-3">
                   <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
                     <Camera className="w-4 h-4" />

@@ -264,6 +264,8 @@ const translations = {
     tipCat_workout: "Workout",
     tipCat_product: "Product",
     tipCat_other: "Other",
+    tipFetchingPreview: "Fetching preview...",
+    tipPreviewFound: "Preview image from link",
   },
   sv: {
     // Nav
@@ -525,6 +527,8 @@ const translations = {
     tipCat_workout: "Träning",
     tipCat_product: "Produkt",
     tipCat_other: "Övrigt",
+    tipFetchingPreview: "Hämtar förhandsgranskning...",
+    tipPreviewFound: "Förhandsvisningsbild från länk",
   },
 } as const;
 
