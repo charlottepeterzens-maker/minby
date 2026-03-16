@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { format } from "date-fns";
-import { sv } from "date-fns/locale";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,6 +22,7 @@ interface Props {
 
 const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState<HangoutNotification[]>([]);
 
   const fetchNotifications = useCallback(async () => {
@@ -31,7 +31,6 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
       .from("notifications")
       .select("*")
       .eq("user_id", user.id)
-      .in("type", ["hangout_yes", "hangout_maybe"])
       .order("created_at", { ascending: false })
       .limit(20);
 
@@ -64,14 +63,28 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
       setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
       onNotificationsRead?.();
     }
-    if (n.reference_id) {
-      onOpenHangout(n.reference_id);
+
+    // Navigate based on type
+    if (n.type.startsWith("hangout_") && n.reference_id) {
+      if (n.type === "hangout_new" && n.reference_id) {
+        // reference_id is user_id for hangout_new
+        navigate(`/profile/${n.reference_id}`);
+      } else {
+        onOpenHangout(n.reference_id);
+      }
+    } else if (n.type === "group_invite" || n.type === "group_message") {
+      if (n.reference_id) navigate(`/groups/${n.reference_id}`);
+    } else if (n.type === "life_comment") {
+      // Stay on profile, could deep-link later
+    } else if (n.type === "friend_request") {
+      navigate("/friends");
     }
   };
 
   const timeAgo = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
+    if (mins < 1) return "nu";
     if (mins < 60) return `${mins}m sedan`;
     const hours = Math.floor(mins / 60);
     if (hours < 24) return `${hours}h sedan`;
