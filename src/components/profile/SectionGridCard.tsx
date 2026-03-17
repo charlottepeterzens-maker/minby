@@ -24,7 +24,7 @@ interface Props {
 
 const BG_COLORS = ["#EDE8F4", "#EAF2E8", "#FCF0F3", "#FCF0F3", "#EDE8F4", "#EAF2E8"];
 
-const TEXT_COLORS = ["#3C2A4D", "#1F4A1A", "#4B1528", "#3C2A4D", "#3C2A4D", "#1F4A1A"];
+const TEXT_COLORS = ["#3C2A4D", "#1F4A1A", "#4B1528", "##4B1528", "#3C2A4D", "#1F4A1A"];
 
 const SUBTEXT_COLORS = ["#7A6A85", "#3B6D11", "#993556", "#7A6A85", "#7A6A85", "#3B6D11"];
 const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onRenamed, index }: Props) => {
