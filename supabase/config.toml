@@ -3,6 +3,9 @@ project_id = "heuxlipzvlifyynwljxw"
 [functions.generate-vapid-keys]
 verify_jwt = false
 
+[functions.fetch-link-preview]
+verify_jwt = false
+
 [functions.send-push]
 verify_jwt = false
 
