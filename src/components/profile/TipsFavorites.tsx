@@ -331,9 +331,11 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
             }}
           >
             <SheetTrigger asChild>
-              <button className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
-                <Plus className="w-3.5 h-3.5" />
-                {t("addTip")}
+              <button
+                className="w-5 h-5 rounded-full flex items-center justify-center"
+                style={{ backgroundColor: "#EDE8F4" }}
+              >
+                <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
               </button>
             </SheetTrigger>
             <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))]">
