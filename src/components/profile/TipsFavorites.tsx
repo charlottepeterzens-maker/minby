@@ -434,7 +434,7 @@ const TipCard = ({
         className="cursor-pointer"
         style={{
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           gap: 10,
           background: "#fff",
           borderRadius: 10,
