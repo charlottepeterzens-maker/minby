@@ -388,7 +388,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                       borderRadius: "0 0 12px 12px",
                     }}
                   />
-            
                 </button>
               );
             })}
@@ -396,7 +395,19 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
 
           {totalCards > 1 && (
             <div className="flex justify-center gap-1 mt-2">
+              {Array.from({ length: totalCards }).map((_, i) => (
+                <div
                   key={i}
+                  className="rounded-full transition-all"
+                  style={{
+                    width: i === currentIndex ? 12 : 5,
+                    height: 5,
+                    backgroundColor: i === currentIndex ? "#3C2A4D" : "#EDE8F4",
+                  }}
+                />
+              ))}
+            </div>
+          )}
                   className="rounded-full transition-all"
                   style={{
                     width: i === currentIndex ? 12 : 5,
