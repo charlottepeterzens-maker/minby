@@ -59,11 +59,10 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
   const [loading, setLoading] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingTip, setEditingTip] = useState<Tip | null>(null);
-
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
   const [comment, setComment] = useState("");
-  const [category, setCategory] = useState("other");
+  const [category, setCategory] = useState("lyssna");
   const [customImage, setCustomImage] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [fetchingPreview, setFetchingPreview] = useState(false);
@@ -101,18 +100,14 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
       } catch {
         return;
       }
-
       setFetchingPreview(true);
       try {
-        const { data, error } = await supabase.functions.invoke("fetch-link-preview", {
-          body: { url: formatted },
-        });
+        const { data, error } = await supabase.functions.invoke("fetch-link-preview", { body: { url: formatted } });
         if (!error && data) {
           if (data.title && !title) setTitle(data.title);
           if (data.image && !customImage) setPreviewImage(data.image);
         }
       } catch {
-        // silently fail
       } finally {
         setFetchingPreview(false);
       }
@@ -140,7 +135,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
     setTitle("");
     setUrl("");
     setComment("");
-    setCategory("other");
+    setCategory("lyssna");
     setCustomImage(null);
     setPreviewImage(null);
     setEditingTip(null);
@@ -160,7 +155,6 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
   const handleAddOrUpdate = async () => {
     if (!user || !title.trim()) return;
     const imageUrl = customImage || previewImage || null;
-
     if (editingTip) {
       const { error } = await supabase
         .from("user_tips")
@@ -218,88 +212,71 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
         return next;
       });
     } else {
-      await supabase.from("saved_tips").insert({
-        user_id: user.id,
-        original_tip_id: tipId,
-      });
+      await supabase.from("saved_tips").insert({ user_id: user.id, original_tip_id: tipId });
       setSavedTipIds((prev) => new Set(prev).add(tipId));
     }
   };
-
-  const categoryEmoji = (key: string) => CATEGORIES.find((c) => c.key === key)?.emoji || "✨";
 
   if (loading) return null;
 
   const formContent = (
     <div className="space-y-4 mt-4">
-      {/* Category picker */}
       <div className="flex flex-wrap gap-2">
         {CATEGORIES.map((cat) => (
           <button
             key={cat.key}
             onClick={() => setCategory(cat.key)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-              category === cat.key
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:text-foreground"
-            }`}
+            className="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+            style={{
+              background: category === cat.key ? "#3C2A4D" : cat.bg,
+              color: category === cat.key ? "#F7F3EF" : cat.color,
+            }}
           >
-            {cat.emoji} {t(`tipCat_${cat.key}` as any) || cat.key}
+            {cat.label}
           </button>
         ))}
       </div>
-
+      <Input placeholder="Namn på tipset" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={80} />
       <Input
-        placeholder={t("tipTitlePlaceholder")}
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        maxLength={80}
-      />
-
-      <Input
-        placeholder={t("tipUrlPlaceholder")}
+        placeholder="Länk (valfritt)"
         value={url}
         onChange={(e) => setUrl(e.target.value)}
         onBlur={() => fetchLinkPreview(url)}
         onPaste={(e) => {
-          const pasted = e.clipboardData.getData("text");
-          setTimeout(() => fetchLinkPreview(pasted), 100);
+          const p = e.clipboardData.getData("text");
+          setTimeout(() => fetchLinkPreview(p), 100);
         }}
         type="url"
       />
-
       <Textarea
-        placeholder={t("tipCommentPlaceholder")}
+        placeholder="Din kommentar – varför tipsar du om det här?"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         maxLength={200}
         className="min-h-[60px] resize-none"
       />
-
       {fetchingPreview && (
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-          {t("tipFetchingPreview")}
+          <Loader2 className="w-3.5 h-3.5 animate-spin" /> Hämtar förhandsgranskning...
         </div>
       )}
       {previewImage && !customImage && (
         <div className="flex items-center gap-3 rounded-[12px] border border-border p-2">
           <img src={previewImage} alt="" className="w-14 h-14 rounded-[8px] object-cover" />
-          <p className="text-[11px] text-muted-foreground flex-1">{t("tipPreviewFound")}</p>
+          <p className="text-[11px] text-muted-foreground flex-1">Bild hittad från länken</p>
           <button onClick={() => setPreviewImage(null)} className="text-muted-foreground hover:text-foreground">
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
-
       <div className="flex items-center gap-3">
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
           <Camera className="w-4 h-4" />
-          {customImage ? t("tipImageChanged") : t("tipAddImage")}
+          {customImage ? "Byt bild" : "Lägg till bild"}
         </button>
         {customImage && (
           <button onClick={() => setCustomImage(null)} className="text-muted-foreground hover:text-foreground">
@@ -308,20 +285,19 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
         )}
       </div>
       <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-
       <Button onClick={handleAddOrUpdate} disabled={!title.trim()} className="w-full">
-        {editingTip ? t("tipSave") : t("addTip")}
+        {editingTip ? "Spara" : "Lägg till tips"}
       </Button>
-
-      <p className="text-[11px] text-center text-muted-foreground">{t("tipCountInfo", tips.length, MAX_TIPS)}</p>
+      <p className="text-[11px] text-center text-muted-foreground">
+        {tips.length} av {MAX_TIPS} tips
+      </p>
     </div>
   );
 
   return (
     <div className="mb-6">
-      {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-xs font-medium text-muted-foreground font-body">{t("tipsSectionTitle")}</h2>
+        <h2 className="text-xs font-medium text-muted-foreground font-body">Tips & favoriter</h2>
         {isOwner && tips.length < MAX_TIPS && (
           <Sheet
             open={sheetOpen}
@@ -338,9 +314,11 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
                 <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))]">
+            <SheetContent side="bottom" className="rounded-t-[20px]" style={{ backgroundColor: "#F7F3EF" }}>
               <SheetHeader>
-                <SheetTitle className="font-display text-base">{editingTip ? t("tipSave") : t("addTip")}</SheetTitle>
+                <SheetTitle className="font-display text-base">
+                  {editingTip ? "Redigera tips" : "Lägg till tips"}
+                </SheetTitle>
               </SheetHeader>
               {formContent}
             </SheetContent>
@@ -348,45 +326,64 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
         )}
       </div>
 
-      {/* Tips grid */}
       {tips.length === 0 ? (
         isOwner ? (
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
-              <button className="w-full flex items-center gap-3 rounded-[16px] border-[0.5px] border-dashed border-border p-4 text-left text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
+              <button className="w-full flex items-center gap-3 rounded-[16px] border-[0.5px] border-dashed border-border p-4 text-left text-muted-foreground hover:text-foreground transition-colors">
                 <div className="shrink-0 flex items-center justify-center rounded-full w-9 h-9 border border-dashed border-current">
                   <Plus className="w-4 h-4" />
                 </div>
                 <div>
-                  <p className="text-[13px] font-medium">{t("tipEmptyTitle")}</p>
-                  <p className="text-[11px]">{t("tipEmptyDesc")}</p>
+                  <p className="text-[13px] font-medium">Dela dina favoriter</p>
+                  <p className="text-[11px]">Tipsa om poddar, serier, produkter och mer</p>
                 </div>
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))]">
+            <SheetContent side="bottom" className="rounded-t-[20px]" style={{ backgroundColor: "#F7F3EF" }}>
               <SheetHeader>
-                <SheetTitle className="font-display text-base">{t("addTip")}</SheetTitle>
+                <SheetTitle className="font-display text-base">Lägg till tips</SheetTitle>
               </SheetHeader>
               {formContent}
             </SheetContent>
           </Sheet>
         ) : null
       ) : (
-       <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", margin: "0 0 3px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-            {tip.title}
-          </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            {tip.comment && (
-              <p style={{ fontSize: 11, color: "#7A6A85", margin: 0, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", flex: 1 }}>
-                "{tip.comment}"
-              </p>
-            )}
-            <span style={{ borderRadius: 20, fontSize: 9, padding: "2px 7px", background: cat.bg, color: cat.color, fontWeight: 500, flexShrink: 0 }}>
-              {cat.label}
-            </span>
-          </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <AnimatePresence>
+            {tips.map((tip, i) => (
+              <TipCard
+                key={tip.id}
+                tip={tip}
+                isOwner={isOwner}
+                isSaved={savedTipIds.has(tip.id)}
+                onDelete={() => handleDelete(tip.id)}
+                onEdit={() => handleEdit(tip)}
+                onSave={() => handleSave(tip.id)}
+                index={i}
+              />
+            ))}
+          </AnimatePresence>
         </div>
+      )}
+
+      {isOwner && editingTip && (
+        <Sheet
+          open={sheetOpen}
+          onOpenChange={(open) => {
+            setSheetOpen(open);
+            if (!open) resetForm();
+          }}
+        >
+          <SheetContent side="bottom" className="rounded-t-[20px]" style={{ backgroundColor: "#F7F3EF" }}>
+            <SheetHeader>
+              <SheetTitle className="font-display text-base">Redigera tips</SheetTitle>
+            </SheetHeader>
+            {formContent}
+          </SheetContent>
+        </Sheet>
+      )}
+    </div>
   );
 };
 
@@ -407,7 +404,6 @@ const TipCard = ({
   onSave: () => void;
   index: number;
 }) => {
-  const { t } = useLanguage();
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
@@ -446,7 +442,6 @@ const TipCard = ({
           padding: "10px",
         }}
       >
-        {/* Bild */}
         <div
           style={{
             width: 44,
@@ -467,31 +462,68 @@ const TipCard = ({
           )}
         </div>
 
-        {/* Text */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", margin: "0 0 3px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+          <p
+            style={{
+              fontSize: 12,
+              fontWeight: 500,
+              color: "#3C2A4D",
+              margin: "0 0 3px",
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+            }}
+          >
             {tip.title}
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             {tip.comment ? (
-              <p style={{ fontSize: 11, color: "#7A6A85", margin: 0, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", flex: 1 }}>
+              <p
+                style={{
+                  fontSize: 11,
+                  color: "#7A6A85",
+                  margin: 0,
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  flex: 1,
+                }}
+              >
                 "{tip.comment}"
               </p>
             ) : (
               <div style={{ flex: 1 }} />
             )}
-            <span style={{ borderRadius: 20, fontSize: 9, padding: "2px 7px", background: cat.bg, color: cat.color, fontWeight: 500, flexShrink: 0 }}>
+            <span
+              style={{
+                borderRadius: 20,
+                fontSize: 9,
+                padding: "2px 7px",
+                background: cat.bg,
+                color: cat.color,
+                fontWeight: 500,
+                flexShrink: 0,
+              }}
+            >
               {cat.label}
             </span>
           </div>
         </div>
 
-        {/* Tre-punktsmeny */}
         <div onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
           {isOwner ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%" }}>
+                <button
+                  style={{
+                    width: 24,
+                    height: 24,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "50%",
+                  }}
+                >
                   <MoreHorizontal style={{ width: 14, height: 14, color: "#C9B8D8" }} />
                 </button>
               </DropdownMenuTrigger>
@@ -516,7 +548,6 @@ const TipCard = ({
         </div>
       </motion.div>
 
-      {/* Detail Sheet */}
       <Sheet open={detailOpen} onOpenChange={setDetailOpen}>
         <SheetContent
           side="bottom"
@@ -529,21 +560,40 @@ const TipCard = ({
             </div>
           )}
           <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
-            <span style={{ borderRadius: 20, fontSize: 10, padding: "3px 10px", background: cat.bg, color: cat.color, fontWeight: 500, alignSelf: "flex-start" }}>
+            <span
+              style={{
+                borderRadius: 20,
+                fontSize: 10,
+                padding: "3px 10px",
+                background: cat.bg,
+                color: cat.color,
+                fontWeight: 500,
+                alignSelf: "flex-start",
+              }}
+            >
               {cat.label}
             </span>
-            <p style={{ fontSize: 16, fontWeight: 500, color: "#3C2A4D", margin: 0, lineHeight: 1.3 }}>
-              {tip.title}
-            </p>
+            <p style={{ fontSize: 16, fontWeight: 500, color: "#3C2A4D", margin: 0, lineHeight: 1.3 }}>{tip.title}</p>
             {tip.comment && (
               <p style={{ fontSize: 13, color: "#7A6A85", margin: 0, lineHeight: 1.5 }}>"{tip.comment}"</p>
             )}
             {tip.url && (
-              
+              <a
                 href={tip.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: "#3C2A4D", background: "#EDE8F4", borderRadius: 8, padding: "8px 12px", textDecoration: "none", fontWeight: 500 }}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 13,
+                  color: "#3C2A4D",
+                  background: "#EDE8F4",
+                  borderRadius: 8,
+                  padding: "8px 12px",
+                  textDecoration: "none",
+                  fontWeight: 500,
+                }}
               >
                 <ExternalLink style={{ width: 14, height: 14 }} />
                 Öppna länk
@@ -552,14 +602,36 @@ const TipCard = ({
             {isOwner && (
               <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
                 <button
-                  onClick={() => { setDetailOpen(false); onEdit(); }}
-                  style={{ flex: 1, background: "#3C2A4D", color: "#F7F3EF", borderRadius: 10, padding: "9px", fontSize: 12, fontWeight: 500, border: "none" }}
+                  onClick={() => {
+                    setDetailOpen(false);
+                    onEdit();
+                  }}
+                  style={{
+                    flex: 1,
+                    background: "#3C2A4D",
+                    color: "#F7F3EF",
+                    borderRadius: 10,
+                    padding: "9px",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    border: "none",
+                  }}
                 >
                   Redigera
                 </button>
                 <button
-                  onClick={() => { setDetailOpen(false); onDelete(); }}
-                  style={{ background: "#F7F3EF", color: "#A32D2D", borderRadius: 10, padding: "9px 14px", fontSize: 12, border: "0.5px solid #EDE8F4" }}
+                  onClick={() => {
+                    setDetailOpen(false);
+                    onDelete();
+                  }}
+                  style={{
+                    background: "#F7F3EF",
+                    color: "#A32D2D",
+                    borderRadius: 10,
+                    padding: "9px 14px",
+                    fontSize: 12,
+                    border: "0.5px solid #EDE8F4",
+                  }}
                 >
                   Ta bort
                 </button>
