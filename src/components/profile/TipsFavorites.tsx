@@ -642,12 +642,13 @@ const TipCard = ({
                     onDelete();
                   }}
                   style={{
-                    background: "#EDE8F4",
-                    color: "#3C2A4D",
+                    background: "#F7F3EF",
+                    color: "#A32D2D",
                     borderRadius: 10,
                     padding: "9px 14px",
                     fontSize: 12,
-                    border: "none",
+                    border: "0.5px solid #EDE8F4"
+                    outline: "none",
                   }}
                 >
                   Ta bort
