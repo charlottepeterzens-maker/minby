@@ -625,8 +625,8 @@ const TipCard = ({
                   }}
                   style={{
                     flex: 1,
-                    background: "#3C2A4D",
-                    color: "#F7F3EF",
+                    background: "#EDE8F4",
+                    color: "#3C2A4D",
                     borderRadius: 10,
                     padding: "9px",
                     fontSize: 12,
@@ -647,7 +647,7 @@ const TipCard = ({
                     borderRadius: 10,
                     padding: "9px 14px",
                     fontSize: 12,
-                    border: "0.5px solid #EDE8F4",
+                    border: "none",
                   }}
                 >
                   Ta bort
