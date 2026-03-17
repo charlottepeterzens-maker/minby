@@ -388,21 +388,14 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                       borderRadius: "0 0 12px 12px",
                     }}
                   />
+                />
                 </button>
               );
-              >
-                <Plus className="w-5 h-5 mb-1" style={{ color: "#C9B8D8" }} />
-                <span className="text-[11px]" style={{ color: "#7A6A85" }}>
-                  Lägg till
-                </span>
-              </button>
-            )}
+            })}
           </div>
 
           {totalCards > 1 && (
             <div className="flex justify-center gap-1 mt-2">
-              {Array.from({ length: totalCards }).map((_, i) => (
-                <div
                   key={i}
                   className="rounded-full transition-all"
                   style={{
