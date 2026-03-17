@@ -170,7 +170,8 @@ const ProfilePage = () => {
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
           <div ref={gridRef} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-            {sections.map((section, i) => (
+            const visibleSections = showAll ? sections : sections.slice(0, 6);
+            {visibleSections.map((section, i) => (
               <div key={section.id} className="contents">
                 <div className="animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
                   <SortableGridCard
