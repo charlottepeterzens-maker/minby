@@ -435,8 +435,11 @@ const TipCard = ({
         exit={{ opacity: 0, y: -8 }}
         transition={{ delay: index * 0.06 }}
         onClick={() => setDetailOpen(true)}
-        className="flex items-center gap-10 cursor-pointer"
+        className="cursor-pointer"
         style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
           background: "#fff",
           borderRadius: 10,
           border: "0.5px solid #EDE8F4",
@@ -466,34 +469,29 @@ const TipCard = ({
 
         {/* Text */}
         <div style={{ flex: 1, minWidth: 0 }}>
-         <p style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", margin: "0 0 3px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-  {tip.title}
-</p>
-<div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-  {tip.comment && (
-    <p style={{ fontSize: 11, color: "#7A6A85", margin: 0, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", flex: 1 }}>
-      "{tip.comment}"
-    </p>
-  )}
-  <span style={{ borderRadius: 20, fontSize: 9, padding: "2px 7px", background: cat.bg, color: cat.color, fontWeight: 500, flexShrink: 0 }}>
-    {cat.label}
-  </span>
-</div>
+          <p style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", margin: "0 0 3px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+            {tip.title}
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            {tip.comment ? (
+              <p style={{ fontSize: 11, color: "#7A6A85", margin: 0, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", flex: 1 }}>
+                "{tip.comment}"
+              </p>
+            ) : (
+              <div style={{ flex: 1 }} />
+            )}
+            <span style={{ borderRadius: 20, fontSize: 9, padding: "2px 7px", background: cat.bg, color: cat.color, fontWeight: 500, flexShrink: 0 }}>
+              {cat.label}
+            </span>
+          </div>
+        </div>
+
         {/* Tre-punktsmeny */}
         <div onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
           {isOwner ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button
-                  style={{
-                    width: 24,
-                    height: 24,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: "50%",
-                  }}
-                >
+                <button style={{ width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "50%" }}>
                   <MoreHorizontal style={{ width: 14, height: 14, color: "#C9B8D8" }} />
                 </button>
               </DropdownMenuTrigger>
@@ -531,40 +529,21 @@ const TipCard = ({
             </div>
           )}
           <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
-            <span
-              style={{
-                borderRadius: 20,
-                fontSize: 10,
-                padding: "3px 10px",
-                background: cat.bg,
-                color: cat.color,
-                fontWeight: 500,
-                alignSelf: "flex-start",
-              }}
-            >
+            <span style={{ borderRadius: 20, fontSize: 10, padding: "3px 10px", background: cat.bg, color: cat.color, fontWeight: 500, alignSelf: "flex-start" }}>
               {cat.label}
             </span>
-            <p style={{ fontSize: 16, fontWeight: 500, color: "#3C2A4D", margin: 0, lineHeight: 1.3 }}>{tip.title}</p>
+            <p style={{ fontSize: 16, fontWeight: 500, color: "#3C2A4D", margin: 0, lineHeight: 1.3 }}>
+              {tip.title}
+            </p>
             {tip.comment && (
               <p style={{ fontSize: 13, color: "#7A6A85", margin: 0, lineHeight: 1.5 }}>"{tip.comment}"</p>
             )}
             {tip.url && (
-              <a
+              
                 href={tip.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  fontSize: 13,
-                  color: "#3C2A4D",
-                  background: "#EDE8F4",
-                  borderRadius: 8,
-                  padding: "8px 12px",
-                  textDecoration: "none",
-                  fontWeight: 500,
-                }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: "#3C2A4D", background: "#EDE8F4", borderRadius: 8, padding: "8px 12px", textDecoration: "none", fontWeight: 500 }}
               >
                 <ExternalLink style={{ width: 14, height: 14 }} />
                 Öppna länk
@@ -573,36 +552,14 @@ const TipCard = ({
             {isOwner && (
               <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
                 <button
-                  onClick={() => {
-                    setDetailOpen(false);
-                    onEdit();
-                  }}
-                  style={{
-                    flex: 1,
-                    background: "#3C2A4D",
-                    color: "#F7F3EF",
-                    borderRadius: 10,
-                    padding: "9px",
-                    fontSize: 12,
-                    fontWeight: 500,
-                    border: "none",
-                  }}
+                  onClick={() => { setDetailOpen(false); onEdit(); }}
+                  style={{ flex: 1, background: "#3C2A4D", color: "#F7F3EF", borderRadius: 10, padding: "9px", fontSize: 12, fontWeight: 500, border: "none" }}
                 >
                   Redigera
                 </button>
                 <button
-                  onClick={() => {
-                    setDetailOpen(false);
-                    onDelete();
-                  }}
-                  style={{
-                    background: "#F7F3EF",
-                    color: "#A32D2D",
-                    borderRadius: 10,
-                    padding: "9px 14px",
-                    fontSize: 12,
-                    border: "0.5px solid #EDE8F4",
-                  }}
+                  onClick={() => { setDetailOpen(false); onDelete(); }}
+                  style={{ background: "#F7F3EF", color: "#A32D2D", borderRadius: 10, padding: "9px 14px", fontSize: 12, border: "0.5px solid #EDE8F4" }}
                 >
                   Ta bort
                 </button>
