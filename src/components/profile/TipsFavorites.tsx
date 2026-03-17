@@ -590,7 +590,7 @@ const TipCard = ({
             >
               {cat.label}
             </span>
-            <p style={{ fontSize: 16, fontWeight: 500, color: "#3C2A4D", margin: 0, lineHeight: 1.3 }}>{tip.title}</p>
+            <p style={{ fontSize: 16, fontWeight: 500, color: "#3C2A4D", margin: 0, lineHeight: 1.3 }}>{tip.title.replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16))).replace(/&amp;/g, "&").replace(/&quot;/g, '"')}</p>
             {tip.comment && (
               <p style={{ fontSize: 13, color: "#7A6A85", margin: 0, lineHeight: 1.5 }}>"{tip.comment}"</p>
             )}
