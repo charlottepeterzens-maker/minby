@@ -51,6 +51,12 @@ const CATEGORIES = [
   { key: "vardagslyx", label: "Vardagslyx", bg: "#EDE8F4", color: "#7A6A85" },
 ];
 
+const decodeTitle = (title: string) =>
+  title
+    .replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"');
+
 const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }) => {
   const { user } = useAuth();
   const { t } = useLanguage();
@@ -422,6 +428,7 @@ const TipCard = ({
   }, [tip.image_url]);
 
   const cat = CATEGORIES.find((c) => c.key === tip.category) || CATEGORIES[CATEGORIES.length - 1];
+  const displayTitle = decodeTitle(tip.title);
 
   return (
     <>
@@ -456,14 +463,7 @@ const TipCard = ({
           }}
         >
           {signedUrl ? (
-            <img
-              src={signedUrl}
-              alt={tip.title}
-                .replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
-                .replace(/&amp;/g, "&")
-                .replace(/&quot;/g, '"')}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
+            <img src={signedUrl} alt={displayTitle} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
             <span style={{ fontSize: 18, color: cat.color, fontWeight: 500 }}>{cat.label.charAt(0)}</span>
           )}
@@ -481,7 +481,7 @@ const TipCard = ({
               textOverflow: "ellipsis",
             }}
           >
-            {tip.title.replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))}
+            {displayTitle}
           </p>
           {tip.comment && (
             <p
@@ -573,9 +573,10 @@ const TipCard = ({
         >
           {signedUrl && (
             <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden", borderRadius: "20px 20px 0 0" }}>
-            <img src={signedUrl} alt={tip.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={signedUrl} alt={displayTitle} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
           )}
-          <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+          <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
             <span
               style={{
                 borderRadius: 20,
@@ -589,7 +590,9 @@ const TipCard = ({
             >
               {cat.label}
             </span>
-            <p style={{ fontSize: 16, fontWeight: 500, color: "#3C2A4D", margin: 0, lineHeight: 1.3 }}>{tip.title.replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16))).replace(/&amp;/g, "&").replace(/&quot;/g, '"')}</p>
+            <p style={{ fontSize: 16, fontWeight: 500, color: "#3C2A4D", margin: 0, lineHeight: 1.3 }}>
+              {displayTitle}
+            </p>
             {tip.comment && (
               <p style={{ fontSize: 13, color: "#7A6A85", margin: 0, lineHeight: 1.5 }}>"{tip.comment}"</p>
             )}
@@ -616,7 +619,7 @@ const TipCard = ({
               </a>
             )}
             {isOwner && (
-              <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+              <div style={{ display: "flex", gap: 8 }}>
                 <button
                   onClick={() => {
                     setDetailOpen(false);
@@ -631,7 +634,7 @@ const TipCard = ({
                     fontSize: 12,
                     fontWeight: 500,
                     border: "none",
-                    outline: "none"
+                    outline: "none",
                   }}
                 >
                   Redigera
