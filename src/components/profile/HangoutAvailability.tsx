@@ -57,9 +57,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const getActivityLabel = (key: string) => ACTIVITY_MAP[key] || key;
 
   const getActivityName = (entry: AvailabilityEntry) => {
-    return entry.activities.length > 0
-      ? getActivityLabel(entry.activities[0])
-      : entry.custom_note || "";
+    return entry.activities.length > 0 ? getActivityLabel(entry.activities[0]) : entry.custom_note || "";
   };
 
   const fetchEntries = useCallback(async () => {
@@ -78,9 +76,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
       const groupMap = new Map<string, AvailabilityEntry[]>();
       for (const entry of typedData) {
         if (entry.entry_type === "activity") {
-          const name = entry.activities.length > 0
-            ? getActivityLabel(entry.activities[0])
-            : entry.custom_note || "";
+          const name = entry.activities.length > 0 ? getActivityLabel(entry.activities[0]) : entry.custom_note || "";
           if (!groupMap.has(name)) {
             groupMap.set(name, []);
           }
@@ -89,7 +85,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
       }
       setActivityGroupMap(groupMap);
 
-      const ids = typedData.map(e => e.id);
+      const ids = typedData.map((e) => e.id);
       if (ids.length > 0) {
         const { data: tags } = await supabase
           .from("hangout_tagged_friends")
@@ -104,12 +100,14 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
     }
   }, [userId]);
 
-  useEffect(() => { fetchEntries(); }, [fetchEntries]);
+  useEffect(() => {
+    fetchEntries();
+  }, [fetchEntries]);
 
   // Open a specific entry from notification
   useEffect(() => {
     if (openEntryId && entries.length > 0) {
-      const entry = entries.find(e => e.id === openEntryId);
+      const entry = entries.find((e) => e.id === openEntryId);
       if (entry) {
         setSelectedEntry(entry);
         setSheetOpen(true);
@@ -134,17 +132,23 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
 
   const getTypeStyle = (type: string) => {
     switch (type) {
-      case "confirmed": return { bg: "#EDE8F4", border: "#C9B8D8" };
-      case "activity": return { bg: "#EAF2E8", border: "#B5CCBF" };
-      default: return { bg: "#F7F3EF", border: "#EDE8F4" };
+      case "confirmed":
+        return { bg: "#EDE8F4", border: "#C9B8D8" };
+      case "activity":
+        return { bg: "#EAF2E8", border: "#B5CCBF" };
+      default:
+        return { bg: "#F7F3EF", border: "#EDE8F4" };
     }
   };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case "confirmed": return "häng med";
-      case "activity": return "sugen på";
-      default: return "vill ses";
+      case "confirmed":
+        return "häng med";
+      case "activity":
+        return "sugen på";
+      default:
+        return "vill ses";
     }
   };
 
@@ -159,8 +163,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
 
   type CarouselItem = AvailabilityEntry | GroupedActivity;
 
-  const isGrouped = (item: CarouselItem): item is GroupedActivity =>
-    "dates" in item && "ids" in item;
+  const isGrouped = (item: CarouselItem): item is GroupedActivity => "dates" in item && "ids" in item;
 
   const buildCarouselItems = (): CarouselItem[] => {
     const nonActivity: AvailabilityEntry[] = [];
@@ -184,8 +187,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         id: val.entries[0].id,
         entry_type: "activity",
         activityName: name,
-        dates: val.entries.map(e => e.date),
-        ids: val.entries.map(e => e.id),
+        dates: val.entries.map((e) => e.date),
+        ids: val.entries.map((e) => e.id),
       });
     });
 
@@ -208,10 +211,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   };
 
   return (
-    <div
-      className="bg-card rounded-[14px]"
-      style={{ borderColor: "#EDE8F4", border: "0.5px solid #EDE8F4", padding: "20px 16px" }}
-    >
+    <div style={{ padding: "0 0 20px 0" }}>
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-display text-base font-medium text-foreground">Ses vi?</h3>
       </div>
@@ -239,18 +239,12 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
               className="rounded-full"
               style={{ width: 32, height: 32, backgroundColor: "#EAF2E8", marginRight: -10, zIndex: 2 }}
             />
-            <div
-              className="rounded-full"
-              style={{ width: 32, height: 32, backgroundColor: "#FCF0F3", zIndex: 3 }}
-            />
+            <div className="rounded-full" style={{ width: 32, height: 32, backgroundColor: "#FCF0F3", zIndex: 3 }} />
           </div>
           <p className="text-center font-medium" style={{ fontSize: 13, color: "#3C2A4D" }}>
             Vad vill du hitta på den här veckan?
           </p>
-          <p
-            className="text-center mt-1"
-            style={{ fontSize: 12, color: "#7A6A85", maxWidth: 200 }}
-          >
+          <p className="text-center mt-1" style={{ fontSize: 12, color: "#7A6A85", maxWidth: 200 }}>
             Dela ett datum eller en idé med dina vänner
           </p>
           <button
@@ -282,7 +276,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                   <button
                     key={`grouped-${item.activityName}`}
                     onClick={() => {
-                      const first = entries.find(e => e.id === item.id);
+                      const first = entries.find((e) => e.id === item.id);
                       if (first) handleCardClick(first);
                     }}
                     className="flex-shrink-0 flex flex-col text-left relative overflow-hidden"
@@ -343,9 +337,10 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
               const weekday = format(dateObj, "EEE", { locale: sv }).replace(".", "");
               const day = format(dateObj, "d");
               const month = format(dateObj, "MMM", { locale: sv }).replace(".", "");
-              const activityNameLabel = item.activities.length > 0
-                ? item.activities.map(a => ACTIVITY_MAP[a] || a).join(", ")
-                : item.custom_note || "";
+              const activityNameLabel =
+                item.activities.length > 0
+                  ? item.activities.map((a) => ACTIVITY_MAP[a] || a).join(", ")
+                  : item.custom_note || "";
               const isSelected = selectedEntry?.id === item.id && sheetOpen;
 
               return (
@@ -365,9 +360,13 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                   <span className="text-[9px] lowercase tracking-wider" style={{ color: "#B0A8B5" }}>
                     {getTypeLabel(item.entry_type)}
                   </span>
-                  <span className="text-[9px] uppercase mt-1" style={{ color: "#7A6A85" }}>{weekday}</span>
+                  <span className="text-[9px] uppercase mt-1" style={{ color: "#7A6A85" }}>
+                    {weekday}
+                  </span>
                   <span className="text-[22px] font-medium leading-tight text-foreground">{day}</span>
-                  <span className="text-[9px]" style={{ color: "#C9B8D8" }}>{month}</span>
+                  <span className="text-[9px]" style={{ color: "#C9B8D8" }}>
+                    {month}
+                  </span>
                   {activityNameLabel && (
                     <p
                       className="text-[11px] leading-snug text-foreground mt-auto"
@@ -377,7 +376,9 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                         WebkitBoxOrient: "vertical",
                         overflow: "hidden",
                       }}
-                    >{activityNameLabel}</p>
+                    >
+                      {activityNameLabel}
+                    </p>
                   )}
                   <div
                     className="absolute bottom-0 left-0 right-0 pointer-events-none"
@@ -405,7 +406,9 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                 }}
               >
                 <Plus className="w-5 h-5 mb-1" style={{ color: "#C9B8D8" }} />
-                <span className="text-[11px]" style={{ color: "#7A6A85" }}>Lägg till</span>
+                <span className="text-[11px]" style={{ color: "#7A6A85" }}>
+                  Lägg till
+                </span>
               </button>
             )}
           </div>
