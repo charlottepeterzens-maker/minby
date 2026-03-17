@@ -48,6 +48,20 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Activity group map: activity name → array of entries
+  const [activityGroupMap, setActivityGroupMap] = useState<Map<string, AvailabilityEntry[]>>(new Map());
+
+  // Prefilled activity name for AddHangoutSheet
+  const [prefillActivityName, setPrefillActivityName] = useState<string | undefined>();
+
+  const getActivityLabel = (key: string) => ACTIVITY_MAP[key] || key;
+
+  const getActivityName = (entry: AvailabilityEntry) => {
+    return entry.activities.length > 0
+      ? getActivityLabel(entry.activities[0])
+      : entry.custom_note || "";
+  };
+
   const fetchEntries = useCallback(async () => {
     const today = format(new Date(), "yyyy-MM-dd");
     const { data } = await supabase
@@ -57,8 +71,25 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
       .gte("date", today)
       .order("date", { ascending: true });
     if (data) {
-      setEntries(data as AvailabilityEntry[]);
-      const ids = data.map((e: any) => e.id);
+      const typedData = data as AvailabilityEntry[];
+      setEntries(typedData);
+
+      // Build activity group map
+      const groupMap = new Map<string, AvailabilityEntry[]>();
+      for (const entry of typedData) {
+        if (entry.entry_type === "activity") {
+          const name = entry.activities.length > 0
+            ? getActivityLabel(entry.activities[0])
+            : entry.custom_note || "";
+          if (!groupMap.has(name)) {
+            groupMap.set(name, []);
+          }
+          groupMap.get(name)!.push(entry);
+        }
+      }
+      setActivityGroupMap(groupMap);
+
+      const ids = typedData.map(e => e.id);
       if (ids.length > 0) {
         const { data: tags } = await supabase
           .from("hangout_tagged_friends")
@@ -96,12 +127,10 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const handleScroll = () => {
     if (!scrollRef.current) return;
     const el = scrollRef.current;
-    const cardWidth = 130; // approx card + gap
+    const cardWidth = 130;
     const idx = Math.round(el.scrollLeft / cardWidth);
     setCurrentIndex(idx);
   };
-
-  // totalCards moved below after grouping
 
   const getTypeStyle = (type: string) => {
     switch (type) {
@@ -118,8 +147,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
       default: return "vill ses";
     }
   };
-
-  const getActivityLabel = (key: string) => ACTIVITY_MAP[key] || key;
 
   // Group activity entries by activity name
   interface GroupedActivity {
@@ -141,9 +168,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
 
     for (const entry of entries) {
       if (entry.entry_type === "activity") {
-        const name = entry.activities.length > 0
-          ? getActivityLabel(entry.activities[0])
-          : entry.custom_note || "";
+        const name = getActivityName(entry);
         if (!activityMap.has(name)) {
           activityMap.set(name, { entries: [] });
         }
@@ -170,6 +195,18 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const carouselItems = buildCarouselItems();
   const totalCards = carouselItems.length + (isOwner ? 1 : 0);
 
+  // Get grouped entries for the currently selected entry
+  const getGroupedEntriesForSelected = (): AvailabilityEntry[] | undefined => {
+    if (!selectedEntry || selectedEntry.entry_type !== "activity") return undefined;
+    const name = getActivityName(selectedEntry);
+    return activityGroupMap.get(name);
+  };
+
+  const handleAddActivityDate = (activityNameParam: string) => {
+    setPrefillActivityName(activityNameParam);
+    setShowAdd(true);
+  };
+
   return (
     <div
       className="bg-card rounded-[14px]"
@@ -179,7 +216,14 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         <h3 className="font-display text-base font-medium text-foreground">Ses vi?</h3>
       </div>
 
-      <AddHangoutSheet open={showAdd} onOpenChange={setShowAdd} onCreated={fetchEntries} />
+      <AddHangoutSheet
+        open={showAdd}
+        onOpenChange={(v) => {
+          setShowAdd(v);
+          if (!v) setPrefillActivityName(undefined);
+        }}
+        onCreated={fetchEntries}
+      />
 
       {entries.length === 0 && !isOwner ? (
         <p className="text-sm text-muted-foreground text-center py-3">{t("noAvailability")}</p>
@@ -233,13 +277,11 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
           >
             {carouselItems.map((item) => {
               if (isGrouped(item)) {
-                // Grouped activity card
                 const totalFriends = item.ids.reduce((sum, id) => sum + (confirmedCounts.get(id) || 0), 0);
                 return (
                   <button
                     key={`grouped-${item.activityName}`}
                     onClick={() => {
-                      // Open detail for the first entry in the group
                       const first = entries.find(e => e.id === item.id);
                       if (first) handleCardClick(first);
                     }}
@@ -284,7 +326,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                         {totalFriends} svar
                       </span>
                     )}
-                    {/* Fade gradient */}
                     <div
                       className="absolute bottom-0 left-0 right-0 pointer-events-none"
                       style={{
@@ -297,13 +338,12 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                 );
               }
 
-              // Regular entry card
               const style = getTypeStyle(item.entry_type);
               const dateObj = new Date(item.date + "T00:00:00");
               const weekday = format(dateObj, "EEE", { locale: sv }).replace(".", "");
               const day = format(dateObj, "d");
               const month = format(dateObj, "MMM", { locale: sv }).replace(".", "");
-              const activityName = item.activities.length > 0
+              const activityNameLabel = item.activities.length > 0
                 ? item.activities.map(a => ACTIVITY_MAP[a] || a).join(", ")
                 : item.custom_note || "";
               const isSelected = selectedEntry?.id === item.id && sheetOpen;
@@ -328,7 +368,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                   <span className="text-[9px] uppercase mt-1" style={{ color: "#7A6A85" }}>{weekday}</span>
                   <span className="text-[22px] font-medium leading-tight text-foreground">{day}</span>
                   <span className="text-[9px]" style={{ color: "#C9B8D8" }}>{month}</span>
-                  {activityName && (
+                  {activityNameLabel && (
                     <p
                       className="text-[11px] leading-snug text-foreground mt-auto"
                       style={{
@@ -337,9 +377,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                         WebkitBoxOrient: "vertical",
                         overflow: "hidden",
                       }}
-                    >{activityName}</p>
+                    >{activityNameLabel}</p>
                   )}
-                  {/* Fade gradient at bottom */}
                   <div
                     className="absolute bottom-0 left-0 right-0 pointer-events-none"
                     style={{
@@ -352,7 +391,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
               );
             })}
 
-            {/* Add card */}
             {isOwner && (
               <button
                 onClick={() => setShowAdd(true)}
@@ -372,7 +410,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             )}
           </div>
 
-          {/* Pagination dots */}
           {totalCards > 1 && (
             <div className="flex justify-center gap-1 mt-2">
               {Array.from({ length: totalCards }).map((_, i) => (
@@ -398,9 +435,11 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         isOwner={isOwner}
         onDeleted={fetchEntries}
         onEdited={() => {
-          // For now just close and could open edit mode
           setSheetOpen(false);
         }}
+        groupedEntries={getGroupedEntriesForSelected()}
+        onRefresh={fetchEntries}
+        onAddActivityDate={handleAddActivityDate}
       />
     </div>
   );
