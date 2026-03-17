@@ -392,18 +392,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
               );
             })}
 
-            {isOwner && (
-              <button
-                onClick={() => setShowAdd(true)}
-                className="flex-shrink-0 flex flex-col items-center justify-center transition-colors hover:bg-muted/30"
-                style={{
-                  width: 130,
-                  height: 110,
-                  borderRadius: 12,
-                  padding: 10,
-                  border: "1.5px dashed #DDD5CC",
-                  backgroundColor: "transparent",
-                }}
               >
                 <Plus className="w-5 h-5 mb-1" style={{ color: "#C9B8D8" }} />
                 <span className="text-[11px]" style={{ color: "#7A6A85" }}>
