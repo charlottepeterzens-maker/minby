@@ -1,7 +1,12 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
+
+const BLOCKED_HOSTS = ['169.254.', '10.', '192.168.', '172.16.', '172.17.', '172.18.', '172.19.', '172.20.', '172.21.', '172.22.', '172.23.', '172.24.', '172.25.', '172.26.', '172.27.', '172.28.', '172.29.', '172.30.', '172.31.', '127.', '0.0.0.0', 'metadata.google.internal', '[::1]', 'localhost'];
+const MAX_RESPONSE_BYTES = 1_000_000; // 1 MB
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -9,6 +14,30 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Step 1: Require authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims?.sub) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const { url } = await req.json();
     if (!url) {
       return new Response(JSON.stringify({ error: 'URL required' }), {
@@ -20,6 +49,31 @@ Deno.serve(async (req) => {
     let formattedUrl = url.trim();
     if (!formattedUrl.startsWith('http')) {
       formattedUrl = `https://${formattedUrl}`;
+    }
+
+    // Step 2: Block private/metadata hosts
+    let parsed: URL;
+    try {
+      parsed = new URL(formattedUrl);
+    } catch {
+      return new Response(JSON.stringify({ error: 'Invalid URL' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (!parsed.protocol.startsWith('http')) {
+      return new Response(JSON.stringify({ error: 'Forbidden URL scheme' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (BLOCKED_HOSTS.some(b => parsed.hostname.startsWith(b) || parsed.hostname === b)) {
+      return new Response(JSON.stringify({ error: 'Forbidden URL' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const response = await fetch(formattedUrl, {
@@ -37,11 +91,42 @@ Deno.serve(async (req) => {
       });
     }
 
-    const html = await response.text();
+    // Step 3: Cap response size
+    const reader = response.body?.getReader();
+    if (!reader) {
+      return new Response(JSON.stringify({ error: 'No response body' }), {
+        status: 502,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const chunks: Uint8Array[] = [];
+    let totalBytes = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      totalBytes += value.byteLength;
+      if (totalBytes > MAX_RESPONSE_BYTES) {
+        reader.cancel();
+        return new Response(JSON.stringify({ error: 'Response too large' }), {
+          status: 413,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      chunks.push(value);
+    }
+
+    const html = new TextDecoder().decode(
+      chunks.reduce((acc, chunk) => {
+        const merged = new Uint8Array(acc.length + chunk.length);
+        merged.set(acc);
+        merged.set(chunk, acc.length);
+        return merged;
+      }, new Uint8Array())
+    );
 
     // Extract OG tags
     const getMetaContent = (property: string): string | null => {
-      // Try og: and twitter: variants
       for (const attr of ['property', 'name']) {
         const regex = new RegExp(
           `<meta[^>]+${attr}=["']${property}["'][^>]+content=["']([^"']*)["']`,
@@ -50,7 +135,6 @@ Deno.serve(async (req) => {
         const match = html.match(regex);
         if (match) return match[1];
 
-        // Also try content before property
         const regex2 = new RegExp(
           `<meta[^>]+content=["']([^"']*)["'][^>]+${attr}=["']${property}["']`,
           'i'
@@ -72,7 +156,6 @@ Deno.serve(async (req) => {
       getMetaContent('twitter:image') ||
       null;
 
-    // Resolve relative image URLs
     if (image && !image.startsWith('http')) {
       try {
         image = new URL(image, formattedUrl).href;
@@ -88,7 +171,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('Link preview error:', error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'Failed' }),
+      JSON.stringify({ error: 'Failed to fetch link preview' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
