@@ -125,8 +125,18 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
 
           {/* Text content (bottom) */}
           <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
-            <p className="text-[13px] font-medium text-white leading-tight truncate">{section.name}</p>
-            <p className="text-[11px] text-white/70 leading-tight mt-0.5">{postCount} inlägg</p>
+            <p
+              className="text-[13px] font-medium leading-tight truncate"
+              style={{ color: hasImage ? "#ffffff" : TEXT_COLORS[index % TEXT_COLORS.length] }}
+            >
+              {section.name}
+            </p>
+            <p
+              className="text-[11px] leading-tight mt-0.5"
+              style={{ color: hasImage ? "rgba(255,255,255,0.7)" : SUBTEXT_COLORS[index % SUBTEXT_COLORS.length] }}
+            >
+              {postCount} inlägg
+            </p>
           </div>
         </button>
 
