@@ -22,7 +22,7 @@ interface Props {
   index: number;
 }
 
-const BG_COLORS = ["#EDE8F4", "#EAF2E8", "#FCF0F3", "#F7F3EF", "#EDE8F4", "#EAF2E8"];
+const BG_COLORS = ["#EDE8F4", "#EAF2E8", "#FCF0F3", "#FCF0F3", "#EDE8F4", "#EAF2E8"];
 
 const TEXT_COLORS = ["#3C2A4D", "#1F4A1A", "#4B1528", "#3C2A4D", "#3C2A4D", "#1F4A1A"];
 
