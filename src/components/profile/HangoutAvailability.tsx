@@ -390,8 +390,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                   />
                 </button>
               );
-            })}
-
               >
                 <Plus className="w-5 h-5 mb-1" style={{ color: "#C9B8D8" }} />
                 <span className="text-[11px]" style={{ color: "#7A6A85" }}>
