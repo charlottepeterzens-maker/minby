@@ -146,7 +146,8 @@ const ProfilePage = () => {
     handleDragEnd: (event: DragEndEvent) => void;
   }) => {
     const gridRef = useRef<HTMLDivElement>(null);
-    const [cols, setCols] = useState(3);const [showAll, setShowAll] = useState(false);
+    const [cols, setCols] = useState(3);
+    const [showAll, setShowAll] = useState(false);
 
     useEffect(() => {
       const measure = () => {
@@ -165,65 +166,67 @@ const ProfilePage = () => {
     const expandedRowEnd = expandedIdx >= 0 ? Math.floor(expandedIdx / cols) * cols + cols - 1 : -1;
     // Clamp to last index
     const insertAfterIdx = Math.min(expandedRowEnd, sections.length - 1);
-const visibleSections = showAll ? sections : sections.slice(0, 6);
+    const visibleSections = showAll ? sections : sections.slice(0, 6);
     return (
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
-          <div ref={gridRef} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-            
-            {visibleSections.map((section, i) => (
-              <div key={section.id} className="contents">
-                <div className="animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
-                  <SortableGridCard
-                    section={section}
-                    isOwner={isOwnProfile}
-                    isExpanded={expandedSection === section.id}
-                    onClick={() => toggleSection(section.id)}
-                    onDeleted={fetchSections}
-                    onRenamed={fetchSections}
-                    index={i}
-                    reordering={reordering}
-                  />
-                </div>
-                {i === insertAfterIdx && expandedSection && !reordering && (
-                  <div className="col-span-3 sm:col-span-4 md:col-span-5">
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={expandedSection}
-                        id={`section-${expandedSection}`}
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.25, ease: "easeInOut" }}
-                        className="overflow-hidden"
-                      >
-                        {(() => {
-                          const sec = sections.find((s) => s.id === expandedSection);
-                          if (!sec) return null;
-                          if (sec.section_type === "workout")
-                            return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
-                          return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
-                        })()}
-                      </motion.div>
-                    </AnimatePresence>
+      <>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
+            <div ref={gridRef} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+              {visibleSections.map((section, i) => (
+                <div key={section.id} className="contents">
+                  <div className="animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
+                    <SortableGridCard
+                      section={section}
+                      isOwner={isOwnProfile}
+                      isExpanded={expandedSection === section.id}
+                      onClick={() => toggleSection(section.id)}
+                      onDeleted={fetchSections}
+                      onRenamed={fetchSections}
+                      index={i}
+                      reordering={reordering}
+                    />
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </SortableContext>
-     </DndContext>
-      {!showAll && sections.length > 6 && (
-        <button
-          onClick={() => setShowAll(true)}
-          className="w-full mt-3 text-center text-xs font-medium"
-          style={{ color: '#7A6A85' }}
-        >
-          Visa alla ({sections.length})
-        </button>
-      )}
-    </> 
-  );
+                  {i === insertAfterIdx && expandedSection && !reordering && (
+                    <div className="col-span-3 sm:col-span-4 md:col-span-5">
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={expandedSection}
+                          id={`section-${expandedSection}`}
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          className="overflow-hidden"
+                        >
+                          {(() => {
+                            const sec = sections.find((s) => s.id === expandedSection);
+                            if (!sec) return null;
+                            if (sec.section_type === "workout")
+                              return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
+                            return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
+                          })()}
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
+        {!showAll && sections.length > 6 && (
+          <button
+            onClick={() => setShowAll(true)}
+            className="w-full mt-3 text-center text-xs font-medium"
+            style={{ color: "#7A6A85" }}
+          >
+            Visa alla ({sections.length})
+          </button>
+        )}
+      </>
+    );
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
