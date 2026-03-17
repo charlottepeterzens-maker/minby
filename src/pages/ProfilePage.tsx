@@ -212,19 +212,18 @@ const visibleSections = showAll ? sections : sections.slice(0, 6);
             ))}
           </div>
         </SortableContext>
-      </DndContext>
+     </DndContext>
       {!showAll && sections.length > 6 && (
-  <button
-    onClick={() => setShowAll(true)}
-    className="w-full mt-3 text-center text-xs font-medium"
-    style={{ color: '#7A6A85' }}
-  >
-    Visa alla ({sections.length})
-  </button>
-)}
-    );
-  };
-
+        <button
+          onClick={() => setShowAll(true)}
+          className="w-full mt-3 text-center text-xs font-medium"
+          style={{ color: '#7A6A85' }}
+        >
+          Visa alla ({sections.length})
+        </button>
+      )}
+    </> 
+  );
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
