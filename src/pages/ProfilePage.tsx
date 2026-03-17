@@ -147,7 +147,7 @@ const ProfilePage = () => {
   }) => {
     const gridRef = useRef<HTMLDivElement>(null);
     const [cols, setCols] = useState(3);
-
+const [showAll, setShowAll] = useState(false);
     useEffect(() => {
       const measure = () => {
         if (!gridRef.current) return;
@@ -213,6 +213,15 @@ const ProfilePage = () => {
           </div>
         </SortableContext>
       </DndContext>
+      {!showAll && sections.length > 6 && (
+  <button
+    onClick={() => setShowAll(true)}
+    className="w-full mt-3 text-center text-xs font-medium"
+    style={{ color: '#7A6A85' }}
+  >
+    Visa alla ({sections.length})
+  </button>
+)}
     );
   };
 
