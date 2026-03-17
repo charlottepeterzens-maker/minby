@@ -388,7 +388,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                       borderRadius: "0 0 12px 12px",
                     }}
                   />
-                />
+            
                 </button>
               );
             })}
