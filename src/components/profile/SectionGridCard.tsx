@@ -121,7 +121,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
           )}
 
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          {hasImage && <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />}
 
           {/* Text content (bottom) */}
           <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
