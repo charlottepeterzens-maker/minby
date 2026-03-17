@@ -642,8 +642,8 @@ const TipCard = ({
                     onDelete();
                   }}
                   style={{
-                    background: "#3C2A4D",
-                    color: "#A32D2D",
+                    background: "#EDE8F4",
+                    color: "#3C2A4D",
                     borderRadius: 10,
                     padding: "9px 14px",
                     fontSize: 12,
