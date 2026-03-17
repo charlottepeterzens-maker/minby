@@ -78,7 +78,15 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
     inner: t("tierInner"),
     outer: t("tierAll"),
   };
-
+  const formatRelativeDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const days = Math.floor((now.getTime() - date.getTime()) / 86400000);
+    if (days === 0) return "idag";
+    if (days === 1) return "igår";
+    if (days < 30) return `för ${days} dagar sedan`;
+    return date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
+  };
   const fetchPosts = useCallback(async () => {
     const { data } = await supabase
       .from("life_posts")
