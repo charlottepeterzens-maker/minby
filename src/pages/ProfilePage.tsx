@@ -165,12 +165,12 @@ const ProfilePage = () => {
     const expandedRowEnd = expandedIdx >= 0 ? Math.floor(expandedIdx / cols) * cols + cols - 1 : -1;
     // Clamp to last index
     const insertAfterIdx = Math.min(expandedRowEnd, sections.length - 1);
-
+const visibleSections = showAll ? sections : sections.slice(0, 6);
     return (
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
           <div ref={gridRef} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-            const visibleSections = showAll ? sections : sections.slice(0, 6);
+            
             {visibleSections.map((section, i) => (
               <div key={section.id} className="contents">
                 <div className="animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
