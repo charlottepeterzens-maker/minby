@@ -39,7 +39,7 @@ interface Tip {
   created_at: string;
 }
 
-const MAX_TIPS = 5;
+const MAX_TIPS = 6;
 
 const CATEGORIES = [
   { key: "lyssna", label: "Lyssna", bg: "#EDE8F4", color: "#3C2A4D" },
