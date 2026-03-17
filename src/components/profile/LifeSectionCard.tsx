@@ -9,9 +9,26 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { Plus, Image, Link, Send, Pencil, Check, X, RectangleHorizontal, LayoutList, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  Plus,
+  Image,
+  Link,
+  Send,
+  Pencil,
+  Check,
+  X,
+  RectangleHorizontal,
+  LayoutList,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
@@ -72,7 +89,9 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
     if (data) setPosts(data as LifePost[]);
   }, [section.id]);
 
-  useEffect(() => { fetchPosts(); }, [fetchPosts]);
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   useEffect(() => {
     setEditName(section.name);
@@ -103,17 +122,31 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
     if (imageFile) {
       const filePath = `${user.id}/${Date.now()}-${imageFile.name}`;
       const { error: uploadErr } = await supabase.storage.from("life-images").upload(filePath, imageFile);
-      if (uploadErr) { toast.error(t("couldNotPost")); setPosting(false); return; }
+      if (uploadErr) {
+        toast.error(t("couldNotPost"));
+        setPosting(false);
+        return;
+      }
       image_url = filePath;
     }
     const { error } = await supabase.from("life_posts").insert({
-      section_id: section.id, user_id: user.id,
-      content: content.trim() || null, image_url,
+      section_id: section.id,
+      user_id: user.id,
+      content: content.trim() || null,
+      image_url,
       link_url: linkUrl.trim() || null,
       photo_layout: image_url ? photoLayout : "large",
     });
-    if (error) { toast.error(t("couldNotPost")); }
-    else { setContent(""); setLinkUrl(""); setImageFile(null); setPhotoLayout("large"); setShowCompose(false); fetchPosts(); }
+    if (error) {
+      toast.error(t("couldNotPost"));
+    } else {
+      setContent("");
+      setLinkUrl("");
+      setImageFile(null);
+      setPhotoLayout("large");
+      setShowCompose(false);
+      fetchPosts();
+    }
     setPosting(false);
   };
 
@@ -134,8 +167,13 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       .from("life_posts")
       .update({ content: editPostContent.trim() || null })
       .eq("id", editingPost.id);
-    if (error) { toast.error("Kunde inte uppdatera"); }
-    else { toast.success("Inlägg uppdaterat"); setEditingPost(null); fetchPosts(); }
+    if (error) {
+      toast.error("Kunde inte uppdatera");
+    } else {
+      toast.success("Inlägg uppdaterat");
+      setEditingPost(null);
+      fetchPosts();
+    }
     setSavingPost(false);
   };
 
@@ -145,27 +183,65 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         <div className="flex items-center justify-between">
           {editing ? (
             <div className="flex-1 flex items-center gap-2">
-              <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="h-8 text-sm flex-1 max-w-[180px]" autoFocus />
+              <Input
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                className="h-8 text-sm flex-1 max-w-[180px]"
+                autoFocus
+              />
               <Select value={editTier} onValueChange={setEditTier}>
-                <SelectTrigger className="h-8 w-[100px] text-xs"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="h-8 w-[100px] text-xs">
+                  <SelectValue />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="close">{t("closeOnly")}</SelectItem>
                   <SelectItem value="inner">{t("innerPlus")}</SelectItem>
                   <SelectItem value="outer">{t("everyone")}</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="ghost" size="icon" className="h-7 w-7 text-primary" onClick={handleSaveEdit} disabled={saving}><Check className="w-4 h-4" /></Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => { setEditing(false); setEditName(section.name); setEditTier(section.min_tier); }}><X className="w-4 h-4" /></Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-primary"
+                onClick={handleSaveEdit}
+                disabled={saving}
+              >
+                <Check className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-muted-foreground"
+                onClick={() => {
+                  setEditing(false);
+                  setEditName(section.name);
+                  setEditTier(section.min_tier);
+                }}
+              >
+                <X className="w-4 h-4" />
+              </Button>
             </div>
           ) : (
             <>
               <CardTitle className="font-display text-base flex items-center gap-2">
                 {section.name}
-                {isOwner && <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5">{tierLabels[section.min_tier]}</span>}
+                {isOwner && (
+                  <span className="text-[10px] text-muted-foreground bg-muted px-2 py-0.5">
+                    {tierLabels[section.min_tier]}
+                  </span>
+                )}
               </CardTitle>
               <div className="flex items-center gap-1">
-                {isOwner && <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditing(true)}><Pencil className="w-3.5 h-3.5" /></Button>}
-                {isOwner && <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowCompose(!showCompose)}><Plus className="w-4 h-4" /></Button>}
+                {isOwner && (
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setEditing(true)}>
+                    <Pencil className="w-3.5 h-3.5" />
+                  </Button>
+                )}
+                {isOwner && (
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setShowCompose(!showCompose)}>
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                )}
               </div>
             </>
           )}
@@ -175,28 +251,76 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         {/* Compose */}
         <AnimatePresence>
           {showCompose && isOwner && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden mb-4">
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden mb-4"
+            >
               <div className="bg-muted/30 p-3 space-y-2">
-                <Textarea value={content} onChange={(e) => setContent(e.target.value)} placeholder={t("whatsNew")} className="bg-background/50 border-border/30 min-h-[60px] text-sm" />
+                <Textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder={t("whatsNew")}
+                  className="bg-background/50 border-border/30 min-h-[60px] text-sm"
+                />
                 <div className="flex gap-2 items-center flex-wrap">
                   <label className="cursor-pointer">
-                    <input type="file" accept="image/*" className="hidden" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
-                    <span className={`inline-flex items-center gap-1 text-xs px-2 py-1 border transition-colors ${imageFile ? "bg-primary/10 text-primary border-primary/30" : "text-muted-foreground border-border/50 hover:bg-muted"}`}>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                    />
+                    <span
+                      className={`inline-flex items-center gap-1 text-xs px-2 py-1 border transition-colors ${imageFile ? "bg-primary/10 text-primary border-primary/30" : "text-muted-foreground border-border/50 hover:bg-muted"}`}
+                    >
                       <Image className="w-3 h-3" /> {imageFile ? imageFile.name.slice(0, 15) : t("photo")}
                     </span>
                   </label>
                   {imageFile && (
                     <div className="flex gap-1">
-                      <button type="button" onClick={() => setPhotoLayout("large")} className="w-7 h-7 rounded-md flex items-center justify-center transition-colors" style={{ backgroundColor: photoLayout === "large" ? "#3C2A4D" : "#FFFFFF", border: "1px solid #3C2A4D" }} title="Stort foto">
-                        <RectangleHorizontal className="w-3.5 h-3.5" style={{ color: photoLayout === "large" ? "#FFFFFF" : "#3C2A4D" }} />
+                      <button
+                        type="button"
+                        onClick={() => setPhotoLayout("large")}
+                        className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+                        style={{
+                          backgroundColor: photoLayout === "large" ? "#3C2A4D" : "#FFFFFF",
+                          border: "1px solid #3C2A4D",
+                        }}
+                        title="Stort foto"
+                      >
+                        <RectangleHorizontal
+                          className="w-3.5 h-3.5"
+                          style={{ color: photoLayout === "large" ? "#FFFFFF" : "#3C2A4D" }}
+                        />
                       </button>
-                      <button type="button" onClick={() => setPhotoLayout("small")} className="w-7 h-7 rounded-md flex items-center justify-center transition-colors" style={{ backgroundColor: photoLayout === "small" ? "#3C2A4D" : "#FFFFFF", border: "1px solid #3C2A4D" }} title="Litet foto">
-                        <LayoutList className="w-3.5 h-3.5" style={{ color: photoLayout === "small" ? "#FFFFFF" : "#3C2A4D" }} />
+                      <button
+                        type="button"
+                        onClick={() => setPhotoLayout("small")}
+                        className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
+                        style={{
+                          backgroundColor: photoLayout === "small" ? "#3C2A4D" : "#FFFFFF",
+                          border: "1px solid #3C2A4D",
+                        }}
+                        title="Litet foto"
+                      >
+                        <LayoutList
+                          className="w-3.5 h-3.5"
+                          style={{ color: photoLayout === "small" ? "#FFFFFF" : "#3C2A4D" }}
+                        />
                       </button>
                     </div>
                   )}
-                  <Input value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder={t("pasteLink")} className="flex-1 h-7 text-xs bg-background/50 border-border/30" />
-                  <Button size="sm" disabled={posting} onClick={handlePost} className="h-7 px-3"><Send className="w-3 h-3" /></Button>
+                  <Input
+                    value={linkUrl}
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    placeholder={t("pasteLink")}
+                    className="flex-1 h-7 text-xs bg-background/50 border-border/30"
+                  />
+                  <Button size="sm" disabled={posting} onClick={handlePost} className="h-7 px-3">
+                    <Send className="w-3 h-3" />
+                  </Button>
                 </div>
               </div>
             </motion.div>
@@ -227,7 +351,10 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                         <DropdownMenuItem onClick={() => handleEditPost(post)} className="text-[13px] gap-2">
                           <Pencil className="w-3.5 h-3.5" /> Redigera
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setDeletePostId(post.id)} className="text-[13px] gap-2 text-destructive focus:text-destructive">
+                        <DropdownMenuItem
+                          onClick={() => setDeletePostId(post.id)}
+                          className="text-[13px] gap-2 text-destructive focus:text-destructive"
+                        >
                           <Trash2 className="w-3.5 h-3.5" /> Ta bort
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -237,23 +364,36 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
 
                 {/* Large layout image */}
                 {post.image_url && post.photo_layout !== "small" && (
-                  <SignedImage imageRef={post.image_url} onClick={() => setExpandedImage(post.image_url)} className="w-full mb-2 rounded-[10px] overflow-hidden hover:opacity-90 transition-opacity" imgClassName="w-full max-h-72 object-cover" />
+                  <SignedImage
+                    imageRef={post.image_url}
+                    onClick={() => setExpandedImage(post.image_url)}
+                    className="w-full mb-2 rounded-[10px] overflow-hidden hover:opacity-90 transition-opacity"
+                    imgClassName="w-full max-h-72 object-cover"
+                  />
                 )}
                 <div className={`flex gap-3`}>
                   {/* Small layout thumbnail */}
                   {post.image_url && post.photo_layout === "small" && (
-                    <SignedImage imageRef={post.image_url} onClick={() => setExpandedImage(post.image_url)} className="shrink-0 w-20 h-20 rounded-[10px] overflow-hidden hover:opacity-80 transition-opacity" imgClassName="w-full h-full object-cover" />
+                    <SignedImage
+                      imageRef={post.image_url}
+                      onClick={() => setExpandedImage(post.image_url)}
+                      className="shrink-0 w-20 h-20 rounded-[10px] overflow-hidden hover:opacity-80 transition-opacity"
+                      imgClassName="w-full h-full object-cover"
+                    />
                   )}
                   <div className="flex-1 min-w-0">
                     {post.content && <p className="text-[13px] text-foreground leading-[1.55]">{post.content}</p>}
                     {post.link_url && (
-                      <a href={post.link_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline flex items-center gap-1 mt-1">
+                      <a
+                        href={post.link_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-primary hover:underline flex items-center gap-1 mt-1"
+                      >
                         <Link className="w-3 h-3" /> {post.link_url.slice(0, 40)}...
                       </a>
                     )}
-                    <p className="text-[10px] text-muted-foreground/50 mt-1">
-                      {new Date(post.created_at).toLocaleDateString("sv-SE")}
-                    </p>
+                    <p className="text-[10px] text-muted-foreground/50 mt-1">{formatRelativeDate(post.created_at)}</p>
                   </div>
                 </div>
 
@@ -271,22 +411,38 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       {/* Image lightbox */}
       <Dialog open={!!expandedImage} onOpenChange={() => setExpandedImage(null)}>
         <DialogContent className="max-w-[90vw] max-h-[90vh] p-2 bg-background">
-          {expandedImage && <SignedImage imageRef={expandedImage} className="w-full h-full" imgClassName="w-full h-full object-contain rounded-lg" />}
+          {expandedImage && (
+            <SignedImage
+              imageRef={expandedImage}
+              className="w-full h-full"
+              imgClassName="w-full h-full object-contain rounded-lg"
+            />
+          )}
         </DialogContent>
       </Dialog>
 
       {/* Delete confirmation */}
       <ConfirmSheet
         open={!!deletePostId}
-        onOpenChange={(open) => { if (!open) setDeletePostId(null); }}
+        onOpenChange={(open) => {
+          if (!open) setDeletePostId(null);
+        }}
         title="Ta bort inlägg"
         description="Är du säker på att du vill ta bort detta inlägg? Det går inte att ångra."
         confirmLabel="Ta bort"
-        onConfirm={() => { if (deletePostId) handleDelete(deletePostId); setDeletePostId(null); }}
+        onConfirm={() => {
+          if (deletePostId) handleDelete(deletePostId);
+          setDeletePostId(null);
+        }}
       />
 
       {/* Edit post sheet */}
-      <Sheet open={!!editingPost} onOpenChange={(open) => { if (!open) setEditingPost(null); }}>
+      <Sheet
+        open={!!editingPost}
+        onOpenChange={(open) => {
+          if (!open) setEditingPost(null);
+        }}
+      >
         <SheetContent side="bottom" className="rounded-t-[20px]" style={{ backgroundColor: "#F7F3EF" }}>
           <SheetHeader>
             <SheetTitle className="text-[15px] font-medium">Redigera inlägg</SheetTitle>
@@ -314,7 +470,17 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
 };
 
 /** Helper: renders an image from a storage path/URL via signed URL */
-const SignedImage = ({ imageRef, onClick, className, imgClassName }: { imageRef: string; onClick?: () => void; className?: string; imgClassName?: string }) => {
+const SignedImage = ({
+  imageRef,
+  onClick,
+  className,
+  imgClassName,
+}: {
+  imageRef: string;
+  onClick?: () => void;
+  className?: string;
+  imgClassName?: string;
+}) => {
   const url = useSignedImageUrl(imageRef);
   if (!url) return null;
   const Tag = onClick ? "button" : "div";
