@@ -458,7 +458,7 @@ const TipCard = ({
           {signedUrl ? (
             <img
               src={signedUrl}
-              alt={tip.title
+              alt={tip.title}
                 .replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
                 .replace(/&amp;/g, "&")
                 .replace(/&quot;/g, '"')}
