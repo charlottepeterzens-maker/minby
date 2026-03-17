@@ -474,77 +474,87 @@ const TipCard = ({
               textOverflow: "ellipsis",
             }}
           >
-            {tip.title}
+            {tip.title.replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))}
           </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            {tip.comment ? (
-              <p
-                style={{
-                  fontSize: 11,
-                  color: "#7A6A85",
-                  margin: 0,
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
-                  flex: 1,
-                }}
-              >
-                "{tip.comment}"
-              </p>
-            ) : (
-              <div style={{ flex: 1 }} />
-            )}
-            <span
+          {tip.comment && (
+            <p
               style={{
-                borderRadius: 20,
-                fontSize: 9,
-                padding: "2px 7px",
-                background: cat.bg,
-                color: cat.color,
-                fontWeight: 500,
-                flexShrink: 0,
+                fontSize: 11,
+                color: "#7A6A85",
+                margin: 0,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
               }}
             >
-              {cat.label}
-            </span>
-          </div>
+              "{tip.comment}"
+            </p>
+          )}
         </div>
 
-        <div onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
-          {isOwner ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  style={{
-                    width: 24,
-                    height: 24,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRadius: "50%",
-                  }}
-                >
-                  <MoreHorizontal style={{ width: 14, height: 14, color: "#C9B8D8" }} />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-[120px]">
-                <DropdownMenuItem onClick={onEdit} className="gap-2 text-xs">
-                  <Pencil className="w-3.5 h-3.5" /> Redigera
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onDelete} className="gap-2 text-xs text-destructive">
-                  <Trash2 className="w-3.5 h-3.5" /> Ta bort
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <button onClick={onSave}>
-              {isSaved ? (
-                <BookmarkCheck style={{ width: 14, height: 14, color: "#3C2A4D" }} />
-              ) : (
-                <Bookmark style={{ width: 14, height: 14, color: "#C9B8D8" }} />
-              )}
-            </button>
-          )}
+        <div
+          style={{
+            flexShrink: 0,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            alignSelf: "stretch",
+          }}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            {isOwner ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    style={{
+                      width: 24,
+                      height: 24,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "50%",
+                    }}
+                  >
+                    <MoreHorizontal style={{ width: 14, height: 14, color: "#C9B8D8" }} />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[120px]">
+                  <DropdownMenuItem onClick={onEdit} className="gap-2 text-xs">
+                    <Pencil className="w-3.5 h-3.5" /> Redigera
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={onDelete} className="gap-2 text-xs text-destructive">
+                    <Trash2 className="w-3.5 h-3.5" /> Ta bort
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSave();
+                }}
+              >
+                {isSaved ? (
+                  <BookmarkCheck style={{ width: 14, height: 14, color: "#3C2A4D" }} />
+                ) : (
+                  <Bookmark style={{ width: 14, height: 14, color: "#C9B8D8" }} />
+                )}
+              </button>
+            )}
+          </div>
+          <span
+            style={{
+              borderRadius: 20,
+              fontSize: 9,
+              padding: "2px 7px",
+              background: cat.bg,
+              color: cat.color,
+              fontWeight: 500,
+            }}
+          >
+            {cat.label}
+          </span>
         </div>
       </motion.div>
 
