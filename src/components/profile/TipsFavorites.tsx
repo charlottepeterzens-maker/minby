@@ -370,7 +370,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
           </Sheet>
         ) : null
       ) : (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <AnimatePresence>
             {tips.map((tip, i) => (
               <TipCard
