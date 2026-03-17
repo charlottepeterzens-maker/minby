@@ -269,7 +269,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 <Textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder={t("whatsNew")}
+                  placeholder="Dela något med dina nära"
                   className="bg-background/50 border-border/30 min-h-[60px] text-sm"
                 />
                 <div className="flex gap-2 items-center flex-wrap">
