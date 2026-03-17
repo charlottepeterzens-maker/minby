@@ -2,7 +2,12 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import { toast } from "sonner";
@@ -17,13 +22,11 @@ interface Props {
   index: number;
 }
 
-const BG_COLORS = [
-  "hsl(var(--lavender-bg))",
-  "hsl(var(--salvia-bg))",
-  "hsl(var(--dusty-rose-bg))",
-  "hsl(var(--muted))",
-];
+const BG_COLORS = ["#EDE8F4", "#EAF2E8", "#FCF0F3", "#F7F3EF", "#EDE8F4", "#EAF2E8"];
 
+const TEXT_COLORS = ["#3C2A4D", "#1F4A1A", "#4B1528", "#3C2A4D", "#3C2A4D", "#1F4A1A"];
+
+const SUBTEXT_COLORS = ["#7A6A85", "#3B6D11", "#993556", "#7A6A85", "#7A6A85", "#3B6D11"];
 const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onRenamed, index }: Props) => {
   const [postCount, setPostCount] = useState<number>(0);
   const [latestImageRef, setLatestImageRef] = useState<string | null>(null);
@@ -82,11 +85,19 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
         <Input
           value={editName}
           onChange={(e) => setEditName(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") handleRename(); if (e.key === "Escape") { setEditing(false); setEditName(section.name); } }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleRename();
+            if (e.key === "Escape") {
+              setEditing(false);
+              setEditName(section.name);
+            }
+          }}
           className="h-7 text-[12px]"
           autoFocus
         />
-        <button onClick={handleRename} className="text-[11px] font-medium text-primary shrink-0">Spara</button>
+        <button onClick={handleRename} className="text-[11px] font-medium text-primary shrink-0">
+          Spara
+        </button>
       </div>
     );
   }
@@ -104,18 +115,9 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
         >
           {/* Background: image or color */}
           {hasImage ? (
-            <img
-              src={signedUrl!}
-              alt={section.name}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+            <img src={signedUrl!} alt={section.name} className="absolute inset-0 w-full h-full object-cover" />
           ) : (
-            <div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ backgroundColor: bgColor }}
-            >
-              <span className="text-3xl">{section.emoji}</span>
-            </div>
+            <div className="absolute inset-0" style={{ backgroundColor: bgColor }} />
           )}
 
           {/* Gradient overlay */}
@@ -123,12 +125,8 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
 
           {/* Text content (bottom) */}
           <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
-            <p className="text-[13px] font-medium text-white leading-tight truncate">
-              {section.name}
-            </p>
-            <p className="text-[11px] text-white/70 leading-tight mt-0.5">
-              {postCount} inlägg
-            </p>
+            <p className="text-[13px] font-medium text-white leading-tight truncate">{section.name}</p>
+            <p className="text-[11px] text-white/70 leading-tight mt-0.5">{postCount} inlägg</p>
           </div>
         </button>
 
@@ -142,11 +140,20 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-[140px]">
-                <DropdownMenuItem onClick={() => { setEditName(section.name); setEditing(true); }} className="gap-2 text-xs">
+                <DropdownMenuItem
+                  onClick={() => {
+                    setEditName(section.name);
+                    setEditing(true);
+                  }}
+                  className="gap-2 text-xs"
+                >
                   <Pencil className="w-3.5 h-3.5" />
                   Redigera namn
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setShowDelete(true)} className="gap-2 text-xs text-destructive focus:text-destructive">
+                <DropdownMenuItem
+                  onClick={() => setShowDelete(true)}
+                  className="gap-2 text-xs text-destructive focus:text-destructive"
+                >
                   <Trash2 className="w-3.5 h-3.5" />
                   Ta bort
                 </DropdownMenuItem>
