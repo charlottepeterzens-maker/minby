@@ -382,7 +382,6 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
                 onEdit={() => handleEdit(tip)}
                 onSave={() => handleSave(tip.id)}
                 index={i}
-                categoryEmoji={categoryEmoji}
               />
             ))}
           </AnimatePresence>
