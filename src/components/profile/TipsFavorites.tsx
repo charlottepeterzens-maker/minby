@@ -408,6 +408,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
         </Sheet>
       )}
     </div>
+    </div>
   );
 };
 
