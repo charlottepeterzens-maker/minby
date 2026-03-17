@@ -500,38 +500,6 @@ const TipCard = ({
     {cat.label}
   </span>
 </div>
-              {tip.title}
-            </p>
-            <span
-              style={{
-                borderRadius: 20,
-                fontSize: 9,
-                padding: "2px 7px",
-                background: cat.bg,
-                color: cat.color,
-                flexShrink: 0,
-                fontWeight: 500,
-              }}
-            >
-              {cat.label}
-            </span>
-          </div>
-          {tip.comment && (
-            <p
-              style={{
-                fontSize: 11,
-                color: "#7A6A85",
-                margin: 0,
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-              }}
-            >
-              "{tip.comment}"
-            </p>
-          )}
-        </div>
-
         {/* Tre-punktsmeny */}
         <div onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
           {isOwner ? (
