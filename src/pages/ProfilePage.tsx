@@ -16,11 +16,7 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  rectSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
+import { SortableContext, rectSortingStrategy, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import CurvedSeparator from "@/components/CurvedSeparator";
@@ -81,7 +77,7 @@ const SortableGridCard = ({
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 50 : "auto" as any,
+    zIndex: isDragging ? 50 : ("auto" as any),
   };
 
   return (
@@ -115,7 +111,7 @@ const ProfilePage = () => {
   const { t } = useLanguage();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [sections, setSections] = useState<LifeSection[]>([]);
-  
+
   const [loading, setLoading] = useState(true);
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [editingBio, setEditingBio] = useState(false);
@@ -129,104 +125,99 @@ const ProfilePage = () => {
   const targetUserId = userId || user?.id;
   const isOwnProfile = !userId || userId === user?.id;
 
-// Grid with row-aware expansion
-const GridWithExpansion = ({
-  sections, expandedSection, reordering, isOwnProfile,
-  toggleSection, fetchSections, sensors, handleDragEnd,
-}: {
-  sections: LifeSection[];
-  expandedSection: string | null;
-  reordering: boolean;
-  isOwnProfile: boolean;
-  toggleSection: (id: string) => void;
-  fetchSections: () => void;
-  sensors: any;
-  handleDragEnd: (event: DragEndEvent) => void;
-}) => {
-  const gridRef = useRef<HTMLDivElement>(null);
-  const [cols, setCols] = useState(3);
+  // Grid with row-aware expansion
+  const GridWithExpansion = ({
+    sections,
+    expandedSection,
+    reordering,
+    isOwnProfile,
+    toggleSection,
+    fetchSections,
+    sensors,
+    handleDragEnd,
+  }: {
+    sections: LifeSection[];
+    expandedSection: string | null;
+    reordering: boolean;
+    isOwnProfile: boolean;
+    toggleSection: (id: string) => void;
+    fetchSections: () => void;
+    sensors: any;
+    handleDragEnd: (event: DragEndEvent) => void;
+  }) => {
+    const gridRef = useRef<HTMLDivElement>(null);
+    const [cols, setCols] = useState(3);
 
-  useEffect(() => {
-    const measure = () => {
-      if (!gridRef.current) return;
-      const style = getComputedStyle(gridRef.current);
-      const colCount = style.gridTemplateColumns.split(" ").length;
-      setCols(colCount);
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
+    useEffect(() => {
+      const measure = () => {
+        if (!gridRef.current) return;
+        const style = getComputedStyle(gridRef.current);
+        const colCount = style.gridTemplateColumns.split(" ").length;
+        setCols(colCount);
+      };
+      measure();
+      window.addEventListener("resize", measure);
+      return () => window.removeEventListener("resize", measure);
+    }, []);
 
-  // Build items with expansion inserted after the last item in the expanded item's row
-  const expandedIdx = expandedSection ? sections.findIndex((s) => s.id === expandedSection) : -1;
-  const expandedRowEnd = expandedIdx >= 0 ? Math.floor(expandedIdx / cols) * cols + cols - 1 : -1;
-  // Clamp to last index
-  const insertAfterIdx = Math.min(expandedRowEnd, sections.length - 1);
+    // Build items with expansion inserted after the last item in the expanded item's row
+    const expandedIdx = expandedSection ? sections.findIndex((s) => s.id === expandedSection) : -1;
+    const expandedRowEnd = expandedIdx >= 0 ? Math.floor(expandedIdx / cols) * cols + cols - 1 : -1;
+    // Clamp to last index
+    const insertAfterIdx = Math.min(expandedRowEnd, sections.length - 1);
 
-  return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
-        <div ref={gridRef} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-          {sections.map((section, i) => (
-            <div key={section.id} className="contents">
-              <div className="animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
-                <SortableGridCard
-                  section={section}
-                  isOwner={isOwnProfile}
-                  isExpanded={expandedSection === section.id}
-                  onClick={() => toggleSection(section.id)}
-                  onDeleted={fetchSections}
-                  onRenamed={fetchSections}
-                  index={i}
-                  reordering={reordering}
-                />
-              </div>
-              {i === insertAfterIdx && expandedSection && !reordering && (
-                <div className="col-span-3 sm:col-span-4 md:col-span-5">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={expandedSection}
-                      id={`section-${expandedSection}`}
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25, ease: "easeInOut" }}
-                      className="overflow-hidden"
-                    >
-                      {(() => {
-                        const sec = sections.find((s) => s.id === expandedSection);
-                        if (!sec) return null;
-                        if (sec.section_type === "workout")
-                          return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
-                        return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
-                      })()}
-                    </motion.div>
-                  </AnimatePresence>
+    return (
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
+          <div ref={gridRef} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+            {sections.map((section, i) => (
+              <div key={section.id} className="contents">
+                <div className="animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
+                  <SortableGridCard
+                    section={section}
+                    isOwner={isOwnProfile}
+                    isExpanded={expandedSection === section.id}
+                    onClick={() => toggleSection(section.id)}
+                    onDeleted={fetchSections}
+                    onRenamed={fetchSections}
+                    index={i}
+                    reordering={reordering}
+                  />
                 </div>
-              )}
-            </div>
-          ))}
-          {isOwnProfile && (
-            <CreateSectionDialog onCreated={fetchSections} trigger={
-              <button className="w-full aspect-[4/5] flex flex-col items-center justify-center gap-1 rounded-[16px] border-[0.5px] border-dashed border-border text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors">
-                <Plus className="w-4 h-4" />
-                <span className="text-[11px] font-medium">Lägg till</span>
-              </button>
-            } />
-          )}
-        </div>
-      </SortableContext>
-    </DndContext>
-  );
-};
-
-
-
+                {i === insertAfterIdx && expandedSection && !reordering && (
+                  <div className="col-span-3 sm:col-span-4 md:col-span-5">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={expandedSection}
+                        id={`section-${expandedSection}`}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        {(() => {
+                          const sec = sections.find((s) => s.id === expandedSection);
+                          if (!sec) return null;
+                          if (sec.section_type === "workout")
+                            return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
+                          return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
+                        })()}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+    );
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } })
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
   );
 
   const fetchProfile = useCallback(async () => {
@@ -249,7 +240,7 @@ const GridWithExpansion = ({
       .select("*")
       .eq("user_id", targetUserId)
       .order("sort_order", { ascending: true });
-    if (data) setSections((data as LifeSection[]).filter(s => s.section_type !== "period"));
+    if (data) setSections((data as LifeSection[]).filter((s) => s.section_type !== "period"));
     setLoading(false);
   }, [targetUserId]);
 
@@ -284,9 +275,7 @@ const GridWithExpansion = ({
 
     // Persist
     await Promise.all(
-      withOrder.map((s) =>
-        supabase.from("life_sections").update({ sort_order: s.sort_order }).eq("id", s.id)
-      )
+      withOrder.map((s) => supabase.from("life_sections").update({ sort_order: s.sort_order }).eq("id", s.id)),
     );
   };
 
@@ -296,9 +285,7 @@ const GridWithExpansion = ({
     setUploadingAvatar(true);
     const ext = file.name.split(".").pop();
     const path = `${user.id}/avatar.${ext}`;
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(path, file, { upsert: true });
+    const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
     if (uploadError) {
       toast({ title: t("error"), description: uploadError.message, variant: "destructive" });
       setUploadingAvatar(false);
@@ -317,7 +304,7 @@ const GridWithExpansion = ({
     setUploadingAvatar(false);
   };
 
-   const saveBio = async () => {
+  const saveBio = async () => {
     if (!user) return;
     const { error } = await supabase
       .from("profiles")
@@ -340,14 +327,15 @@ const GridWithExpansion = ({
       <nav className="sticky top-0 z-50 bg-background">
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <button onClick={() => navigate("/")} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150">
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150"
+            >
               <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </button>
             <span className="font-display text-[20px] font-medium text-foreground">Min plats</span>
           </div>
-          <div className="flex items-center gap-1">
-            {targetUserId && <ProfileShareDialog userId={targetUserId} />}
-          </div>
+          <div className="flex items-center gap-1">{targetUserId && <ProfileShareDialog userId={targetUserId} />}</div>
         </div>
         <CurvedSeparator />
       </nav>
@@ -356,11 +344,16 @@ const GridWithExpansion = ({
         {/* Profile header with avatar */}
         <div className="flex items-start gap-4 mb-8">
           <div className="relative shrink-0">
-            <div className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden" style={{ backgroundColor: '#EDE8F4' }}>
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden"
+              style={{ backgroundColor: "#EDE8F4" }}
+            >
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-lg font-display font-medium" style={{ color: '#3C2A4D' }}>{initial}</span>
+                <span className="text-lg font-display font-medium" style={{ color: "#3C2A4D" }}>
+                  {initial}
+                </span>
               )}
             </div>
             {isOwnProfile && (
@@ -372,13 +365,7 @@ const GridWithExpansion = ({
                 <Camera className="w-3 h-3" />
               </button>
             )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleAvatarUpload}
-            />
+            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
           </div>
 
           <div className="flex-1 min-w-0 pt-1">
@@ -386,9 +373,7 @@ const GridWithExpansion = ({
               <h1 className="font-display text-base font-medium text-foreground">
                 {profile?.display_name || t("anonymous")}
               </h1>
-              {!isOwnProfile && targetUserId && (
-                <FriendRequestButton targetUserId={targetUserId} />
-              )}
+              {!isOwnProfile && targetUserId && <FriendRequestButton targetUserId={targetUserId} />}
             </div>
 
             {/* Bio / Quote */}
@@ -407,7 +392,15 @@ const GridWithExpansion = ({
                     <Button size="icon" variant="ghost" className="shrink-0 h-8 w-8" onClick={saveBio}>
                       <Check className="w-4 h-4 text-accent" />
                     </Button>
-                    <Button size="icon" variant="ghost" className="shrink-0 h-8 w-8" onClick={() => { setEditingBio(false); setBioText(profile?.bio || ""); }}>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="shrink-0 h-8 w-8"
+                      onClick={() => {
+                        setEditingBio(false);
+                        setBioText(profile?.bio || "");
+                      }}
+                    >
                       <X className="w-4 h-4 text-muted-foreground" />
                     </Button>
                   </div>
@@ -415,7 +408,7 @@ const GridWithExpansion = ({
                   <button
                     onClick={() => setEditingBio(true)}
                     className="group flex items-start gap-1.5 text-[13px] hover:text-foreground transition-colors w-full text-left"
-                    style={{ color: '#7A6A85', wordBreak: "break-word" }}
+                    style={{ color: "#7A6A85", wordBreak: "break-word" }}
                   >
                     {profile?.bio ? (
                       <span>{profile.bio}</span>
@@ -427,7 +420,9 @@ const GridWithExpansion = ({
                 )}
               </div>
             ) : profile?.bio ? (
-              <p className="mt-1 text-[13px]" style={{ color: '#7A6A85' }}>{profile.bio}</p>
+              <p className="mt-1 text-[13px]" style={{ color: "#7A6A85" }}>
+                {profile.bio}
+              </p>
             ) : null}
           </div>
         </div>
@@ -449,14 +444,21 @@ const GridWithExpansion = ({
 
         {/* Health coming soon placeholder */}
         <div className="mb-6 flex items-center gap-3 rounded-[16px] border-[0.5px] border-[#EDE8F4] bg-[#FFFFFF] p-3">
-          <div className="shrink-0 flex items-center justify-center rounded-full" style={{ width: 36, height: 36, backgroundColor: '#FCF0F3' }}>
-            <Heart className="w-4 h-4" style={{ color: '#993556' }} />
+          <div
+            className="shrink-0 flex items-center justify-center rounded-full"
+            style={{ width: 36, height: 36, backgroundColor: "#FCF0F3" }}
+          >
+            <Heart className="w-4 h-4" style={{ color: "#993556" }} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-medium" style={{ color: '#3C2A4D' }}>Hälsa</p>
-            <p className="text-[11px]" style={{ color: '#7A6A85' }}>Menscykel, graviditet och mer – kommer snart</p>
+            <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>
+              Hälsa
+            </p>
+            <p className="text-[11px]" style={{ color: "#7A6A85" }}>
+              Menscykel, graviditet och mer – kommer snart
+            </p>
           </div>
-          <Lock className="w-4 h-4 shrink-0" style={{ color: '#C9B8D8' }} />
+          <Lock className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
         </div>
 
         {/* Hangout Availability */}
@@ -472,10 +474,21 @@ const GridWithExpansion = ({
         )}
 
         {/* Life sections as thumbnail grid */}
-        <div className="mb-4">
-          <h2 className="text-xs font-medium text-muted-foreground font-body">
-            Min vardag
-          </h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xs font-medium text-muted-foreground font-body">Min vardag</h2>
+          {isOwnProfile && (
+            <CreateSectionDialog
+              onCreated={fetchSections}
+              trigger={
+                <button
+                  className="w-5 h-5 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: "#EDE8F4" }}
+                >
+                  <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
+                </button>
+              }
+            />
+          )}
         </div>
 
         {loading ? (
@@ -486,11 +499,7 @@ const GridWithExpansion = ({
             <p className="font-display text-lg text-muted-foreground">
               {isOwnProfile ? t("addFirstSection") : t("nothingSharedYet")}
             </p>
-            {isOwnProfile && (
-              <p className="text-sm text-muted-foreground/70 mt-1">
-                {t("shareLifeHint")}
-              </p>
-            )}
+            {isOwnProfile && <p className="text-sm text-muted-foreground/70 mt-1">{t("shareLifeHint")}</p>}
           </motion.div>
         ) : (
           <GridWithExpansion
@@ -506,9 +515,7 @@ const GridWithExpansion = ({
         )}
 
         {/* Tips & Favorites */}
-        {targetUserId && (
-          <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />
-        )}
+        {targetUserId && <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />}
       </main>
       <ScrollToTopButton />
       <BottomNav />
