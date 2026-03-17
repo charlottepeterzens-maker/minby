@@ -456,7 +456,14 @@ const TipCard = ({
           }}
         >
           {signedUrl ? (
-            <img src={signedUrl} alt={tip.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <img
+              src={signedUrl}
+              alt={tip.title
+                .replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+                .replace(/&amp;/g, "&")
+                .replace(/&quot;/g, '"')}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
           ) : (
             <span style={{ fontSize: 18, color: cat.color, fontWeight: 500 }}>{cat.label.charAt(0)}</span>
           )}
