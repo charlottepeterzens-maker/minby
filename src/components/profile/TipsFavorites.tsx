@@ -500,7 +500,6 @@ const TipCard = ({
     {cat.label}
   </span>
 </div>
-            >
               {tip.title}
             </p>
             <span
