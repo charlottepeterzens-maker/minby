@@ -418,7 +418,6 @@ const TipCard = ({
   onEdit,
   onSave,
   index,
-  categoryEmoji,
 }: {
   tip: Tip;
   isOwner: boolean;
@@ -427,7 +426,6 @@ const TipCard = ({
   onEdit: () => void;
   onSave: () => void;
   index: number;
-  categoryEmoji: (key: string) => string;
 }) => {
   const { t } = useLanguage();
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
@@ -447,7 +445,7 @@ const TipCard = ({
     }
   }, [tip.image_url]);
 
-  const hasImage = !!signedUrl;
+  const cat = CATEGORIES.find((c) => c.key === tip.category) || CATEGORIES[CATEGORIES.length - 1];
 
   return (
     <>
@@ -455,146 +453,213 @@ const TipCard = ({
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
-        transition={{ delay: index * 0.08 }}
-        className="relative w-full aspect-[4/5] rounded-[16px] overflow-hidden border-[0.5px] border-border group cursor-pointer"
+        transition={{ delay: index * 0.06 }}
         onClick={() => setDetailOpen(true)}
+        className="flex items-center gap-10 cursor-pointer"
+        style={{
+          background: "#fff",
+          borderRadius: 10,
+          border: "0.5px solid #EDE8F4",
+          padding: "10px",
+        }}
       >
-        {/* Background */}
-        {hasImage ? (
-          <img src={signedUrl!} alt={tip.title} className="absolute inset-0 w-full h-full object-cover" />
-        ) : (
-          <div className="absolute inset-0 bg-muted flex items-center justify-center">
-            <span className="text-3xl">{categoryEmoji(tip.category)}</span>
+        {/* Bild */}
+        <div
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 8,
+            background: signedUrl ? "transparent" : cat.bg,
+            flexShrink: 0,
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {signedUrl ? (
+            <img src={signedUrl} alt={tip.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <span style={{ fontSize: 18, color: cat.color, fontWeight: 500 }}>{cat.label.charAt(0)}</span>
+          )}
+        </div>
+
+        {/* Text */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 3 }}>
+            <p
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: "#3C2A4D",
+                margin: 0,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                flex: 1,
+              }}
+            >
+              {tip.title}
+            </p>
+            <span
+              style={{
+                borderRadius: 20,
+                fontSize: 9,
+                padding: "2px 7px",
+                background: cat.bg,
+                color: cat.color,
+                flexShrink: 0,
+                fontWeight: 500,
+              }}
+            >
+              {cat.label}
+            </span>
           </div>
-        )}
+          {tip.comment && (
+            <p
+              style={{
+                fontSize: 11,
+                color: "#7A6A85",
+                margin: 0,
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+              }}
+            >
+              "{tip.comment}"
+            </p>
+          )}
+        </div>
 
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-        {/* Three-dot menu (top right) - stop propagation so it doesn't open detail */}
-        <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+        {/* Tre-punktsmeny */}
+        <div onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
           {isOwner ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors">
-                  <MoreHorizontal className="w-3.5 h-3.5 text-white" />
+                <button
+                  style={{
+                    width: 24,
+                    height: 24,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "50%",
+                  }}
+                >
+                  <MoreHorizontal style={{ width: 14, height: 14, color: "#C9B8D8" }} />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="min-w-[120px]">
                 <DropdownMenuItem onClick={onEdit} className="gap-2 text-xs">
-                  <Pencil className="w-3.5 h-3.5" />
-                  {t("tipEdit")}
+                  <Pencil className="w-3.5 h-3.5" /> Redigera
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onDelete} className="gap-2 text-xs text-destructive">
-                  <Trash2 className="w-3.5 h-3.5" />
-                  {t("tipDelete")}
+                  <Trash2 className="w-3.5 h-3.5" /> Ta bort
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <button
-              onClick={onSave}
-              className="w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
-            >
+            <button onClick={onSave}>
               {isSaved ? (
-                <BookmarkCheck className="w-3.5 h-3.5 text-white" />
+                <BookmarkCheck style={{ width: 14, height: 14, color: "#3C2A4D" }} />
               ) : (
-                <Bookmark className="w-3.5 h-3.5 text-white" />
+                <Bookmark style={{ width: 14, height: 14, color: "#C9B8D8" }} />
               )}
             </button>
           )}
-        </div>
-
-        {/* Text content (bottom) */}
-        <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
-          <p className="text-[13px] font-medium text-white leading-tight line-clamp-2">{tip.title}</p>
-          {tip.comment && <p className="text-[11px] text-white/75 mt-1 leading-snug line-clamp-2">{tip.comment}</p>}
         </div>
       </motion.div>
 
       {/* Detail Sheet */}
       <Sheet open={detailOpen} onOpenChange={setDetailOpen}>
-        <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))] p-0 max-h-[85vh]">
-          {/* Hero image */}
-          {hasImage ? (
-            <div className="relative w-full aspect-[4/3] overflow-hidden rounded-t-[20px]">
-              <img src={signedUrl!} alt={tip.title} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-            </div>
-          ) : (
-            <div className="w-full aspect-[4/3] bg-muted rounded-t-[20px] flex items-center justify-center">
-              <span className="text-5xl">{categoryEmoji(tip.category)}</span>
+        <SheetContent
+          side="bottom"
+          className="rounded-t-[20px]"
+          style={{ backgroundColor: "#F7F3EF", padding: 0, maxHeight: "85vh" }}
+        >
+          {signedUrl && (
+            <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden", borderRadius: "20px 20px 0 0" }}>
+              <img src={signedUrl} alt={tip.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
           )}
-
-          {/* Content */}
-          <div className="p-5 space-y-3">
-            {/* Category pill */}
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-muted text-[11px] font-medium text-muted-foreground">
-              {categoryEmoji(tip.category)} {t(`tipCat_${tip.category}` as any) || tip.category}
+          <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+            <span
+              style={{
+                borderRadius: 20,
+                fontSize: 10,
+                padding: "3px 10px",
+                background: cat.bg,
+                color: cat.color,
+                fontWeight: 500,
+                alignSelf: "flex-start",
+              }}
+            >
+              {cat.label}
             </span>
-
-            {/* Title */}
-            <h3 className="text-[17px] font-medium text-foreground leading-snug">{tip.title}</h3>
-
-            {/* Comment */}
-            {tip.comment && <p className="text-[13px] text-muted-foreground leading-relaxed">{tip.comment}</p>}
-
-            {/* Link */}
+            <p style={{ fontSize: 16, fontWeight: 500, color: "#3C2A4D", margin: 0, lineHeight: 1.3 }}>{tip.title}</p>
+            {tip.comment && (
+              <p style={{ fontSize: 13, color: "#7A6A85", margin: 0, lineHeight: 1.5 }}>"{tip.comment}"</p>
+            )}
             {tip.url && (
               <a
                 href={tip.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-[13px] text-primary hover:underline"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 13,
+                  color: "#3C2A4D",
+                  background: "#EDE8F4",
+                  borderRadius: 8,
+                  padding: "8px 12px",
+                  textDecoration: "none",
+                  fontWeight: 500,
+                }}
               >
-                <ExternalLink className="w-3.5 h-3.5" />
-                {(() => {
-                  try {
-                    return new URL(tip.url).hostname.replace("www.", "");
-                  } catch {
-                    return tip.url;
-                  }
-                })()}
+                <ExternalLink style={{ width: 14, height: 14 }} />
+                Öppna länk
               </a>
             )}
-
-            {/* Actions */}
-            <div className="flex items-center gap-2 pt-2">
-              {isOwner ? (
-                <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2 text-xs"
-                    onClick={() => {
-                      setDetailOpen(false);
-                      onEdit();
-                    }}
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                    {t("tipEdit")}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2 text-xs text-destructive hover:text-destructive"
-                    onClick={() => {
-                      setDetailOpen(false);
-                      onDelete();
-                    }}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    {t("tipDelete")}
-                  </Button>
-                </>
-              ) : (
-                <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={onSave}>
-                  {isSaved ? <BookmarkCheck className="w-4 h-4 text-primary" /> : <Bookmark className="w-4 h-4" />}
-                  {isSaved ? t("tipSave") : t("tipAddImage").replace("bild", "spara")}
-                </Button>
-              )}
-            </div>
+            {isOwner && (
+              <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                <button
+                  onClick={() => {
+                    setDetailOpen(false);
+                    onEdit();
+                  }}
+                  style={{
+                    flex: 1,
+                    background: "#3C2A4D",
+                    color: "#F7F3EF",
+                    borderRadius: 10,
+                    padding: "9px",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    border: "none",
+                  }}
+                >
+                  Redigera
+                </button>
+                <button
+                  onClick={() => {
+                    setDetailOpen(false);
+                    onDelete();
+                  }}
+                  style={{
+                    background: "#F7F3EF",
+                    color: "#A32D2D",
+                    borderRadius: 10,
+                    padding: "9px 14px",
+                    fontSize: 12,
+                    border: "0.5px solid #EDE8F4",
+                  }}
+                >
+                  Ta bort
+                </button>
+              </div>
+            )}
           </div>
         </SheetContent>
       </Sheet>
