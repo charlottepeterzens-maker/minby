@@ -372,43 +372,21 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
           </Sheet>
         ) : null
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <AnimatePresence>
-            {tips.map((tip, i) => (
-              <TipCard
-                key={tip.id}
-                tip={tip}
-                isOwner={isOwner}
-                isSaved={savedTipIds.has(tip.id)}
-                onDelete={() => handleDelete(tip.id)}
-                onEdit={() => handleEdit(tip)}
-                onSave={() => handleSave(tip.id)}
-                index={i}
-              />
-            ))}
-          </AnimatePresence>
+       <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", margin: "0 0 3px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+            {tip.title}
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            {tip.comment && (
+              <p style={{ fontSize: 11, color: "#7A6A85", margin: 0, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", flex: 1 }}>
+                "{tip.comment}"
+              </p>
+            )}
+            <span style={{ borderRadius: 20, fontSize: 9, padding: "2px 7px", background: cat.bg, color: cat.color, fontWeight: 500, flexShrink: 0 }}>
+              {cat.label}
+            </span>
+          </div>
         </div>
-      )}
-
-      {/* Hidden sheet for editing (triggered programmatically) */}
-      {isOwner && editingTip && (
-        <Sheet
-          open={sheetOpen}
-          onOpenChange={(open) => {
-            setSheetOpen(open);
-            if (!open) resetForm();
-          }}
-        >
-          <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))]">
-            <SheetHeader>
-              <SheetTitle className="font-display text-base">{t("tipSave")}</SheetTitle>
-            </SheetHeader>
-            {formContent}
-          </SheetContent>
-        </Sheet>
-      )}
-    </div>
-    </div>
   );
 };
 
