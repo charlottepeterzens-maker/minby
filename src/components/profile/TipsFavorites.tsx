@@ -573,8 +573,7 @@ const TipCard = ({
         >
           {signedUrl && (
             <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden", borderRadius: "20px 20px 0 0" }}>
-             <img src={signedUrl} alt={tip.title.replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16))).replace(/&amp;/g, "&").replace(/&quot;/g, '"') style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            </div>
+            <img src={signedUrl} alt={tip.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           )}
           <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
             <span
