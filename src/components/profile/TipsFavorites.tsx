@@ -487,18 +487,19 @@ const TipCard = ({
 
         {/* Text */}
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 3 }}>
-            <p
-              style={{
-                fontSize: 12,
-                fontWeight: 500,
-                color: "#3C2A4D",
-                margin: 0,
-                overflow: "hidden",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                flex: 1,
-              }}
+         <p style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", margin: "0 0 3px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+  {tip.title}
+</p>
+<div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+  {tip.comment && (
+    <p style={{ fontSize: 11, color: "#7A6A85", margin: 0, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", flex: 1 }}>
+      "{tip.comment}"
+    </p>
+  )}
+  <span style={{ borderRadius: 20, fontSize: 9, padding: "2px 7px", background: cat.bg, color: cat.color, fontWeight: 500, flexShrink: 0 }}>
+    {cat.label}
+  </span>
+</div>
             >
               {tip.title}
             </p>
