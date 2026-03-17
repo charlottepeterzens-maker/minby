@@ -214,15 +214,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
     <div style={{ padding: "0 0 20px 0" }}>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-xs font-medium text-muted-foreground font-body">Ses vi?</h2>
-        {isOwner && (
-          <button
-            onClick={() => setShowAdd(true)}
-            className="w-5 h-5 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "#EDE8F4" }}
-          >
-            <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
-          </button>
-        )}
       </div>
 
       <AddHangoutSheet
