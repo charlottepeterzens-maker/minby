@@ -19,13 +19,7 @@ import {
   Pencil,
   MoreHorizontal,
 } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,24 +42,16 @@ interface Tip {
 const MAX_TIPS = 5;
 
 const CATEGORIES = [
-  { key: "skincare", emoji: "🧴" },
-  { key: "food", emoji: "🍽️" },
-  { key: "podcast", emoji: "🎧" },
-  { key: "book", emoji: "📖" },
-  { key: "show", emoji: "📺" },
-  { key: "salon", emoji: "💇" },
-  { key: "workout", emoji: "💪" },
-  { key: "product", emoji: "🛍️" },
-  { key: "other", emoji: "✨" },
+  { key: "lyssna", label: "Lyssna", bg: "#EDE8F4", color: "#3C2A4D" },
+  { key: "titta", label: "Titta", bg: "#3C2A4D", color: "#F7F3EF" },
+  { key: "läsa", label: "Läsa", bg: "#FCF0F3", color: "#4B1528" },
+  { key: "hälsa", label: "Hälsa", bg: "#EAF2E8", color: "#1F4A1A" },
+  { key: "mat", label: "Mat", bg: "#FAEEDA", color: "#633806" },
+  { key: "shoppa", label: "Shoppa", bg: "#E8D5DA", color: "#4B1528" },
+  { key: "vardagslyx", label: "Vardagslyx", bg: "#EDE8F4", color: "#7A6A85" },
 ];
 
-const TipsFavorites = ({
-  userId,
-  isOwner,
-}: {
-  userId: string;
-  isOwner: boolean;
-}) => {
+const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [tips, setTips] = useState<Tip[]>([]);
@@ -96,10 +82,7 @@ const TipsFavorites = ({
 
   const fetchSavedTips = useCallback(async () => {
     if (!user) return;
-    const { data } = await supabase
-      .from("saved_tips")
-      .select("original_tip_id")
-      .eq("user_id", user.id);
+    const { data } = await supabase.from("saved_tips").select("original_tip_id").eq("user_id", user.id);
     if (data) setSavedTipIds(new Set(data.map((s) => s.original_tip_id)));
   }, [user]);
 
@@ -108,27 +91,34 @@ const TipsFavorites = ({
     fetchSavedTips();
   }, [fetchTips, fetchSavedTips]);
 
-  const fetchLinkPreview = useCallback(async (linkUrl: string) => {
-    if (!linkUrl.trim()) return;
-    let formatted = linkUrl.trim();
-    if (!formatted.startsWith("http")) formatted = `https://${formatted}`;
-    try { new URL(formatted); } catch { return; }
-
-    setFetchingPreview(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("fetch-link-preview", {
-        body: { url: formatted },
-      });
-      if (!error && data) {
-        if (data.title && !title) setTitle(data.title);
-        if (data.image && !customImage) setPreviewImage(data.image);
+  const fetchLinkPreview = useCallback(
+    async (linkUrl: string) => {
+      if (!linkUrl.trim()) return;
+      let formatted = linkUrl.trim();
+      if (!formatted.startsWith("http")) formatted = `https://${formatted}`;
+      try {
+        new URL(formatted);
+      } catch {
+        return;
       }
-    } catch {
-      // silently fail
-    } finally {
-      setFetchingPreview(false);
-    }
-  }, [title, customImage]);
+
+      setFetchingPreview(true);
+      try {
+        const { data, error } = await supabase.functions.invoke("fetch-link-preview", {
+          body: { url: formatted },
+        });
+        if (!error && data) {
+          if (data.title && !title) setTitle(data.title);
+          if (data.image && !customImage) setPreviewImage(data.image);
+        }
+      } catch {
+        // silently fail
+      } finally {
+        setFetchingPreview(false);
+      }
+    },
+    [title, customImage],
+  );
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -136,9 +126,7 @@ const TipsFavorites = ({
     setUploading(true);
     const ext = file.name.split(".").pop();
     const path = `${user.id}/tip-${Date.now()}.${ext}`;
-    const { error } = await supabase.storage
-      .from("life-images")
-      .upload(path, file, { upsert: true });
+    const { error } = await supabase.storage.from("life-images").upload(path, file, { upsert: true });
     if (error) {
       toast({ title: t("error"), description: error.message, variant: "destructive" });
     } else {
@@ -223,11 +211,7 @@ const TipsFavorites = ({
   const handleSave = async (tipId: string) => {
     if (!user) return;
     if (savedTipIds.has(tipId)) {
-      await supabase
-        .from("saved_tips")
-        .delete()
-        .eq("user_id", user.id)
-        .eq("original_tip_id", tipId);
+      await supabase.from("saved_tips").delete().eq("user_id", user.id).eq("original_tip_id", tipId);
       setSavedTipIds((prev) => {
         const next = new Set(prev);
         next.delete(tipId);
@@ -242,8 +226,7 @@ const TipsFavorites = ({
     }
   };
 
-  const categoryEmoji = (key: string) =>
-    CATEGORIES.find((c) => c.key === key)?.emoji || "✨";
+  const categoryEmoji = (key: string) => CATEGORIES.find((c) => c.key === key)?.emoji || "✨";
 
   if (loading) return null;
 
@@ -330,9 +313,7 @@ const TipsFavorites = ({
         {editingTip ? t("tipSave") : t("addTip")}
       </Button>
 
-      <p className="text-[11px] text-center text-muted-foreground">
-        {t("tipCountInfo", tips.length, MAX_TIPS)}
-      </p>
+      <p className="text-[11px] text-center text-muted-foreground">{t("tipCountInfo", tips.length, MAX_TIPS)}</p>
     </div>
   );
 
@@ -340,11 +321,15 @@ const TipsFavorites = ({
     <div className="mb-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-xs font-medium text-muted-foreground font-body">
-          {t("tipsSectionTitle")}
-        </h2>
+        <h2 className="text-xs font-medium text-muted-foreground font-body">{t("tipsSectionTitle")}</h2>
         {isOwner && tips.length < MAX_TIPS && (
-          <Sheet open={sheetOpen} onOpenChange={(open) => { setSheetOpen(open); if (!open) resetForm(); }}>
+          <Sheet
+            open={sheetOpen}
+            onOpenChange={(open) => {
+              setSheetOpen(open);
+              if (!open) resetForm();
+            }}
+          >
             <SheetTrigger asChild>
               <button className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
                 <Plus className="w-3.5 h-3.5" />
@@ -353,9 +338,7 @@ const TipsFavorites = ({
             </SheetTrigger>
             <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))]">
               <SheetHeader>
-                <SheetTitle className="font-display text-base">
-                  {editingTip ? t("tipSave") : t("addTip")}
-                </SheetTitle>
+                <SheetTitle className="font-display text-base">{editingTip ? t("tipSave") : t("addTip")}</SheetTitle>
               </SheetHeader>
               {formContent}
             </SheetContent>
@@ -380,9 +363,7 @@ const TipsFavorites = ({
             </SheetTrigger>
             <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))]">
               <SheetHeader>
-                <SheetTitle className="font-display text-base">
-                  {t("addTip")}
-                </SheetTitle>
+                <SheetTitle className="font-display text-base">{t("addTip")}</SheetTitle>
               </SheetHeader>
               {formContent}
             </SheetContent>
@@ -410,12 +391,16 @@ const TipsFavorites = ({
 
       {/* Hidden sheet for editing (triggered programmatically) */}
       {isOwner && editingTip && (
-        <Sheet open={sheetOpen} onOpenChange={(open) => { setSheetOpen(open); if (!open) resetForm(); }}>
+        <Sheet
+          open={sheetOpen}
+          onOpenChange={(open) => {
+            setSheetOpen(open);
+            if (!open) resetForm();
+          }}
+        >
           <SheetContent side="bottom" className="rounded-t-[20px] bg-[hsl(var(--background))]">
             <SheetHeader>
-              <SheetTitle className="font-display text-base">
-                {t("tipSave")}
-              </SheetTitle>
+              <SheetTitle className="font-display text-base">{t("tipSave")}</SheetTitle>
             </SheetHeader>
             {formContent}
           </SheetContent>
@@ -476,11 +461,7 @@ const TipCard = ({
       >
         {/* Background */}
         {hasImage ? (
-          <img
-            src={signedUrl!}
-            alt={tip.title}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+          <img src={signedUrl!} alt={tip.title} className="absolute inset-0 w-full h-full object-cover" />
         ) : (
           <div className="absolute inset-0 bg-muted flex items-center justify-center">
             <span className="text-3xl">{categoryEmoji(tip.category)}</span>
@@ -526,14 +507,8 @@ const TipCard = ({
 
         {/* Text content (bottom) */}
         <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
-          <p className="text-[13px] font-medium text-white leading-tight line-clamp-2">
-            {tip.title}
-          </p>
-          {tip.comment && (
-            <p className="text-[11px] text-white/75 mt-1 leading-snug line-clamp-2">
-              {tip.comment}
-            </p>
-          )}
+          <p className="text-[13px] font-medium text-white leading-tight line-clamp-2">{tip.title}</p>
+          {tip.comment && <p className="text-[11px] text-white/75 mt-1 leading-snug line-clamp-2">{tip.comment}</p>}
         </div>
       </motion.div>
 
@@ -543,11 +518,7 @@ const TipCard = ({
           {/* Hero image */}
           {hasImage ? (
             <div className="relative w-full aspect-[4/3] overflow-hidden rounded-t-[20px]">
-              <img
-                src={signedUrl!}
-                alt={tip.title}
-                className="w-full h-full object-cover"
-              />
+              <img src={signedUrl!} alt={tip.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
             </div>
           ) : (
@@ -564,16 +535,10 @@ const TipCard = ({
             </span>
 
             {/* Title */}
-            <h3 className="text-[17px] font-medium text-foreground leading-snug">
-              {tip.title}
-            </h3>
+            <h3 className="text-[17px] font-medium text-foreground leading-snug">{tip.title}</h3>
 
             {/* Comment */}
-            {tip.comment && (
-              <p className="text-[13px] text-muted-foreground leading-relaxed">
-                {tip.comment}
-              </p>
-            )}
+            {tip.comment && <p className="text-[13px] text-muted-foreground leading-relaxed">{tip.comment}</p>}
 
             {/* Link */}
             {tip.url && (
@@ -585,7 +550,11 @@ const TipCard = ({
               >
                 <ExternalLink className="w-3.5 h-3.5" />
                 {(() => {
-                  try { return new URL(tip.url).hostname.replace("www.", ""); } catch { return tip.url; }
+                  try {
+                    return new URL(tip.url).hostname.replace("www.", "");
+                  } catch {
+                    return tip.url;
+                  }
                 })()}
               </a>
             )}
@@ -598,7 +567,10 @@ const TipCard = ({
                     variant="outline"
                     size="sm"
                     className="gap-2 text-xs"
-                    onClick={() => { setDetailOpen(false); onEdit(); }}
+                    onClick={() => {
+                      setDetailOpen(false);
+                      onEdit();
+                    }}
                   >
                     <Pencil className="w-3.5 h-3.5" />
                     {t("tipEdit")}
@@ -607,24 +579,18 @@ const TipCard = ({
                     variant="outline"
                     size="sm"
                     className="gap-2 text-xs text-destructive hover:text-destructive"
-                    onClick={() => { setDetailOpen(false); onDelete(); }}
+                    onClick={() => {
+                      setDetailOpen(false);
+                      onDelete();
+                    }}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     {t("tipDelete")}
                   </Button>
                 </>
               ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 text-xs"
-                  onClick={onSave}
-                >
-                  {isSaved ? (
-                    <BookmarkCheck className="w-4 h-4 text-primary" />
-                  ) : (
-                    <Bookmark className="w-4 h-4" />
-                  )}
+                <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={onSave}>
+                  {isSaved ? <BookmarkCheck className="w-4 h-4 text-primary" /> : <Bookmark className="w-4 h-4" />}
                   {isSaved ? t("tipSave") : t("tipAddImage").replace("bild", "spara")}
                 </Button>
               )}
