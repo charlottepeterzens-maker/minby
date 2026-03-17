@@ -146,8 +146,8 @@ const ProfilePage = () => {
     handleDragEnd: (event: DragEndEvent) => void;
   }) => {
     const gridRef = useRef<HTMLDivElement>(null);
-    const [cols, setCols] = useState(3);
-const [showAll, setShowAll] = useState(false);
+    const [cols, setCols] = useState(3);const [showAll, setShowAll] = useState(false);
+
     useEffect(() => {
       const measure = () => {
         if (!gridRef.current) return;
