@@ -625,14 +625,14 @@ const TipCard = ({
                   }}
                   style={{
                     flex: 1,
-  background: "#EDE8F4",
-  color: "#3C2A4D",
-  borderRadius: 10,
-  padding: "9px",
-  fontSize: 12,
-  fontWeight: 500,
-  border: "none",
-  outline: "none"
+                    background: "#EDE8F4",
+                    color: "#3C2A4D",
+                    borderRadius: 10,
+                    padding: "9px",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    border: "none",
+                    outline: "none"
                   }}
                 >
                   Redigera
@@ -648,7 +648,7 @@ const TipCard = ({
                     borderRadius: 10,
                     padding: "9px 14px",
                     fontSize: 12,
-                    border: "0.5px solid #EDE8F4"
+                    border: "0.5px solid #EDE8F4",
                     outline: "none",
                   }}
                 >
