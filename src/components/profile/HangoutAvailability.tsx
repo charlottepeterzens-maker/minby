@@ -408,16 +408,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
               ))}
             </div>
           )}
-                  className="rounded-full transition-all"
-                  style={{
-                    width: i === currentIndex ? 12 : 5,
-                    height: 5,
-                    backgroundColor: i === currentIndex ? "#3C2A4D" : "#EDE8F4",
-                  }}
-                />
-              ))}
-            </div>
-          )}
         </>
       )}
 
