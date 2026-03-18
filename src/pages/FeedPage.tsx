@@ -24,6 +24,7 @@ interface ProfileMap {
 type FeedItem =
   | { type: "post"; data: any; userId: string; created_at: string }
   | { type: "hangout"; data: any; userId: string; created_at: string }
+  | { type: "activity_group"; data: any; userId: string; created_at: string }
   | { type: "health"; data: any; userId: string; created_at: string };
 
 const FeedPage = () => {
