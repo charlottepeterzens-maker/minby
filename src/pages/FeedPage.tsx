@@ -9,6 +9,7 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 import FeedPostCard from "@/components/feed/FeedPostCard";
 import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
 import FeedHealthCard from "@/components/feed/FeedHealthCard";
+import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import { toast } from "sonner";
 
 interface ProfileMap {
@@ -29,6 +30,7 @@ const FeedPage = () => {
     content: string | null;
     userName: string;
   } | null>(null);
+  const [showHangoutSheet, setShowHangoutSheet] = useState(false);
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -185,8 +187,25 @@ const FeedPage = () => {
     return true;
   });
 
-  const handleSendHug = () => {
-    toast.success("Du skickade kärlek 💛");
+  const handleSendHug = async (postId: string) => {
+    if (!user) return;
+    // Save 🤗 reaction to post_reactions
+    const { error } = await supabase.from("post_reactions").insert({
+      post_id: postId,
+      user_id: user.id,
+      emoji: "🤗",
+    });
+    if (error) {
+      // If already reacted, just show toast
+      toast.success("Du skickade kärlek 💛");
+    } else {
+      toast.success("Du skickade en kram 🤗");
+    }
+  };
+
+  const handleSuggestPlan = (data: { postId: string; content: string | null; userName: string }) => {
+    setSuggestData(data);
+    setShowHangoutSheet(true);
   };
 
   return (
@@ -228,7 +247,7 @@ const FeedPage = () => {
                   profile={profile}
                   isOwn={isOwn}
                   onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                  onSuggestPlan={(data) => setSuggestData(data)}
+                  onSuggestPlan={handleSuggestPlan}
                 />
               );
             }
@@ -253,7 +272,7 @@ const FeedPage = () => {
                   profile={profile}
                   isOwn={isOwn}
                   onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                  onSendHug={handleSendHug}
+                  onSendHug={() => handleSendHug(item.data.id)}
                 />
               );
             }
@@ -264,7 +283,16 @@ const FeedPage = () => {
       </main>
 
       <ScrollToTopButton />
-      {/* CreatePlanDialog removed – feature pending */}
+
+      <AddHangoutSheet
+        open={showHangoutSheet}
+        onOpenChange={setShowHangoutSheet}
+        onCreated={() => {
+          setShowHangoutSheet(false);
+          fetchFeed();
+        }}
+      />
+
       <BottomNav />
     </div>
   );
