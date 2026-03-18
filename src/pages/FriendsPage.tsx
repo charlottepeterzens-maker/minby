@@ -576,16 +576,9 @@ const FriendsPage = () => {
                     })
                   )}
 
-                  <button
-                    onClick={() => setInviteOpen(true)}
-                    className="w-full flex items-center gap-3 p-3 rounded-[16px] transition-colors hover:opacity-80"
-                    style={{ border: "1.5px dashed #EDE8F4", backgroundColor: "transparent" }}
-                  >
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#EDE8F4" }}>
-                      <UserPlus className="w-4.5 h-4.5" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
-                    </div>
-                    <span className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>Bjud in en vän</span>
-                  </button>
+                  <div className="w-full flex items-center gap-3 p-3 rounded-[16px]" style={{ border: "1.5px dashed #EDE8F4", backgroundColor: "transparent" }}>
+                    <InviteFriendDialog />
+                  </div>
                 </div>
               </div>
             )}
