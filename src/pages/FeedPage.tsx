@@ -272,7 +272,7 @@ const FeedPage = () => {
                     post={item.data}
                     profile={profile}
                     isOwn={isOwn}
-                    onProfileClick={onProfileClick}
+                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
                     onSuggestPlan={(data) => setSuggestData(data)}
                   />,
                 );
