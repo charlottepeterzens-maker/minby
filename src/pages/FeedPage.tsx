@@ -236,52 +236,58 @@ const FeedPage = () => {
           ))}
         </div>
 
-        <div className="space-y-4">
-          {filteredItems.map((item) => {
-            const profile = getProfile(item.userId);
-            const isOwn = item.userId === user?.id;
+        {!loading && filteredItems.length === 0 ? (
+          <EmptyFeedCard
+            onOpenHangout={() => setShowHangoutSheet(true)}
+          />
+        ) : (
+          <div className="space-y-4">
+            {filteredItems.map((item) => {
+              const profile = getProfile(item.userId);
+              const isOwn = item.userId === user?.id;
 
-            if (item.type === "post") {
-              return (
-                <FeedPostCard
-                  key={item.data.id}
-                  post={item.data}
-                  profile={profile}
-                  isOwn={isOwn}
-                  onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                  onSuggestPlan={handleSuggestPlan}
-                />
-              );
-            }
+              if (item.type === "post") {
+                return (
+                  <FeedPostCard
+                    key={item.data.id}
+                    post={item.data}
+                    profile={profile}
+                    isOwn={isOwn}
+                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                    onSuggestPlan={handleSuggestPlan}
+                  />
+                );
+              }
 
-            if (item.type === "hangout") {
-              return (
-                <FeedHangoutCard
-                  key={item.data.id}
-                  hangout={item.data}
-                  profile={profile}
-                  isOwn={isOwn}
-                  onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                />
-              );
-            }
+              if (item.type === "hangout") {
+                return (
+                  <FeedHangoutCard
+                    key={item.data.id}
+                    hangout={item.data}
+                    profile={profile}
+                    isOwn={isOwn}
+                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                  />
+                );
+              }
 
-            if (item.type === "health") {
-              return (
-                <FeedHealthCard
-                  key={item.data.id}
-                  post={item.data}
-                  profile={profile}
-                  isOwn={isOwn}
-                  onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                  onSendHug={() => handleSendHug(item.data.id)}
-                />
-              );
-            }
+              if (item.type === "health") {
+                return (
+                  <FeedHealthCard
+                    key={item.data.id}
+                    post={item.data}
+                    profile={profile}
+                    isOwn={isOwn}
+                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                    onSendHug={() => handleSendHug(item.data.id)}
+                  />
+                );
+              }
 
-            return null;
-          })}
-        </div>
+              return null;
+            })}
+          </div>
+        )}
       </main>
 
       <ScrollToTopButton />

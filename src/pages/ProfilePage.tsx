@@ -476,6 +476,7 @@ const ProfilePage = () => {
         {/* Hangout Availability */}
         {targetUserId && (
           <div className="mb-6">
+            <ProfileHangoutHint isOwner={isOwnProfile} />
             <HangoutAvailability
               userId={targetUserId}
               isOwner={isOwnProfile}
