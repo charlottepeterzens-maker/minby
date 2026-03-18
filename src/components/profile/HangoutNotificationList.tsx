@@ -8,11 +8,12 @@ interface HangoutNotification {
   id: string;
   type: string;
   title: string;
+  body: string | null;
   from_user_id: string | null;
   reference_id: string | null;
   read: boolean;
   created_at: string;
-  fromProfile?: { display_name: string | null; avatar_url: string | null };
+  fromProfile?: { display_name: string | null; avatar_url: string | null } | null;
 }
 
 interface Props {
@@ -32,7 +33,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
-      .limit(20);
+      .limit(30);
 
     if (data && data.length > 0) {
       const fromIds = [...new Set(data.filter(n => n.from_user_id).map(n => n.from_user_id!))];
@@ -57,6 +58,21 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
 
   useEffect(() => { fetchNotifications(); }, [fetchNotifications]);
 
+  // Realtime: refetch on new inserts
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel("profile-notifs")
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: `user_id=eq.${user.id}`,
+      }, () => fetchNotifications())
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user, fetchNotifications]);
+
   const handleClick = async (n: HangoutNotification) => {
     if (!n.read) {
       await supabase.from("notifications").update({ read: true }).eq("id", n.id);
@@ -64,70 +80,112 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
       onNotificationsRead?.();
     }
 
-    // Navigate based on type
-    if (n.type.startsWith("hangout_") && n.reference_id) {
-      if (n.type === "hangout_new" && n.reference_id) {
-        // reference_id is user_id for hangout_new
-        navigate(`/profile/${n.reference_id}`);
-      } else {
-        onOpenHangout(n.reference_id);
-      }
+    if ((n.type === "hangout_yes" || n.type === "hangout_maybe" || n.type === "hangout_comment") && n.reference_id) {
+      onOpenHangout(n.reference_id);
+    } else if (n.type === "hangout_new" && n.reference_id) {
+      navigate(`/profile/${n.reference_id}`);
+    } else if (n.type === "friend_request" || n.type === "friend_accepted") {
+      navigate("/friends");
+    } else if (n.type === "life_comment" && n.reference_id) {
+      // Stay on profile – could deep-link later
     } else if (n.type === "group_invite" || n.type === "group_message") {
       if (n.reference_id) navigate(`/groups/${n.reference_id}`);
-    } else if (n.type === "life_comment") {
-      // Stay on profile, could deep-link later
-    } else if (n.type === "friend_request") {
-      navigate("/friends");
     }
+  };
+
+  const markAllRead = async () => {
+    if (!user) return;
+    await supabase
+      .from("notifications")
+      .update({ read: true })
+      .eq("user_id", user.id)
+      .eq("read", false);
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    onNotificationsRead?.();
   };
 
   const timeAgo = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return "nu";
-    if (mins < 60) return `${mins}m sedan`;
+    if (mins < 1) return "just nu";
+    if (mins < 60) return `${mins} min sedan`;
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h sedan`;
+    if (hours < 24) return `${hours} tim sedan`;
     const days = Math.floor(hours / 24);
-    return `${days}d sedan`;
+    if (days === 1) return "igår";
+    if (days < 7) return `${days} d sedan`;
+    return new Date(dateStr).toLocaleDateString("sv-SE", { day: "numeric", month: "short" });
   };
 
-  if (notifications.length === 0) return null;
-
   const unread = notifications.filter(n => !n.read);
-  const display = unread.length > 0 ? unread : notifications.slice(0, 3);
+  if (unread.length === 0) return null;
 
   return (
     <div className="mb-5">
-      <p className="text-[11px] uppercase tracking-wider font-medium mb-2" style={{ color: "#B0A8B5" }}>
-        Nytt
-      </p>
-      <div className="space-y-1.5">
-        {display.map(n => (
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[11px] uppercase tracking-wider font-medium" style={{ color: "#B0A8B5" }}>
+          Nytt
+        </p>
+        {unread.length > 1 && (
           <button
-            key={n.id}
-            onClick={() => handleClick(n)}
-            className="flex items-center gap-2.5 w-full text-left p-2.5 rounded-[12px] transition-colors"
-            style={{
-              backgroundColor: n.read ? "transparent" : "#F5F0FA",
-              border: n.read ? "0.5px solid #EDE8F4" : "0.5px solid #C9B8D8",
-            }}
+            onClick={markAllRead}
+            className="text-[11px] hover:underline transition-colors"
+            style={{ color: "#7A6A85" }}
           >
-            <Avatar className="w-7 h-7 shrink-0">
-              {n.fromProfile?.avatar_url && <AvatarImage src={n.fromProfile.avatar_url} />}
-              <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[10px] font-medium">
-                {n.fromProfile?.display_name?.charAt(0).toUpperCase() || "?"}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-[12px] text-foreground leading-snug truncate">{n.title}</p>
-              <p className="text-[10px]" style={{ color: "#B0A8B5" }}>{timeAgo(n.created_at)}</p>
-            </div>
-            {!n.read && (
-              <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: "#E53E3E" }} />
-            )}
+            Markera alla som lästa
           </button>
-        ))}
+        )}
+      </div>
+
+      <div
+        className="rounded-[12px] overflow-hidden"
+        style={{
+          backgroundColor: "#FFFFFF",
+          border: "0.5px solid #EDE8F4",
+        }}
+      >
+        <div className="max-h-[200px] overflow-y-auto">
+          {unread.map((n, i) => (
+            <button
+              key={n.id}
+              onClick={() => handleClick(n)}
+              className="flex items-center gap-3 w-full text-left px-3 py-2.5 transition-colors hover:bg-[#FAFAFA]"
+              style={{
+                borderBottom: i < unread.length - 1 ? "0.5px solid #EDE8F4" : "none",
+              }}
+            >
+              {/* Unread dot */}
+              <div
+                className="w-1.5 h-1.5 rounded-full shrink-0"
+                style={{ backgroundColor: "#C9B8D8" }}
+              />
+
+              {/* Avatar */}
+              <Avatar className="w-9 h-9 shrink-0">
+                {n.fromProfile?.avatar_url && <AvatarImage src={n.fromProfile.avatar_url} />}
+                <AvatarFallback
+                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+                  className="text-[11px] font-medium"
+                >
+                  {n.fromProfile?.display_name?.charAt(0).toUpperCase() || "?"}
+                </AvatarFallback>
+              </Avatar>
+
+              {/* Text */}
+              <div className="flex-1 min-w-0">
+                <p
+                  className="text-[12px] leading-snug"
+                  style={{ color: "#3C2A4D" }}
+                >
+                  {n.title}
+                </p>
+                <p className="text-[10px] mt-0.5" style={{ color: "#B0A8B5" }}>
+                  {timeAgo(n.created_at)}
+                </p>
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
