@@ -586,66 +586,10 @@ const FriendsPage = () => {
         )}
       </main>
 
-      <InviteDialogControlled open={inviteOpen} onOpenChange={setInviteOpen} />
-      <InviteDialogControlled open={false} onOpenChange={() => {}} />
+      <QRCodeSheet open={qrOpen} onOpenChange={setQrOpen} />
       <ScrollToTopButton />
       <BottomNav />
     </div>
-  );
-};
-
-const InviteDialogControlled = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [sending, setSending] = useState(false);
-
-  const handleSend = async () => {
-    if (!email || !email.includes("@")) {
-      toast.error("Ange en giltig e-postadress");
-      return;
-    }
-    setSending(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("send-invite", {
-        body: { email: email.trim(), message: message.trim() },
-      });
-      if (error) throw error;
-      if (data?.error === "already_registered") {
-        toast.info(data.message);
-      } else {
-        toast.success("Inbjudan skickad! 🎉");
-        setEmail("");
-        setMessage("");
-        onOpenChange(false);
-      }
-    } catch {
-      toast.error("Kunde inte skicka inbjudan. Försök igen.");
-    } finally {
-      setSending(false);
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-[14px] max-w-sm" style={{ border: "0.5px solid #EDE8F4" }}>
-        <DialogHeader>
-          <DialogTitle className="font-display text-base font-medium">Bjud in en vän</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3 mt-2">
-          <div>
-            <label className="text-xs mb-1 block" style={{ color: "#9B8BA5" }}>E-postadress</label>
-            <Input type="email" placeholder="namn@exempel.se" value={email} onChange={(e) => setEmail(e.target.value)} className="text-sm" />
-          </div>
-          <div>
-            <label className="text-xs mb-1 block" style={{ color: "#9B8BA5" }}>Personligt meddelande (valfritt)</label>
-            <Textarea placeholder="Hej! Jag tror du skulle gilla Minby..." value={message} onChange={(e) => setMessage(e.target.value)} maxLength={300} rows={3} className="text-sm resize-none" />
-          </div>
-          <Button onClick={handleSend} disabled={sending || !email} className="w-full rounded-[10px] text-sm" style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}>
-            {sending ? "Skickar..." : "Skicka inbjudan"}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
   );
 };
 
