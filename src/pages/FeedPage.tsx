@@ -12,6 +12,12 @@ import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
 import FeedHealthCard from "@/components/feed/FeedHealthCard";
 import { toast } from "sonner";
 
+const [suggestData, setSuggestData] = useState<{
+  postId: string;
+  content: string | null;
+  userName: string;
+} | null>(null);
+
 interface ProfileMap {
   [userId: string]: {
     display_name: string | null;
@@ -37,9 +43,14 @@ const FeedPage = () => {
   // Fetch current user's name for greeting
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("display_name").eq("user_id", user.id).single().then(({ data }) => {
-      if (data?.display_name) setCurrentUserName(data.display_name);
-    });
+    supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        if (data?.display_name) setCurrentUserName(data.display_name);
+      });
   }, [user]);
 
   const filters = [
@@ -56,7 +67,9 @@ const FeedPage = () => {
     const [postsRes, hangoutsRes] = await Promise.all([
       supabase
         .from("life_posts")
-        .select("id, content, image_url, link_url, created_at, section_id, user_id, photo_layout, life_sections(name, emoji, section_type, min_tier, user_id)")
+        .select(
+          "id, content, image_url, link_url, created_at, section_id, user_id, photo_layout, life_sections(name, emoji, section_type, min_tier, user_id)",
+        )
         .order("created_at", { ascending: false })
         .limit(50),
       supabase
@@ -181,9 +194,7 @@ const FeedPage = () => {
       {/* Header */}
       <nav className="sticky top-0 z-50 bg-background">
         <div className="max-w-2xl mx-auto px-5 py-4 text-center">
-          <span className="font-display text-[20px] font-medium text-foreground">
-            Nyheter från kretsen
-          </span>
+          <span className="font-display text-[20px] font-medium text-foreground">Nyheter från kretsen</span>
         </div>
         <CurvedSeparator />
       </nav>
@@ -233,10 +244,10 @@ const FeedPage = () => {
               }
               return (
                 <>
-                  <p className="font-display font-medium text-[16px] text-center" style={{ color: '#3C2A4D' }}>
+                  <p className="font-display font-medium text-[16px] text-center" style={{ color: "#3C2A4D" }}>
                     {greeting}
                   </p>
-                  <p className="text-[13px] text-center mt-1" style={{ color: '#3C2A4D' }}>
+                  <p className="text-[13px] text-center mt-1" style={{ color: "#3C2A4D" }}>
                     {subtitle}
                   </p>
                 </>
@@ -273,7 +284,7 @@ const FeedPage = () => {
                     profile={profile}
                     isOwn={isOwn}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                  />
+                  />,
                 );
               }
 
@@ -284,7 +295,7 @@ const FeedPage = () => {
                     profile={profile}
                     isOwn={isOwn}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                  />
+                  />,
                 );
               }
 
@@ -296,7 +307,7 @@ const FeedPage = () => {
                     isOwn={isOwn}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
                     onSendHug={() => handleSendHug(item.userId)}
-                  />
+                  />,
                 );
               }
 
