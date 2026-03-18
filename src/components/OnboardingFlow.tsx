@@ -4,9 +4,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Camera, User } from "lucide-react";
+import { Camera, User, Newspaper, CalendarHeart, Users } from "lucide-react";
 
-const ROOM_SUGGESTIONS = ["Jobb", "Familj", "Husbygge", "Resor", "Övrigt"];
+const TUTORIAL_STEPS = [
+  {
+    icon: Newspaper,
+    title: "Nyheter från kretsen",
+    text: "Se vad dina närmaste delar – äkta vardagsögonblick, inte highlights.",
+  },
+  {
+    icon: CalendarHeart,
+    title: "Ses vi?",
+    text: "Föreslå en träff eller berätta när du är ledig. Från känsla till handling på ett klick.",
+  },
+  {
+    icon: Users,
+    title: "Din krets",
+    text: "Bjud in dina närmaste. Max 15 personer – bara de som faktiskt betyder något.",
+  },
+];
 
 interface Props {
   onComplete: () => void;
@@ -14,9 +30,9 @@ interface Props {
 
 const OnboardingFlow = ({ onComplete }: Props) => {
   const { user } = useAuth();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState<"name" | "avatar" | "tutorial">("name");
+  const [tutorialIndex, setTutorialIndex] = useState(0);
   const [displayName, setDisplayName] = useState("");
-  const [roomName, setRoomName] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -39,7 +55,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
     }
 
     setLoading(false);
-    setStep(3);
+    setStep("avatar");
   };
 
   const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +98,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
     }
 
     setLoading(false);
-    setStep(4);
+    setStep("tutorial");
   };
 
   const markOnboarded = async () => {
@@ -93,41 +109,23 @@ const OnboardingFlow = ({ onComplete }: Props) => {
       .eq("user_id", user.id);
   };
 
-  const handleCreateRoom = async () => {
-    if (!user) return;
-    setLoading(true);
-
-    if (roomName.trim()) {
-      await supabase.from("life_sections").insert({
-        user_id: user.id,
-        name: roomName.trim(),
-        emoji: "—",
-        min_tier: "outer" as const,
-        section_type: "posts",
-      });
-    }
-
-    await markOnboarded();
-    setLoading(false);
-    onComplete();
-  };
-
-  const handleSkip = async () => {
-    if (!user) return;
-    if (step === 2) {
-      setStep(3);
-    } else if (step === 3) {
-      setStep(4);
-    } else if (step === 4) {
+  const handleTutorialNext = async () => {
+    if (tutorialIndex < TUTORIAL_STEPS.length - 1) {
+      setTutorialIndex(tutorialIndex + 1);
+    } else {
       await markOnboarded();
       onComplete();
     }
   };
 
+  const currentTutorial = TUTORIAL_STEPS[tutorialIndex];
+
   return (
     <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "#F7F3EF" }}>
       <div className="w-full max-w-sm text-center">
-        {step === 1 && (
+
+        {/* Step: Name */}
+        {step === "name" && (
           <div className="space-y-6">
             <span
               className="block font-display lowercase"
@@ -135,31 +133,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
             >
               minby
             </span>
-            <h1
-              className="font-display"
-              style={{ fontWeight: 500, fontSize: "22px", color: "#3C2A4D" }}
-            >
-              Välkommen till Minby
-            </h1>
-            <p className="text-muted-foreground" style={{ fontSize: "14px" }}>
-              Din plats för äkta kontakt med de som betyder mest
-            </p>
-            <Button
-              onClick={() => setStep(2)}
-              className="w-full text-[13px] font-normal"
-              style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "10px" }}
-            >
-              Kom igång
-            </Button>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="space-y-6">
-            <h1
-              className="font-display"
-              style={{ fontWeight: 500, fontSize: "20px", color: "#3C2A4D" }}
-            >
+            <h1 className="font-display" style={{ fontWeight: 500, fontSize: "20px", color: "#3C2A4D" }}>
               Vad ska dina vänner kalla dig?
             </h1>
             <Input
@@ -172,43 +146,39 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               onClick={handleNameContinue}
               disabled={!displayName.trim() || loading}
               className="w-full text-[13px] font-normal"
-              style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "10px" }}
+              style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "20px", height: "48px" }}
             >
               {loading ? "..." : "Fortsätt"}
             </Button>
-            <button
-              onClick={handleSkip}
-              className="text-[13px] text-muted-foreground hover:underline"
-            >
-              Hoppa över
-            </button>
           </div>
         )}
 
-        {step === 3 && (
+        {/* Step: Avatar */}
+        {step === "avatar" && (
           <div className="space-y-6">
-            <h1
-              className="font-display"
-              style={{ fontWeight: 500, fontSize: "20px", color: "#3C2A4D" }}
-            >
+            <h1 className="font-display" style={{ fontWeight: 500, fontSize: "20px", color: "#3C2A4D" }}>
               Lägg till en profilbild
             </h1>
-            <p className="text-muted-foreground" style={{ fontSize: "14px" }}>
+            <p style={{ fontSize: "14px", color: "#7A6A85" }}>
               Så dina vänner känner igen dig
             </p>
 
             <div className="flex justify-center">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="relative w-24 h-24 rounded-full border-[0.5px] border-border bg-card flex items-center justify-center overflow-hidden transition-all hover:bg-muted"
+                className="relative w-24 h-24 rounded-full border-[0.5px] flex items-center justify-center overflow-hidden transition-all"
+                style={{ borderColor: "#EDE8F4", backgroundColor: "#FFFFFF" }}
               >
                 {avatarPreview ? (
                   <img src={avatarPreview} alt="Profilbild" className="w-full h-full object-cover" />
                 ) : (
-                  <User className="w-8 h-8 text-muted-foreground" />
+                  <User className="w-8 h-8" style={{ color: "#7A6A85" }} />
                 )}
-                <div className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-primary flex items-center justify-center">
-                  <Camera className="w-3.5 h-3.5 text-primary-foreground" />
+                <div
+                  className="absolute bottom-0 right-0 w-7 h-7 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: "#3C2A4D" }}
+                >
+                  <Camera className="w-3.5 h-3.5" style={{ color: "#fff" }} />
                 </div>
               </button>
             </div>
@@ -225,62 +195,70 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               onClick={handleAvatarContinue}
               disabled={loading}
               className="w-full text-[13px] font-normal"
-              style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "10px" }}
+              style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "20px", height: "48px" }}
             >
               {loading ? "..." : avatarFile ? "Fortsätt" : "Fortsätt utan bild"}
             </Button>
             <button
-              onClick={handleSkip}
-              className="text-[13px] text-muted-foreground hover:underline"
+              onClick={handleAvatarContinue}
+              className="text-[13px] hover:underline"
+              style={{ color: "#7A6A85" }}
             >
               Hoppa över
             </button>
           </div>
         )}
 
-        {step === 4 && (
+        {/* Step: Tutorial */}
+        {step === "tutorial" && (
           <div className="space-y-6">
-            <h1
-              className="font-display"
-              style={{ fontWeight: 500, fontSize: "20px", color: "#3C2A4D" }}
+            <div
+              className="p-8 mx-auto"
+              style={{
+                backgroundColor: "#FFFFFF",
+                border: "0.5px solid #EDE8F4",
+                borderRadius: "16px",
+              }}
             >
-              Skapa din första del av min vardag
-            </h1>
-            <Input
-              value={roomName}
-              onChange={(e) => setRoomName(e.target.value)}
-              placeholder="T.ex. Jobb, Familj, Resor..."
-              className="rounded-[10px] bg-card border-[0.5px] border-border text-center"
-            />
-            <div className="flex flex-wrap justify-center gap-2">
-              {ROOM_SUGGESTIONS.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => setRoomName(s)}
-                  className={`px-4 py-1.5 text-[13px] font-normal rounded-full border transition-all ${
-                    roomName === s
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-card text-foreground border-border hover:bg-muted"
-                  }`}
-                >
-                  {s}
-                </button>
+              <div
+                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5"
+                style={{ backgroundColor: "#EDE8F4" }}
+              >
+                <currentTutorial.icon className="w-6 h-6" style={{ color: "#3C2A4D" }} />
+              </div>
+              <h2
+                className="font-display mb-2"
+                style={{ fontWeight: 500, fontSize: "18px", color: "#3C2A4D" }}
+              >
+                {currentTutorial.title}
+              </h2>
+              <p style={{ fontSize: "13px", color: "#7A6A85", lineHeight: 1.6 }}>
+                {currentTutorial.text}
+              </p>
+            </div>
+
+            {/* Pagination dots */}
+            <div className="flex justify-center gap-2">
+              {TUTORIAL_STEPS.map((_, i) => (
+                <div
+                  key={i}
+                  className="rounded-full transition-all"
+                  style={{
+                    width: i === tutorialIndex ? "20px" : "6px",
+                    height: "6px",
+                    backgroundColor: i === tutorialIndex ? "#3C2A4D" : "#EDE8F4",
+                  }}
+                />
               ))}
             </div>
+
             <Button
-              onClick={handleCreateRoom}
-              disabled={loading}
+              onClick={handleTutorialNext}
               className="w-full text-[13px] font-normal"
-              style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "10px" }}
+              style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "20px", height: "48px" }}
             >
-              {loading ? "..." : "Skapa och kom igång"}
+              {tutorialIndex === TUTORIAL_STEPS.length - 1 ? "Kom igång!" : "Nästa"}
             </Button>
-            <button
-              onClick={handleSkip}
-              className="text-[13px] text-muted-foreground hover:underline"
-            >
-              Hoppa över
-            </button>
           </div>
         )}
       </div>
