@@ -99,7 +99,23 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProp
       ) : (
         <PostReactions postId={post.id} />
       )}
-
+      {/* Subtil möjlighet att föreslå något */}
+      {!isOwn && (
+        <div className="mt-2">
+          <button
+            onClick={() =>
+              onSuggestPlan?.({
+                postId: post.id,
+                content: post.content,
+                userName: profile.display_name || "Någon",
+              })
+            }
+            className="text-[11px] text-muted-foreground hover:underline"
+          >
+            Föreslå något
+          </button>
+        </div>
+      )}
       {/* Comments */}
       <PostComments postId={post.id} isOwner={!!isOwn} />
     </div>
