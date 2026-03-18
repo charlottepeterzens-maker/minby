@@ -36,7 +36,7 @@ const BottomNav = () => {
                 {showBadge && (
                   <span
                     className="absolute -top-1.5 -right-2 min-w-[16px] h-4 flex items-center justify-center rounded-full text-[9px] font-bold text-white px-1"
-                    style={{ backgroundColor: "#E53E3E" }}
+                    style={{ backgroundColor: "#993556" }}
                   >
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </span>
