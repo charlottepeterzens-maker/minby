@@ -16,7 +16,7 @@ const InviteFriendDialog = () => {
     setLoading(true);
     try {
       const token = crypto.randomUUID();
-      const { error } = await supabase.from("invite_links").insert({
+      const { error } = await (supabase as any).from("invite_links").insert({
         created_by: user.id,
         token,
       });
