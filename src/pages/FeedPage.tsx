@@ -1,19 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { CreatePlanDialog } from "@/components/CreatePlanDialog";
 import { extractActivity } from "@/utils/extractActivity";
-import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { Heart } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/contexts/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
-import BottomNav from "@/components/BottomNav";
-import CurvedSeparator from "@/components/CurvedSeparator";
-import ScrollToTopButton from "@/components/ScrollToTopButton";
-import FeedPostCard from "@/components/feed/FeedPostCard";
-import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
-import FeedHealthCard from "@/components/feed/FeedHealthCard";
-import { toast } from "sonner";
 
 interface ProfileMap {
   [userId: string]: {
