@@ -269,7 +269,7 @@ const FeedPage = () => {
               if (item.type === "post") {
                 return wrapper(
                   <FeedPostCard
-                    post={post}
+                    post={item.data}
                     profile={profile}
                     isOwn={isOwn}
                     onProfileClick={onProfileClick}
