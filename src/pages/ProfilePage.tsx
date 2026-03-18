@@ -30,6 +30,8 @@ import ProfileShareDialog from "@/components/profile/ProfileShareDialog";
 import TipsFavorites from "@/components/profile/TipsFavorites";
 import FriendRequestButton from "@/components/profile/FriendRequestButton";
 import HangoutNotificationList from "@/components/profile/HangoutNotificationList";
+import NotificationList from "@/components/profile/NotificationList";
+import type { NotificationItem } from "@/components/profile/NotificationList";
 import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
