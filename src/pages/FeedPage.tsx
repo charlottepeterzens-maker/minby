@@ -228,7 +228,7 @@ const FeedPage = () => {
   const filteredItems = feedItems.filter((item) => {
     if (filter === "all") return true;
     if (filter === "posts") return item.type === "post";
-    if (filter === "hangout") return item.type === "hangout";
+    if (filter === "hangout") return item.type === "hangout" || item.type === "activity_group";
     if (filter === "health") return item.type === "health";
     return true;
   });
