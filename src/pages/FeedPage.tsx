@@ -310,13 +310,12 @@ const FeedPage = () => {
 /** Empty feed guidance card */
 const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
   const navigate = useNavigate();
-  const [inviteOpen, setInviteOpen] = useState(false);
 
   const rows = [
     {
       icon: UserPlus,
       text: "Bjud in dina närmaste till din krets",
-      action: () => setInviteOpen(true),
+      action: () => navigate("/friends"),
     },
     {
       icon: Plus,
@@ -359,15 +358,6 @@ const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
       <p className="text-center mt-3" style={{ fontSize: "12px", color: "#7A6A85" }}>
         Flödet fylls på när du och dina vänner börjar dela.
       </p>
-
-      {/* Hidden trigger for InviteFriendDialog */}
-      {inviteOpen && (
-        <InviteFriendDialog
-          triggerOverride={
-            <span ref={(el) => el?.click()} />
-          }
-        />
-      )}
     </div>
   );
 };
