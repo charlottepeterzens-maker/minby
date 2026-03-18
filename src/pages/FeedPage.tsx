@@ -306,4 +306,70 @@ const FeedPage = () => {
   );
 };
 
+
+/** Empty feed guidance card */
+const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
+  const navigate = useNavigate();
+  const [inviteOpen, setInviteOpen] = useState(false);
+
+  const rows = [
+    {
+      icon: UserPlus,
+      text: "Bjud in dina närmaste till din krets",
+      action: () => setInviteOpen(true),
+    },
+    {
+      icon: Plus,
+      text: "Dela något från din vardag",
+      action: () => navigate("/profile"),
+    },
+    {
+      icon: CalendarDays,
+      text: "Berätta när du är ledig",
+      action: onOpenHangout,
+    },
+  ];
+
+  return (
+    <div>
+      <div
+        className="p-4 space-y-3"
+        style={{
+          backgroundColor: "#FFFFFF",
+          border: "0.5px solid #EDE8F4",
+          borderRadius: "16px",
+        }}
+      >
+        {rows.map((row, i) => (
+          <button
+            key={i}
+            onClick={row.action}
+            className="flex items-center gap-3 w-full text-left group"
+          >
+            <row.icon className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
+            <span
+              className="text-[13px] group-hover:underline"
+              style={{ color: "#3C2A4D" }}
+            >
+              {row.text}
+            </span>
+          </button>
+        ))}
+      </div>
+      <p className="text-center mt-3" style={{ fontSize: "12px", color: "#7A6A85" }}>
+        Flödet fylls på när du och dina vänner börjar dela.
+      </p>
+
+      {/* Hidden trigger for InviteFriendDialog */}
+      {inviteOpen && (
+        <InviteFriendDialog
+          triggerOverride={
+            <span ref={(el) => el?.click()} />
+          }
+        />
+      )}
+    </div>
+  );
+};
+
 export default FeedPage;
