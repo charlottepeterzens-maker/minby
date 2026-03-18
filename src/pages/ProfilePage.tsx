@@ -123,6 +123,7 @@ const ProfilePage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [notifHangoutId, setNotifHangoutId] = useState<string | null>(null);
   const { refresh: refreshUnread } = useUnreadNotifications();
+  const [notifItems, setNotifItems] = useState<NotificationItem[]>([]);
 
   const targetUserId = userId || user?.id;
   const isOwnProfile = !userId || userId === user?.id;
