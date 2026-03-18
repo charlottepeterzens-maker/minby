@@ -587,7 +587,7 @@ const FriendsPage = () => {
       </main>
 
       <InviteDialogControlled open={inviteOpen} onOpenChange={setInviteOpen} />
-      <QRCodeSheet open={qrOpen} onOpenChange={setQrOpen} />
+      <InviteDialogControlled open={false} onOpenChange={() => {}} />
       <ScrollToTopButton />
       <BottomNav />
     </div>
