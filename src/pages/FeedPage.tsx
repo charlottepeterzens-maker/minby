@@ -24,6 +24,11 @@ type FeedItem =
   | { type: "health"; data: any; userId: string; created_at: string };
 
 const FeedPage = () => {
+  const [suggestData, setSuggestData] = useState<{
+    postId: string;
+    content: string | null;
+    userName: string;
+  } | null>(null);
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
