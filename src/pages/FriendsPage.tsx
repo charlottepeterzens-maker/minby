@@ -4,15 +4,12 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { UserPlus, Users, Search, Check, X, QrCode } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Users, Search, QrCode } from "lucide-react";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import QRCodeSheet from "@/components/profile/QRCodeSheet";
+import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 
 interface HangoutStatus {
   entry_type: string;
@@ -68,7 +65,7 @@ const FriendsPage = () => {
   const [friends, setFriends] = useState<FriendRow[]>([]);
   const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [inviteOpen, setInviteOpen] = useState(false);
+  
   const [qrOpen, setQrOpen] = useState(false);
   const [friendSearch, setFriendSearch] = useState("");
   const [respondingId, setRespondingId] = useState<string | null>(null);
@@ -447,13 +444,7 @@ const FriendsPage = () => {
             <p className="text-[13px] mb-6" style={{ color: "#9B8BA5" }}>
               Sök på namn eller skanna en QR-kod för att kopplas ihop
             </p>
-            <Button
-              onClick={() => setInviteOpen(true)}
-              className="rounded-[10px] text-sm font-medium px-6"
-              style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
-            >
-              Bjud in en vän till din vardag
-            </Button>
+            <InviteFriendDialog />
           </div>
         ) : (
           <div className="space-y-5">
@@ -585,16 +576,9 @@ const FriendsPage = () => {
                     })
                   )}
 
-                  <button
-                    onClick={() => setInviteOpen(true)}
-                    className="w-full flex items-center gap-3 p-3 rounded-[16px] transition-colors hover:opacity-80"
-                    style={{ border: "1.5px dashed #EDE8F4", backgroundColor: "transparent" }}
-                  >
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#EDE8F4" }}>
-                      <UserPlus className="w-4.5 h-4.5" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
-                    </div>
-                    <span className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>Bjud in en vän</span>
-                  </button>
+                  <div className="w-full flex items-center gap-3 p-3 rounded-[16px]" style={{ border: "1.5px dashed #EDE8F4", backgroundColor: "transparent" }}>
+                    <InviteFriendDialog />
+                  </div>
                 </div>
               </div>
             )}
@@ -602,66 +586,10 @@ const FriendsPage = () => {
         )}
       </main>
 
-      <InviteDialogControlled open={inviteOpen} onOpenChange={setInviteOpen} />
       <QRCodeSheet open={qrOpen} onOpenChange={setQrOpen} />
       <ScrollToTopButton />
       <BottomNav />
     </div>
-  );
-};
-
-const InviteDialogControlled = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [sending, setSending] = useState(false);
-
-  const handleSend = async () => {
-    if (!email || !email.includes("@")) {
-      toast.error("Ange en giltig e-postadress");
-      return;
-    }
-    setSending(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("send-invite", {
-        body: { email: email.trim(), message: message.trim() },
-      });
-      if (error) throw error;
-      if (data?.error === "already_registered") {
-        toast.info(data.message);
-      } else {
-        toast.success("Inbjudan skickad! 🎉");
-        setEmail("");
-        setMessage("");
-        onOpenChange(false);
-      }
-    } catch {
-      toast.error("Kunde inte skicka inbjudan. Försök igen.");
-    } finally {
-      setSending(false);
-    }
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-[14px] max-w-sm" style={{ border: "0.5px solid #EDE8F4" }}>
-        <DialogHeader>
-          <DialogTitle className="font-display text-base font-medium">Bjud in en vän</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-3 mt-2">
-          <div>
-            <label className="text-xs mb-1 block" style={{ color: "#9B8BA5" }}>E-postadress</label>
-            <Input type="email" placeholder="namn@exempel.se" value={email} onChange={(e) => setEmail(e.target.value)} className="text-sm" />
-          </div>
-          <div>
-            <label className="text-xs mb-1 block" style={{ color: "#9B8BA5" }}>Personligt meddelande (valfritt)</label>
-            <Textarea placeholder="Hej! Jag tror du skulle gilla Minby..." value={message} onChange={(e) => setMessage(e.target.value)} maxLength={300} rows={3} className="text-sm resize-none" />
-          </div>
-          <Button onClick={handleSend} disabled={sending || !email} className="w-full rounded-[10px] text-sm" style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}>
-            {sending ? "Skickar..." : "Skicka inbjudan"}
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
   );
 };
 
