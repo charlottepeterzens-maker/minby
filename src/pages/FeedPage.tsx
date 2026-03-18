@@ -264,19 +264,7 @@ const FeedPage = () => {
       </main>
 
       <ScrollToTopButton />
-      {suggestData && (
-        <CreatePlanDialog
-          open={true}
-          onOpenChange={(open) => {
-            if (!open) setSuggestData(null);
-          }}
-          initialData={{
-            activity: extractActivity?.(suggestData.content || "") || "",
-            message: "Såg ditt inlägg – ska vi hitta på något?",
-            userName: suggestData.userName,
-          }}
-        />
-      )}
+      {/* CreatePlanDialog removed – feature pending */}
       <BottomNav />
     </div>
   );
