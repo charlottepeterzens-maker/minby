@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { CreatePlanDialog } from "@/components/CreatePlanDialog";
+import { extractActivity } from "@/utils/extractActivity";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
