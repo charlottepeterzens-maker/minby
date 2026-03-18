@@ -213,30 +213,37 @@ const OnboardingFlow = ({ onComplete }: Props) => {
         {/* Step: Tutorial */}
         {step === "tutorial" && (
           <div className="space-y-6">
-            <div
-              className="p-8 mx-auto"
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: "0.5px solid #EDE8F4",
-                borderRadius: "16px",
-              }}
-            >
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5"
-                style={{ backgroundColor: "#EDE8F4" }}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={tutorialIndex}
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="p-8 mx-auto"
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  border: "0.5px solid #EDE8F4",
+                  borderRadius: "16px",
+                }}
               >
-                <currentTutorial.icon className="w-6 h-6" style={{ color: "#3C2A4D" }} />
-              </div>
-              <h2
-                className="font-display mb-2"
-                style={{ fontWeight: 500, fontSize: "18px", color: "#3C2A4D" }}
-              >
-                {currentTutorial.title}
-              </h2>
-              <p style={{ fontSize: "13px", color: "#7A6A85", lineHeight: 1.6 }}>
-                {currentTutorial.text}
-              </p>
-            </div>
+                <div
+                  className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5"
+                  style={{ backgroundColor: "#EDE8F4" }}
+                >
+                  <currentTutorial.icon className="w-6 h-6" style={{ color: "#3C2A4D" }} />
+                </div>
+                <h2
+                  className="font-display mb-2"
+                  style={{ fontWeight: 500, fontSize: "18px", color: "#3C2A4D" }}
+                >
+                  {currentTutorial.title}
+                </h2>
+                <p style={{ fontSize: "13px", color: "#7A6A85", lineHeight: 1.6 }}>
+                  {currentTutorial.text}
+                </p>
+              </motion.div>
+            </AnimatePresence>
 
             {/* Pagination dots */}
             <div className="flex justify-center gap-2">
