@@ -7,14 +7,57 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
+const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; onLogin: () => void }) => (
+  <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "#F7F3EF" }}>
+    <div className="w-full max-w-sm text-center">
+      <span
+        className="block font-display lowercase mb-8"
+        style={{ fontWeight: 300, fontSize: "26px", letterSpacing: "-0.5px", color: "#3C2A4D" }}
+      >
+        minby
+      </span>
+
+      <div className="space-y-3 mb-10">
+        <p style={{ fontSize: "13px", color: "#7A6A85", lineHeight: 1.6 }}>
+          Du scrollar i timmar och vet ändå inte hur din bästa vän egentligen mår.
+        </p>
+        <p style={{ fontSize: "13px", color: "#3C2A4D", fontWeight: 500, lineHeight: 1.6 }}>
+          Minby är din slutna krets – de närmaste, de som faktiskt vill veta.
+        </p>
+        <p style={{ fontSize: "13px", color: "#7A6A85", lineHeight: 1.6 }}>
+          Dela din dag, planera något, ses på riktigt.
+        </p>
+      </div>
+
+      <Button
+        onClick={onGetStarted}
+        className="w-full text-[13px] font-normal"
+        style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "20px", height: "48px" }}
+      >
+        Kom igång
+      </Button>
+
+      <button
+        onClick={onLogin}
+        className="mt-4 text-[13px] hover:underline"
+        style={{ color: "#7A6A85" }}
+      >
+        Har du redan ett konto? <span style={{ color: "#3C2A4D", fontWeight: 500 }}>Logga in</span>
+      </button>
+    </div>
+  </div>
+);
+
 const AuthPage = () => {
   const { t } = useLanguage();
-  const [isSignUp, setIsSignUp] = useState(true);
+  const [view, setView] = useState<"welcome" | "signup" | "login">("welcome");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const [consent, setConsent] = useState(false);
+
+  const isSignUp = view === "signup";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,8 +86,17 @@ const AuthPage = () => {
     setLoading(false);
   };
 
+  if (view === "welcome") {
+    return (
+      <WelcomeScreen
+        onGetStarted={() => setView("signup")}
+        onLogin={() => setView("login")}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-5">
+    <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "#F7F3EF" }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
           <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
@@ -126,7 +178,7 @@ const AuthPage = () => {
         <p className="text-center text-sm text-muted-foreground mt-8">
           {isSignUp ? t("alreadyHaveAccount") : t("dontHaveAccount")}{" "}
           <button
-            onClick={() => setIsSignUp(!isSignUp)}
+            onClick={() => setView(isSignUp ? "login" : "signup")}
             className="text-foreground font-medium hover:underline"
           >
             {isSignUp ? t("signIn") : t("signUp")}
