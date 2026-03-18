@@ -280,6 +280,30 @@ const FeedPage = () => {
           ))}
         </div>
 
+        {/* Quiet feed nudge */}
+        {!loading && filteredItems.length > 0 && (() => {
+          const newest = filteredItems[0]?.created_at;
+          const ownRecent = filteredItems.some(
+            (i) => i.userId === user?.id && Date.now() - new Date(i.created_at).getTime() < 12 * 3600_000
+          );
+          const isQuiet = newest && Date.now() - new Date(newest).getTime() > 48 * 3600_000 && !ownRecent;
+          if (!isQuiet) return null;
+          return (
+            <button
+              onClick={() => navigate("/profile")}
+              className="w-full mb-4 text-left"
+              style={{ backgroundColor: "#EDE8F4", borderRadius: "10px", padding: "10px 14px" }}
+            >
+              <span className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
+                Vad händer hos dig idag?
+              </span>
+              <span className="text-[12px] ml-1.5" style={{ color: "#7A6A85" }}>
+                Dela något →
+              </span>
+            </button>
+          );
+        })()}
+
         {!loading && filteredItems.length === 0 ? (
           <EmptyFeedCard
             onOpenHangout={() => setShowHangoutSheet(true)}
@@ -370,17 +394,17 @@ const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
   const rows = [
     {
       icon: UserPlus,
-      text: "Bjud in dina närmaste till din krets",
+      text: "Bjud in någon du vill ha närmare i din vardag",
       action: () => navigate("/friends"),
     },
     {
       icon: Plus,
-      text: "Dela något från din vardag",
+      text: "Dela något litet från din dag",
       action: () => navigate("/profile"),
     },
     {
       icon: CalendarDays,
-      text: "Berätta när du är ledig",
+      text: "Säg till om du vill ses",
       action: onOpenHangout,
     },
   ];
@@ -388,11 +412,11 @@ const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
   return (
     <div>
       <div
-        className="p-4 space-y-3"
         style={{
           backgroundColor: "#FFFFFF",
           border: "0.5px solid #EDE8F4",
           borderRadius: "16px",
+          padding: "20px",
         }}
       >
         {rows.map((row, i) => (
@@ -400,6 +424,10 @@ const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
             key={i}
             onClick={row.action}
             className="flex items-center gap-3 w-full text-left group"
+            style={{
+              padding: "12px 0",
+              borderBottom: i < rows.length - 1 ? "0.5px solid #EDE8F4" : "none",
+            }}
           >
             <row.icon className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
             <span
@@ -411,8 +439,8 @@ const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
           </button>
         ))}
       </div>
-      <p className="text-center mt-3" style={{ fontSize: "12px", color: "#7A6A85" }}>
-        Flödet fylls på när du och dina vänner börjar dela.
+      <p className="text-center mt-4" style={{ fontSize: "12px", color: "#B0A8B5" }}>
+        Flödet fylls på när ni börjar dela med varandra
       </p>
     </div>
   );
