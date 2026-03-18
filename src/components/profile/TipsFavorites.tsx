@@ -55,7 +55,8 @@ const decodeTitle = (title: string) =>
   title
     .replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
     .replace(/&amp;/g, "&")
-    .replace(/&quot;/g, '"');
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'");
 
 const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }) => {
   const { user } = useAuth();
