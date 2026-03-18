@@ -23,6 +23,7 @@ import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
+import InvitePage from "./pages/InvitePage";
 
 const queryClient = new QueryClient();
 
