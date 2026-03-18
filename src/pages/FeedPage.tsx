@@ -12,12 +12,6 @@ import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
 import FeedHealthCard from "@/components/feed/FeedHealthCard";
 import { toast } from "sonner";
 
-const [suggestData, setSuggestData] = useState<{
-  postId: string;
-  content: string | null;
-  userName: string;
-} | null>(null);
-
 interface ProfileMap {
   [userId: string]: {
     display_name: string | null;
