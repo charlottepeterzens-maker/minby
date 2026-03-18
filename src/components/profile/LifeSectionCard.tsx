@@ -128,7 +128,8 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
     setPosting(true);
     let image_url: string | null = null;
     if (imageFile) {
-      const filePath = `${user.id}/${Date.now()}-${imageFile.name}`;
+      const sanitizedName = imageFile.name.replace(/[^a-zA-Z0-9.]/g, "_").toLowerCase();
+      const filePath = `${user.id}/${Date.now()}-${sanitizedName}`;
       const { error: uploadErr } = await supabase.storage.from("life-images").upload(filePath, imageFile);
       if (uploadErr) {
         toast.error(t("couldNotPost"));
