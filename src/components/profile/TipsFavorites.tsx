@@ -126,11 +126,8 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
     const file = e.target.files?.[0];
     if (!file || !user) return;
     setUploading(true);
-    const ext = file.name.split(".").pop();
-    const sanitizedName = imageFile.name
-  .replace(/[^a-zA-Z0-9.]/g, "_")
-  .toLowerCase();
-const filePath = `${user.id}/${Date.now()}-${sanitizedName}`;`;
+    const sanitizedName = file.name.replace(/[^a-zA-Z0-9.]/g, "_").toLowerCase();
+    const path = `${user.id}/${Date.now()}-${sanitizedName}`;
     const { error } = await supabase.storage.from("life-images").upload(path, file, { upsert: true });
     if (error) {
       toast({ title: t("error"), description: error.message, variant: "destructive" });
