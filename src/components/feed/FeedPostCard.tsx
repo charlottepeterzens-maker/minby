@@ -26,7 +26,7 @@ interface FeedPostCardProps {
   onSuggestPlan?: (data: { postId: string; content: string | null; userName: string }) => void;
 }
 
-const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProps) => {
+const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: FeedPostCardProps) => {
   const timeAgo = getTimeAgo(post.created_at);
   const [showReactions, setShowReactions] = useState(false);
   const signedUrl = useSignedImageUrl(post.image_url);
