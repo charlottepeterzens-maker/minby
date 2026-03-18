@@ -14,6 +14,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<"my" | "scan">("my");
   const scannerRef = useRef<any>(null);
+  const isRunningRef = useRef(false);
   const scannerContainerId = "qr-scanner-container";
 
   const appUrl = window.location.origin;
@@ -22,11 +23,16 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
   useEffect(() => {
     if (!open || tab !== "scan") return;
 
-    let scanner: any = null;
+    let cancelled = false;
 
     const startScanner = async () => {
+      const el = document.getElementById(scannerContainerId);
+      if (!el || cancelled) return;
+
       const { Html5Qrcode } = await import("html5-qrcode");
-      scanner = new Html5Qrcode(scannerContainerId);
+      if (cancelled) return;
+
+      const scanner = new Html5Qrcode(scannerContainerId);
       scannerRef.current = scanner;
 
       try {
@@ -34,28 +40,36 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
           { facingMode: "environment" },
           { fps: 10, qrbox: { width: 220, height: 220 } },
           (decodedText: string) => {
-            // Check if it's a valid Minby invite URL
             const match = decodedText.match(/\/invite\/([a-f0-9-]{36})/);
-            if (match) {
-              scanner.stop().catch(() => {});
-              onOpenChange(false);
-              navigate(`/invite/${match[1]}`);
+            if (match && isRunningRef.current) {
+              isRunningRef.current = false;
+              scanner.stop().then(() => {
+                onOpenChange(false);
+                navigate(`/invite/${match[1]}`);
+              }).catch(() => {});
             }
           },
-          () => {} // ignore errors during scanning
+          () => {}
         );
+        if (!cancelled) {
+          isRunningRef.current = true;
+        } else {
+          scanner.stop().catch(() => {});
+        }
       } catch {
         // Camera not available
       }
     };
 
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(startScanner, 300);
+    const timer = setTimeout(startScanner, 500);
 
     return () => {
+      cancelled = true;
       clearTimeout(timer);
-      if (scanner) {
-        scanner.stop().catch(() => {});
+      if (scannerRef.current && isRunningRef.current) {
+        isRunningRef.current = false;
+        scannerRef.current.stop().catch(() => {});
+        scannerRef.current = null;
       }
     };
   }, [open, tab, navigate, onOpenChange]);
