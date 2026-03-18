@@ -10,6 +10,8 @@ import FeedPostCard from "@/components/feed/FeedPostCard";
 import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
 import FeedHealthCard from "@/components/feed/FeedHealthCard";
 import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
+import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
+import { UserPlus, Plus, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 
 interface ProfileMap {
@@ -234,52 +236,58 @@ const FeedPage = () => {
           ))}
         </div>
 
-        <div className="space-y-4">
-          {filteredItems.map((item) => {
-            const profile = getProfile(item.userId);
-            const isOwn = item.userId === user?.id;
+        {!loading && filteredItems.length === 0 ? (
+          <EmptyFeedCard
+            onOpenHangout={() => setShowHangoutSheet(true)}
+          />
+        ) : (
+          <div className="space-y-4">
+            {filteredItems.map((item) => {
+              const profile = getProfile(item.userId);
+              const isOwn = item.userId === user?.id;
 
-            if (item.type === "post") {
-              return (
-                <FeedPostCard
-                  key={item.data.id}
-                  post={item.data}
-                  profile={profile}
-                  isOwn={isOwn}
-                  onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                  onSuggestPlan={handleSuggestPlan}
-                />
-              );
-            }
+              if (item.type === "post") {
+                return (
+                  <FeedPostCard
+                    key={item.data.id}
+                    post={item.data}
+                    profile={profile}
+                    isOwn={isOwn}
+                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                    onSuggestPlan={handleSuggestPlan}
+                  />
+                );
+              }
 
-            if (item.type === "hangout") {
-              return (
-                <FeedHangoutCard
-                  key={item.data.id}
-                  hangout={item.data}
-                  profile={profile}
-                  isOwn={isOwn}
-                  onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                />
-              );
-            }
+              if (item.type === "hangout") {
+                return (
+                  <FeedHangoutCard
+                    key={item.data.id}
+                    hangout={item.data}
+                    profile={profile}
+                    isOwn={isOwn}
+                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                  />
+                );
+              }
 
-            if (item.type === "health") {
-              return (
-                <FeedHealthCard
-                  key={item.data.id}
-                  post={item.data}
-                  profile={profile}
-                  isOwn={isOwn}
-                  onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                  onSendHug={() => handleSendHug(item.data.id)}
-                />
-              );
-            }
+              if (item.type === "health") {
+                return (
+                  <FeedHealthCard
+                    key={item.data.id}
+                    post={item.data}
+                    profile={profile}
+                    isOwn={isOwn}
+                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                    onSendHug={() => handleSendHug(item.data.id)}
+                  />
+                );
+              }
 
-            return null;
-          })}
-        </div>
+              return null;
+            })}
+          </div>
+        )}
       </main>
 
       <ScrollToTopButton />
@@ -294,6 +302,62 @@ const FeedPage = () => {
       />
 
       <BottomNav />
+    </div>
+  );
+};
+
+
+/** Empty feed guidance card */
+const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
+  const navigate = useNavigate();
+
+  const rows = [
+    {
+      icon: UserPlus,
+      text: "Bjud in dina närmaste till din krets",
+      action: () => navigate("/friends"),
+    },
+    {
+      icon: Plus,
+      text: "Dela något från din vardag",
+      action: () => navigate("/profile"),
+    },
+    {
+      icon: CalendarDays,
+      text: "Berätta när du är ledig",
+      action: onOpenHangout,
+    },
+  ];
+
+  return (
+    <div>
+      <div
+        className="p-4 space-y-3"
+        style={{
+          backgroundColor: "#FFFFFF",
+          border: "0.5px solid #EDE8F4",
+          borderRadius: "16px",
+        }}
+      >
+        {rows.map((row, i) => (
+          <button
+            key={i}
+            onClick={row.action}
+            className="flex items-center gap-3 w-full text-left group"
+          >
+            <row.icon className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
+            <span
+              className="text-[13px] group-hover:underline"
+              style={{ color: "#3C2A4D" }}
+            >
+              {row.text}
+            </span>
+          </button>
+        ))}
+      </div>
+      <p className="text-center mt-3" style={{ fontSize: "12px", color: "#7A6A85" }}>
+        Flödet fylls på när du och dina vänner börjar dela.
+      </p>
     </div>
   );
 };
