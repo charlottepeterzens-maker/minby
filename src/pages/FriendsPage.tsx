@@ -444,13 +444,7 @@ const FriendsPage = () => {
             <p className="text-[13px] mb-6" style={{ color: "#9B8BA5" }}>
               Sök på namn eller skanna en QR-kod för att kopplas ihop
             </p>
-            <Button
-              onClick={() => setInviteOpen(true)}
-              className="rounded-[10px] text-sm font-medium px-6"
-              style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
-            >
-              Bjud in en vän till din vardag
-            </Button>
+            <InviteFriendDialog />
           </div>
         ) : (
           <div className="space-y-5">
