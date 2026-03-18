@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
@@ -87,35 +88,41 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
         post.content && <p className="text-[13px] text-foreground leading-[1.55] mb-2">{post.content}</p>
       )}
 
-      {/* Reactions */}
-      {isOwn ? (
-        <>
-          {showReactions ? (
-            <PostReactions postId={post.id} readOnly />
+      {/* Reactions + Suggest row */}
+      <div className="flex items-center justify-between">
+        <div className="flex-1 min-w-0">
+          {isOwn ? (
+            <>
+              {showReactions ? (
+                <PostReactions postId={post.id} readOnly />
+              ) : (
+                <OwnPostReactionLink postId={post.id} onShow={() => setShowReactions(true)} />
+              )}
+            </>
           ) : (
-            <OwnPostReactionLink postId={post.id} onShow={() => setShowReactions(true)} />
+            <PostReactions postId={post.id} showLabel />
           )}
-        </>
-      ) : (
-        <PostReactions postId={post.id} />
-      )}
-      {/* Subtil möjlighet att föreslå något */}
-      {!isOwn && (
-        <div className="mt-2">
+        </div>
+
+        {/* Suggest button – inline, right-aligned */}
+        {!isOwn && onSuggestPlan && (
           <button
             onClick={() =>
-              onSuggestPlan?.({
+              onSuggestPlan({
                 postId: post.id,
                 content: post.content,
                 userName: profile.display_name || "Någon",
               })
             }
-            className="text-[11px] text-muted-foreground hover:underline"
+            className="flex items-center gap-1 shrink-0 ml-3 hover:underline transition-colors"
+            style={{ color: "#7A6A85" }}
           >
-            Föreslå något
+            <Calendar className="w-3 h-3" />
+            <span className="text-[12px]">Föreslå något</span>
           </button>
-        </div>
-      )}
+        )}
+      </div>
+
       {/* Comments */}
       <PostComments postId={post.id} isOwner={!!isOwn} />
     </div>

@@ -12,6 +12,7 @@ const REACTION_TOASTS: Record<string, string> = {
   "🥂": "Du firade med dem",
   "🙌": "Du hejade på dem",
   "😮": "Du blev berörd",
+  "🤗": "Du skickade en kram",
 };
 
 interface Reaction {
@@ -23,12 +24,14 @@ interface Reaction {
 interface Props {
   postId: string;
   readOnly?: boolean;
+  showLabel?: boolean;
 }
 
-const PostReactions = ({ postId, readOnly }: Props) => {
+const PostReactions = ({ postId, readOnly, showLabel }: Props) => {
   const { user } = useAuth();
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const [showPicker, setShowPicker] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
 
   const fetchReactions = useCallback(async () => {
     const { data } = await supabase
@@ -52,6 +55,14 @@ const PostReactions = ({ postId, readOnly }: Props) => {
   useEffect(() => {
     fetchReactions();
   }, [fetchReactions]);
+
+  // Trigger entrance animation once
+  useEffect(() => {
+    if (!hasAnimated) {
+      const timer = setTimeout(() => setHasAnimated(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [hasAnimated]);
 
   const toggleReaction = async (emoji: string) => {
     if (!user || readOnly) return;
@@ -79,10 +90,18 @@ const PostReactions = ({ postId, readOnly }: Props) => {
   if (reactions.length === 0 && readOnly) return null;
 
   return (
-    <div className="flex items-center gap-1 mt-1.5 flex-wrap">
+    <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+      {showLabel && !readOnly && (
+        <span className="text-[10px] mr-0.5" style={{ color: "#B0A8B5" }}>
+          Reagera
+        </span>
+      )}
       {reactions.map((r) => (
-        <span
+        <motion.span
           key={r.emoji}
+          initial={!hasAnimated ? { scale: 1 } : false}
+          animate={!hasAnimated ? { scale: [1, 1.15, 1] } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
           className={cn(
             "text-[10px] px-1.5 py-0.5 rounded-full border inline-flex items-center gap-0.5",
             readOnly
@@ -96,16 +115,17 @@ const PostReactions = ({ postId, readOnly }: Props) => {
         >
           <span>{r.emoji}</span>
           <span>{r.count}</span>
-        </span>
+        </motion.span>
       ))}
       {!readOnly && (
         <div className="relative">
-          <button
+          <motion.button
             onClick={() => setShowPicker(!showPicker)}
+            whileTap={{ scale: 0.9 }}
             className="text-[10px] px-1.5 py-0.5 rounded-full border border-dashed border-border/50 text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
           >
             +
-          </button>
+          </motion.button>
           <AnimatePresence>
             {showPicker && (
               <motion.div
@@ -115,13 +135,14 @@ const PostReactions = ({ postId, readOnly }: Props) => {
                 className="absolute bottom-full left-0 mb-1 z-20 bg-popover border border-border rounded-md shadow-elevated px-1 py-0.5 flex gap-0.5"
               >
                 {REACTION_EMOJIS.map((emoji) => (
-                  <button
+                  <motion.button
                     key={emoji}
+                    whileTap={{ scale: 0.85 }}
                     onClick={() => toggleReaction(emoji)}
                     className="text-sm p-1 hover:bg-accent rounded transition-colors"
                   >
                     {emoji}
-                  </button>
+                  </motion.button>
                 ))}
               </motion.div>
             )}
