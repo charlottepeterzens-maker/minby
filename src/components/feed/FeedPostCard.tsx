@@ -23,57 +23,74 @@ interface FeedPostCardProps {
   };
   isOwn?: boolean;
   onProfileClick: () => void;
-  onSuggestPlan?: (data: { postId: string; content: string | null; userName: string }) => void;
 }
 
-const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: FeedPostCardProps) => {
+const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProps) => {
   const timeAgo = getTimeAgo(post.created_at);
   const [showReactions, setShowReactions] = useState(false);
   const signedUrl = useSignedImageUrl(post.image_url);
 
   return (
-    <div className="bg-card rounded-[14px] border-[0.5px] border-border p-4">
+    <div
+      style={{
+        backgroundColor: "#FFFFFF",
+        borderRadius: 6,
+        border: "0.5px solid #DDD5CC",
+        padding: 16,
+      }}
+    >
       {/* Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-2.5">
-          <button onClick={onProfileClick} className="shrink-0">
-            <Avatar className="w-9 h-9">
-              <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-xs font-medium">
-                {profile.initials}
-              </AvatarFallback>
-            </Avatar>
+      <div className="flex items-center gap-2.5 mb-3">
+        <button onClick={onProfileClick} className="shrink-0">
+          <Avatar className="w-9 h-9">
+            <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-xs font-medium">
+              {profile.initials}
+            </AvatarFallback>
+          </Avatar>
+        </button>
+        <div>
+          <button
+            onClick={onProfileClick}
+            className="text-sm font-medium text-foreground hover:underline block leading-tight"
+          >
+            {isOwn ? "Du" : profile.display_name || "Någon"}
           </button>
-          <div>
-            <button
-              onClick={onProfileClick}
-              className="text-sm font-medium text-foreground hover:underline block leading-tight"
-            >
-              {isOwn ? "Du" : profile.display_name || "Någon"}
-            </button>
-            <p className="text-[11px] text-muted-foreground leading-tight">
-              {post.sectionName} · {timeAgo}
-            </p>
-          </div>
+          <p className="text-[11px] text-muted-foreground leading-tight">
+            {post.sectionName} · {timeAgo}
+          </p>
         </div>
+      </div>
 
-      {/* Large photo layout (default) */}
+      {/* Stor bild */}
       {signedUrl && post.photo_layout !== "small" && (
-        <img src={signedUrl} alt="" className="w-full mb-3 max-h-72 object-cover rounded-[10px]" />
+        <img
+          src={signedUrl}
+          alt=""
+          style={{ width: "100%", marginBottom: 10, maxHeight: 280, objectFit: "cover", borderRadius: 4 }}
+        />
       )}
 
-      {/* Small photo layout */}
+      {/* Liten bild + text */}
       {signedUrl && post.photo_layout === "small" ? (
-        <div className="flex gap-3 mb-2">
-          <img src={signedUrl} alt="" className="shrink-0 w-20 h-20 object-cover rounded-[10px]" />
-          <div className="flex-1 min-w-0">
-            {post.content && <p className="text-[13px] text-foreground leading-[1.55]">{post.content}</p>}
+        <div style={{ display: "flex", gap: 12, marginBottom: 10 }}>
+          <img
+            src={signedUrl}
+            alt=""
+            style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 4, flexShrink: 0 }}
+          />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {post.content && (
+              <p style={{ fontSize: 13, color: "#3C2A4D", margin: 0, lineHeight: 1.55 }}>{post.content}</p>
+            )}
           </div>
         </div>
       ) : (
-        post.content && <p className="text-[13px] text-foreground leading-[1.55] mb-2">{post.content}</p>
+        post.content && (
+          <p style={{ fontSize: 13, color: "#3C2A4D", margin: "0 0 10px", lineHeight: 1.55 }}>{post.content}</p>
+        )
       )}
 
-      {/* Reactions */}
+      {/* Reaktioner */}
       {isOwn ? (
         <>
           {showReactions ? (
@@ -85,30 +102,22 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
       ) : (
         <PostReactions postId={post.id} />
       )}
-      {/* Subtil möjlighet att föreslå något */}
+
+      {/* Föreslå något – diskret, bara för vänners inlägg */}
       {!isOwn && (
-        <div className="mt-2">
-          <button
-            onClick={() =>
-              onSuggestPlan?.({
-                postId: post.id,
-                content: post.content,
-                userName: profile.display_name || "Någon",
-              })
-            }
-            className="text-[11px] text-muted-foreground hover:underline"
-          >
-            Föreslå något
+        <div style={{ marginTop: 8 }}>
+          <button style={{ fontSize: 11, color: "#7A6A85" }} className="hover:underline">
+            Föreslå något →
           </button>
         </div>
       )}
-      {/* Comments */}
+
+      {/* Kommentarer */}
       <PostComments postId={post.id} isOwner={!!isOwn} />
     </div>
   );
 };
 
-/** Small link that shows reaction count for own posts */
 const OwnPostReactionLink = ({ postId, onShow }: { postId: string; onShow: () => void }) => {
   const [count, setCount] = useState<number | null>(null);
 
@@ -123,7 +132,7 @@ const OwnPostReactionLink = ({ postId, onShow }: { postId: string; onShow: () =>
   if (count === null || count === 0) return null;
 
   return (
-    <button onClick={onShow} className="text-[11px] text-muted-foreground hover:underline mt-1.5">
+    <button onClick={onShow} style={{ fontSize: 11, color: "#7A6A85" }} className="hover:underline mt-1.5">
       {count} {count === 1 ? "reaktion" : "reaktioner"}
     </button>
   );
