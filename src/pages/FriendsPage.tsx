@@ -65,7 +65,7 @@ const FriendsPage = () => {
   const [friends, setFriends] = useState<FriendRow[]>([]);
   const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
   const [loading, setLoading] = useState(true);
-  const [inviteOpen, setInviteOpen] = useState(false);
+  
   const [qrOpen, setQrOpen] = useState(false);
   const [friendSearch, setFriendSearch] = useState("");
   const [respondingId, setRespondingId] = useState<string | null>(null);
