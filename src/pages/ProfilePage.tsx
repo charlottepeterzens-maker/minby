@@ -474,6 +474,26 @@ const ProfilePage = () => {
           </div>
         </div>
 
+        {/* New notification list */}
+        {isOwnProfile && (
+          <NotificationList
+            notifications={notifItems}
+            onClick={(n) => {
+              supabase.from("notifications").update({ read: true }).eq("id", n.id).then(() => {
+                setNotifItems(prev => prev.filter(x => x.id !== n.id));
+                refreshUnread();
+              });
+            }}
+            onMarkAllRead={() => {
+              if (!user) return;
+              supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then(() => {
+                setNotifItems([]);
+                refreshUnread();
+              });
+            }}
+          />
+        )}
+
         {/* Invite friend */}
         {isOwnProfile && (
           <div className="mb-6 flex justify-start">
