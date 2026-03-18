@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Camera, User, Newspaper, CalendarHeart, Users } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const TUTORIAL_STEPS = [
   {
