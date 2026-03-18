@@ -10,6 +10,8 @@ import FeedPostCard from "@/components/feed/FeedPostCard";
 import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
 import FeedHealthCard from "@/components/feed/FeedHealthCard";
 import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
+import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
+import { UserPlus, Plus, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 
 interface ProfileMap {

@@ -238,6 +238,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
               >
                 <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>{opt.title}</p>
                 <p className="text-[12px] mt-0.5" style={{ color: '#7A6A85' }}>{opt.desc}</p>
+                <p className="text-[11px] mt-1" style={{ color: '#7A6A85', opacity: 0.8 }}>{opt.hint}</p>
               </button>
             ))}
           </div>
