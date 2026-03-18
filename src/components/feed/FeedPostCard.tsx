@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
@@ -56,20 +55,6 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          {isOwn && (
-            <span
-              className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
-              style={{ backgroundColor: "#F7F3EF", border: "0.5px solid #DDD5CC", color: "#7A6A85" }}
-            >
-              Ditt inlägg
-            </span>
-          )}
-          <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px] border-[0.5px] border-border bg-muted text-foreground">
-            {post.sectionName}
-          </span>
-        </div>
-      </div>
 
       {/* Large photo layout (default) */}
       {signedUrl && post.photo_layout !== "small" && (
@@ -88,41 +73,35 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
         post.content && <p className="text-[13px] text-foreground leading-[1.55] mb-2">{post.content}</p>
       )}
 
-      {/* Reactions + Suggest row */}
-      <div className="flex items-center justify-between">
-        <div className="flex-1 min-w-0">
-          {isOwn ? (
-            <>
-              {showReactions ? (
-                <PostReactions postId={post.id} readOnly />
-              ) : (
-                <OwnPostReactionLink postId={post.id} onShow={() => setShowReactions(true)} />
-              )}
-            </>
+      {/* Reactions */}
+      {isOwn ? (
+        <>
+          {showReactions ? (
+            <PostReactions postId={post.id} readOnly />
           ) : (
-            <PostReactions postId={post.id} showLabel />
+            <OwnPostReactionLink postId={post.id} onShow={() => setShowReactions(true)} />
           )}
-        </div>
-
-        {/* Suggest button – inline, right-aligned */}
-        {!isOwn && onSuggestPlan && (
+        </>
+      ) : (
+        <PostReactions postId={post.id} />
+      )}
+      {/* Subtil möjlighet att föreslå något */}
+      {!isOwn && (
+        <div className="mt-2">
           <button
             onClick={() =>
-              onSuggestPlan({
+              onSuggestPlan?.({
                 postId: post.id,
                 content: post.content,
                 userName: profile.display_name || "Någon",
               })
             }
-            className="flex items-center gap-1 shrink-0 ml-3 hover:underline transition-colors"
-            style={{ color: "#7A6A85" }}
+            className="text-[11px] text-muted-foreground hover:underline"
           >
-            <Calendar className="w-3 h-3" />
-            <span className="text-[12px]">Föreslå något</span>
+            Föreslå något
           </button>
-        )}
-      </div>
-
+        </div>
+      )}
       {/* Comments */}
       <PostComments postId={post.id} isOwner={!!isOwn} />
     </div>
