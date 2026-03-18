@@ -271,7 +271,7 @@ const FeedPage = () => {
             if (!open) setSuggestData(null);
           }}
           initialData={{
-            activity: extractActivity(suggestData.content || ""),
+            activity: extractActivity?.(suggestData.content || "") || "",
             message: "Såg ditt inlägg – ska vi hitta på något?",
             userName: suggestData.userName,
           }}
