@@ -280,6 +280,30 @@ const FeedPage = () => {
           ))}
         </div>
 
+        {/* Quiet feed nudge */}
+        {!loading && filteredItems.length > 0 && (() => {
+          const newest = filteredItems[0]?.created_at;
+          const ownRecent = filteredItems.some(
+            (i) => i.userId === user?.id && Date.now() - new Date(i.created_at).getTime() < 12 * 3600_000
+          );
+          const isQuiet = newest && Date.now() - new Date(newest).getTime() > 48 * 3600_000 && !ownRecent;
+          if (!isQuiet) return null;
+          return (
+            <button
+              onClick={() => navigate("/profile")}
+              className="w-full mb-4 text-left"
+              style={{ backgroundColor: "#EDE8F4", borderRadius: "10px", padding: "10px 14px" }}
+            >
+              <span className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
+                Vad händer hos dig idag?
+              </span>
+              <span className="text-[12px] ml-1.5" style={{ color: "#7A6A85" }}>
+                Dela något →
+              </span>
+            </button>
+          );
+        })()}
+
         {!loading && filteredItems.length === 0 ? (
           <EmptyFeedCard
             onOpenHangout={() => setShowHangoutSheet(true)}
