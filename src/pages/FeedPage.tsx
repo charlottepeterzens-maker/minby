@@ -122,21 +122,64 @@ const FeedPage = () => {
       }
     });
 
+    // Group activity hangouts by user + activity name to avoid duplicates
+    const activityGroups = new Map<string, { ids: string[]; dates: string[]; activities: string[]; custom_note: string | null; created_at: string; user_id: string }>();
+
     hangouts.forEach((h: any) => {
       if (h.visibility === "private" && h.user_id !== user.id) return;
 
-      items.push({
-        type: "hangout",
-        data: {
-          id: h.id,
-          date: h.date,
-          activities: h.activities || [],
-          custom_note: h.custom_note,
+      if (h.entry_type === "activity") {
+        const activityName = h.activities?.[0] || h.custom_note || "Aktivitet";
+        const groupKey = `${h.user_id}::${activityName}`;
+        const existing = activityGroups.get(groupKey);
+        if (existing) {
+          existing.ids.push(h.id);
+          if (!existing.dates.includes(h.date)) existing.dates.push(h.date);
+          if (new Date(h.created_at) < new Date(existing.created_at)) {
+            existing.created_at = h.created_at;
+          }
+        } else {
+          activityGroups.set(groupKey, {
+            ids: [h.id],
+            dates: [h.date],
+            activities: h.activities || [],
+            custom_note: h.custom_note,
+            created_at: h.created_at,
+            user_id: h.user_id,
+          });
+        }
+      } else {
+        items.push({
+          type: "hangout",
+          data: {
+            id: h.id,
+            date: h.date,
+            activities: h.activities || [],
+            custom_note: h.custom_note,
+            created_at: h.created_at,
+            entry_type: h.entry_type,
+          },
+          userId: h.user_id,
           created_at: h.created_at,
-          entry_type: h.entry_type,
+        });
+      }
+    });
+
+    // Add grouped activity items
+    activityGroups.forEach((group) => {
+      group.dates.sort();
+      items.push({
+        type: "activity_group",
+        data: {
+          ids: group.ids,
+          dates: group.dates,
+          activities: group.activities,
+          custom_note: group.custom_note,
+          created_at: group.created_at,
+          entry_type: "activity",
         },
-        userId: h.user_id,
-        created_at: h.created_at,
+        userId: group.user_id,
+        created_at: group.created_at,
       });
     });
 
