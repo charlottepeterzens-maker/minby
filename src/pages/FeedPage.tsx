@@ -315,6 +315,18 @@ const FeedPage = () => {
                 );
               }
 
+              if (item.type === "activity_group") {
+                return (
+                  <FeedHangoutCard
+                    key={`ag-${item.data.ids[0]}`}
+                    hangout={item.data}
+                    profile={profile}
+                    isOwn={isOwn}
+                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                  />
+                );
+              }
+
               if (item.type === "health") {
                 return (
                   <FeedHealthCard
