@@ -30,6 +30,8 @@ import ProfileShareDialog from "@/components/profile/ProfileShareDialog";
 import TipsFavorites from "@/components/profile/TipsFavorites";
 import FriendRequestButton from "@/components/profile/FriendRequestButton";
 import HangoutNotificationList from "@/components/profile/HangoutNotificationList";
+import NotificationList from "@/components/profile/NotificationList";
+import type { NotificationItem } from "@/components/profile/NotificationList";
 import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
@@ -121,6 +123,7 @@ const ProfilePage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [notifHangoutId, setNotifHangoutId] = useState<string | null>(null);
   const { refresh: refreshUnread } = useUnreadNotifications();
+  const [notifItems, setNotifItems] = useState<NotificationItem[]>([]);
 
   const targetUserId = userId || user?.id;
   const isOwnProfile = !userId || userId === user?.id;
@@ -256,10 +259,42 @@ const ProfilePage = () => {
     setLoading(false);
   }, [targetUserId]);
 
+  const fetchNotifItems = useCallback(async () => {
+    if (!user || !isOwnProfile) return;
+    const { data } = await supabase
+      .from("notifications")
+      .select("id, body, created_at, read, from_user_id")
+      .eq("user_id", user.id)
+      .eq("read", false)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (data && data.length > 0) {
+      const fromIds = [...new Set(data.filter(n => n.from_user_id).map(n => n.from_user_id!))];
+      let nameMap = new Map<string, string | null>();
+      if (fromIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, display_name")
+          .in("user_id", fromIds);
+        if (profiles) nameMap = new Map(profiles.map(p => [p.user_id, p.display_name]));
+      }
+      setNotifItems(data.map(n => ({
+        id: n.id,
+        body: n.body,
+        created_at: n.created_at,
+        read: n.read,
+        from_user_name: n.from_user_id ? nameMap.get(n.from_user_id) || null : null,
+      })));
+    } else {
+      setNotifItems([]);
+    }
+  }, [user, isOwnProfile]);
+
   useEffect(() => {
     fetchProfile();
     fetchSections();
-  }, [fetchProfile, fetchSections]);
+    fetchNotifItems();
+  }, [fetchProfile, fetchSections, fetchNotifItems]);
 
   const toggleSection = (sectionId: string) => {
     setExpandedSection((prev) => (prev === sectionId ? null : sectionId));
@@ -438,6 +473,26 @@ const ProfilePage = () => {
             ) : null}
           </div>
         </div>
+
+        {/* New notification list */}
+        {isOwnProfile && (
+          <NotificationList
+            notifications={notifItems}
+            onClick={(n) => {
+              supabase.from("notifications").update({ read: true }).eq("id", n.id).then(() => {
+                setNotifItems(prev => prev.filter(x => x.id !== n.id));
+                refreshUnread();
+              });
+            }}
+            onMarkAllRead={() => {
+              if (!user) return;
+              supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then(() => {
+                setNotifItems([]);
+                refreshUnread();
+              });
+            }}
+          />
+        )}
 
         {/* Invite friend */}
         {isOwnProfile && (
