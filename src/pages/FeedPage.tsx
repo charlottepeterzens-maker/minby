@@ -28,6 +28,11 @@ type FeedItem =
   | { type: "health"; data: any; userId: string; created_at: string };
 
 const FeedPage = () => {
+  const [suggestData, setSuggestData] = useState<{
+    postId: string;
+    content: string | null;
+    userName: string;
+  } | null>(null);
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -277,10 +282,11 @@ const FeedPage = () => {
               if (item.type === "post") {
                 return wrapper(
                   <FeedPostCard
-                    post={item.data}
+                    post={post}
                     profile={profile}
                     isOwn={isOwn}
-                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                    onProfileClick={onProfileClick}
+                    onSuggestPlan={(data) => setSuggestData(data)}
                   />,
                 );
               }
