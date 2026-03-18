@@ -259,10 +259,42 @@ const ProfilePage = () => {
     setLoading(false);
   }, [targetUserId]);
 
+  const fetchNotifItems = useCallback(async () => {
+    if (!user || !isOwnProfile) return;
+    const { data } = await supabase
+      .from("notifications")
+      .select("id, body, created_at, read, from_user_id")
+      .eq("user_id", user.id)
+      .eq("read", false)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (data && data.length > 0) {
+      const fromIds = [...new Set(data.filter(n => n.from_user_id).map(n => n.from_user_id!))];
+      let nameMap = new Map<string, string | null>();
+      if (fromIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from("profiles")
+          .select("user_id, display_name")
+          .in("user_id", fromIds);
+        if (profiles) nameMap = new Map(profiles.map(p => [p.user_id, p.display_name]));
+      }
+      setNotifItems(data.map(n => ({
+        id: n.id,
+        body: n.body,
+        created_at: n.created_at,
+        read: n.read,
+        from_user_name: n.from_user_id ? nameMap.get(n.from_user_id) || null : null,
+      })));
+    } else {
+      setNotifItems([]);
+    }
+  }, [user, isOwnProfile]);
+
   useEffect(() => {
     fetchProfile();
     fetchSections();
-  }, [fetchProfile, fetchSections]);
+    fetchNotifItems();
+  }, [fetchProfile, fetchSections, fetchNotifItems]);
 
   const toggleSection = (sectionId: string) => {
     setExpandedSection((prev) => (prev === sectionId ? null : sectionId));
