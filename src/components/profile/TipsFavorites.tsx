@@ -127,7 +127,10 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
     if (!file || !user) return;
     setUploading(true);
     const ext = file.name.split(".").pop();
-    const path = `${user.id}/tip-${Date.now()}.${ext}`;
+    const sanitizedName = imageFile.name
+  .replace(/[^a-zA-Z0-9.]/g, "_")
+  .toLowerCase();
+const filePath = `${user.id}/${Date.now()}-${sanitizedName}`;`;
     const { error } = await supabase.storage.from("life-images").upload(path, file, { upsert: true });
     if (error) {
       toast({ title: t("error"), description: error.message, variant: "destructive" });
