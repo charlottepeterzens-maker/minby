@@ -23,6 +23,7 @@ interface FeedPostCardProps {
   };
   isOwn?: boolean;
   onProfileClick: () => void;
+  onSuggestPlan?: (data: { postId: string; content: string | null; userName: string }) => void;
 }
 
 const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProps) => {
@@ -37,14 +38,17 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProp
         <div className="flex items-center gap-2.5">
           <button onClick={onProfileClick} className="shrink-0">
             <Avatar className="w-9 h-9">
-              <AvatarFallback style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }} className="text-xs font-medium">
+              <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-xs font-medium">
                 {profile.initials}
               </AvatarFallback>
             </Avatar>
           </button>
           <div>
-            <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
-              {isOwn ? "Du" : (profile.display_name || "Någon")}
+            <button
+              onClick={onProfileClick}
+              className="text-sm font-medium text-foreground hover:underline block leading-tight"
+            >
+              {isOwn ? "Du" : profile.display_name || "Någon"}
             </button>
             <p className="text-[11px] text-muted-foreground leading-tight">
               {post.sectionName} · {timeAgo}
@@ -55,7 +59,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProp
           {isOwn && (
             <span
               className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
-              style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}
+              style={{ backgroundColor: "#F7F3EF", border: "0.5px solid #DDD5CC", color: "#7A6A85" }}
             >
               Ditt inlägg
             </span>
@@ -68,35 +72,19 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProp
 
       {/* Large photo layout (default) */}
       {signedUrl && post.photo_layout !== "small" && (
-        <img
-          src={signedUrl}
-          alt=""
-          className="w-full mb-3 max-h-72 object-cover rounded-[10px]"
-        />
+        <img src={signedUrl} alt="" className="w-full mb-3 max-h-72 object-cover rounded-[10px]" />
       )}
 
       {/* Small photo layout */}
       {signedUrl && post.photo_layout === "small" ? (
         <div className="flex gap-3 mb-2">
-          <img
-            src={signedUrl}
-            alt=""
-            className="shrink-0 w-20 h-20 object-cover rounded-[10px]"
-          />
+          <img src={signedUrl} alt="" className="shrink-0 w-20 h-20 object-cover rounded-[10px]" />
           <div className="flex-1 min-w-0">
-            {post.content && (
-              <p className="text-[13px] text-foreground leading-[1.55]">
-                {post.content}
-              </p>
-            )}
+            {post.content && <p className="text-[13px] text-foreground leading-[1.55]">{post.content}</p>}
           </div>
         </div>
       ) : (
-        post.content && (
-          <p className="text-[13px] text-foreground leading-[1.55] mb-2">
-            {post.content}
-          </p>
-        )
+        post.content && <p className="text-[13px] text-foreground leading-[1.55] mb-2">{post.content}</p>
       )}
 
       {/* Reactions */}
@@ -133,10 +121,7 @@ const OwnPostReactionLink = ({ postId, onShow }: { postId: string; onShow: () =>
   if (count === null || count === 0) return null;
 
   return (
-    <button
-      onClick={onShow}
-      className="text-[11px] text-muted-foreground hover:underline mt-1.5"
-    >
+    <button onClick={onShow} className="text-[11px] text-muted-foreground hover:underline mt-1.5">
       {count} {count === 1 ? "reaktion" : "reaktioner"}
     </button>
   );
