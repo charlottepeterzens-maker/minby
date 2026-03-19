@@ -367,7 +367,7 @@ const translations = {
     startPlanning: "Börja planera riktiga stunder med dina nära",
     yourFriendsWaiting: "Logga in för att fortsätta",
     yourName: "Ditt namn",
-    howFriendsKnowYou: "Vad dina vänner kallar dig",
+    howFriendsKnowYou: "Vad din krets kallar dig",
     email: "E-post",
     password: "Lösenord",
     createAccount: "Skapa konto",
