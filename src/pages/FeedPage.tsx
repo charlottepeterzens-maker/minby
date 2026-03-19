@@ -321,11 +321,14 @@ const FeedPage = () => {
           <h1 className="font-fraunces text-[20px] font-medium text-foreground">
             {getGreeting()}, {currentUserName || "du"}.
           </h1>
-          {!loading && feedItems.length > 0 && (
-            <p className="text-[12px] mt-1" style={{ color: "#7A6A85" }}>
-              {feedItems.length} nya saker från din krets
-            </p>
-          )}
+          {!loading && feedItems.length > 0 && (() => {
+            const othersCount = feedItems.filter(i => i.userId !== user?.id).length;
+            return othersCount > 0 ? (
+              <p className="text-[12px] mt-1" style={{ color: "#7A6A85" }}>
+                {othersCount} nya saker från din krets
+              </p>
+            ) : null;
+          })()}
         </div>
         <CurvedSeparator />
       </nav>
