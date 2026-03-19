@@ -321,7 +321,7 @@ const translations = {
     loadingFeed: "Laddar ditt flöde...",
     noUpdates: "Inga uppdateringar ännu",
     noUpdatesFilter: "Inga uppdateringar för detta filter",
-    addFriendsHint: "Lägg till vänner och tilldela dem åtkomstnivåer för att se deras livsuppdateringar här",
+    addFriendsHint: "Bjud in någon till din krets och tilldela åtkomstnivåer för att se deras livsuppdateringar här",
     all: "Alla",
     posts: "Inlägg",
     workouts: "Träning",
