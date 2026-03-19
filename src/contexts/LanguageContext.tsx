@@ -46,7 +46,7 @@ const translations = {
     loadingFeed: "Loading your feed...",
     noUpdates: "No updates yet",
     noUpdatesFilter: "No updates for this filter",
-    addFriendsHint: "Add friends and assign them access tiers to see their life updates here",
+    addFriendsHint: "Invite people to your circle and assign access tiers to see their life updates here",
     all: "All",
     posts: "Posts",
     workouts: "Workouts",
