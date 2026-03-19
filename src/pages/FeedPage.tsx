@@ -394,7 +394,6 @@ const FeedPage = () => {
                     profile={profile}
                     isOwn={isOwn}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                    onSendHug={() => handleSendHug(item.data.id)}
                   />
                 );
               }
