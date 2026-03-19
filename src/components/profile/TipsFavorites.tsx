@@ -536,6 +536,15 @@ const TipCard = ({
             alignSelf: "stretch",
           }}
         >
+          {commentCount > 0 && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: "auto", marginTop: 2 }}
+            >
+              <MessageCircle style={{ width: 12, height: 12, color: "#B0A0B5" }} />
+              <span style={{ fontSize: 10, color: "#B0A0B5" }}>{commentCount}</span>
+            </div>
+          )}
           <div onClick={(e) => e.stopPropagation()}>
             {isOwner ? (
               <DropdownMenu>
