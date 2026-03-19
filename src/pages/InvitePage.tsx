@@ -42,6 +42,12 @@ const InvitePage = () => {
           return;
         }
 
+        if (new Date(invite.expires_at) < new Date()) {
+          toast.error("Inbjudningslänken har gått ut.");
+          navigate("/friends", { replace: true });
+          return;
+        }
+
         if (invite.used_by) {
           toast.info("Den här inbjudan har redan använts.");
           navigate("/friends", { replace: true });
