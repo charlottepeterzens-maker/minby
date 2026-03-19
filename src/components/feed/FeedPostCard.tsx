@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
+import FeedAvatar from "@/components/feed/FeedAvatar";
 
 interface FeedPostCardProps {
   post: {
@@ -42,13 +42,12 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
     >
       {/* Header */}
       <div className="flex items-center gap-2.5 mb-3">
-        <button onClick={onProfileClick} className="shrink-0">
-          <Avatar className="w-9 h-9">
-            <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-xs font-medium">
-              {profile.initials}
-            </AvatarFallback>
-          </Avatar>
-        </button>
+        <FeedAvatar
+          avatarUrl={profile.avatar_url}
+          displayName={profile.display_name}
+          initials={profile.initials}
+          onClick={onProfileClick}
+        />
         <div>
           <button
             onClick={onProfileClick}

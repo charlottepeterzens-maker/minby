@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import FeedAvatar from "@/components/feed/FeedAvatar";
+import PostReactions from "@/components/profile/PostReactions";
+import PostComments from "@/components/profile/PostComments";
+import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
 
 interface FeedHangoutCardProps {
   hangout: {
@@ -19,6 +22,7 @@ interface FeedHangoutCardProps {
   };
   profile: {
     display_name: string | null;
+    avatar_url?: string | null;
     initials: string;
   };
   isOwn?: boolean;
@@ -64,53 +68,66 @@ const DateColumn = ({ dateStr, light }: { dateStr: string; light?: boolean }) =>
 const CategoryPill = ({ label, variant }: { label: string; variant: "light" | "dark" }) => {
   if (variant === "dark") {
     return (
-      <span
-        className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
-        style={{ backgroundColor: "#3C2A4D", color: "#C9B8D8" }}
-      >
+      <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: "#3C2A4D", color: "#C9B8D8" }}>
         {label}
       </span>
     );
   }
   return (
-    <span
-      className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
-      style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
-    >
+    <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}>
       {label}
     </span>
   );
 };
 
+/** Subtle date CTA link */
+const DateCTA = ({ onClick }: { onClick: () => void }) => (
+  <button onClick={onClick} style={{ fontSize: 11, color: "#B0A0B5", marginTop: 6 }} className="hover:underline block">
+    Jag kan den dagen →
+  </button>
+);
+
+/** Social footer with reactions + comments for hangout cards */
+const HangoutSocialFooter = ({ hangoutId, isOwn }: { hangoutId: string; isOwn: boolean }) => (
+  <div className="px-4 pb-3">
+    <PostReactions postId={hangoutId} />
+    <PostComments postId={hangoutId} isOwner={isOwn} />
+  </div>
+);
+
 // --- LEDIG CARD ---
 const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: FeedHangoutCardProps) => {
   const timeAgo = getTimeAgo(hangout.created_at);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const hangoutId = hangout.id || "";
+
+  const entry = hangoutId ? {
+    id: hangoutId,
+    date: hangout.date || "",
+    activities: hangout.activities,
+    custom_note: hangout.custom_note,
+    entry_type: hangout.entry_type || "available",
+    user_id: "",
+  } : null;
+
   return (
     <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: "#EDE8F4" }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
-            <button onClick={onProfileClick} className="shrink-0">
-              <Avatar className="w-9 h-9">
-                <AvatarFallback
-                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
-                  className="text-xs font-medium"
-                >
-                  {profile.initials}
-                </AvatarFallback>
-              </Avatar>
-            </button>
+            <FeedAvatar
+              avatarUrl={(profile as any).avatar_url || null}
+              displayName={profile.display_name}
+              initials={profile.initials}
+              onClick={onProfileClick}
+            />
             <div>
-              <button
-                onClick={onProfileClick}
-                className="text-sm font-medium text-foreground hover:underline block leading-tight"
-              >
+              <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {profile.display_name || "Någon"}
               </button>
               <p className="text-[11px] text-muted-foreground leading-tight">vill ses · {timeAgo}</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5"></div>
         </div>
       </div>
 
@@ -122,27 +139,31 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
             <p className="text-[13px] leading-snug" style={{ color: "#3C2A4D" }}>
               {hangout.custom_note || "Vill ses"}
             </p>
+            {!isOwn && <DateCTA onClick={() => setDetailOpen(true)} />}
           </div>
         </div>
       </div>
 
       {!isOwn && (
-        <div className="px-4 pb-4 flex gap-2">
-          <button
-            onClick={onJoin}
-            className="flex-1 text-[13px] font-medium py-2 rounded-[10px] transition-colors"
-            style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
-          >
+        <div className="px-4 pb-3 flex gap-2">
+          <button onClick={onJoin} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] transition-colors" style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}>
             Ja, jag är med!
           </button>
-          <button
-            onClick={onMaybe}
-            className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border transition-colors hover:bg-muted"
-            style={{ borderColor: "#EDE8F4" }}
-          >
+          <button onClick={onMaybe} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border transition-colors hover:bg-muted" style={{ borderColor: "#EDE8F4" }}>
             Kanske
           </button>
         </div>
+      )}
+
+      {hangoutId && <HangoutSocialFooter hangoutId={hangoutId} isOwn={!!isOwn} />}
+
+      {entry && (
+        <HangoutDetailSheet
+          entry={entry}
+          open={detailOpen}
+          onOpenChange={setDetailOpen}
+          isOwner={!!isOwn}
+        />
       )}
     </div>
   );
@@ -152,33 +173,36 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
 const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: FeedHangoutCardProps) => {
   const timeAgo = getTimeAgo(hangout.created_at);
   const activityName = hangout.custom_note || (hangout.activities.length > 0 ? hangout.activities[0] : "Plan");
+  const [detailOpen, setDetailOpen] = useState(false);
+  const hangoutId = hangout.id || "";
+
+  const entry = hangoutId ? {
+    id: hangoutId,
+    date: hangout.date || "",
+    activities: hangout.activities,
+    custom_note: hangout.custom_note,
+    entry_type: hangout.entry_type || "confirmed",
+    user_id: "",
+  } : null;
 
   return (
     <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: "#EDE8F4" }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
-            <button onClick={onProfileClick} className="shrink-0">
-              <Avatar className="w-9 h-9">
-                <AvatarFallback
-                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
-                  className="text-xs font-medium"
-                >
-                  {profile.initials}
-                </AvatarFallback>
-              </Avatar>
-            </button>
+            <FeedAvatar
+              avatarUrl={(profile as any).avatar_url || null}
+              displayName={profile.display_name}
+              initials={profile.initials}
+              onClick={onProfileClick}
+            />
             <div>
-              <button
-                onClick={onProfileClick}
-                className="text-sm font-medium text-foreground hover:underline block leading-tight"
-              >
+              <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {profile.display_name || "Någon"}
               </button>
               <p className="text-[11px] text-muted-foreground leading-tight">häng med · {timeAgo}</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5"></div>
         </div>
       </div>
 
@@ -190,39 +214,43 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
             <p className="text-[13px] font-medium leading-snug text-white">{activityName}</p>
             <div className="flex items-center gap-1.5 mt-1.5">
               <div className="flex -space-x-1.5">
-                <div
-                  className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-medium border-[1.5px]"
-                  style={{ backgroundColor: "#C9B8D8", color: "#3C2A4D", borderColor: "#3C2A4D" }}
-                >
+                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-medium border-[1.5px]" style={{ backgroundColor: "#C9B8D8", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
                   {profile.initials.charAt(0)}
                 </div>
               </div>
               <span style={{ color: "#C9B8D8", fontSize: "10px" }}>
-                {profile.display_name || "Någon"} ·{" "}
-                <span style={{ color: "#7A6A85", fontSize: "10px" }}>häng med!</span>
+                {profile.display_name || "Någon"} · <span style={{ color: "#7A6A85", fontSize: "10px" }}>häng med!</span>
               </span>
             </div>
+            {!isOwn && (
+              <button onClick={() => setDetailOpen(true)} style={{ fontSize: 11, color: "#C9B8D8", marginTop: 6 }} className="hover:underline block">
+                Jag kan den dagen →
+              </button>
+            )}
           </div>
         </div>
       </div>
 
       {!isOwn && (
-        <div className="px-4 pb-4 flex gap-2">
-          <button
-            onClick={onJoin}
-            className="flex-1 text-[13px] font-medium py-2 rounded-[10px] transition-colors"
-            style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
-          >
+        <div className="px-4 pb-3 flex gap-2">
+          <button onClick={onJoin} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] transition-colors" style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}>
             Jag hänger med!
           </button>
-          <button
-            onClick={onMaybe}
-            className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border transition-colors hover:bg-muted"
-            style={{ borderColor: "#EDE8F4" }}
-          >
+          <button onClick={onMaybe} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border transition-colors hover:bg-muted" style={{ borderColor: "#EDE8F4" }}>
             Kanske
           </button>
         </div>
+      )}
+
+      {hangoutId && <HangoutSocialFooter hangoutId={hangoutId} isOwn={!!isOwn} />}
+
+      {entry && (
+        <HangoutDetailSheet
+          entry={entry}
+          open={detailOpen}
+          onOpenChange={setDetailOpen}
+          isOwner={!!isOwn}
+        />
       )}
     </div>
   );
@@ -235,18 +263,14 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
   const activityName = hangout.activities.length > 0 ? hangout.activities[0] : hangout.custom_note || "Aktivitet";
   const dates = hangout.dates || (hangout.date ? [hangout.date] : []);
   const hangoutIds = hangout.ids || (hangout.id ? [hangout.id] : []);
+  const firstId = hangoutIds[0] || "";
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
   const [saving, setSaving] = useState(false);
 
-  // Fetch existing RSVPs for these hangout IDs
   const fetchRsvps = useCallback(async () => {
     if (hangoutIds.length === 0) return;
-
-    // Check user's own RSVP (via hangout_tagged_friends or similar)
-    // For now, we track via hangout_comments as a lightweight signal
-    // Actually let's use hangout_tagged_friends to see who's interested
     const { data } = await supabase
       .from("hangout_tagged_friends")
       .select("availability_id, tagged_user_id")
@@ -255,74 +279,42 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
     if (data) {
       const counts: Record<string, number> = {};
       let myDate: string | null = null;
-
       data.forEach((r: any) => {
-        // Find which date this hangout_id corresponds to
         const idx = hangoutIds.indexOf(r.availability_id);
         if (idx >= 0 && dates[idx]) {
           const d = dates[idx];
           counts[d] = (counts[d] || 0) + 1;
-          if (r.tagged_user_id === user?.id) {
-            myDate = d;
-          }
+          if (r.tagged_user_id === user?.id) myDate = d;
         }
       });
-
       setRsvpCounts(counts);
       if (myDate) setSelectedDate(myDate);
     }
   }, [hangoutIds, dates, user?.id]);
 
-  useEffect(() => {
-    fetchRsvps();
-  }, [fetchRsvps]);
+  useEffect(() => { fetchRsvps(); }, [fetchRsvps]);
 
   const handleDateClick = async (dateStr: string) => {
     if (!user || isOwn || saving) return;
-
     setSaving(true);
-
-    // Find the hangout_id for this date
     const dateIdx = dates.indexOf(dateStr);
     const hangoutId = hangoutIds[dateIdx];
-    if (!hangoutId) {
-      setSaving(false);
-      return;
-    }
+    if (!hangoutId) { setSaving(false); return; }
 
     if (selectedDate === dateStr) {
-      // Remove RSVP
-      await supabase
-        .from("hangout_tagged_friends")
-        .delete()
-        .eq("availability_id", hangoutId)
-        .eq("tagged_user_id", user.id);
+      await supabase.from("hangout_tagged_friends").delete().eq("availability_id", hangoutId).eq("tagged_user_id", user.id);
       setSelectedDate(null);
       toast("Val borttaget");
     } else {
-      // Remove old RSVP if exists
       if (selectedDate) {
         const oldIdx = dates.indexOf(selectedDate);
         const oldId = hangoutIds[oldIdx];
-        if (oldId) {
-          await supabase
-            .from("hangout_tagged_friends")
-            .delete()
-            .eq("availability_id", oldId)
-            .eq("tagged_user_id", user.id);
-        }
+        if (oldId) await supabase.from("hangout_tagged_friends").delete().eq("availability_id", oldId).eq("tagged_user_id", user.id);
       }
-
-      // Add new RSVP
-      await supabase.from("hangout_tagged_friends").insert({
-        availability_id: hangoutId,
-        tagged_user_id: user.id,
-        tagged_by: user.id,
-      });
+      await supabase.from("hangout_tagged_friends").insert({ availability_id: hangoutId, tagged_user_id: user.id, tagged_by: user.id });
       setSelectedDate(dateStr);
       toast.success("Du är på 💛");
     }
-
     setSaving(false);
     fetchRsvps();
   };
@@ -332,7 +324,6 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
     return `${format(d, "d", { locale: sv })} ${format(d, "MMM", { locale: sv }).replace(".", "")}`;
   };
 
-  // Find the most popular date
   const maxCount = Math.max(0, ...Object.values(rsvpCounts));
 
   return (
@@ -340,45 +331,34 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
-            <button onClick={onProfileClick} className="shrink-0">
-              <Avatar className="w-9 h-9">
-                <AvatarFallback
-                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
-                  className="text-xs font-medium"
-                >
-                  {profile.initials}
-                </AvatarFallback>
-              </Avatar>
-            </button>
+            <FeedAvatar
+              avatarUrl={(profile as any).avatar_url || null}
+              displayName={profile.display_name}
+              initials={profile.initials}
+              onClick={onProfileClick}
+            />
             <div>
-              <button
-                onClick={onProfileClick}
-                className="text-sm font-medium text-foreground hover:underline block leading-tight"
-              >
+              <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {profile.display_name || "Någon"}
               </button>
               <p className="text-[11px] text-muted-foreground leading-tight">sugen på · {timeAgo}</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5"></div>
         </div>
       </div>
 
-      {/* Activity name */}
       <div className="mx-4 mb-2">
         <p className="text-[14px] font-medium" style={{ color: "#3C2A4D" }}>
           Sugen på {activityName.toLowerCase()}
         </p>
       </div>
 
-      {/* Date chips */}
       <div className="mx-4 mb-3 overflow-x-auto">
         <div className="flex gap-1.5">
           {dates.map((dateStr) => {
             const isSelected = selectedDate === dateStr;
             const count = rsvpCounts[dateStr] || 0;
             const isPopular = maxCount > 0 && count === maxCount && count > 1;
-
             return (
               <button
                 key={dateStr}
@@ -394,21 +374,15 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
                   {formatChip(dateStr)}
                 </span>
                 {count > 0 && (
-                  <span
-                    className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
-                    style={{
-                      backgroundColor: isSelected ? "rgba(255,255,255,0.2)" : "#EDE8F4",
-                      color: isSelected ? "#FFFFFF" : "#7A6A85",
-                    }}
-                  >
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full" style={{
+                    backgroundColor: isSelected ? "rgba(255,255,255,0.2)" : "#EDE8F4",
+                    color: isSelected ? "#FFFFFF" : "#7A6A85",
+                  }}>
                     {count} st
                   </span>
                 )}
                 {!isOwn && !isSelected && (
-                  <span
-                    className="text-[10px] font-medium px-1.5 py-0.5 rounded-[8px]"
-                    style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
-                  >
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-[8px]" style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}>
                     Ja!
                   </span>
                 )}
@@ -418,7 +392,6 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
         </div>
       </div>
 
-      {/* Note */}
       {hangout.custom_note && (
         <>
           <div className="h-px mx-4" style={{ backgroundColor: "#EDE8F4" }} />
@@ -427,70 +400,51 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
           </div>
         </>
       )}
+
+      {firstId && <HangoutSocialFooter hangoutId={firstId} isOwn={!!isOwn} />}
     </div>
   );
 };
 
-// --- SINGLE ACTIVITY CARD (fallback for non-grouped) ---
+// --- SINGLE ACTIVITY CARD ---
 const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedHangoutCardProps) => {
   const timeAgo = getTimeAgo(hangout.created_at);
   const activityName = hangout.activities.length > 0 ? hangout.activities[0] : hangout.custom_note || "Aktivitet";
   const dateStr = hangout.date || "";
   const dateObj = new Date(dateStr + "T00:00:00");
-  const dateChip = dateStr
-    ? `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}`
-    : "";
+  const dateChip = dateStr ? `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}` : "";
+  const hangoutId = hangout.id || "";
 
   return (
     <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: "#EDE8F4" }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
-            <button onClick={onProfileClick} className="shrink-0">
-              <Avatar className="w-9 h-9">
-                <AvatarFallback
-                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
-                  className="text-xs font-medium"
-                >
-                  {profile.initials}
-                </AvatarFallback>
-              </Avatar>
-            </button>
+            <FeedAvatar
+              avatarUrl={(profile as any).avatar_url || null}
+              displayName={profile.display_name}
+              initials={profile.initials}
+              onClick={onProfileClick}
+            />
             <div>
-              <button
-                onClick={onProfileClick}
-                className="text-sm font-medium text-foreground hover:underline block leading-tight"
-              >
+              <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {profile.display_name || "Någon"}
               </button>
               <p className="text-[11px] text-muted-foreground leading-tight">sugen på · {timeAgo}</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5">
-            <CategoryPill label="sugen på" variant="light" />
-          </div>
+          <CategoryPill label="sugen på" variant="light" />
         </div>
       </div>
 
       <div className="mx-4 mb-3">
-        <p className="text-[14px] font-medium mb-2" style={{ color: "#3C2A4D" }}>
-          {activityName}
-        </p>
+        <p className="text-[14px] font-medium mb-2" style={{ color: "#3C2A4D" }}>{activityName}</p>
         {dateStr && (
           <div className="flex flex-wrap gap-1.5">
-            <div
-              className="flex items-center gap-1.5 rounded-[10px] px-3 py-1.5"
-              style={{ backgroundColor: "#F7F3EF" }}
-            >
-              <span className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
-                {dateChip}
-              </span>
+            <div className="flex items-center gap-1.5 rounded-[10px] px-3 py-1.5" style={{ backgroundColor: "#F7F3EF" }}>
+              <span className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>{dateChip}</span>
               {!isOwn && (
-                <button
-                  onClick={onJoin}
-                  className="text-[11px] font-medium px-2 py-0.5 rounded-[8px] transition-colors"
-                  style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
-                >
+                <button onClick={onJoin} className="text-[11px] font-medium px-2 py-0.5 rounded-[8px] transition-colors" style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}>
                   Ja!
                 </button>
               )}
@@ -507,19 +461,17 @@ const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedH
           </div>
         </>
       )}
+
+      {hangoutId && <HangoutSocialFooter hangoutId={hangoutId} isOwn={!!isOwn} />}
     </div>
   );
 };
 
 const FeedHangoutCard = (props: FeedHangoutCardProps) => {
   const entryType = props.hangout.entry_type || "available";
-
   if (entryType === "confirmed") return <PlanCard {...props} />;
   if (entryType === "activity") {
-    // Use grouped card if multiple dates, otherwise single
-    if (props.hangout.dates && props.hangout.dates.length > 0) {
-      return <GroupedActivityCard {...props} />;
-    }
+    if (props.hangout.dates && props.hangout.dates.length > 0) return <GroupedActivityCard {...props} />;
     return <ActivityCard {...props} />;
   }
   return <LedigCard {...props} />;

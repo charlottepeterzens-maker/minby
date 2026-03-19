@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import FeedAvatar from "@/components/feed/FeedAvatar";
 
 interface FeedHealthCardProps {
   post: {
@@ -13,6 +13,7 @@ interface FeedHealthCardProps {
   };
   profile: {
     display_name: string | null;
+    avatar_url?: string | null;
     initials: string;
   };
   isOwn?: boolean;
@@ -30,7 +31,6 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
     if (!user || sending) return;
     setSending(true);
     try {
-      // Check if already sent
       const { data: existing } = await supabase
         .from("post_reactions")
         .select("id")
@@ -64,13 +64,12 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
       <div className="m-3 rounded-[10px] bg-dusty-rose-bg p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
-            <button onClick={onProfileClick} className="shrink-0">
-              <Avatar className="w-9 h-9">
-                <AvatarFallback style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }} className="text-xs font-medium">
-                  {profile.initials}
-                </AvatarFallback>
-              </Avatar>
-            </button>
+            <FeedAvatar
+              avatarUrl={(profile as any).avatar_url || null}
+              displayName={profile.display_name}
+              initials={profile.initials}
+              onClick={onProfileClick}
+            />
             <div>
               <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
                 {isOwn ? "Du" : (profile.display_name || "Någon")}
@@ -96,7 +95,6 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
         </div>
       </div>
 
-      {/* Send hug button - hide for own posts */}
       {!isOwn && (
         <div className="px-4 pb-4">
           <button
