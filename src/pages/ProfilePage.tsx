@@ -417,7 +417,7 @@ const ProfilePage = () => {
 
           <div className="flex-1 min-w-0 pt-1">
             <div className="flex items-center gap-2">
-              <h1 className="font-display text-base font-medium text-foreground">
+              <h1 className="font-fraunces text-base font-medium text-foreground">
                 {profile?.display_name || t("anonymous")}
               </h1>
               {!isOwnProfile && targetUserId && <FriendRequestButton targetUserId={targetUserId} />}
@@ -510,7 +510,7 @@ const ProfilePage = () => {
         )}
 
         {/* Health coming soon placeholder */}
-        <div className="mb-6 flex items-center gap-3 rounded-[16px] border-[0.5px] border-[#EDE8F4] bg-[#FFFFFF] p-3">
+        <div className="mb-6 flex items-center gap-3 rounded-[16px] border border-[#EDE8F4] bg-[#FFFFFF] p-3">
           <div
             className="shrink-0 flex items-center justify-center rounded-full"
             style={{ width: 36, height: 36, backgroundColor: "#FCF0F3" }}

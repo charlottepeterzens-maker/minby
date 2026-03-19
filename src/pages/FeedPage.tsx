@@ -260,11 +260,27 @@ const FeedPage = () => {
     setShowHangoutSheet(true);
   };
 
+  const getGreeting = () => {
+    const h = new Date().getHours();
+    if (h < 10) return "God morgon";
+    if (h < 12) return "God förmiddag";
+    if (h < 17) return "God eftermiddag";
+    if (h < 21) return "God kväll";
+    return "God natt";
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background">
-        <div className="max-w-2xl mx-auto px-5 py-4 text-center">
-          <span className="font-display text-[20px] font-medium text-foreground">Nyheter från kretsen</span>
+        <div className="max-w-2xl mx-auto px-5 pt-5 pb-3">
+          <h1 className="font-fraunces text-[20px] font-medium text-foreground">
+            {getGreeting()}, {currentUserName || "du"}.
+          </h1>
+          {!loading && feedItems.length > 0 && (
+            <p className="text-[12px] mt-1" style={{ color: "#7A6A85" }}>
+              {feedItems.length} nya saker från din krets
+            </p>
+          )}
         </div>
         <CurvedSeparator />
       </nav>
@@ -280,7 +296,7 @@ const FeedPage = () => {
                 className={`px-4 py-1.5 text-xs font-medium rounded-[20px] ${
                   filter === f.value
                     ? "bg-primary text-primary-foreground"
-                    : "bg-card text-muted-foreground border-[0.5px] border-border"
+                    : "bg-card text-muted-foreground border border-border"
                 }`}
               >
                 {f.label}
@@ -440,7 +456,7 @@ const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
       <div
         style={{
           backgroundColor: "#FFFFFF",
-          border: "0.5px solid #EDE8F4",
+          border: "1px solid #EDE8F4",
           borderRadius: "16px",
           padding: "20px",
         }}
@@ -452,7 +468,7 @@ const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
             className="flex items-center gap-3 w-full text-left group"
             style={{
               padding: "12px 0",
-              borderBottom: i < rows.length - 1 ? "0.5px solid #EDE8F4" : "none",
+              borderBottom: i < rows.length - 1 ? "1px solid #EDE8F4" : "none",
             }}
           >
             <row.icon className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />

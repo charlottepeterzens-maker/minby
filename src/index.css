@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500&display=swap');
 
+.font-fraunces {
+  font-family: 'Fraunces', serif;
+  font-style: normal;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -47,7 +47,7 @@ const NotificationList = ({ notifications, onClick, onMarkAllRead }: Props) => {
         className="mb-4 rounded-[12px] p-3"
         style={{
           backgroundColor: "#FFFFFF",
-          border: "0.5px solid #EDE8F4",
+          border: "1px solid #EDE8F4",
         }}
       >
         {/* Header */}

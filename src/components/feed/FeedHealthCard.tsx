@@ -20,7 +20,7 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick, onSendHug }: Fee
   const timeAgo = getTimeAgo(post.created_at);
 
   return (
-    <div className="bg-card rounded-[14px] border-[0.5px] border-border overflow-hidden">
+    <div className="bg-card rounded-[14px] border border-border overflow-hidden">
       <div className="m-3 rounded-[10px] bg-dusty-rose-bg p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
@@ -44,7 +44,7 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick, onSendHug }: Fee
             {isOwn && (
               <span
                 className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
-                style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}
+                style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}
               >
                 Ditt inlägg
               </span>
@@ -61,7 +61,7 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick, onSendHug }: Fee
         <div className="px-4 pb-4">
           <button
             onClick={onSendHug}
-            className="text-[13px] font-medium px-4 py-2 rounded-[10px] bg-dusty-rose-bg text-foreground border-[0.5px] border-dusty-rose transition-colors hover:bg-dusty-rose"
+            className="text-[13px] font-medium px-4 py-2 rounded-[10px] bg-dusty-rose-bg text-foreground border border-dusty-rose transition-colors hover:bg-dusty-rose"
           >
             Skicka kärlek
           </button>

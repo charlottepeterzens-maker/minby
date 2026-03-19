@@ -234,7 +234,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                     className="w-full flex items-center gap-3 rounded-[10px] p-2.5 text-left transition-colors"
                     style={{
                       backgroundColor: selected ? "#EAF2E8" : "#FFFFFF",
-                      border: `0.5px solid ${selected ? "#B5CCBF" : "#EDE8F4"}`
+                      border: `1px solid ${selected ? "#B5CCBF" : "#EDE8F4"}`
                     }}>
                     
                         <div
@@ -260,7 +260,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 onClick={() => setStep(1)}
                 className="flex-1 py-2.5 text-sm font-medium rounded-[10px]"
                 style={{
-                  border: "0.5px solid #EDE8F4",
+                  border: "1px solid #EDE8F4",
                   color: "#3C2A4D",
                   backgroundColor: "#FFFFFF"
                 }}>

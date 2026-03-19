@@ -156,7 +156,7 @@ const SettingsPage = () => {
 
       <main className="max-w-2xl mx-auto px-5 py-6 space-y-4">
         {/* Language */}
-        <Card className="rounded-[14px] border-[0.5px] border-border">
+        <Card className="rounded-[14px] border border-border">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">
               {t("language")}
@@ -176,7 +176,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Password */}
-        <Card className="rounded-[14px] border-[0.5px] border-border">
+        <Card className="rounded-[14px] border border-border">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">
               {t("changePassword")}
@@ -185,11 +185,11 @@ const SettingsPage = () => {
           <CardContent className="space-y-3">
             <div>
               <Label className="text-xs text-muted-foreground">{t("newPassword")}</Label>
-              <Input type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="mt-1 rounded-[10px] border-[0.5px]" />
+              <Input type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="mt-1 rounded-[10px] border" />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">{t("confirmPassword")}</Label>
-              <Input type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="mt-1 rounded-[10px] border-[0.5px]" />
+              <Input type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="mt-1 rounded-[10px] border" />
             </div>
             <Button onClick={handleChangePassword} disabled={changingPassword} size="sm" className="w-full rounded-[10px] font-medium text-sm">
               {changingPassword ? t("updating") : t("updatePassword")}
@@ -198,7 +198,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Notifications */}
-        <Card className="rounded-[14px] border-[0.5px] border-border">
+        <Card className="rounded-[14px] border border-border">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">
               Notiser
@@ -251,7 +251,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Data & Privacy */}
-        <Card className="rounded-[14px] border-[0.5px] border-border">
+        <Card className="rounded-[14px] border border-border">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">
               {t("howWeUseData")}
@@ -266,7 +266,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Log out */}
-        <Button variant="outline" onClick={handleLogout} className="w-full rounded-[10px] border-[0.5px] border-border text-muted-foreground hover:text-foreground hover:bg-muted">
+        <Button variant="outline" onClick={handleLogout} className="w-full rounded-[10px] border border-border text-muted-foreground hover:text-foreground hover:bg-muted">
           <LogOut className="w-4 h-4 mr-2" strokeWidth={1.5} /> {t("logOut")}
         </Button>
 

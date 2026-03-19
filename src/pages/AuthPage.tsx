@@ -133,7 +133,7 @@ const AuthPage = () => {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder={t("howFriendsKnowYou")}
-                className="mt-1.5 rounded-[10px] bg-card border-[0.5px] border-border"
+                className="mt-1.5 rounded-[10px] bg-card border border-border"
                 required
               />
             </div>
@@ -146,7 +146,7 @@ const AuthPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="mt-1.5 rounded-[10px] bg-card border-[0.5px] border-border"
+              className="mt-1.5 rounded-[10px] bg-card border border-border"
               required
             />
           </div>
@@ -158,7 +158,7 @@ const AuthPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1.5 rounded-[10px] bg-card border-[0.5px] border-border"
+              className="mt-1.5 rounded-[10px] bg-card border border-border"
               minLength={6}
               required
             />

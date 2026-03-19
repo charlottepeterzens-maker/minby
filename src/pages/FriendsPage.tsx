@@ -373,7 +373,7 @@ const FriendsPage = () => {
               onChange={(e) => setPeopleSearch(e.target.value)}
               placeholder="Sök på namn..."
               className="w-full pl-10 pr-3 py-2.5 rounded-[10px] text-[13px] outline-none placeholder:text-[#9B8BA5] font-display"
-              style={{ backgroundColor: "#FFFFFF", border: "0.5px solid #EDE8F4", color: "#3C2A4D" }}
+              style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", color: "#3C2A4D" }}
             />
           </div>
 
@@ -389,7 +389,7 @@ const FriendsPage = () => {
                   <div
                     key={r.user_id}
                     className="flex items-center gap-3 p-3 rounded-[12px]"
-                    style={{ backgroundColor: "#FFFFFF", border: "0.5px solid #EDE8F4" }}
+                    style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
                   >
                     <div
                       className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
@@ -459,7 +459,7 @@ const FriendsPage = () => {
                     <div
                       key={r.id}
                       className="flex items-center gap-3 p-3 rounded-[12px]"
-                      style={{ backgroundColor: "#FFFFFF", border: "0.5px solid #EDE8F4" }}
+                      style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
                     >
                       <button
                         onClick={() => navigate(`/profile/${r.from_user_id}`)}
@@ -523,7 +523,7 @@ const FriendsPage = () => {
                       onChange={(e) => setFriendSearch(e.target.value)}
                       placeholder="Sök bland vänner..."
                       className="w-full pl-9 pr-3 py-2.5 rounded-[10px] text-[13px] outline-none placeholder:text-[#9B8BA5]"
-                      style={{ backgroundColor: "#FFFFFF", border: "0.5px solid #EDE8F4", color: "#3C2A4D" }}
+                      style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", color: "#3C2A4D" }}
                     />
                   </div>
                 )}
@@ -556,7 +556,7 @@ const FriendsPage = () => {
                           key={f.user_id}
                           onClick={() => navigate(`/profile/${f.user_id}`)}
                           className="w-full flex items-center gap-3 p-3 rounded-[16px] text-left transition-colors hover:opacity-90"
-                          style={{ backgroundColor: "#FFFFFF", border: "0.5px solid #EDE8F4" }}
+                          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
                         >
                           <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden" style={{ backgroundColor: "#EDE8F4" }}>
                             {f.avatar_url ? (
@@ -566,7 +566,7 @@ const FriendsPage = () => {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
+                            <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
                             {statusText && (
                               <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{statusText}</p>
                             )}

@@ -51,7 +51,7 @@ const PlanCard = ({ plan, onRsvpChange }: { plan: PlanWithDetails; onRsvpChange:
   const inCount = plan.rsvps.filter((r) => r.status === "in").length;
 
   return (
-    <div className="bg-card rounded-[14px] p-5 border-[0.5px] border-border">
+    <div className="bg-card rounded-[14px] p-5 border border-border">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-lavender-bg rounded-lg flex items-center justify-center">
@@ -104,7 +104,7 @@ const PlanCard = ({ plan, onRsvpChange }: { plan: PlanWithDetails; onRsvpChange:
         <Button
           variant="outline"
           size="sm"
-          className={`rounded-[10px] text-xs font-medium px-4 border-[0.5px] ${
+          className={`rounded-[10px] text-xs font-medium px-4 border ${
             isIn
               ? "bg-salvia-bg text-accent-foreground border-accent"
               : "bg-card text-muted-foreground border-border hover:bg-salvia-bg hover:text-accent-foreground"

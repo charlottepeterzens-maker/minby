@@ -132,7 +132,7 @@ const Index = () => {
                 <button
                   key={g.id}
                   onClick={() => setSelectedGroup(g)}
-                  className="w-full bg-card rounded-[14px] p-4 border-[0.5px] border-border text-left flex items-center gap-4 hover:bg-muted/50 transition-colors duration-150"
+                  className="w-full bg-card rounded-[14px] p-4 border border-border text-left flex items-center gap-4 hover:bg-muted/50 transition-colors duration-150"
                 >
                   <div className="w-10 h-10 bg-lavender-bg rounded-lg flex items-center justify-center">
                     <Users className="w-4 h-4 text-secondary-foreground" strokeWidth={1.5} />
@@ -174,7 +174,7 @@ const Index = () => {
               className={`px-4 py-1.5 rounded-[20px] text-xs font-medium whitespace-nowrap transition-colors duration-150 ${
                 activeFilter === f.value
                   ? "bg-primary text-primary-foreground"
-                  : "bg-card text-muted-foreground border-[0.5px] border-border hover:text-foreground"
+                  : "bg-card text-muted-foreground border border-border hover:text-foreground"
               }`}
             >
               {f.label}

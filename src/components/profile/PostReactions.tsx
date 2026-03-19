@@ -234,7 +234,7 @@ const PostReactions = ({ postId, readOnly, showLabel }: Props) => {
               className="px-3 py-2 rounded-[10px] shadow-lg max-w-[200px]"
               style={{
                 backgroundColor: "#FFFFFF",
-                border: "0.5px solid #EDE8F4",
+                border: "1px solid #EDE8F4",
               }}
             >
               <div className="flex items-center gap-1.5 mb-1.5">

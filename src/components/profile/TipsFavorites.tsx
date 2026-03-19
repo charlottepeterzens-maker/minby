@@ -337,7 +337,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
         isOwner ? (
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
-              <button className="w-full flex items-center gap-3 rounded-[16px] border-[0.5px] border-dashed border-border p-4 text-left text-muted-foreground hover:text-foreground transition-colors">
+              <button className="w-full flex items-center gap-3 rounded-[16px] border border-dashed border-border p-4 text-left text-muted-foreground hover:text-foreground transition-colors">
                 <div className="shrink-0 flex items-center justify-center rounded-full w-9 h-9 border border-dashed border-current">
                   <Plus className="w-4 h-4" />
                 </div>
@@ -446,7 +446,7 @@ const TipCard = ({
           gap: 10,
           background: "#fff",
           borderRadius: 10,
-          border: "0.5px solid #EDE8F4",
+          border: "1px solid #EDE8F4",
           padding: "10px",
         }}
       >
@@ -651,7 +651,7 @@ const TipCard = ({
                     borderRadius: 10,
                     padding: "9px 14px",
                     fontSize: 12,
-                    border: "0.5px solid #EDE8F4",
+                    border: "1px solid #EDE8F4",
                     outline: "none",
                   }}
                 >

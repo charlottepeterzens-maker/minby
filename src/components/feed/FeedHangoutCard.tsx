@@ -74,7 +74,7 @@ const CategoryPill = ({ label, variant }: { label: string; variant: "light" | "d
 const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: FeedHangoutCardProps) => {
   const timeAgo = getTimeAgo(hangout.created_at);
   return (
-    <div className="bg-card rounded-[14px] border-[0.5px] overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
+    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
@@ -92,7 +92,7 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
             <CategoryPill label="vill ses" variant="light" />
           </div>
@@ -116,7 +116,7 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
           <button onClick={onJoin} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] transition-colors" style={{ backgroundColor: '#EAF2E8', color: '#1F4A1A' }}>
             Ja, jag är med!
           </button>
-          <button onClick={onMaybe} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border-[0.5px] transition-colors hover:bg-muted" style={{ borderColor: '#EDE8F4' }}>
+          <button onClick={onMaybe} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border transition-colors hover:bg-muted" style={{ borderColor: '#EDE8F4' }}>
             Kanske
           </button>
         </div>
@@ -131,7 +131,7 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
   const activityName = hangout.custom_note || (hangout.activities.length > 0 ? hangout.activities[0] : "Plan");
 
   return (
-    <div className="bg-card rounded-[14px] border-[0.5px] overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
+    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
@@ -149,7 +149,7 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
             <CategoryPill label="häng med" variant="dark" />
           </div>
@@ -181,7 +181,7 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
           <button onClick={onJoin} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] transition-colors" style={{ backgroundColor: '#EAF2E8', color: '#1F4A1A' }}>
             Jag hänger med!
           </button>
-          <button onClick={onMaybe} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border-[0.5px] transition-colors hover:bg-muted" style={{ borderColor: '#EDE8F4' }}>
+          <button onClick={onMaybe} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border transition-colors hover:bg-muted" style={{ borderColor: '#EDE8F4' }}>
             Kanske
           </button>
         </div>
@@ -295,7 +295,7 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
   const maxCount = Math.max(0, ...Object.values(rsvpCounts));
 
   return (
-    <div className="bg-card rounded-[14px] border-[0.5px] overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
+    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
@@ -313,7 +313,7 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
             <CategoryPill label="sugen på" variant="light" />
           </div>
@@ -399,7 +399,7 @@ const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedH
   const dateChip = dateStr ? `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}` : "";
 
   return (
-    <div className="bg-card rounded-[14px] border-[0.5px] overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
+    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
@@ -417,7 +417,7 @@ const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedH
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
             <CategoryPill label="sugen på" variant="light" />
           </div>
