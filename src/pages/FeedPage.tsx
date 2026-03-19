@@ -17,7 +17,6 @@ import ReconnectNudge from "@/components/feed/ReconnectNudge";
 import CloseCircleSuggestion from "@/components/feed/CloseCircleSuggestion";
 import { useFirstTimeUser } from "@/hooks/useFirstTimeUser";
 import { toast } from "sonner";
-import { toast } from "sonner";
 
 interface ProfileMap {
   [userId: string]: {
