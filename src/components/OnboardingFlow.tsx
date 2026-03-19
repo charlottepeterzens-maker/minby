@@ -141,7 +141,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Ditt namn eller smeknamn"
-              className="rounded-[10px] bg-card border-[0.5px] border-border text-center"
+              className="rounded-[10px] bg-card border border-border text-center"
             />
             <Button
               onClick={handleNameContinue}
@@ -167,7 +167,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
             <div className="flex justify-center">
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="relative w-24 h-24 rounded-full border-[0.5px] flex items-center justify-center overflow-hidden transition-all"
+                className="relative w-24 h-24 rounded-full border flex items-center justify-center overflow-hidden transition-all"
                 style={{ borderColor: "#EDE8F4", backgroundColor: "#FFFFFF" }}
               >
                 {avatarPreview ? (
