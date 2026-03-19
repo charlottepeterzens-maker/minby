@@ -130,7 +130,7 @@ const InvitePage = () => {
           body: `${profile?.display_name || "Någon"} vill vara med i din vardag`,
         });
 
-        toast.success("Vänförfrågan skickad! 🎉");
+        toast.success("Skickat! 🎉");
         navigate("/friends", { replace: true });
       } catch (err) {
         console.error("Invite error:", err);

@@ -340,7 +340,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     <Input
                       value={friendSearch}
                       onChange={(e) => searchFriends(e.target.value)}
-                      placeholder="Sök och lägg till vänner..."
+                      placeholder="Sök och lägg till personer..."
                       className="bg-white text-[13px]"
                       style={{ borderColor: '#EDE8F4' }}
                     />

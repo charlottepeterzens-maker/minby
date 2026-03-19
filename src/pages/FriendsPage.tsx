@@ -800,8 +800,8 @@ const FriendsPage = () => {
       <ConfirmSheet
         open={!!removeConfirm}
         onOpenChange={(open) => { if (!open) setRemoveConfirm(null); }}
-        title="Ta bort vän"
-        description={`Vill du ta bort ${removeConfirm?.name || ""} från din krets? De kan inte längre se din vardag.`}
+        title="Ta bort från kretsen"
+        description={`Vill du ta bort ${removeConfirm?.name || ""} från din krets? Ni delar inte längre era vardagar.`}
         confirmLabel="Ta bort"
         confirmStyle={{ backgroundColor: "#A32D2D" }}
         onConfirm={() => {

@@ -69,7 +69,7 @@ const InviteFriendDialog = () => {
           style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}
         >
           <SheetHeader>
-            <SheetTitle className="font-display text-base font-medium text-left">Bjud in en vän</SheetTitle>
+            <SheetTitle className="font-display text-base font-medium text-left">Bjud in någon</SheetTitle>
           </SheetHeader>
 
           <p className="text-sm text-muted-foreground mt-2 mb-4">

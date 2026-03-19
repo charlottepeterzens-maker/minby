@@ -133,7 +133,7 @@ const NotificationsPage = () => {
                       variant="outline"
                       onClick={(e) => { e.stopPropagation(); acceptFriendRequest(n); }}
                     >
-                      <UserCheck className="w-3 h-3" strokeWidth={1.5} /> {t("accept")}
+                      <UserCheck className="w-3 h-3" strokeWidth={1.5} /> Ja, gärna
                     </Button>
                   )}
                   {!n.read && n.type !== "friend_request" && (
