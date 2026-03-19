@@ -11,6 +11,9 @@ import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
 import FeedHealthCard from "@/components/feed/FeedHealthCard";
 import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
+import FirstTimeOverlay from "@/components/onboarding/FirstTimeOverlay";
+import FeedGuidanceCard from "@/components/onboarding/FeedGuidanceCard";
+import { useFirstTimeUser } from "@/hooks/useFirstTimeUser";
 import { UserPlus, Plus, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 
