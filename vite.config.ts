@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => ({
         name: "Minby",
         short_name: "Minby",
         description: "Din plats för äkta kontakt med de som betyder mest",
-        theme_color: "#3C2A4D",
+        theme_color: "#F7F3EF",
         background_color: "#F7F3EF",
         display: "standalone",
         orientation: "portrait",
