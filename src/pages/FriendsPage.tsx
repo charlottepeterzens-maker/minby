@@ -756,7 +756,7 @@ const FriendsPage = () => {
                 )}
                 {closeFriends.length === 0 && pendingRequests.length > 0 && (
                   <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
-                    Dina vänner ({friends.length})
+                    Din krets ({friends.length})
                   </p>
                 )}
 
