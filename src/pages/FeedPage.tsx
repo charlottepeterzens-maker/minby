@@ -394,6 +394,20 @@ const FeedPage = () => {
       />
 
       <BottomNav />
+
+      {/* First-time onboarding overlay */}
+      {isFirstTime && showOverlay && (
+        <FirstTimeOverlay
+          onComplete={() => {
+            setShowOverlay(false);
+            setInviteCompleted(true);
+          }}
+          onDismiss={() => {
+            setShowOverlay(false);
+            dismissOnboarding();
+          }}
+        />
+      )}
     </div>
   );
 };
