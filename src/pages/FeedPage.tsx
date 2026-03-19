@@ -11,6 +11,9 @@ import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
 import FeedHealthCard from "@/components/feed/FeedHealthCard";
 import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
+import FirstTimeOverlay from "@/components/onboarding/FirstTimeOverlay";
+import FeedGuidanceCard from "@/components/onboarding/FeedGuidanceCard";
+import { useFirstTimeUser } from "@/hooks/useFirstTimeUser";
 import { UserPlus, Plus, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
 
@@ -37,6 +40,9 @@ const FeedPage = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { isFirstTime, dismiss: dismissOnboarding } = useFirstTimeUser();
+  const [showOverlay, setShowOverlay] = useState(true);
+  const [inviteCompleted, setInviteCompleted] = useState(false);
 
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [profiles, setProfiles] = useState<ProfileMap>({});
@@ -264,21 +270,27 @@ const FeedPage = () => {
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-5">
-        <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
-          {filters.map((f) => (
-            <button
-              key={f.value}
-              onClick={() => setFilter(f.value)}
-              className={`px-4 py-1.5 text-xs font-medium rounded-[20px] ${
-                filter === f.value
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card text-muted-foreground border-[0.5px] border-border"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+        {/* Hide filters for first-time users */}
+        {!isFirstTime && (
+          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
+            {filters.map((f) => (
+              <button
+                key={f.value}
+                onClick={() => setFilter(f.value)}
+                className={`px-4 py-1.5 text-xs font-medium rounded-[20px] ${
+                  filter === f.value
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card text-muted-foreground border-[0.5px] border-border"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Guidance card after invite */}
+        {(isFirstTime || inviteCompleted) && !showOverlay && <FeedGuidanceCard />}
 
         {/* Quiet feed nudge */}
         {!loading && filteredItems.length > 0 && (() => {
@@ -382,6 +394,20 @@ const FeedPage = () => {
       />
 
       <BottomNav />
+
+      {/* First-time onboarding overlay */}
+      {isFirstTime && showOverlay && (
+        <FirstTimeOverlay
+          onComplete={() => {
+            setShowOverlay(false);
+            setInviteCompleted(true);
+          }}
+          onDismiss={() => {
+            setShowOverlay(false);
+            dismissOnboarding();
+          }}
+        />
+      )}
     </div>
   );
 };
