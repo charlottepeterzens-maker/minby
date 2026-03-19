@@ -681,6 +681,20 @@ const FriendsPage = () => {
       <QRCodeSheet open={qrOpen} onOpenChange={setQrOpen} />
       <ScrollToTopButton />
       <BottomNav />
+
+      {/* Remove friend confirmation */}
+      <ConfirmSheet
+        open={!!removeConfirm}
+        onOpenChange={(open) => { if (!open) setRemoveConfirm(null); }}
+        title="Ta bort vän"
+        description={`Vill du ta bort ${removeConfirm?.name || ""} från din krets? De kan inte längre se din vardag.`}
+        confirmLabel="Ta bort"
+        confirmStyle={{ backgroundColor: "#A32D2D" }}
+        onConfirm={() => {
+          if (removeConfirm) handleRemoveFriend(removeConfirm.userId);
+          setRemoveConfirm(null);
+        }}
+      />
     </div>
   );
 };
