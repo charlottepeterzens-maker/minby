@@ -56,7 +56,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
             {isOwn ? "Du" : profile.display_name || "Någon"}
           </button>
           <p className="text-[11px] text-muted-foreground leading-tight">
-            {post.sectionName} · {timeAgo}
+            {isOwn ? "Du delade något" : `Från ${post.sectionName.toLowerCase()}`} · {timeAgo}
           </p>
         </div>
       </div>
