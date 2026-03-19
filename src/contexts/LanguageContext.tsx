@@ -282,7 +282,7 @@ const translations = {
   sv: {
     // Nav
     home: "Hem",
-    friends: "Vänner",
+    friends: "Min krets",
     share: "Dela",
     notifications: "Aviseringar",
     profile: "Profil",

@@ -81,7 +81,7 @@ const defaultTranslations: Record<string, Record<string, string>> = {
     editAvailability: "Edit",
   },
   sv: {
-    home: "Hem", friends: "Vänner", share: "Dela", notifications: "Aviseringar",
+    home: "Hem", friends: "Min krets", share: "Dela", notifications: "Aviseringar",
     profile: "Profil", settings: "Inställningar", changePassword: "Byt lösenord",
     newPassword: "Nytt lösenord", confirmPassword: "Bekräfta lösenord",
     updatePassword: "Uppdatera lösenord", updating: "Uppdaterar...",
