@@ -120,7 +120,18 @@ const PostComments = ({ postId, isOwner }: Props) => {
 
   return (
     <div style={{ marginTop: 10 }}>
-      {comments.length > 0 && (
+      {/* Comment count summary */}
+      {comments.length > 0 && !expanded && (
+        <button
+          onClick={() => setExpanded(true)}
+          style={{ fontSize: 11, color: "#7A6A85", marginBottom: 8 }}
+          className="hover:underline"
+        >
+          {comments.length === 1 ? "1 svar" : `${comments.length} svar`}
+        </button>
+      )}
+
+      {comments.length > 0 && expanded && (
         <div
           style={{
             display: "flex",
@@ -150,7 +161,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
               <div style={{ flex: 1, background: "#F7F3EF", borderRadius: "0 8px 8px 8px", padding: "7px 10px" }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 2 }}>
                   <span style={{ fontSize: 11, fontWeight: 500, color: "#2A1A3C" }}>
-                    {c.user_id === user?.id ? "Du" : c.display_name || "Nagon"}
+                    {c.user_id === user?.id ? "Du" : c.display_name || "Någon"}
                   </span>
                   <span style={{ fontSize: 10, color: "#B0A0B5" }}>{getTimeAgo(c.created_at)}</span>
                 </div>
@@ -194,12 +205,15 @@ const PostComments = ({ postId, isOwner }: Props) => {
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          onFocus={() => setFocused(true)}
+          onFocus={() => {
+            setFocused(true);
+            if (!expanded && comments.length > 0) setExpanded(true);
+          }}
           onBlur={() => {
             if (!text.trim()) setFocused(false);
           }}
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handlePost()}
-          placeholder="Skriv en kommentar..."
+          placeholder="Säg något till dem…"
           style={{
             flex: 1,
             height: 30,
