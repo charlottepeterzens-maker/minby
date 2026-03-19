@@ -310,8 +310,8 @@ const translations = {
     swedish: "Svenska",
 
     howWeUseData: "Hur vi använder din data",
-    dataPrivacy1: "Dina livsuppdateringar delas bara med vänner du uttryckligen gett tillgång till, baserat på nivån du tilldelat dem (Nära, Inre, Yttre).",
-    dataPrivacy2: "Vi säljer aldrig dina personuppgifter eller delar dem med tredje part. Ditt innehåll stannar mellan dig och dina cirklar.",
+    dataPrivacy1: "Dina livsuppdateringar delas bara med personer du uttryckligen gett tillgång till, baserat på nivån du tilldelat dem (Nära, Inre, Yttre).",
+    dataPrivacy2: "Vi säljer aldrig dina personuppgifter eller delar dem med tredje part. Ditt innehåll stannar mellan dig och din krets.",
     dataPrivacy3: "Du kan radera ditt konto och all tillhörande data när som helst genom att kontakta oss.",
 
     logOut: "Logga ut",
