@@ -702,7 +702,7 @@ const FriendsPage = () => {
                           className="px-3 py-1.5 rounded-[20px] text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
                           style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
                         >
-                          Acceptera
+                          Ja, gärna
                         </button>
                         <button
                           onClick={() => handleDecline(r.id)}
