@@ -90,7 +90,7 @@ const FeedPage = () => {
   const filters = [
     { label: "Allt", value: "all" },
     { label: "Vardagen", value: "posts" },
-    { label: "Ses?", value: "hangout" },
+    { label: "Ses vi", value: "hangout" },
     { label: "Hälsa", value: "health" },
   ];
 
