@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS muted_users jsonb NOT NULL DEFAULT '[]'::jsonb;
