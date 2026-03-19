@@ -24,6 +24,21 @@ const PostComments = ({ postId, isOwner }: Props) => {
   const [text, setText] = useState("");
   const [posting, setPosting] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [myInitials, setMyInitials] = useState("?");
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("display_name")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => {
+        if (data?.display_name) {
+          setMyInitials(data.display_name.slice(0, 2).toUpperCase());
+        }
+      });
+  }, [user]);
 
   const fetchComments = useCallback(async () => {
     const { data } = await supabase
@@ -103,11 +118,8 @@ const PostComments = ({ postId, isOwner }: Props) => {
     fetchComments();
   };
 
-  const myInitials = user ? "?" : "?";
-
   return (
     <div style={{ marginTop: 10 }}>
-      {/* Befintliga kommentarer */}
       {comments.length > 0 && (
         <div
           style={{
@@ -121,7 +133,6 @@ const PostComments = ({ postId, isOwner }: Props) => {
         >
           {comments.map((c) => (
             <div key={c.id} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-              {/* Avatar */}
               <div
                 style={{
                   width: 24,
@@ -136,7 +147,6 @@ const PostComments = ({ postId, isOwner }: Props) => {
               >
                 <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{c.initials}</span>
               </div>
-              {/* Bubbla */}
               <div style={{ flex: 1, background: "#F7F3EF", borderRadius: "0 8px 8px 8px", padding: "7px 10px" }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 2 }}>
                   <span style={{ fontSize: 11, fontWeight: 500, color: "#2A1A3C" }}>
@@ -146,7 +156,6 @@ const PostComments = ({ postId, isOwner }: Props) => {
                 </div>
                 <p style={{ fontSize: 12, color: "#5A4A6A", lineHeight: 1.5 }}>{c.content}</p>
               </div>
-              {/* Ta bort */}
               {(c.user_id === user?.id || isOwner) && (
                 <button
                   onClick={() => handleDelete(c.id)}
@@ -167,9 +176,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
         </div>
       )}
 
-      {/* Kommentarsfält – alltid synligt */}
       <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-        {/* Avsändar-avatar */}
         <div
           style={{
             width: 24,
@@ -184,7 +191,6 @@ const PostComments = ({ postId, isOwner }: Props) => {
         >
           <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{myInitials}</span>
         </div>
-        {/* Input pill */}
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -196,25 +202,24 @@ const PostComments = ({ postId, isOwner }: Props) => {
           placeholder="Skriv en kommentar..."
           style={{
             flex: 1,
-            height: 32,
+            height: 30,
             background: "#F7F3EF",
             border: focused ? "1px solid #C9B8D8" : "1px solid #EDE8E0",
             borderRadius: 99,
             padding: "0 12px",
-            fontSize: 12,
+            fontSize: 11,
             color: "#2A1A3C",
             outline: "none",
             transition: "border 0.15s ease",
           }}
         />
-        {/* Skicka-knapp – visas bara när det finns text */}
         {text.trim().length > 0 && (
           <button
             onClick={handlePost}
             disabled={posting}
             style={{
-              width: 28,
-              height: 28,
+              width: 26,
+              height: 26,
               borderRadius: "50%",
               background: "#3C2A4D",
               border: "none",
@@ -226,7 +231,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
               opacity: posting ? 0.6 : 1,
             }}
           >
-            <Send style={{ width: 12, height: 12, color: "#F7F3EF" }} />
+            <Send style={{ width: 11, height: 11, color: "#F7F3EF" }} />
           </button>
         )}
       </div>
