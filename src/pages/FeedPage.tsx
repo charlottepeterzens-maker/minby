@@ -506,61 +506,69 @@ const FeedPage = () => {
 };
 
 
-/** Empty feed guidance card */
-const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
+/** Empty feed – guided action cards */
+const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => void; onOpenInvite: () => void }) => {
   const navigate = useNavigate();
 
-  const rows = [
+  const cards = [
     {
-      icon: UserPlus,
-      text: "Bjud in någon du vill ha närmare i din vardag",
-      action: () => navigate("/friends"),
-    },
-    {
-      icon: Plus,
-      text: "Dela något litet från din dag",
+      emoji: "☀️",
+      bg: "#FCF0F3",
+      title: "Vad hände i din dag?",
+      desc: "Dela något litet – stort behövs inte",
       action: () => navigate("/profile"),
     },
     {
-      icon: CalendarDays,
-      text: "Säg till om du vill ses",
+      emoji: "📅",
+      bg: "#EAF2E8",
+      title: "Föreslå en träff",
+      desc: "Är du ledig snart? Säg till din krets",
       action: onOpenHangout,
+    },
+    {
+      emoji: "👋",
+      bg: "#EDE8F4",
+      title: "Bjud in fler till kretsen",
+      desc: "Ju fler som är med, desto mer händer",
+      action: onOpenInvite,
     },
   ];
 
   return (
     <div>
-      <div
-        style={{
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #EDE8F4",
-          borderRadius: "16px",
-          padding: "20px",
-        }}
-      >
-        {rows.map((row, i) => (
+      <h2 className="font-fraunces text-[18px] font-medium text-center mb-1" style={{ color: "#3C2A4D" }}>
+        Din by är tyst just nu.
+      </h2>
+      <p className="font-light text-[14px] text-center mb-5" style={{ color: "#7A6A85" }}>
+        Sätt igång – välj ett första steg:
+      </p>
+
+      <div className="space-y-3">
+        {cards.map((c, i) => (
           <button
             key={i}
-            onClick={row.action}
-            className="flex items-center gap-3 w-full text-left group"
+            onClick={c.action}
+            className="w-full flex items-center gap-3 text-left"
             style={{
-              padding: "12px 0",
-              borderBottom: i < rows.length - 1 ? "1px solid #EDE8F4" : "none",
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #EDE8E0",
+              borderRadius: 8,
+              padding: "14px 16px",
             }}
           >
-            <row.icon className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
-            <span
-              className="text-[13px] group-hover:underline"
-              style={{ color: "#3C2A4D" }}
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+              style={{ backgroundColor: c.bg }}
             >
-              {row.text}
-            </span>
+              <span className="text-base">{c.emoji}</span>
+            </div>
+            <div>
+              <p className="font-medium text-[14px]" style={{ color: "#3C2A4D" }}>{c.title}</p>
+              <p className="font-light text-[12px]" style={{ color: "#7A6A85" }}>{c.desc}</p>
+            </div>
           </button>
         ))}
       </div>
-      <p className="text-center mt-4" style={{ fontSize: "12px", color: "#B0A8B5" }}>
-        Flödet fylls på när ni börjar dela med varandra
-      </p>
     </div>
   );
 };
