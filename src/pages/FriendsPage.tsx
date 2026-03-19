@@ -606,7 +606,7 @@ const FriendsPage = () => {
                     {r.status === "friend" ? (
                       <span className="text-[11px]" style={{ color: "#9B8BA5" }}>I din krets</span>
                     ) : r.status === "sent" ? (
-                      <span className="text-[11px]" style={{ color: "#9B8BA5" }}>Förfrågan skickad</span>
+                      <span className="text-[11px]" style={{ color: "#9B8BA5" }}>Skickat</span>
                     ) : (
                       <button
                         onClick={() => handleSendFriendRequest(r.user_id)}
