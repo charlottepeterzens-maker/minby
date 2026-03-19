@@ -254,7 +254,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             Vad vill du hitta på den här veckan?
           </p>
           <p className="text-center mt-1" style={{ fontSize: 12, color: "#7A6A85", maxWidth: 200 }}>
-            Dela ett datum eller en idé med dina vänner
+            Dela ett datum eller en idé med din krets
           </p>
           <button
             onClick={() => setShowAdd(true)}

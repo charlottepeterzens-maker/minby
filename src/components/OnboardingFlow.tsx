@@ -161,7 +161,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               Lägg till en profilbild
             </h1>
             <p style={{ fontSize: "14px", color: "#7A6A85" }}>
-              Så dina vänner känner igen dig
+              Så din krets känner igen dig
             </p>
 
             <div className="flex justify-center">

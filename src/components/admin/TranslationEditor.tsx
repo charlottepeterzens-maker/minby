@@ -96,7 +96,7 @@ const defaultTranslations: Record<string, Record<string, string>> = {
     all: "Alla", posts: "Inlägg", workouts: "Träning", period: "Mens", plans: "Planer",
     profileTitle: "Profil", sections: "Sektioner",
     loading: "Laddar...", anonymous: "Anonym",
-    searchFriends: "Sök vänner...", noFriendsYet: "Inga vänner ännu",
+    searchFriends: "Sök i din krets...", noFriendsYet: "Ingen i din krets ännu",
     markAllRead: "Markera alla som lästa",
     joinMinby: "Gå med i MINBY", welcomeBack: "Välkommen tillbaka",
     signIn: "Logga in", signUp: "Registrera dig",
