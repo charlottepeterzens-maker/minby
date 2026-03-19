@@ -437,7 +437,7 @@ const FriendsPage = () => {
       toast.error("Något gick fel");
     } else {
       setPendingRequests((prev) => prev.filter((r) => r.id !== requestId));
-      toast("Förfrågan avvisad");
+      toast("Inte nu");
     }
     setRespondingId(null);
   };
