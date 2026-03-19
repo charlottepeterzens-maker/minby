@@ -301,9 +301,9 @@ const translations = {
     error: "Fel",
 
     notificationPreferences: "Aviseringsinställningar",
-    friendRequests: "Vänförfrågningar",
+    friendRequests: "Vill vara med i din vardag",
     gatheringInvites: "Träffinbjudningar",
-    newLifeUpdates: "Nya uppdateringar från vänner",
+    newLifeUpdates: "Nya uppdateringar från din krets",
 
     language: "Språk",
     english: "English",
