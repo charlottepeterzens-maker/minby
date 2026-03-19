@@ -133,7 +133,7 @@ const OwnPostReactionLink = ({ postId, onShow }: { postId: string; onShow: () =>
 
   return (
     <button onClick={onShow} style={{ fontSize: 11, color: "#7A6A85" }} className="hover:underline mt-1.5">
-      {count} {count === 1 ? "reaktion" : "reaktioner"}
+      {count === 1 ? "Någon reagerade" : `${count} personer har reagerat`}
     </button>
   );
 };
