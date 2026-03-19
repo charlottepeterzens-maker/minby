@@ -665,7 +665,7 @@ const FriendsPage = () => {
             {pendingRequests.length > 0 && (
               <div>
                 <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
-                  Vänförfrågningar ({pendingRequests.length})
+                  Vill vara med ({pendingRequests.length})
                 </p>
                 <div className="space-y-2">
                   {pendingRequests.map((r) => (
