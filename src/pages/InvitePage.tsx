@@ -126,8 +126,8 @@ const InvitePage = () => {
           user_id: inviterId,
           from_user_id: user.id,
           type: "friend_request",
-          title: "Vänförfrågan",
-          body: `${profile?.display_name || "Någon"} vill bli din vän`,
+          title: "Vill vara med i din vardag",
+          body: `${profile?.display_name || "Någon"} vill vara med i din vardag`,
         });
 
         toast.success("Vänförfrågan skickad! 🎉");
