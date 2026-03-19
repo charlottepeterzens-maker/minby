@@ -26,6 +26,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import TipCommentSection, { useCommentCount } from "@/components/profile/TipCommentSection";
+import { MessageCircle } from "lucide-react";
 
 interface Tip {
   id: string;
@@ -357,20 +359,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
         ) : null
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <AnimatePresence>
-            {tips.map((tip, i) => (
-              <TipCard
-                key={tip.id}
-                tip={tip}
-                isOwner={isOwner}
-                isSaved={savedTipIds.has(tip.id)}
-                onDelete={() => handleDelete(tip.id)}
-                onEdit={() => handleEdit(tip)}
-                onSave={() => handleSave(tip.id)}
-                index={i}
-              />
-            ))}
-          </AnimatePresence>
+          <TipListWithCounts tips={tips} isOwner={isOwner} savedTipIds={savedTipIds} onDelete={handleDelete} onEdit={handleEdit} onSave={handleSave} />
         </div>
       )}
 
@@ -394,6 +383,41 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
   );
 };
 
+const TipListWithCounts = ({
+  tips,
+  isOwner,
+  savedTipIds,
+  onDelete,
+  onEdit,
+  onSave,
+}: {
+  tips: Tip[];
+  isOwner: boolean;
+  savedTipIds: Set<string>;
+  onDelete: (id: string) => void;
+  onEdit: (tip: Tip) => void;
+  onSave: (id: string) => void;
+}) => {
+  const commentCounts = useCommentCount(tips.map((t) => t.id));
+  return (
+    <AnimatePresence>
+      {tips.map((tip, i) => (
+        <TipCard
+          key={tip.id}
+          tip={tip}
+          isOwner={isOwner}
+          isSaved={savedTipIds.has(tip.id)}
+          onDelete={() => onDelete(tip.id)}
+          onEdit={() => onEdit(tip)}
+          onSave={() => onSave(tip.id)}
+          index={i}
+          commentCount={commentCounts[tip.id] || 0}
+        />
+      ))}
+    </AnimatePresence>
+  );
+};
+
 const TipCard = ({
   tip,
   isOwner,
@@ -402,6 +426,7 @@ const TipCard = ({
   onEdit,
   onSave,
   index,
+  commentCount,
 }: {
   tip: Tip;
   isOwner: boolean;
@@ -410,6 +435,7 @@ const TipCard = ({
   onEdit: () => void;
   onSave: () => void;
   index: number;
+  commentCount: number;
 }) => {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
@@ -510,6 +536,15 @@ const TipCard = ({
             alignSelf: "stretch",
           }}
         >
+          {commentCount > 0 && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: "auto", marginTop: 2 }}
+            >
+              <MessageCircle style={{ width: 12, height: 12, color: "#B0A0B5" }} />
+              <span style={{ fontSize: 10, color: "#B0A0B5" }}>{commentCount}</span>
+            </div>
+          )}
           <div onClick={(e) => e.stopPropagation()}>
             {isOwner ? (
               <DropdownMenu>
@@ -619,6 +654,7 @@ const TipCard = ({
                 Öppna länk
               </a>
             )}
+            <TipCommentSection tipId={tip.id} tipOwnerId={tip.user_id} tipTitle={tip.title} />
             {isOwner && (
               <div style={{ display: "flex", gap: 8 }}>
                 <button
