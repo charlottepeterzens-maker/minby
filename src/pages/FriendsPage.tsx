@@ -378,11 +378,11 @@ const FriendsPage = () => {
         user_id: targetUserId,
         from_user_id: user.id,
         type: "friend_request",
-        title: "Vänförfrågan",
-        body: `${profile?.display_name || "Någon"} vill bli din vän`,
+        title: "Vill vara med i din vardag",
+        body: `${profile?.display_name || "Någon"} vill vara med i din vardag`,
       });
 
-      toast.success("Förfrågan skickad!");
+      toast.success("Skickat!");
       setSearchResults((prev) =>
         prev.map((r) => r.user_id === targetUserId ? { ...r, status: "sent" as const } : r)
       );
