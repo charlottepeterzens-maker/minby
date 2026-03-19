@@ -398,6 +398,7 @@ const FeedPage = () => {
         {!loading && filteredItems.length === 0 ? (
           <EmptyFeedCard
             onOpenHangout={() => setShowHangoutSheet(true)}
+            onOpenInvite={() => setShowInviteDialog(true)}
           />
         ) : (
           <div className="space-y-4">
