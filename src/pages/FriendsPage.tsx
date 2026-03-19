@@ -605,27 +605,65 @@ const FriendsPage = () => {
                       } else if (f.last_activity) {
                         statusText = `Lade upp något ${timeAgo(f.last_activity)}`;
                       }
+                      const isMuted = mutedUsers.includes(f.user_id);
                       return (
-                        <button
+                        <div
                           key={f.user_id}
-                          onClick={() => navigate(`/profile/${f.user_id}`)}
-                          className="w-full flex items-center gap-3 p-3 rounded-[16px] text-left transition-colors hover:opacity-90"
+                          className="relative flex items-center gap-3 p-3 rounded-[16px] transition-colors hover:opacity-90"
                           style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
                         >
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden" style={{ backgroundColor: "#EDE8F4" }}>
-                            {f.avatar_url ? (
-                              <img src={f.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
-                            ) : (
-                              <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>{f.initial}</span>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
-                            {statusText && (
-                              <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{statusText}</p>
-                            )}
-                          </div>
-                        </button>
+                          <button
+                            onClick={() => navigate(`/profile/${f.user_id}`)}
+                            className="flex items-center gap-3 flex-1 min-w-0 text-left"
+                          >
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden" style={{ backgroundColor: "#EDE8F4" }}>
+                              {f.avatar_url ? (
+                                <img src={f.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                              ) : (
+                                <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>{f.initial}</span>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
+                              {isMuted && (
+                                <p className="text-[10px] mt-0.5" style={{ color: "#9B8BA5" }}>Mutad</p>
+                              )}
+                              {!isMuted && statusText && (
+                                <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{statusText}</p>
+                              )}
+                            </div>
+                          </button>
+
+                          {/* Three-dot menu */}
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setMenuOpenFor(menuOpenFor === f.user_id ? null : f.user_id); }}
+                            className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full"
+                          >
+                            <MoreHorizontal className="w-4 h-4" style={{ color: "#9B8BA5" }} />
+                          </button>
+
+                          {menuOpenFor === f.user_id && (
+                            <div
+                              className="absolute right-3 top-12 z-20 py-1 shadow-lg"
+                              style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 6, minWidth: 180 }}
+                            >
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleToggleMute(f.user_id); }}
+                                className="w-full text-left px-4 py-2.5 text-[13px]"
+                                style={{ color: "#3C2A4D" }}
+                              >
+                                {isMuted ? `Sluta muta ${f.display_name}` : `Muta ${f.display_name}`}
+                              </button>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); setMenuOpenFor(null); setRemoveConfirm({ userId: f.user_id, name: f.display_name }); }}
+                                className="w-full text-left px-4 py-2.5 text-[13px]"
+                                style={{ color: "#A32D2D" }}
+                              >
+                                Ta bort från kretsen
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       );
                     })
                   )}
