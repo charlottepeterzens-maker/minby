@@ -30,7 +30,7 @@ const TYPE_OPTIONS: { value: EntryType; title: string; desc: string; hint: strin
 ];
 
 const VISIBILITY_OPTIONS: { value: Visibility; label: string }[] = [
-  { value: "all", label: "Alla nära vänner" },
+  { value: "all", label: "Hela din krets" },
   { value: "selected", label: "Utvalda" },
   { value: "private", label: "Bara oss" },
 ];
