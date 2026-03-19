@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, Search, QrCode, MoreHorizontal } from "lucide-react";
+import { Users, Search, QrCode, MoreHorizontal, Heart } from "lucide-react";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
@@ -26,6 +26,7 @@ interface FriendRow {
   initial: string;
   last_activity: string | null;
   hangout_status: HangoutStatus | null;
+  tier: string;
 }
 
 interface PendingRequest {
@@ -86,7 +87,7 @@ const FriendsPage = () => {
     if (!user) return;
     setLoading(true);
 
-    const [{ data: accepted }, { data: pending }] = await Promise.all([
+    const [{ data: accepted }, { data: pending }, { data: tiers }] = await Promise.all([
       supabase
         .from("friend_requests")
         .select("from_user_id, to_user_id")
@@ -98,7 +99,15 @@ const FriendsPage = () => {
         .eq("to_user_id", user.id)
         .eq("status", "pending")
         .order("created_at", { ascending: false }),
+      supabase
+        .from("friend_access_tiers")
+        .select("friend_user_id, tier")
+        .eq("owner_id", user.id),
     ]);
+
+    // Build tier map
+    const tierMap = new Map<string, string>();
+    tiers?.forEach((t) => tierMap.set(t.friend_user_id, t.tier));
 
     // Process pending requests
     if (pending?.length) {
@@ -175,6 +184,7 @@ const FriendsPage = () => {
       initial: (p.display_name || "?").charAt(0).toUpperCase(),
       last_activity: latestPostMap.get(p.user_id) || null,
       hangout_status: hangoutMap.get(p.user_id) || null,
+      tier: tierMap.get(p.user_id) || "outer",
     }));
 
     list.sort((a, b) => {
@@ -206,15 +216,34 @@ const FriendsPage = () => {
     fetchMutedUsers();
   }, [fetchData, fetchMutedUsers]);
 
+  // Toggle close circle
+  const handleToggleClose = async (friendUserId: string, currentTier: string) => {
+    if (!user) return;
+    const newTier = currentTier === "close" ? "outer" : "close";
+    const { error } = await supabase
+      .from("friend_access_tiers")
+      .update({ tier: newTier as any })
+      .eq("owner_id", user.id)
+      .eq("friend_user_id", friendUserId);
+
+    if (error) {
+      toast.error("Kunde inte uppdatera");
+    } else {
+      setFriends((prev) =>
+        prev.map((f) => f.user_id === friendUserId ? { ...f, tier: newTier } : f)
+      );
+      toast.success(newTier === "close" ? "Tillagd i närmaste krets" : "Borttagen från närmaste krets");
+    }
+    setMenuOpenFor(null);
+  };
+
   // Remove friend handler
   const handleRemoveFriend = async (friendUserId: string) => {
     if (!user) return;
-    // Remove access tiers both ways
     await Promise.all([
       supabase.from("friend_access_tiers").delete().eq("owner_id", user.id).eq("friend_user_id", friendUserId),
       supabase.from("friend_access_tiers").delete().eq("owner_id", friendUserId).eq("friend_user_id", user.id),
     ]);
-    // Update friend request status
     await supabase
       .from("friend_requests")
       .delete()
@@ -266,7 +295,6 @@ const FriendsPage = () => {
 
       const foundIds = foundProfiles.map((p) => p.user_id);
 
-      // Check which are already friends
       const { data: friendTiers } = await supabase
         .from("friend_access_tiers")
         .select("friend_user_id, owner_id")
@@ -278,7 +306,6 @@ const FriendsPage = () => {
         else friendSet.add(t.owner_id);
       });
 
-      // Check pending requests
       const { data: pendingReqs } = await supabase
         .from("friend_requests")
         .select("from_user_id, to_user_id")
@@ -318,7 +345,6 @@ const FriendsPage = () => {
     if (error) {
       toast.error("Kunde inte skicka förfrågan");
     } else {
-      // Send notification
       const { data: profile } = await supabase
         .from("profiles")
         .select("display_name")
@@ -357,7 +383,6 @@ const FriendsPage = () => {
         { owner_id: fromUserId, friend_user_id: user.id, tier: "outer" as const },
       ], { onConflict: "owner_id,friend_user_id" });
 
-      // Notify sender
       const { data: profile } = await supabase
         .from("profiles")
         .select("display_name")
@@ -398,7 +423,102 @@ const FriendsPage = () => {
     f.display_name.toLowerCase().includes(friendSearch.toLowerCase())
   );
 
+  const closeFriends = filtered.filter((f) => f.tier === "close");
+  const otherFriends = filtered.filter((f) => f.tier !== "close");
+
   const hasFriendsOrPending = friends.length > 0 || pendingRequests.length > 0;
+
+  const renderFriendCard = (f: FriendRow) => {
+    let statusText: string | null = null;
+    if (f.hangout_status) {
+      const h = f.hangout_status;
+      const dateObj = new Date(h.date + "T00:00:00");
+      const dateLabel = `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}`;
+      if (h.entry_type === "confirmed") {
+        statusText = `häng med ${dateLabel}`;
+      } else if (h.entry_type === "activity") {
+        const actName = h.activities.length > 0 ? h.activities[0] : "Aktivitet";
+        statusText = `sugen på: ${actName} ${dateLabel}`;
+      } else {
+        statusText = `vill ses ${dateLabel}`;
+      }
+    } else if (f.last_activity) {
+      statusText = `Lade upp något ${timeAgo(f.last_activity)}`;
+    }
+    const isMuted = mutedUsers.includes(f.user_id);
+    const isClose = f.tier === "close";
+
+    return (
+      <div
+        key={f.user_id}
+        className="relative flex items-center gap-3 p-3 rounded-[16px] transition-colors hover:opacity-90"
+        style={{
+          backgroundColor: "#FFFFFF",
+          border: isClose ? "1.5px solid #C9B8D8" : "1px solid #EDE8F4",
+        }}
+      >
+        <button
+          onClick={() => navigate(`/profile/${f.user_id}`)}
+          className="flex items-center gap-3 flex-1 min-w-0 text-left"
+        >
+          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden" style={{ backgroundColor: "#EDE8F4" }}>
+            {f.avatar_url ? (
+              <img src={f.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+            ) : (
+              <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>{f.initial}</span>
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
+            {isMuted && (
+              <p className="text-[10px] mt-0.5" style={{ color: "#9B8BA5" }}>Mutad</p>
+            )}
+            {!isMuted && statusText && (
+              <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{statusText}</p>
+            )}
+          </div>
+        </button>
+
+        {/* Three-dot menu */}
+        <button
+          onClick={(e) => { e.stopPropagation(); setMenuOpenFor(menuOpenFor === f.user_id ? null : f.user_id); }}
+          className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full"
+        >
+          <MoreHorizontal className="w-4 h-4" style={{ color: "#9B8BA5" }} />
+        </button>
+
+        {menuOpenFor === f.user_id && (
+          <div
+            className="absolute right-3 top-12 z-20 py-1 shadow-lg"
+            style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 6, minWidth: 200 }}
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); handleToggleClose(f.user_id, f.tier); }}
+              className="w-full text-left px-4 py-2.5 text-[13px] flex items-center gap-2"
+              style={{ color: "#3C2A4D" }}
+            >
+              <Heart className="w-3.5 h-3.5" style={{ color: isClose ? "#C9B8D8" : "#9B8BA5" }} fill={isClose ? "#C9B8D8" : "none"} />
+              {isClose ? "Ta bort från närmaste krets" : "Lägg till i närmaste krets"}
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); handleToggleMute(f.user_id); }}
+              className="w-full text-left px-4 py-2.5 text-[13px]"
+              style={{ color: "#3C2A4D" }}
+            >
+              {isMuted ? `Sluta muta ${f.display_name}` : `Muta ${f.display_name}`}
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); setMenuOpenFor(null); setRemoveConfirm({ userId: f.user_id, name: f.display_name }); }}
+              className="w-full text-left px-4 py-2.5 text-[13px]"
+              style={{ color: "#A32D2D" }}
+            >
+              Ta bort från kretsen
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
@@ -560,10 +680,42 @@ const FriendsPage = () => {
               </div>
             )}
 
-            {/* Friend list */}
+            {/* Close circle section */}
             {friends.length > 0 && (
               <div>
-                {pendingRequests.length > 0 && (
+                <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
+                  Din närmaste krets
+                </p>
+                {closeFriends.length === 0 ? (
+                  <div
+                    className="rounded-[12px] py-5 px-4 text-center"
+                    style={{ backgroundColor: "#F5F0FA", border: "1px dashed #C9B8D8" }}
+                  >
+                    <Heart className="w-5 h-5 mx-auto mb-2" style={{ color: "#C9B8D8" }} />
+                    <p className="text-[12px]" style={{ color: "#7A6A85" }}>
+                      Lägg till några du vill ha lite extra nära
+                    </p>
+                    <p className="text-[11px] mt-1" style={{ color: "#9B8BA5" }}>
+                      Tryck ••• bredvid en vän för att lägga till
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {closeFriends.map(renderFriendCard)}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Other friends */}
+            {otherFriends.length > 0 && (
+              <div>
+                {closeFriends.length > 0 && (
+                  <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
+                    Övriga vänner ({otherFriends.length})
+                  </p>
+                )}
+                {closeFriends.length === 0 && pendingRequests.length > 0 && (
                   <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
                     Dina vänner ({friends.length})
                   </p>
@@ -583,89 +735,12 @@ const FriendsPage = () => {
                 )}
 
                 <div className="space-y-2">
-                  {filtered.length === 0 ? (
+                  {otherFriends.length === 0 ? (
                     <p className="text-center py-8 text-[13px]" style={{ color: "#9B8BA5" }}>
                       Inga vänner matchar sökningen
                     </p>
                   ) : (
-                    filtered.map((f) => {
-                      let statusText: string | null = null;
-                      if (f.hangout_status) {
-                        const h = f.hangout_status;
-                        const dateObj = new Date(h.date + "T00:00:00");
-                        const dateLabel = `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}`;
-                        if (h.entry_type === "confirmed") {
-                          statusText = `häng med ${dateLabel}`;
-                        } else if (h.entry_type === "activity") {
-                          const actName = h.activities.length > 0 ? h.activities[0] : "Aktivitet";
-                          statusText = `sugen på: ${actName} ${dateLabel}`;
-                        } else {
-                          statusText = `vill ses ${dateLabel}`;
-                        }
-                      } else if (f.last_activity) {
-                        statusText = `Lade upp något ${timeAgo(f.last_activity)}`;
-                      }
-                      const isMuted = mutedUsers.includes(f.user_id);
-                      return (
-                        <div
-                          key={f.user_id}
-                          className="relative flex items-center gap-3 p-3 rounded-[16px] transition-colors hover:opacity-90"
-                          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
-                        >
-                          <button
-                            onClick={() => navigate(`/profile/${f.user_id}`)}
-                            className="flex items-center gap-3 flex-1 min-w-0 text-left"
-                          >
-                            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden" style={{ backgroundColor: "#EDE8F4" }}>
-                              {f.avatar_url ? (
-                                <img src={f.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
-                              ) : (
-                                <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>{f.initial}</span>
-                              )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
-                              {isMuted && (
-                                <p className="text-[10px] mt-0.5" style={{ color: "#9B8BA5" }}>Mutad</p>
-                              )}
-                              {!isMuted && statusText && (
-                                <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{statusText}</p>
-                              )}
-                            </div>
-                          </button>
-
-                          {/* Three-dot menu */}
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setMenuOpenFor(menuOpenFor === f.user_id ? null : f.user_id); }}
-                            className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full"
-                          >
-                            <MoreHorizontal className="w-4 h-4" style={{ color: "#9B8BA5" }} />
-                          </button>
-
-                          {menuOpenFor === f.user_id && (
-                            <div
-                              className="absolute right-3 top-12 z-20 py-1 shadow-lg"
-                              style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 6, minWidth: 180 }}
-                            >
-                              <button
-                                onClick={(e) => { e.stopPropagation(); handleToggleMute(f.user_id); }}
-                                className="w-full text-left px-4 py-2.5 text-[13px]"
-                                style={{ color: "#3C2A4D" }}
-                              >
-                                {isMuted ? `Sluta muta ${f.display_name}` : `Muta ${f.display_name}`}
-                              </button>
-                              <button
-                                onClick={(e) => { e.stopPropagation(); setMenuOpenFor(null); setRemoveConfirm({ userId: f.user_id, name: f.display_name }); }}
-                                className="w-full text-left px-4 py-2.5 text-[13px]"
-                                style={{ color: "#A32D2D" }}
-                              >
-                                Ta bort från kretsen
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })
+                    otherFriends.map(renderFriendCard)
                   )}
 
                   <div className="w-full flex items-center gap-3 p-3 rounded-[16px]" style={{ border: "1.5px dashed #EDE8F4", backgroundColor: "transparent" }}>
