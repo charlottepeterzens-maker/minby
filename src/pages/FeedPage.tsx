@@ -60,22 +60,15 @@ const FeedPage = () => {
 
   useEffect(() => {
     if (!user) return;
-    
+
     // Fetch profile + close circle tiers in parallel
     Promise.all([
-      supabase
-        .from("profiles")
-        .select("display_name, muted_users")
-        .eq("user_id", user.id)
-        .single(),
-      supabase
-        .from("friend_access_tiers")
-        .select("friend_user_id, tier")
-        .eq("owner_id", user.id),
+      supabase.from("profiles").select("display_name, muted_users").eq("user_id", user.id).single(),
+      supabase.from("friend_access_tiers").select("friend_user_id, tier").eq("owner_id", user.id),
     ]).then(([profileRes, tiersRes]) => {
       if (profileRes.data?.display_name) setCurrentUserName(profileRes.data.display_name);
       if (profileRes.data?.muted_users) setMutedUsers((profileRes.data.muted_users as any) || []);
-      
+
       const closeIds = new Set<string>();
       const allFriendIds: string[] = [];
       tiersRes.data?.forEach((t) => {
@@ -154,7 +147,17 @@ const FeedPage = () => {
     });
 
     // Group activity hangouts by user + activity name
-    const activityGroups = new Map<string, { ids: string[]; dates: string[]; activities: string[]; custom_note: string | null; created_at: string; user_id: string }>();
+    const activityGroups = new Map<
+      string,
+      {
+        ids: string[];
+        dates: string[];
+        activities: string[];
+        custom_note: string | null;
+        created_at: string;
+        user_id: string;
+      }
+    >();
 
     hangouts.forEach((h: any) => {
       if (h.visibility === "private" && h.user_id !== user.id) return;
@@ -250,18 +253,21 @@ const FeedPage = () => {
   }, [fetchFeed]);
 
   // Interaction boost: occasionally suggest adding to close circle
-  const handleInteraction = useCallback((userId: string, userName: string) => {
-    if (closeCircleIds.has(userId)) return;
-    if (userId === user?.id) return;
-    
-    // Show suggestion ~20% of the time, max once per session per user
-    const key = `close_suggest_${userId}`;
-    if (sessionStorage.getItem(key)) return;
-    if (Math.random() > 0.2) return;
-    
-    sessionStorage.setItem(key, "1");
-    setSuggestionTarget({ userId, name: userName });
-  }, [closeCircleIds, user]);
+  const handleInteraction = useCallback(
+    (userId: string, userName: string) => {
+      if (closeCircleIds.has(userId)) return;
+      if (userId === user?.id) return;
+
+      // Show suggestion ~20% of the time, max once per session per user
+      const key = `close_suggest_${userId}`;
+      if (sessionStorage.getItem(key)) return;
+      if (Math.random() > 0.2) return;
+
+      sessionStorage.setItem(key, "1");
+      setSuggestionTarget({ userId, name: userName });
+    },
+    [closeCircleIds, user],
+  );
 
   const getProfile = (userId: string) => {
     const p = profiles[userId] || { display_name: null, avatar_url: null };
@@ -321,14 +327,16 @@ const FeedPage = () => {
           <h1 className="font-fraunces text-[20px] font-medium text-foreground">
             {getGreeting()}, {currentUserName || "du"}.
           </h1>
-          {!loading && feedItems.length > 0 && (() => {
-            const othersCount = feedItems.filter(i => i.userId !== user?.id).length;
-            return othersCount > 0 ? (
-              <p className="text-[12px] mt-1" style={{ color: "#7A6A85" }}>
-                {othersCount} nya saker från din krets
-              </p>
-            ) : null;
-          })()}
+          {!loading &&
+            feedItems.length > 0 &&
+            (() => {
+              const othersCount = feedItems.filter((i) => i.userId !== user?.id).length;
+              return othersCount > 0 ? (
+                <p className="text-[12px] mt-1" style={{ color: "#7A6A85" }}>
+                  {othersCount} nya saker från din krets
+                </p>
+              ) : null;
+            })()}
         </div>
         <CurvedSeparator />
       </nav>
@@ -357,9 +365,7 @@ const FeedPage = () => {
         {(isFirstTime || inviteCompleted) && !showOverlay && <FeedGuidanceCard />}
 
         {/* Reconnect nudge */}
-        {!loading && friendIds.length > 0 && (
-          <ReconnectNudge friendIds={friendIds} profiles={profiles} />
-        )}
+        {!loading && friendIds.length > 0 && <ReconnectNudge friendIds={friendIds} profiles={profiles} />}
 
         {/* Close circle suggestion */}
         {suggestionTarget && (
@@ -371,28 +377,30 @@ const FeedPage = () => {
         )}
 
         {/* Quiet feed nudge */}
-        {!loading && filteredItems.length > 0 && (() => {
-          const newest = filteredItems[0]?.created_at;
-          const ownRecent = filteredItems.some(
-            (i) => i.userId === user?.id && Date.now() - new Date(i.created_at).getTime() < 12 * 3600_000
-          );
-          const isQuiet = newest && Date.now() - new Date(newest).getTime() > 48 * 3600_000 && !ownRecent;
-          if (!isQuiet) return null;
-          return (
-            <button
-              onClick={() => navigate("/profile")}
-              className="w-full mb-4 text-left"
-              style={{ backgroundColor: "#EDE8F4", borderRadius: "10px", padding: "10px 14px" }}
-            >
-              <span className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
-                Vad händer hos dig idag?
-              </span>
-              <span className="text-[12px] ml-1.5" style={{ color: "#7A6A85" }}>
-                Dela något →
-              </span>
-            </button>
-          );
-        })()}
+        {!loading &&
+          filteredItems.length > 0 &&
+          (() => {
+            const newest = filteredItems[0]?.created_at;
+            const ownRecent = filteredItems.some(
+              (i) => i.userId === user?.id && Date.now() - new Date(i.created_at).getTime() < 12 * 3600_000,
+            );
+            const isQuiet = newest && Date.now() - new Date(newest).getTime() > 48 * 3600_000 && !ownRecent;
+            if (!isQuiet) return null;
+            return (
+              <button
+                onClick={() => navigate("/profile")}
+                className="w-full mb-4 text-left"
+                style={{ backgroundColor: "#EDE8F4", borderRadius: "10px", padding: "10px 14px" }}
+              >
+                <span className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
+                  Vad händer hos dig idag?
+                </span>
+                <span className="text-[12px] ml-1.5" style={{ color: "#7A6A85" }}>
+                  Dela något →
+                </span>
+              </button>
+            );
+          })()}
 
         {!loading && filteredItems.length === 0 ? (
           <EmptyFeedCard
@@ -416,11 +424,19 @@ const FeedPage = () => {
                       navigate(`/profile/${item.userId}`);
                       if (!isOwn) handleInteraction(item.userId, profile.display_name || "Någon");
                     }}
-                    onSuggestPlan={!isOwn ? () => {
-                      handleInteraction(item.userId, profile.display_name || "Någon");
-                      setSuggestData({ postId: item.data.id, content: item.data.content, userName: profile.display_name || "Någon" });
-                      setShowHangoutSheet(true);
-                    } : undefined}
+                    onSuggestPlan={
+                      !isOwn
+                        ? () => {
+                            handleInteraction(item.userId, profile.display_name || "Någon");
+                            setSuggestData({
+                              postId: item.data.id,
+                              content: item.data.content,
+                              userName: profile.display_name || "Någon",
+                            });
+                            setShowHangoutSheet(true);
+                          }
+                        : undefined
+                    }
                   />
                 );
               }
@@ -506,7 +522,6 @@ const FeedPage = () => {
   );
 };
 
-
 /** Empty feed – guided action cards */
 const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => void; onOpenInvite: () => void }) => {
   const navigate = useNavigate();
@@ -516,7 +531,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
       emoji: "☀️",
       bg: "#FCF0F3",
       title: "Vad hände i din dag?",
-      desc: "Dela något litet – stort behövs inte",
+      desc: "Dela något",
       action: () => navigate("/profile"),
     },
     {
@@ -529,7 +544,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
     {
       emoji: "👋",
       bg: "#EDE8F4",
-      title: "Bjud in fler till kretsen",
+      title: "Bjud in fler till din vardag",
       desc: "Ju fler som är med, desto mer händer",
       action: onOpenInvite,
     },
@@ -564,8 +579,12 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
               <span className="text-base">{c.emoji}</span>
             </div>
             <div>
-              <p className="font-medium text-[14px]" style={{ color: "#3C2A4D" }}>{c.title}</p>
-              <p className="font-light text-[12px]" style={{ color: "#7A6A85" }}>{c.desc}</p>
+              <p className="font-medium text-[14px]" style={{ color: "#3C2A4D" }}>
+                {c.title}
+              </p>
+              <p className="font-light text-[12px]" style={{ color: "#7A6A85" }}>
+                {c.desc}
+              </p>
             </div>
           </button>
         ))}
