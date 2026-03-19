@@ -766,7 +766,7 @@ const FriendsPage = () => {
                     <input
                       value={friendSearch}
                       onChange={(e) => setFriendSearch(e.target.value)}
-                      placeholder="Sök bland vänner..."
+                      placeholder="Sök i din krets..."
                       className="w-full pl-9 pr-3 py-2.5 rounded-[10px] text-[13px] outline-none placeholder:text-[#9B8BA5]"
                       style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", color: "#3C2A4D" }}
                     />
