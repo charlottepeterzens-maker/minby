@@ -16,7 +16,7 @@ import FeedGuidanceCard from "@/components/onboarding/FeedGuidanceCard";
 import ReconnectNudge from "@/components/feed/ReconnectNudge";
 import CloseCircleSuggestion from "@/components/feed/CloseCircleSuggestion";
 import { useFirstTimeUser } from "@/hooks/useFirstTimeUser";
-import { UserPlus, Plus, CalendarDays } from "lucide-react";
+import { toast } from "sonner";
 import { toast } from "sonner";
 
 interface ProfileMap {
