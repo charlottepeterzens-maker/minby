@@ -710,7 +710,7 @@ const FriendsPage = () => {
                           className="px-3 py-1.5 rounded-[20px] text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
                           style={{ backgroundColor: "#F7F3EF", color: "#A32D2D" }}
                         >
-                          Neka
+                          Inte nu
                         </button>
                       </div>
                     </div>
