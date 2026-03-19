@@ -23,9 +23,10 @@ interface FeedPostCardProps {
   };
   isOwn?: boolean;
   onProfileClick: () => void;
+  onSuggestPlan?: () => void;
 }
 
-const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProps) => {
+const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: FeedPostCardProps) => {
   const timeAgo = getTimeAgo(post.created_at);
   const [showReactions, setShowReactions] = useState(false);
   const signedUrl = useSignedImageUrl(post.image_url);
@@ -104,9 +105,9 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProp
       )}
 
       {/* Föreslå något – diskret, bara för vänners inlägg */}
-      {!isOwn && (
-        <div style={{ marginTop: 8 }}>
-          <button style={{ fontSize: 11, color: "#7A6A85" }} className="hover:underline">
+      {!isOwn && onSuggestPlan && (
+        <div style={{ marginTop: 8, textAlign: "right" }}>
+          <button onClick={onSuggestPlan} style={{ fontSize: 11, color: "#B0A0B5" }}>
             Föreslå något →
           </button>
         </div>
