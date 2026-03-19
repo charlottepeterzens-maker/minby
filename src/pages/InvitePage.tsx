@@ -93,7 +93,7 @@ const InvitePage = () => {
           .limit(1);
 
         if (pendingReq && pendingReq.length > 0) {
-          toast.info("En vänförfrågan finns redan!");
+          toast.info("Ni har redan en koppling!");
           await supabase
             .from("invite_links")
             .update({ used_by: user.id })
