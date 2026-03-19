@@ -270,21 +270,27 @@ const FeedPage = () => {
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-5">
-        <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
-          {filters.map((f) => (
-            <button
-              key={f.value}
-              onClick={() => setFilter(f.value)}
-              className={`px-4 py-1.5 text-xs font-medium rounded-[20px] ${
-                filter === f.value
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card text-muted-foreground border-[0.5px] border-border"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+        {/* Hide filters for first-time users */}
+        {!isFirstTime && (
+          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
+            {filters.map((f) => (
+              <button
+                key={f.value}
+                onClick={() => setFilter(f.value)}
+                className={`px-4 py-1.5 text-xs font-medium rounded-[20px] ${
+                  filter === f.value
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card text-muted-foreground border-[0.5px] border-border"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Guidance card after invite */}
+        {(isFirstTime || inviteCompleted) && !showOverlay && <FeedGuidanceCard />}
 
         {/* Quiet feed nudge */}
         {!loading && filteredItems.length > 0 && (() => {
