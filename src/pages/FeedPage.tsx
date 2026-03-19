@@ -354,7 +354,10 @@ const FeedPage = () => {
                     profile={profile}
                     isOwn={isOwn}
                     onProfileClick={() => navigate(`/profile/${item.userId}`)}
-                    
+                    onSuggestPlan={!isOwn ? () => {
+                      setSuggestData({ postId: item.data.id, content: item.data.content, userName: profile.display_name || "Någon" });
+                      setShowHangoutSheet(true);
+                    } : undefined}
                   />
                 );
               }
