@@ -692,7 +692,7 @@ const FriendsPage = () => {
                           {r.display_name}
                         </p>
                         <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>
-                          Vill bli din vän
+                          Vill vara med i din vardag
                         </p>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
