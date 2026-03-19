@@ -654,6 +654,7 @@ const TipCard = ({
                 Öppna länk
               </a>
             )}
+            <TipCommentSection tipId={tip.id} tipOwnerId={tip.user_id} tipTitle={tip.title} />
             {isOwner && (
               <div style={{ display: "flex", gap: 8 }}>
                 <button
