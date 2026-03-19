@@ -40,6 +40,9 @@ const FeedPage = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const { isFirstTime, dismiss: dismissOnboarding } = useFirstTimeUser();
+  const [showOverlay, setShowOverlay] = useState(true);
+  const [inviteCompleted, setInviteCompleted] = useState(false);
 
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [profiles, setProfiles] = useState<ProfileMap>({});
