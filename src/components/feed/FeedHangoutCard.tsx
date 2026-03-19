@@ -48,9 +48,15 @@ const DateColumn = ({ dateStr, light }: { dateStr: string; light?: boolean }) =>
   const month = format(dateObj, "MMM", { locale: sv }).replace(".", "");
   return (
     <div className="shrink-0 flex flex-col items-center justify-center w-10">
-      <span className="text-[10px] font-medium leading-none uppercase" style={{ color: light ? '#E8D5DA' : '#3C2A4D' }}>{weekday}</span>
-      <span className="text-[22px] leading-none font-medium mt-0.5" style={{ color: light ? '#FFFFFF' : '#3C2A4D' }}>{day}</span>
-      <span className="text-[10px] font-medium leading-none mt-0.5 uppercase" style={{ color: '#C9B8D8' }}>{month}</span>
+      <span className="text-[10px] font-medium leading-none uppercase" style={{ color: light ? "#E8D5DA" : "#3C2A4D" }}>
+        {weekday}
+      </span>
+      <span className="text-[22px] leading-none font-medium mt-0.5" style={{ color: light ? "#FFFFFF" : "#3C2A4D" }}>
+        {day}
+      </span>
+      <span className="text-[10px] font-medium leading-none mt-0.5 uppercase" style={{ color: "#C9B8D8" }}>
+        {month}
+      </span>
     </div>
   );
 };
@@ -58,13 +64,19 @@ const DateColumn = ({ dateStr, light }: { dateStr: string; light?: boolean }) =>
 const CategoryPill = ({ label, variant }: { label: string; variant: "light" | "dark" }) => {
   if (variant === "dark") {
     return (
-      <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#3C2A4D', color: '#C9B8D8' }}>
+      <span
+        className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
+        style={{ backgroundColor: "#3C2A4D", color: "#C9B8D8" }}
+      >
         {label}
       </span>
     );
   }
   return (
-    <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }}>
+    <span
+      className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
+      style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+    >
       {label}
     </span>
   );
@@ -74,37 +86,50 @@ const CategoryPill = ({ label, variant }: { label: string; variant: "light" | "d
 const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: FeedHangoutCardProps) => {
   const timeAgo = getTimeAgo(hangout.created_at);
   return (
-    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
+    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: "#EDE8F4" }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
             <button onClick={onProfileClick} className="shrink-0">
               <Avatar className="w-9 h-9">
-                <AvatarFallback style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }} className="text-xs font-medium">{profile.initials}</AvatarFallback>
+                <AvatarFallback
+                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+                  className="text-xs font-medium"
+                >
+                  {profile.initials}
+                </AvatarFallback>
               </Avatar>
             </button>
             <div>
-              <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
-                {isOwn ? "Du" : (profile.display_name || "Någon")}
+              <button
+                onClick={onProfileClick}
+                className="text-sm font-medium text-foreground hover:underline block leading-tight"
+              >
+                {profile.display_name || "Någon"}
               </button>
               <p className="text-[11px] text-muted-foreground leading-tight">vill ses · {timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span
+                className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
+                style={{ backgroundColor: "#F7F3EF", border: "1px solid #DDD5CC", color: "#7A6A85" }}
+              >
+                Ditt inlägg
+              </span>
             )}
             <CategoryPill label="vill ses" variant="light" />
           </div>
         </div>
       </div>
 
-      <div className="mx-4 mb-3 rounded-[10px] p-3.5" style={{ backgroundColor: '#F7F3EF' }}>
+      <div className="mx-4 mb-3 rounded-[10px] p-3.5" style={{ backgroundColor: "#F7F3EF" }}>
         <div className="flex items-center">
           {hangout.date && <DateColumn dateStr={hangout.date} />}
-          <div className="shrink-0 mx-3 self-stretch w-px" style={{ backgroundColor: '#EDE8F4' }} />
+          <div className="shrink-0 mx-3 self-stretch w-px" style={{ backgroundColor: "#EDE8F4" }} />
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] leading-snug" style={{ color: '#3C2A4D' }}>
+            <p className="text-[13px] leading-snug" style={{ color: "#3C2A4D" }}>
               {hangout.custom_note || "Vill ses"}
             </p>
           </div>
@@ -113,10 +138,18 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
 
       {!isOwn && (
         <div className="px-4 pb-4 flex gap-2">
-          <button onClick={onJoin} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] transition-colors" style={{ backgroundColor: '#EAF2E8', color: '#1F4A1A' }}>
+          <button
+            onClick={onJoin}
+            className="flex-1 text-[13px] font-medium py-2 rounded-[10px] transition-colors"
+            style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
+          >
             Ja, jag är med!
           </button>
-          <button onClick={onMaybe} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border transition-colors hover:bg-muted" style={{ borderColor: '#EDE8F4' }}>
+          <button
+            onClick={onMaybe}
+            className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border transition-colors hover:bg-muted"
+            style={{ borderColor: "#EDE8F4" }}
+          >
             Kanske
           </button>
         </div>
@@ -131,45 +164,62 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
   const activityName = hangout.custom_note || (hangout.activities.length > 0 ? hangout.activities[0] : "Plan");
 
   return (
-    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
+    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: "#EDE8F4" }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
             <button onClick={onProfileClick} className="shrink-0">
               <Avatar className="w-9 h-9">
-                <AvatarFallback style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }} className="text-xs font-medium">{profile.initials}</AvatarFallback>
+                <AvatarFallback
+                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+                  className="text-xs font-medium"
+                >
+                  {profile.initials}
+                </AvatarFallback>
               </Avatar>
             </button>
             <div>
-              <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
-                {isOwn ? "Du" : (profile.display_name || "Någon")}
+              <button
+                onClick={onProfileClick}
+                className="text-sm font-medium text-foreground hover:underline block leading-tight"
+              >
+                {profile.display_name || "Någon"}
               </button>
               <p className="text-[11px] text-muted-foreground leading-tight">häng med · {timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span
+                className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
+                style={{ backgroundColor: "#F7F3EF", border: "1px solid #DDD5CC", color: "#7A6A85" }}
+              >
+                Ditt inlägg
+              </span>
             )}
             <CategoryPill label="häng med" variant="dark" />
           </div>
         </div>
       </div>
 
-      <div className="mx-4 mb-3 rounded-[10px] p-3.5" style={{ backgroundColor: '#3C2A4D' }}>
+      <div className="mx-4 mb-3 rounded-[10px] p-3.5" style={{ backgroundColor: "#3C2A4D" }}>
         <div className="flex items-center">
           {hangout.date && <DateColumn dateStr={hangout.date} light />}
-          <div className="shrink-0 mx-3 self-stretch w-px" style={{ backgroundColor: '#C9B8D8', opacity: 0.3 }} />
+          <div className="shrink-0 mx-3 self-stretch w-px" style={{ backgroundColor: "#C9B8D8", opacity: 0.3 }} />
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-medium leading-snug text-white">{activityName}</p>
             <div className="flex items-center gap-1.5 mt-1.5">
               <div className="flex -space-x-1.5">
-                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-medium border-[1.5px]" style={{ backgroundColor: '#C9B8D8', color: '#3C2A4D', borderColor: '#3C2A4D' }}>
+                <div
+                  className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-medium border-[1.5px]"
+                  style={{ backgroundColor: "#C9B8D8", color: "#3C2A4D", borderColor: "#3C2A4D" }}
+                >
                   {profile.initials.charAt(0)}
                 </div>
               </div>
-              <span style={{ color: '#C9B8D8', fontSize: '10px' }}>
-                {profile.display_name || "Någon"} · <span style={{ color: '#7A6A85', fontSize: '10px' }}>häng med!</span>
+              <span style={{ color: "#C9B8D8", fontSize: "10px" }}>
+                {profile.display_name || "Någon"} ·{" "}
+                <span style={{ color: "#7A6A85", fontSize: "10px" }}>häng med!</span>
               </span>
             </div>
           </div>
@@ -178,10 +228,18 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
 
       {!isOwn && (
         <div className="px-4 pb-4 flex gap-2">
-          <button onClick={onJoin} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] transition-colors" style={{ backgroundColor: '#EAF2E8', color: '#1F4A1A' }}>
+          <button
+            onClick={onJoin}
+            className="flex-1 text-[13px] font-medium py-2 rounded-[10px] transition-colors"
+            style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
+          >
             Jag hänger med!
           </button>
-          <button onClick={onMaybe} className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border transition-colors hover:bg-muted" style={{ borderColor: '#EDE8F4' }}>
+          <button
+            onClick={onMaybe}
+            className="flex-1 text-[13px] font-medium py-2 rounded-[10px] bg-card text-muted-foreground border transition-colors hover:bg-muted"
+            style={{ borderColor: "#EDE8F4" }}
+          >
             Kanske
           </button>
         </div>
@@ -194,7 +252,7 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
 const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHangoutCardProps) => {
   const { user } = useAuth();
   const timeAgo = getTimeAgo(hangout.created_at);
-  const activityName = hangout.activities.length > 0 ? hangout.activities[0] : (hangout.custom_note || "Aktivitet");
+  const activityName = hangout.activities.length > 0 ? hangout.activities[0] : hangout.custom_note || "Aktivitet";
   const dates = hangout.dates || (hangout.date ? [hangout.date] : []);
   const hangoutIds = hangout.ids || (hangout.id ? [hangout.id] : []);
 
@@ -247,7 +305,10 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
     // Find the hangout_id for this date
     const dateIdx = dates.indexOf(dateStr);
     const hangoutId = hangoutIds[dateIdx];
-    if (!hangoutId) { setSaving(false); return; }
+    if (!hangoutId) {
+      setSaving(false);
+      return;
+    }
 
     if (selectedDate === dateStr) {
       // Remove RSVP
@@ -295,25 +356,38 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
   const maxCount = Math.max(0, ...Object.values(rsvpCounts));
 
   return (
-    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
+    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: "#EDE8F4" }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
             <button onClick={onProfileClick} className="shrink-0">
               <Avatar className="w-9 h-9">
-                <AvatarFallback style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }} className="text-xs font-medium">{profile.initials}</AvatarFallback>
+                <AvatarFallback
+                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+                  className="text-xs font-medium"
+                >
+                  {profile.initials}
+                </AvatarFallback>
               </Avatar>
             </button>
             <div>
-              <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
-                {isOwn ? "Du" : (profile.display_name || "Någon")}
+              <button
+                onClick={onProfileClick}
+                className="text-sm font-medium text-foreground hover:underline block leading-tight"
+              >
+                {profile.display_name || "Någon"}
               </button>
               <p className="text-[11px] text-muted-foreground leading-tight">sugen på · {timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span
+                className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
+                style={{ backgroundColor: "#F7F3EF", border: "1px solid #DDD5CC", color: "#7A6A85" }}
+              >
+                Ditt inlägg
+              </span>
             )}
             <CategoryPill label="sugen på" variant="light" />
           </div>
@@ -322,7 +396,7 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
 
       {/* Activity name */}
       <div className="mx-4 mb-2">
-        <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>
+        <p className="text-[14px] font-medium" style={{ color: "#3C2A4D" }}>
           Sugen på {activityName.toLowerCase()}
         </p>
       </div>
@@ -342,22 +416,19 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
                 disabled={isOwn || saving}
                 className="flex items-center gap-1.5 rounded-[10px] px-3 py-2 transition-all shrink-0"
                 style={{
-                  backgroundColor: isSelected ? '#3C2A4D' : '#F7F3EF',
-                  border: isPopular && !isSelected ? '1.5px solid #B5CCBF' : '1px solid transparent',
+                  backgroundColor: isSelected ? "#3C2A4D" : "#F7F3EF",
+                  border: isPopular && !isSelected ? "1.5px solid #B5CCBF" : "1px solid transparent",
                 }}
               >
-                <span
-                  className="text-[12px] font-medium"
-                  style={{ color: isSelected ? '#FFFFFF' : '#3C2A4D' }}
-                >
+                <span className="text-[12px] font-medium" style={{ color: isSelected ? "#FFFFFF" : "#3C2A4D" }}>
                   {formatChip(dateStr)}
                 </span>
                 {count > 0 && (
                   <span
                     className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
                     style={{
-                      backgroundColor: isSelected ? 'rgba(255,255,255,0.2)' : '#EDE8F4',
-                      color: isSelected ? '#FFFFFF' : '#7A6A85',
+                      backgroundColor: isSelected ? "rgba(255,255,255,0.2)" : "#EDE8F4",
+                      color: isSelected ? "#FFFFFF" : "#7A6A85",
                     }}
                   >
                     {count} st
@@ -366,7 +437,7 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
                 {!isOwn && !isSelected && (
                   <span
                     className="text-[10px] font-medium px-1.5 py-0.5 rounded-[8px]"
-                    style={{ backgroundColor: '#EAF2E8', color: '#1F4A1A' }}
+                    style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
                   >
                     Ja!
                   </span>
@@ -380,7 +451,7 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
       {/* Note */}
       {hangout.custom_note && (
         <>
-          <div className="h-px mx-4" style={{ backgroundColor: '#EDE8F4' }} />
+          <div className="h-px mx-4" style={{ backgroundColor: "#EDE8F4" }} />
           <div className="px-4 py-2">
             <p className="text-[12px] text-muted-foreground">{hangout.custom_note}</p>
           </div>
@@ -393,31 +464,46 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
 // --- SINGLE ACTIVITY CARD (fallback for non-grouped) ---
 const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedHangoutCardProps) => {
   const timeAgo = getTimeAgo(hangout.created_at);
-  const activityName = hangout.activities.length > 0 ? hangout.activities[0] : (hangout.custom_note || "Aktivitet");
+  const activityName = hangout.activities.length > 0 ? hangout.activities[0] : hangout.custom_note || "Aktivitet";
   const dateStr = hangout.date || "";
   const dateObj = new Date(dateStr + "T00:00:00");
-  const dateChip = dateStr ? `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}` : "";
+  const dateChip = dateStr
+    ? `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}`
+    : "";
 
   return (
-    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: '#EDE8F4' }}>
+    <div className="bg-card rounded-[14px] border overflow-hidden" style={{ borderColor: "#EDE8F4" }}>
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
             <button onClick={onProfileClick} className="shrink-0">
               <Avatar className="w-9 h-9">
-                <AvatarFallback style={{ backgroundColor: '#EDE8F4', color: '#3C2A4D' }} className="text-xs font-medium">{profile.initials}</AvatarFallback>
+                <AvatarFallback
+                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+                  className="text-xs font-medium"
+                >
+                  {profile.initials}
+                </AvatarFallback>
               </Avatar>
             </button>
             <div>
-              <button onClick={onProfileClick} className="text-sm font-medium text-foreground hover:underline block leading-tight">
-                {isOwn ? "Du" : (profile.display_name || "Någon")}
+              <button
+                onClick={onProfileClick}
+                className="text-sm font-medium text-foreground hover:underline block leading-tight"
+              >
+                {profile.display_name || "Någon"}
               </button>
               <p className="text-[11px] text-muted-foreground leading-tight">sugen på · {timeAgo}</p>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span
+                className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
+                style={{ backgroundColor: "#F7F3EF", border: "1px solid #DDD5CC", color: "#7A6A85" }}
+              >
+                Ditt inlägg
+              </span>
             )}
             <CategoryPill label="sugen på" variant="light" />
           </div>
@@ -425,16 +511,23 @@ const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedH
       </div>
 
       <div className="mx-4 mb-3">
-        <p className="text-[14px] font-medium mb-2" style={{ color: '#3C2A4D' }}>{activityName}</p>
+        <p className="text-[14px] font-medium mb-2" style={{ color: "#3C2A4D" }}>
+          {activityName}
+        </p>
         {dateStr && (
           <div className="flex flex-wrap gap-1.5">
-            <div className="flex items-center gap-1.5 rounded-[10px] px-3 py-1.5" style={{ backgroundColor: '#F7F3EF' }}>
-              <span className="text-[12px] font-medium" style={{ color: '#3C2A4D' }}>{dateChip}</span>
+            <div
+              className="flex items-center gap-1.5 rounded-[10px] px-3 py-1.5"
+              style={{ backgroundColor: "#F7F3EF" }}
+            >
+              <span className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
+                {dateChip}
+              </span>
               {!isOwn && (
                 <button
                   onClick={onJoin}
                   className="text-[11px] font-medium px-2 py-0.5 rounded-[8px] transition-colors"
-                  style={{ backgroundColor: '#EAF2E8', color: '#1F4A1A' }}
+                  style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
                 >
                   Ja!
                 </button>
@@ -446,7 +539,7 @@ const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedH
 
       {hangout.custom_note && (
         <>
-          <div className="h-px mx-4" style={{ backgroundColor: '#EDE8F4' }} />
+          <div className="h-px mx-4" style={{ backgroundColor: "#EDE8F4" }} />
           <div className="px-4 py-2">
             <p className="text-[12px] text-muted-foreground">{hangout.custom_note}</p>
           </div>
