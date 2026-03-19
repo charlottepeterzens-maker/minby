@@ -776,7 +776,7 @@ const FriendsPage = () => {
                 <div className="space-y-2">
                   {otherFriends.length === 0 ? (
                     <p className="text-center py-8 text-[13px]" style={{ color: "#9B8BA5" }}>
-                      Inga vänner matchar sökningen
+                      Inga resultat i din krets
                     </p>
                   ) : (
                     otherFriends.map(renderFriendCard)
