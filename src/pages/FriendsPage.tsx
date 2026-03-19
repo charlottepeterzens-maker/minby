@@ -188,9 +188,57 @@ const FriendsPage = () => {
     setLoading(false);
   }, [user]);
 
+  // Fetch muted users
+  const fetchMutedUsers = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("muted_users")
+      .eq("user_id", user.id)
+      .single();
+    if (data?.muted_users) {
+      setMutedUsers((data.muted_users as any) || []);
+    }
+  }, [user]);
+
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchMutedUsers();
+  }, [fetchData, fetchMutedUsers]);
+
+  // Remove friend handler
+  const handleRemoveFriend = async (friendUserId: string) => {
+    if (!user) return;
+    // Remove access tiers both ways
+    await Promise.all([
+      supabase.from("friend_access_tiers").delete().eq("owner_id", user.id).eq("friend_user_id", friendUserId),
+      supabase.from("friend_access_tiers").delete().eq("owner_id", friendUserId).eq("friend_user_id", user.id),
+    ]);
+    // Update friend request status
+    await supabase
+      .from("friend_requests")
+      .delete()
+      .or(`and(from_user_id.eq.${user.id},to_user_id.eq.${friendUserId}),and(from_user_id.eq.${friendUserId},to_user_id.eq.${user.id})`)
+      .eq("status", "accepted");
+    setFriends((prev) => prev.filter((f) => f.user_id !== friendUserId));
+    toast.success("Borttagen från din krets");
+  };
+
+  // Mute/unmute friend handler
+  const handleToggleMute = async (friendUserId: string) => {
+    if (!user) return;
+    const isMuted = mutedUsers.includes(friendUserId);
+    const updated = isMuted
+      ? mutedUsers.filter((id) => id !== friendUserId)
+      : [...mutedUsers, friendUserId];
+    setMutedUsers(updated);
+    await (supabase as any)
+      .from("profiles")
+      .update({ muted_users: updated })
+      .eq("user_id", user.id);
+    toast.success(isMuted ? "Avmutad" : "Mutad");
+    setMenuOpenFor(null);
+  };
 
   // People search
   useEffect(() => {
