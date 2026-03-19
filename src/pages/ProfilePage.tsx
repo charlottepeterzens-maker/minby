@@ -475,6 +475,9 @@ const ProfilePage = () => {
         </div>
 
         {/* New notification list */}
+        {isOwnProfile && notifItems.length > 0 && (
+          <NotificationList
+            items={notifItems}
             onMarkAllRead={() => {
               if (!user) return;
               supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then(() => {
