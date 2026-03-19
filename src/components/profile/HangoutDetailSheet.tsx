@@ -321,7 +321,7 @@ const HangoutDetailSheet = ({
 
   const renderNoteCard = () => (
     (activityName || entry.custom_note) ? (
-      <div className="bg-card rounded-[12px] p-3 space-y-1" style={{ border: "0.5px solid #EDE8F4" }}>
+      <div className="bg-card rounded-[12px] p-3 space-y-1" style={{ border: "1px solid #EDE8F4" }}>
         {activityName && <p className="text-[13px] font-medium text-foreground">{activityName}</p>}
         {entry.custom_note && entry.custom_note !== activityName && (
           <p className="text-[12px]" style={{ color: "#7A6A85" }}>{entry.custom_note}</p>
@@ -541,7 +541,7 @@ const HangoutDetailSheet = ({
             </button>
             <button
               className="px-4 py-2 text-[13px] font-medium rounded-[10px] transition-colors"
-              style={{ backgroundColor: "#FFFFFF", color: "#7A6A85", border: "0.5px solid #EDE8F4" }}
+              style={{ backgroundColor: "#FFFFFF", color: "#7A6A85", border: "1px solid #EDE8F4" }}
             >
               Kanske
             </button>
@@ -551,7 +551,7 @@ const HangoutDetailSheet = ({
 
       {/* Custom note */}
       {entry.custom_note && entry.custom_note !== activityGroupName && (
-        <div className="bg-card rounded-[12px] p-3" style={{ border: "0.5px solid #EDE8F4" }}>
+        <div className="bg-card rounded-[12px] p-3" style={{ border: "1px solid #EDE8F4" }}>
           <p className="text-[12px]" style={{ color: "#7A6A85" }}>{entry.custom_note}</p>
         </div>
       )}
@@ -623,7 +623,7 @@ const HangoutDetailSheet = ({
             </button>
             <button
               className="px-4 py-2 text-[13px] font-medium rounded-[10px] transition-colors"
-              style={{ backgroundColor: "#FFFFFF", color: "#7A6A85", border: "0.5px solid #EDE8F4" }}
+              style={{ backgroundColor: "#FFFFFF", color: "#7A6A85", border: "1px solid #EDE8F4" }}
             >
               Kanske
             </button>
@@ -698,7 +698,7 @@ const HangoutDetailSheet = ({
             </button>
             <button
               className="px-4 py-2 text-[13px] font-medium rounded-[10px] transition-colors"
-              style={{ backgroundColor: "#FFFFFF", color: "#7A6A85", border: "0.5px solid #EDE8F4" }}
+              style={{ backgroundColor: "#FFFFFF", color: "#7A6A85", border: "1px solid #EDE8F4" }}
             >
               Kanske
             </button>

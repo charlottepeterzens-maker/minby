@@ -44,7 +44,7 @@ const PollCard = ({
         className="p-3 space-y-2.5"
         style={{
           backgroundColor: "#FFFFFF",
-          border: "0.5px solid #DDD5CC",
+          border: "1px solid #DDD5CC",
           borderRadius: 12,
         }}
       >
@@ -71,7 +71,7 @@ const PollCard = ({
                 className="w-full text-left relative overflow-hidden"
                 style={{
                   borderRadius: 8,
-                  border: isSelected ? "1.5px solid #3C2A4D" : "0.5px solid #DDD5CC",
+                  border: isSelected ? "1.5px solid #3C2A4D" : "1px solid #DDD5CC",
                   padding: "8px 10px",
                 }}
               >

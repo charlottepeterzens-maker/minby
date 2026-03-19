@@ -35,7 +35,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProp
       style={{
         backgroundColor: "#FFFFFF",
         borderRadius: 6,
-        border: "0.5px solid #DDD5CC",
+        border: "1px solid #DDD5CC",
         padding: 16,
       }}
     >

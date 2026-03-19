@@ -345,7 +345,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               <div
                 key={post.id}
                 className="relative rounded-[14px] p-3"
-                style={{ backgroundColor: "#FFFFFF", border: "0.5px solid #EDE8F4" }}
+                style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
               >
                 {/* Three-dot menu */}
                 {isOwner && (

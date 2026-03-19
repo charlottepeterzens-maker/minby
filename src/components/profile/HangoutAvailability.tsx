@@ -295,7 +295,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                       borderRadius: 12,
                       padding: 10,
                       backgroundColor: "#EAF2E8",
-                      border: "0.5px solid #B5CCBF",
+                      border: "1px solid #B5CCBF",
                     }}
                   >
                     <span className="text-[9px] lowercase tracking-wider" style={{ color: "#B0A8B5" }}>

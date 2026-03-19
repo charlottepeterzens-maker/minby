@@ -78,7 +78,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               className="w-full max-w-[320px]"
               style={{
                 backgroundColor: "#FFFFFF",
-                border: "0.5px solid #EDE8F4",
+                border: "1px solid #EDE8F4",
                 borderRadius: 16,
                 padding: 24,
               }}
@@ -139,7 +139,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               className="w-full max-w-[320px]"
               style={{
                 backgroundColor: "#FFFFFF",
-                border: "0.5px solid #EDE8F4",
+                border: "1px solid #EDE8F4",
                 borderRadius: 16,
                 padding: 24,
                 textAlign: "center",

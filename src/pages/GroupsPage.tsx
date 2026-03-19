@@ -137,7 +137,7 @@ const GroupsPage = () => {
             className="w-full flex items-center gap-3 rounded-[16px] p-3 text-left transition-colors hover:opacity-90"
             style={{
               backgroundColor: "#FFFFFF",
-              border: "0.5px solid #EDE8F4"
+              border: "1px solid #EDE8F4"
             }}>
             
                 {/* Emoji icon box */}

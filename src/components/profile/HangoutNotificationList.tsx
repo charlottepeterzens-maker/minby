@@ -141,7 +141,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
         className="rounded-[12px] overflow-hidden"
         style={{
           backgroundColor: "#FFFFFF",
-          border: "0.5px solid #EDE8F4",
+          border: "1px solid #EDE8F4",
         }}
       >
         <div className="max-h-[200px] overflow-y-auto">
@@ -151,7 +151,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
               onClick={() => handleClick(n)}
               className="flex items-center gap-3 w-full text-left px-3 py-2.5 transition-colors hover:bg-[#FAFAFA]"
               style={{
-                borderBottom: i < unread.length - 1 ? "0.5px solid #EDE8F4" : "none",
+                borderBottom: i < unread.length - 1 ? "1px solid #EDE8F4" : "none",
               }}
             >
               {/* Unread dot */}

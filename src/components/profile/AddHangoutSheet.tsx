@@ -233,7 +233,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                 onClick={() => selectType(opt.value)}
                 className="w-full text-left p-4 rounded-[12px] bg-white transition-all"
                 style={{
-                  border: '0.5px solid #EDE8F4',
+                  border: '1px solid #EDE8F4',
                 }}
               >
                 <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>{opt.title}</p>
@@ -283,7 +283,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
                     placeholder="Berätta lite mer..."
                     className="w-full text-[13px] rounded-[10px] bg-white px-3 py-2.5 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
-                    style={{ border: '0.5px solid #EDE8F4' }}
+                    style={{ border: '1px solid #EDE8F4' }}
                     maxLength={150}
                     rows={2}
                   />
@@ -327,7 +327,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       <span
                         key={f.user_id}
                         className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-full bg-white"
-                        style={{ border: '0.5px solid #EDE8F4', color: '#3C2A4D' }}
+                        style={{ border: '1px solid #EDE8F4', color: '#3C2A4D' }}
                       >
                         {f.display_name}
                         <button onClick={() => removeFriend(f.user_id)} className="hover:opacity-70">
@@ -345,7 +345,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       style={{ borderColor: '#EDE8F4' }}
                     />
                     {friendResults.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 z-20 bg-white rounded-[10px] shadow-lg mt-1 py-1" style={{ border: '0.5px solid #EDE8F4' }}>
+                      <div className="absolute top-full left-0 right-0 z-20 bg-white rounded-[10px] shadow-lg mt-1 py-1" style={{ border: '1px solid #EDE8F4' }}>
                         {friendResults.map((fr) => (
                           <button
                             key={fr.user_id}
@@ -384,7 +384,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
                     placeholder="Berätta lite mer..."
                     className="w-full text-[13px] rounded-[10px] bg-white px-3 py-2.5 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
-                    style={{ border: '0.5px solid #EDE8F4' }}
+                    style={{ border: '1px solid #EDE8F4' }}
                     maxLength={150}
                     rows={2}
                   />
@@ -398,7 +398,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       <span
                         key={i}
                         className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-[10px] bg-white"
-                        style={{ border: '0.5px solid #EDE8F4', color: '#3C2A4D' }}
+                        style={{ border: '1px solid #EDE8F4', color: '#3C2A4D' }}
                       >
                         {formatDateChip(d)}
                         <button onClick={() => removeActivityDate(i)} className="hover:opacity-70">
@@ -451,7 +451,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                           : "bg-white text-foreground"
                       )}
                       style={{
-                        border: visibility === opt.value ? 'none' : '0.5px solid #EDE8F4',
+                        border: visibility === opt.value ? 'none' : '1px solid #EDE8F4',
                         backgroundColor: visibility === opt.value ? '#3C2A4D' : undefined,
                       }}
                     >

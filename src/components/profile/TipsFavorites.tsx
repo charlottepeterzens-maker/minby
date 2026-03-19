@@ -446,7 +446,7 @@ const TipCard = ({
           gap: 10,
           background: "#fff",
           borderRadius: 10,
-          border: "0.5px solid #EDE8F4",
+          border: "1px solid #EDE8F4",
           padding: "10px",
         }}
       >
@@ -651,7 +651,7 @@ const TipCard = ({
                     borderRadius: 10,
                     padding: "9px 14px",
                     fontSize: 12,
-                    border: "0.5px solid #EDE8F4",
+                    border: "1px solid #EDE8F4",
                     outline: "none",
                   }}
                 >

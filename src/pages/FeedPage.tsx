@@ -456,7 +456,7 @@ const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
       <div
         style={{
           backgroundColor: "#FFFFFF",
-          border: "0.5px solid #EDE8F4",
+          border: "1px solid #EDE8F4",
           borderRadius: "16px",
           padding: "20px",
         }}
@@ -468,7 +468,7 @@ const EmptyFeedCard = ({ onOpenHangout }: { onOpenHangout: () => void }) => {
             className="flex items-center gap-3 w-full text-left group"
             style={{
               padding: "12px 0",
-              borderBottom: i < rows.length - 1 ? "0.5px solid #EDE8F4" : "none",
+              borderBottom: i < rows.length - 1 ? "1px solid #EDE8F4" : "none",
             }}
           >
             <row.icon className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />

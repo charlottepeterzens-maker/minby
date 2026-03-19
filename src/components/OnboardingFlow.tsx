@@ -223,7 +223,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                 className="p-8 mx-auto"
                 style={{
                   backgroundColor: "#FFFFFF",
-                  border: "0.5px solid #EDE8F4",
+                  border: "1px solid #EDE8F4",
                   borderRadius: "16px",
                 }}
               >

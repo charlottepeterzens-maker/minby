@@ -92,7 +92,7 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
             <CategoryPill label="vill ses" variant="light" />
           </div>
@@ -149,7 +149,7 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
             <CategoryPill label="häng med" variant="dark" />
           </div>
@@ -313,7 +313,7 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
             <CategoryPill label="sugen på" variant="light" />
           </div>
@@ -417,7 +417,7 @@ const ActivityCard = ({ hangout, profile, isOwn, onProfileClick, onJoin }: FeedH
           </div>
           <div className="flex items-center gap-1.5">
             {isOwn && (
-              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '0.5px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
+              <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]" style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}>Ditt inlägg</span>
             )}
             <CategoryPill label="sugen på" variant="light" />
           </div>
