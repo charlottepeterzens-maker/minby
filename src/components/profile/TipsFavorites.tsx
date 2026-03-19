@@ -359,20 +359,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
         ) : null
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <AnimatePresence>
-            {tips.map((tip, i) => (
-              <TipCard
-                key={tip.id}
-                tip={tip}
-                isOwner={isOwner}
-                isSaved={savedTipIds.has(tip.id)}
-                onDelete={() => handleDelete(tip.id)}
-                onEdit={() => handleEdit(tip)}
-                onSave={() => handleSave(tip.id)}
-                index={i}
-              />
-            ))}
-          </AnimatePresence>
+          <TipListWithCounts tips={tips} isOwner={isOwner} savedTipIds={savedTipIds} onDelete={handleDelete} onEdit={handleEdit} onSave={handleSave} />
         </div>
       )}
 
