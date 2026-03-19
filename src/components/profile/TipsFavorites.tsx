@@ -383,6 +383,41 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
   );
 };
 
+const TipListWithCounts = ({
+  tips,
+  isOwner,
+  savedTipIds,
+  onDelete,
+  onEdit,
+  onSave,
+}: {
+  tips: Tip[];
+  isOwner: boolean;
+  savedTipIds: Set<string>;
+  onDelete: (id: string) => void;
+  onEdit: (tip: Tip) => void;
+  onSave: (id: string) => void;
+}) => {
+  const commentCounts = useCommentCount(tips.map((t) => t.id));
+  return (
+    <AnimatePresence>
+      {tips.map((tip, i) => (
+        <TipCard
+          key={tip.id}
+          tip={tip}
+          isOwner={isOwner}
+          isSaved={savedTipIds.has(tip.id)}
+          onDelete={() => onDelete(tip.id)}
+          onEdit={() => onEdit(tip)}
+          onSave={() => onSave(tip.id)}
+          index={i}
+          commentCount={commentCounts[tip.id] || 0}
+        />
+      ))}
+    </AnimatePresence>
+  );
+};
+
 const TipCard = ({
   tip,
   isOwner,
@@ -391,6 +426,7 @@ const TipCard = ({
   onEdit,
   onSave,
   index,
+  commentCount,
 }: {
   tip: Tip;
   isOwner: boolean;
@@ -399,6 +435,7 @@ const TipCard = ({
   onEdit: () => void;
   onSave: () => void;
   index: number;
+  commentCount: number;
 }) => {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
