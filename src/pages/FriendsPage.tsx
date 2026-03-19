@@ -67,6 +67,7 @@ const FriendsPage = () => {
   const [friends, setFriends] = useState<FriendRow[]>([]);
   const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   
   const [qrOpen, setQrOpen] = useState(false);
   const [friendSearch, setFriendSearch] = useState("");
@@ -86,116 +87,138 @@ const FriendsPage = () => {
   const fetchData = useCallback(async () => {
     if (!user) return;
     setLoading(true);
+    setError(false);
 
-    const [{ data: accepted }, { data: pending }, { data: tiers }] = await Promise.all([
-      supabase
-        .from("friend_requests")
-        .select("from_user_id, to_user_id")
-        .eq("status", "accepted")
-        .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`),
-      supabase
-        .from("friend_requests")
-        .select("id, from_user_id, created_at")
-        .eq("to_user_id", user.id)
-        .eq("status", "pending")
-        .order("created_at", { ascending: false }),
-      supabase
-        .from("friend_access_tiers")
-        .select("friend_user_id, tier")
-        .eq("owner_id", user.id),
-    ]);
+    try {
+      const [acceptedRes, pendingRes, tiersRes] = await Promise.all([
+        supabase
+          .from("friend_requests")
+          .select("from_user_id, to_user_id")
+          .eq("status", "accepted")
+          .or(`from_user_id.eq.${user.id},to_user_id.eq.${user.id}`),
+        supabase
+          .from("friend_requests")
+          .select("id, from_user_id, created_at")
+          .eq("to_user_id", user.id)
+          .eq("status", "pending")
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("friend_access_tiers")
+          .select("friend_user_id, tier")
+          .eq("owner_id", user.id),
+      ]);
 
-    // Build tier map
-    const tierMap = new Map<string, string>();
-    tiers?.forEach((t) => tierMap.set(t.friend_user_id, t.tier));
+      if (acceptedRes.error) throw acceptedRes.error;
+      if (pendingRes.error) throw pendingRes.error;
 
-    // Process pending requests
-    if (pending?.length) {
-      const pendingUserIds = pending.map((p) => p.from_user_id);
-      const { data: pendingProfiles } = await supabase
-        .from("profiles")
-        .select("user_id, display_name, avatar_url")
-        .in("user_id", pendingUserIds);
+      const accepted = acceptedRes.data || [];
+      const pending = pendingRes.data || [];
+      const tiers = tiersRes.data || [];
 
-      const profileMap = new Map(
-        (pendingProfiles || []).map((p) => [p.user_id, p])
-      );
+      console.log("[FriendsPage] raw accepted friendships:", accepted);
+      console.log("[FriendsPage] raw pending requests:", pending);
 
-      setPendingRequests(
-        pending.map((r) => {
-          const p = profileMap.get(r.from_user_id);
-          return {
-            id: r.id,
-            from_user_id: r.from_user_id,
-            display_name: p?.display_name || "Okänd",
-            avatar_url: p?.avatar_url || null,
-            initial: (p?.display_name || "?").charAt(0).toUpperCase(),
-            created_at: r.created_at,
-          };
-        })
-      );
-    } else {
-      setPendingRequests([]);
-    }
+      // Build tier map
+      const tierMap = new Map<string, string>();
+      tiers.forEach((t) => tierMap.set(t.friend_user_id, t.tier));
 
-    // Process accepted friends
-    if (!accepted?.length) {
-      setFriends([]);
-      setLoading(false);
-      return;
-    }
+      // Process pending requests
+      if (pending.length) {
+        const pendingUserIds = pending.map((p) => p.from_user_id);
+        const { data: pendingProfiles } = await supabase
+          .from("profiles")
+          .select("user_id, display_name, avatar_url")
+          .in("user_id", pendingUserIds);
 
-    const friendIds = [
-      ...new Set(
-        accepted.map((r) =>
-          r.from_user_id === user.id ? r.to_user_id : r.from_user_id
-        )
-      ),
-    ];
+        const profileMap = new Map(
+          (pendingProfiles || []).map((p) => [p.user_id, p])
+        );
 
-    const today = format(new Date(), "yyyy-MM-dd");
-    const [{ data: profiles }, { data: posts }, { data: hangouts }] = await Promise.all([
-      supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", friendIds),
-      supabase.from("life_posts").select("user_id, created_at").in("user_id", friendIds).order("created_at", { ascending: false }),
-      supabase.from("hangout_availability").select("user_id, entry_type, date, activities, custom_note").in("user_id", friendIds).gte("date", today).order("date", { ascending: true }),
-    ]);
-
-    const latestPostMap = new Map<string, string>();
-    posts?.forEach((p) => {
-      if (!latestPostMap.has(p.user_id)) latestPostMap.set(p.user_id, p.created_at);
-    });
-
-    const hangoutMap = new Map<string, HangoutStatus>();
-    hangouts?.forEach((h: any) => {
-      if (!hangoutMap.has(h.user_id)) {
-        hangoutMap.set(h.user_id, {
-          entry_type: h.entry_type || "available",
-          date: h.date,
-          activities: h.activities || [],
-          custom_note: h.custom_note,
-        });
+        setPendingRequests(
+          pending.map((r) => {
+            const p = profileMap.get(r.from_user_id);
+            return {
+              id: r.id,
+              from_user_id: r.from_user_id,
+              display_name: p?.display_name || "Okänd",
+              avatar_url: p?.avatar_url || null,
+              initial: (p?.display_name || "?").charAt(0).toUpperCase(),
+              created_at: r.created_at,
+            };
+          })
+        );
+      } else {
+        setPendingRequests([]);
       }
-    });
 
-    const list: FriendRow[] = (profiles || []).map((p) => ({
-      user_id: p.user_id,
-      display_name: p.display_name || "Okänd",
-      avatar_url: p.avatar_url,
-      initial: (p.display_name || "?").charAt(0).toUpperCase(),
-      last_activity: latestPostMap.get(p.user_id) || null,
-      hangout_status: hangoutMap.get(p.user_id) || null,
-      tier: tierMap.get(p.user_id) || "outer",
-    }));
+      // Process accepted friends — normalize both directions
+      if (!accepted.length) {
+        console.log("[FriendsPage] No accepted friendships found");
+        setFriends([]);
+        setLoading(false);
+        return;
+      }
 
-    list.sort((a, b) => {
-      if (!a.last_activity && !b.last_activity) return 0;
-      if (!a.last_activity) return 1;
-      if (!b.last_activity) return -1;
-      return new Date(b.last_activity).getTime() - new Date(a.last_activity).getTime();
-    });
+      const friendIds = [
+        ...new Set(
+          accepted.map((r) =>
+            r.from_user_id === user.id ? r.to_user_id : r.from_user_id
+          )
+        ),
+      ];
 
-    setFriends(list);
-    setLoading(false);
+      console.log("[FriendsPage] mapped friend IDs:", friendIds);
+
+      const today = format(new Date(), "yyyy-MM-dd");
+      const [{ data: profiles }, { data: posts }, { data: hangouts }] = await Promise.all([
+        supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", friendIds),
+        supabase.from("life_posts").select("user_id, created_at").in("user_id", friendIds).order("created_at", { ascending: false }),
+        supabase.from("hangout_availability").select("user_id, entry_type, date, activities, custom_note").in("user_id", friendIds).gte("date", today).order("date", { ascending: true }),
+      ]);
+
+      console.log("[FriendsPage] fetched profiles:", profiles);
+
+      const latestPostMap = new Map<string, string>();
+      posts?.forEach((p) => {
+        if (!latestPostMap.has(p.user_id)) latestPostMap.set(p.user_id, p.created_at);
+      });
+
+      const hangoutMap = new Map<string, HangoutStatus>();
+      hangouts?.forEach((h: any) => {
+        if (!hangoutMap.has(h.user_id)) {
+          hangoutMap.set(h.user_id, {
+            entry_type: h.entry_type || "available",
+            date: h.date,
+            activities: h.activities || [],
+            custom_note: h.custom_note,
+          });
+        }
+      });
+
+      const list: FriendRow[] = (profiles || []).map((p) => ({
+        user_id: p.user_id,
+        display_name: p.display_name || "Okänd",
+        avatar_url: p.avatar_url,
+        initial: (p.display_name || "?").charAt(0).toUpperCase(),
+        last_activity: latestPostMap.get(p.user_id) || null,
+        hangout_status: hangoutMap.get(p.user_id) || null,
+        tier: tierMap.get(p.user_id) || "outer",
+      }));
+
+      list.sort((a, b) => {
+        if (!a.last_activity && !b.last_activity) return 0;
+        if (!a.last_activity) return 1;
+        if (!b.last_activity) return -1;
+        return new Date(b.last_activity).getTime() - new Date(a.last_activity).getTime();
+      });
+
+      setFriends(list);
+    } catch (err) {
+      console.error("[FriendsPage] Error fetching friends:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
   }, [user]);
 
   // Fetch muted users
@@ -602,10 +625,26 @@ const FriendsPage = () => {
         </div>
 
         {loading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-[16px] h-[64px] animate-pulse" style={{ backgroundColor: "#EDE8F4" }} />
-            ))}
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="space-y-3 w-full">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="rounded-[16px] h-[64px] animate-pulse" style={{ backgroundColor: "#EDE8F4" }} />
+              ))}
+            </div>
+            <p className="text-[12px] mt-4" style={{ color: "#9B8BA5" }}>Laddar din krets…</p>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+            <p className="font-display text-[14px] font-medium mb-2" style={{ color: "#3C2A4D" }}>
+              Vi kunde inte hämta din krets
+            </p>
+            <button
+              onClick={() => fetchData()}
+              className="px-4 py-1.5 rounded-[20px] text-[12px] font-medium"
+              style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+            >
+              Försök igen
+            </button>
           </div>
         ) : !hasFriendsOrPending && peopleSearch.trim().length < 2 ? (
           <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
