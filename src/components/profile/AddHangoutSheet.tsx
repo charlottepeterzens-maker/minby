@@ -24,8 +24,8 @@ interface Props {
 }
 
 const TYPE_OPTIONS: { value: EntryType; title: string; desc: string; hint: string }[] = [
-  { value: "available", title: "Jag är ledig", desc: "Välj datum, berätta vad du vill göra", hint: "Berätta när du kan ses – vänner ser det och kan föreslå något." },
-  { value: "confirmed", title: "Jag har en plan", desc: "Du och någon ska göra något – bjud in fler", hint: "Du har redan bestämt något – bjud in vänner att hänga med." },
+  { value: "available", title: "Jag är ledig", desc: "Välj datum, berätta vad du vill göra", hint: "Berätta när du kan ses – din krets ser det och kan föreslå något." },
+  { value: "confirmed", title: "Jag har en plan", desc: "Du och någon ska göra något – bjud in fler", hint: "Du har redan bestämt något – bjud in fler att hänga med." },
   { value: "activity", title: "Jag vill göra något", desc: "Välj aktivitet, föreslå flera möjliga datum", hint: "Föreslå en aktivitet och se vem som är sugen." },
 ];
 
