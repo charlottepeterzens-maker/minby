@@ -26,6 +26,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import TipCommentSection, { useCommentCount } from "@/components/profile/TipCommentSection";
+import { MessageCircle } from "lucide-react";
 
 interface Tip {
   id: string;
