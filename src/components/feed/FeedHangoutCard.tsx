@@ -110,9 +110,7 @@ const LedigCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }:
               <p className="text-[11px] text-muted-foreground leading-tight">vill ses · {timeAgo}</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5">
-            <CategoryPill label="vill ses" variant="light" />
-          </div>
+          <div className="flex items-center gap-1.5"></div>
         </div>
       </div>
 
@@ -180,9 +178,7 @@ const PlanCard = ({ hangout, profile, isOwn, onProfileClick, onJoin, onMaybe }: 
               <p className="text-[11px] text-muted-foreground leading-tight">häng med · {timeAgo}</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5">
-            <CategoryPill label="häng med" variant="dark" />
-          </div>
+          <div className="flex items-center gap-1.5"></div>
         </div>
       </div>
 
@@ -364,9 +360,7 @@ const GroupedActivityCard = ({ hangout, profile, isOwn, onProfileClick }: FeedHa
               <p className="text-[11px] text-muted-foreground leading-tight">sugen på · {timeAgo}</p>
             </div>
           </div>
-          <div className="flex items-center gap-1.5">
-            <CategoryPill label="sugen på" variant="light" />
-          </div>
+          <div className="flex items-center gap-1.5"></div>
         </div>
       </div>
 
