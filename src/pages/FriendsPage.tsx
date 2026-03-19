@@ -751,7 +751,7 @@ const FriendsPage = () => {
               <div>
                 {closeFriends.length > 0 && (
                   <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
-                    Övriga vänner ({otherFriends.length})
+                    Övriga i kretsen ({otherFriends.length})
                   </p>
                 )}
                 {closeFriends.length === 0 && pendingRequests.length > 0 && (
