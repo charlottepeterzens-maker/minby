@@ -55,11 +55,12 @@ const FeedPage = () => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("display_name")
+      .select("display_name, muted_users")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
         if (data?.display_name) setCurrentUserName(data.display_name);
+        if (data?.muted_users) setMutedUsers((data.muted_users as any) || []);
       });
   }, [user]);
 
