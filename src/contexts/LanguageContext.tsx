@@ -26,9 +26,9 @@ const translations = {
     error: "Error",
 
     notificationPreferences: "Notification preferences",
-    friendRequests: "Friend requests",
+    friendRequests: "Wants to join your circle",
     gatheringInvites: "Gathering invites",
-    newLifeUpdates: "New life updates from friends",
+    newLifeUpdates: "New life updates from your circle",
 
     language: "Language",
     english: "English",
