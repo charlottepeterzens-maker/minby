@@ -477,8 +477,8 @@ const ProfilePage = () => {
         {/* New notification list */}
         {isOwnProfile && notifItems.length > 0 && (
           <NotificationList
-            items={notifItems}
-            onMarkAllRead={() => {
+            notifications={notifItems}
+            onClick={() => {}}
               if (!user) return;
               supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then(() => {
                 setNotifItems([]);
