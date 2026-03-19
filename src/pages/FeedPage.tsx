@@ -47,6 +47,7 @@ const FeedPage = () => {
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [profiles, setProfiles] = useState<ProfileMap>({});
   const [currentUserName, setCurrentUserName] = useState<string>("");
+  const [mutedUsers, setMutedUsers] = useState<string[]>([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
