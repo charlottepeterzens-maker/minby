@@ -234,6 +234,8 @@ const FeedPage = () => {
   };
 
   const filteredItems = feedItems.filter((item) => {
+    // Filter out muted users
+    if (mutedUsers.includes(item.userId)) return false;
     if (filter === "all") return true;
     if (filter === "posts") return item.type === "post";
     if (filter === "hangout") return item.type === "hangout" || item.type === "activity_group";
