@@ -399,7 +399,7 @@ const FriendsPage = () => {
       .eq("id", requestId);
 
     if (error) {
-      toast.error("Kunde inte acceptera förfrågan");
+      toast.error("Kunde inte lägga till");
     } else {
       await supabase.from("friend_access_tiers").upsert([
         { owner_id: user.id, friend_user_id: fromUserId, tier: "outer" as const },
@@ -416,11 +416,11 @@ const FriendsPage = () => {
         user_id: fromUserId,
         from_user_id: user.id,
         type: "friend_accepted",
-        title: "Vänförfrågan accepterad",
-        body: `${profile?.display_name || "Någon"} accepterade din vänförfrågan`,
+        title: "Nu i din krets!",
+        body: `${profile?.display_name || "Någon"} är nu en del av din vardag`,
       });
 
-      toast.success("Vänförfrågan accepterad! 🎉");
+      toast.success("Tillagd i din krets! 🎉");
       fetchData();
     }
     setRespondingId(null);
