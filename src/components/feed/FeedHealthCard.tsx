@@ -20,8 +20,44 @@ interface FeedHealthCardProps {
   onSendHug?: () => void;
 }
 
-const FeedHealthCard = ({ post, profile, isOwn, onProfileClick, onSendHug }: FeedHealthCardProps) => {
+const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCardProps) => {
+  const { user } = useAuth();
+  const [hugSent, setHugSent] = useState(false);
+  const [sending, setSending] = useState(false);
   const timeAgo = getTimeAgo(post.created_at);
+
+  const handleSendHug = async () => {
+    if (!user || sending) return;
+    setSending(true);
+    try {
+      // Check if already sent
+      const { data: existing } = await supabase
+        .from("post_reactions")
+        .select("id")
+        .eq("post_id", post.id)
+        .eq("user_id", user.id)
+        .eq("emoji", "🤗")
+        .maybeSingle();
+
+      if (existing) {
+        await supabase.from("post_reactions").delete().eq("id", existing.id);
+        setHugSent(false);
+        toast.success("Kram borttagen");
+      } else {
+        await supabase.from("post_reactions").insert({
+          post_id: post.id,
+          user_id: user.id,
+          emoji: "🤗",
+        });
+        setHugSent(true);
+        toast.success("Du skickade kärlek 💛");
+      }
+    } catch {
+      toast.error("Kunde inte skicka kram");
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <div className="bg-card rounded-[14px] border border-border overflow-hidden">
