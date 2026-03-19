@@ -566,7 +566,7 @@ const FriendsPage = () => {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
+                            <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
                             {statusText && (
                               <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{statusText}</p>
                             )}
