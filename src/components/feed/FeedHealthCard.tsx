@@ -50,7 +50,7 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
           emoji: "🤗",
         });
         setHugSent(true);
-        toast.success("Du skickade kärlek 💛");
+        toast.success("Kärlek skickad 💛");
       }
     } catch {
       toast.error("Kunde inte skicka kram");

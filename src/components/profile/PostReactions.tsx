@@ -6,10 +6,10 @@ import { toast } from "sonner";
 const REACTION_EMOJIS = ["❤️", "🥂", "😮", "🙌"];
 
 const REACTION_TOASTS: Record<string, string> = {
-  "❤️": "Du skickade karlek",
-  "🥂": "Du firade med dem",
-  "🙌": "Du hejade pa dem",
-  "😮": "Du blev berod",
+  "❤️": "Kärlek skickad",
+  "🥂": "Du firade tillsammans",
+  "🙌": "Du hejade",
+  "😮": "Du berördes",
   "🤗": "Du skickade en kram",
 };
 

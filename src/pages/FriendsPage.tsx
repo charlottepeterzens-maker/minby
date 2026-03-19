@@ -613,7 +613,7 @@ const FriendsPage = () => {
               <Users className="w-7 h-7" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
             </div>
             <p className="font-display text-[16px] font-medium mb-1.5" style={{ color: "#3C2A4D" }}>
-              Din krets är tom – bjud in dina närmaste
+              Din krets väntar – bjud in dina närmaste
             </p>
             <p className="text-[13px] mb-6" style={{ color: "#9B8BA5" }}>
               Sök på namn eller skanna en QR-kod för att kopplas ihop
