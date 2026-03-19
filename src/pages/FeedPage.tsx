@@ -13,6 +13,8 @@ import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import FirstTimeOverlay from "@/components/onboarding/FirstTimeOverlay";
 import FeedGuidanceCard from "@/components/onboarding/FeedGuidanceCard";
+import ReconnectNudge from "@/components/feed/ReconnectNudge";
+import CloseCircleSuggestion from "@/components/feed/CloseCircleSuggestion";
 import { useFirstTimeUser } from "@/hooks/useFirstTimeUser";
 import { UserPlus, Plus, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
@@ -48,20 +50,41 @@ const FeedPage = () => {
   const [profiles, setProfiles] = useState<ProfileMap>({});
   const [currentUserName, setCurrentUserName] = useState<string>("");
   const [mutedUsers, setMutedUsers] = useState<string[]>([]);
+  const [closeCircleIds, setCloseCircleIds] = useState<Set<string>>(new Set());
+  const [friendIds, setFriendIds] = useState<string[]>([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
+  // Close circle suggestion state
+  const [suggestionTarget, setSuggestionTarget] = useState<{ userId: string; name: string } | null>(null);
+
   useEffect(() => {
     if (!user) return;
-    supabase
-      .from("profiles")
-      .select("display_name, muted_users")
-      .eq("user_id", user.id)
-      .single()
-      .then(({ data }) => {
-        if (data?.display_name) setCurrentUserName(data.display_name);
-        if (data?.muted_users) setMutedUsers((data.muted_users as any) || []);
+    
+    // Fetch profile + close circle tiers in parallel
+    Promise.all([
+      supabase
+        .from("profiles")
+        .select("display_name, muted_users")
+        .eq("user_id", user.id)
+        .single(),
+      supabase
+        .from("friend_access_tiers")
+        .select("friend_user_id, tier")
+        .eq("owner_id", user.id),
+    ]).then(([profileRes, tiersRes]) => {
+      if (profileRes.data?.display_name) setCurrentUserName(profileRes.data.display_name);
+      if (profileRes.data?.muted_users) setMutedUsers((profileRes.data.muted_users as any) || []);
+      
+      const closeIds = new Set<string>();
+      const allFriendIds: string[] = [];
+      tiersRes.data?.forEach((t) => {
+        allFriendIds.push(t.friend_user_id);
+        if (t.tier === "close") closeIds.add(t.friend_user_id);
       });
+      setCloseCircleIds(closeIds);
+      setFriendIds(allFriendIds);
+    });
   }, [user]);
 
   const filters = [
@@ -130,7 +153,7 @@ const FeedPage = () => {
       }
     });
 
-    // Group activity hangouts by user + activity name to avoid duplicates
+    // Group activity hangouts by user + activity name
     const activityGroups = new Map<string, { ids: string[]; dates: string[]; activities: string[]; custom_note: string | null; created_at: string; user_id: string }>();
 
     hangouts.forEach((h: any) => {
@@ -173,7 +196,6 @@ const FeedPage = () => {
       }
     });
 
-    // Add grouped activity items
     activityGroups.forEach((group) => {
       group.dates.sort();
       items.push({
@@ -191,10 +213,18 @@ const FeedPage = () => {
       });
     });
 
-    items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    // Sort: close circle posts first (each group chronological), then others
+    const closeItems = items
+      .filter((i) => closeCircleIds.has(i.userId))
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    const otherItems = items
+      .filter((i) => !closeCircleIds.has(i.userId))
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+    const sorted = [...closeItems, ...otherItems];
 
     const userIds = new Set<string>();
-    items.forEach((item) => userIds.add(item.userId));
+    sorted.forEach((item) => userIds.add(item.userId));
 
     if (userIds.size > 0) {
       const { data: profileData } = await supabase
@@ -211,13 +241,27 @@ const FeedPage = () => {
       }
     }
 
-    setFeedItems(items);
+    setFeedItems(sorted);
     setLoading(false);
-  }, [user]);
+  }, [user, closeCircleIds]);
 
   useEffect(() => {
     fetchFeed();
   }, [fetchFeed]);
+
+  // Interaction boost: occasionally suggest adding to close circle
+  const handleInteraction = useCallback((userId: string, userName: string) => {
+    if (closeCircleIds.has(userId)) return;
+    if (userId === user?.id) return;
+    
+    // Show suggestion ~20% of the time, max once per session per user
+    const key = `close_suggest_${userId}`;
+    if (sessionStorage.getItem(key)) return;
+    if (Math.random() > 0.2) return;
+    
+    sessionStorage.setItem(key, "1");
+    setSuggestionTarget({ userId, name: userName });
+  }, [closeCircleIds, user]);
 
   const getProfile = (userId: string) => {
     const p = profiles[userId] || { display_name: null, avatar_url: null };
@@ -234,7 +278,6 @@ const FeedPage = () => {
   };
 
   const filteredItems = feedItems.filter((item) => {
-    // Filter out muted users
     if (mutedUsers.includes(item.userId)) return false;
     if (filter === "all") return true;
     if (filter === "posts") return item.type === "post";
@@ -245,14 +288,12 @@ const FeedPage = () => {
 
   const handleSendHug = async (postId: string) => {
     if (!user) return;
-    // Save 🤗 reaction to post_reactions
     const { error } = await supabase.from("post_reactions").insert({
       post_id: postId,
       user_id: user.id,
       emoji: "🤗",
     });
     if (error) {
-      // If already reacted, just show toast
       toast.success("Du skickade kärlek 💛");
     } else {
       toast.success("Du skickade en kram 🤗");
@@ -312,6 +353,20 @@ const FeedPage = () => {
         {/* Guidance card after invite */}
         {(isFirstTime || inviteCompleted) && !showOverlay && <FeedGuidanceCard />}
 
+        {/* Reconnect nudge */}
+        {!loading && friendIds.length > 0 && (
+          <ReconnectNudge friendIds={friendIds} profiles={profiles} />
+        )}
+
+        {/* Close circle suggestion */}
+        {suggestionTarget && (
+          <CloseCircleSuggestion
+            friendUserId={suggestionTarget.userId}
+            friendName={suggestionTarget.name}
+            onDismiss={() => setSuggestionTarget(null)}
+          />
+        )}
+
         {/* Quiet feed nudge */}
         {!loading && filteredItems.length > 0 && (() => {
           const newest = filteredItems[0]?.created_at;
@@ -353,8 +408,12 @@ const FeedPage = () => {
                     post={item.data}
                     profile={profile}
                     isOwn={isOwn}
-                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                    onProfileClick={() => {
+                      navigate(`/profile/${item.userId}`);
+                      if (!isOwn) handleInteraction(item.userId, profile.display_name || "Någon");
+                    }}
                     onSuggestPlan={!isOwn ? () => {
+                      handleInteraction(item.userId, profile.display_name || "Någon");
                       setSuggestData({ postId: item.data.id, content: item.data.content, userName: profile.display_name || "Någon" });
                       setShowHangoutSheet(true);
                     } : undefined}
@@ -369,7 +428,10 @@ const FeedPage = () => {
                     hangout={item.data}
                     profile={profile}
                     isOwn={isOwn}
-                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                    onProfileClick={() => {
+                      navigate(`/profile/${item.userId}`);
+                      if (!isOwn) handleInteraction(item.userId, profile.display_name || "Någon");
+                    }}
                   />
                 );
               }
@@ -381,7 +443,10 @@ const FeedPage = () => {
                     hangout={item.data}
                     profile={profile}
                     isOwn={isOwn}
-                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                    onProfileClick={() => {
+                      navigate(`/profile/${item.userId}`);
+                      if (!isOwn) handleInteraction(item.userId, profile.display_name || "Någon");
+                    }}
                   />
                 );
               }
@@ -393,7 +458,10 @@ const FeedPage = () => {
                     post={item.data}
                     profile={profile}
                     isOwn={isOwn}
-                    onProfileClick={() => navigate(`/profile/${item.userId}`)}
+                    onProfileClick={() => {
+                      navigate(`/profile/${item.userId}`);
+                      if (!isOwn) handleInteraction(item.userId, profile.display_name || "Någon");
+                    }}
                   />
                 );
               }
