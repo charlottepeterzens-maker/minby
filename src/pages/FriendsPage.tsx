@@ -735,7 +735,7 @@ const FriendsPage = () => {
                       Lägg till några du vill ha lite extra nära
                     </p>
                     <p className="text-[11px] mt-1" style={{ color: "#9B8BA5" }}>
-                      Tryck ••• bredvid en vän för att lägga till
+                      Tryck ••• bredvid en person för att lägga till
                     </p>
                   </div>
                 ) : (
