@@ -625,10 +625,26 @@ const FriendsPage = () => {
         </div>
 
         {loading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-[16px] h-[64px] animate-pulse" style={{ backgroundColor: "#EDE8F4" }} />
-            ))}
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="space-y-3 w-full">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="rounded-[16px] h-[64px] animate-pulse" style={{ backgroundColor: "#EDE8F4" }} />
+              ))}
+            </div>
+            <p className="text-[12px] mt-4" style={{ color: "#9B8BA5" }}>Laddar din krets…</p>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+            <p className="font-display text-[14px] font-medium mb-2" style={{ color: "#3C2A4D" }}>
+              Vi kunde inte hämta din krets
+            </p>
+            <button
+              onClick={() => fetchData()}
+              className="px-4 py-1.5 rounded-[20px] text-[12px] font-medium"
+              style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+            >
+              Försök igen
+            </button>
           </div>
         ) : !hasFriendsOrPending && peopleSearch.trim().length < 2 ? (
           <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
