@@ -165,28 +165,51 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
         if (error) throw error;
       }
 
-      // Send hangout_new notification to close friends
+      // Trigger 4: Send hangout notification to ALL friends, respecting mute
       try {
-        const { data: closeFriends } = await supabase
+        const { data: allFriends } = await supabase
           .from("friend_access_tiers")
           .select("friend_user_id")
-          .eq("owner_id", user.id)
-          .eq("tier", "close");
+          .eq("owner_id", user.id);
 
-        if (closeFriends && closeFriends.length > 0) {
-          const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+        if (allFriends && allFriends.length > 0) {
+          const { data: myProfile } = await supabase
+            .from("profiles")
+            .select("display_name")
+            .eq("user_id", user.id)
+            .single();
           const name = myProfile?.display_name || "Någon";
-          const dateStr = selectedDate ? fmtDate(selectedDate, "EEEE d/M", { locale: sv }) : activityDates.length > 0 ? fmtDate(activityDates[0], "EEEE d/M", { locale: sv }) : "";
-          
-          await Promise.all(closeFriends.map(f =>
-            sendNotification({
-              recipientUserId: f.friend_user_id,
-              fromUserId: user.id,
-              type: "hangout_new",
-              referenceId: user.id,
-              message: `${name} är ledig ${dateStr} – vill ses!`,
-            })
-          ));
+
+          // Get muted_users for each friend to check if they muted us
+          const friendIds = allFriends.map(f => f.friend_user_id);
+          const { data: friendProfiles } = await supabase
+            .from("profiles")
+            .select("user_id, muted_users")
+            .in("user_id", friendIds);
+
+          const mutedByFriend = new Set<string>();
+          if (friendProfiles) {
+            for (const fp of friendProfiles) {
+              const muted = (fp.muted_users as string[]) || [];
+              if (muted.includes(user.id)) {
+                mutedByFriend.add(fp.user_id);
+              }
+            }
+          }
+
+          await Promise.all(
+            allFriends
+              .filter(f => !mutedByFriend.has(f.friend_user_id))
+              .map(f =>
+                sendNotification({
+                  recipientUserId: f.friend_user_id,
+                  fromUserId: user.id,
+                  type: "hangout_new",
+                  referenceId: user.id,
+                  message: `${name} vill ses – de är sugen på att träffas. Är du med?`,
+                })
+              )
+          );
         }
       } catch {
         // Best effort
