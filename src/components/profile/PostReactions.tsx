@@ -69,6 +69,44 @@ const PostReactions = ({ postId, readOnly }: Props) => {
       });
       const msg = REACTION_TOASTS[emoji];
       if (msg) toast.success(msg);
+
+      // Trigger 3: Send push to post owner (if not self)
+      try {
+        const { data: post } = await supabase
+          .from("life_posts")
+          .select("user_id")
+          .eq("id", postId)
+          .single();
+
+        if (post && post.user_id !== user.id) {
+          // Check if post owner has muted the reactor
+          const { data: ownerProfile } = await supabase
+            .from("profiles")
+            .select("muted_users")
+            .eq("user_id", post.user_id)
+            .single();
+
+          const mutedUsers = (ownerProfile?.muted_users as string[]) || [];
+          if (!mutedUsers.includes(user.id)) {
+            const { data: myProfile } = await supabase
+              .from("profiles")
+              .select("display_name")
+              .eq("user_id", user.id)
+              .single();
+            const name = myProfile?.display_name || "Någon";
+
+            await sendNotification({
+              recipientUserId: post.user_id,
+              fromUserId: user.id,
+              type: "life_reaction",
+              referenceId: postId,
+              message: `${name} reagerade – de skickade ${emoji} på ditt inlägg.`,
+            });
+          }
+        }
+      } catch {
+        // Best effort
+      }
     }
     fetchReactions();
   };
