@@ -359,7 +359,7 @@ const translations = {
     // Notifications page
     markAllRead: "Markera alla som lästa",
     noNotificationsYet: "Inga aviseringar ännu",
-    notificationsHint: "Du ser träffinbjudningar, vänförfrågningar och uppdateringar här",
+    notificationsHint: "Du ser träffinbjudningar, kretsförfrågningar och uppdateringar här",
 
     // Auth page
     joinMinby: "Gå med i MINBY",
