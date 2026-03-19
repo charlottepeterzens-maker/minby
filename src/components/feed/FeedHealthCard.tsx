@@ -100,10 +100,11 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
       {!isOwn && (
         <div className="px-4 pb-4">
           <button
-            onClick={onSendHug}
-            className="text-[13px] font-medium px-4 py-2 rounded-[10px] bg-dusty-rose-bg text-foreground border border-dusty-rose transition-colors hover:bg-dusty-rose"
+            onClick={handleSendHug}
+            disabled={sending}
+            className="text-[13px] font-medium px-4 py-2 rounded-[10px] bg-dusty-rose-bg text-foreground border border-dusty-rose transition-colors hover:bg-dusty-rose disabled:opacity-50"
           >
-            Skicka kärlek
+            {hugSent ? "Kärlek skickad 💛" : "Skicka kärlek"}
           </button>
         </div>
       )}
