@@ -382,7 +382,7 @@ const translations = {
     lifeUpdate: "Livsuppdatering",
     shareWithCircles: "Dela med dina cirklar",
     suggestMeeting: "Föreslå träff",
-    gatherFriends: "Samla dina vänner",
+    gatherFriends: "Samla din krets",
     section: "Sektion",
     chooseSection: "Välj en livssektion",
     whatsNew: "Vad händer i din vardag?",
