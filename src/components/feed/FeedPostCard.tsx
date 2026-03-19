@@ -23,6 +23,7 @@ interface FeedPostCardProps {
   };
   isOwn?: boolean;
   onProfileClick: () => void;
+  onSuggestPlan?: () => void;
 }
 
 const FeedPostCard = ({ post, profile, isOwn, onProfileClick }: FeedPostCardProps) => {
