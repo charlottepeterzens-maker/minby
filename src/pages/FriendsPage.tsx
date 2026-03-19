@@ -77,6 +77,11 @@ const FriendsPage = () => {
   const [searching, setSearching] = useState(false);
   const [sendingTo, setSendingTo] = useState<string | null>(null);
 
+  // Friend menu state
+  const [menuOpenFor, setMenuOpenFor] = useState<string | null>(null);
+  const [mutedUsers, setMutedUsers] = useState<string[]>([]);
+  const [removeConfirm, setRemoveConfirm] = useState<{ userId: string; name: string } | null>(null);
+
   const fetchData = useCallback(async () => {
     if (!user) return;
     setLoading(true);
