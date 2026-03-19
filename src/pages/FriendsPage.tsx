@@ -4,12 +4,13 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, Search, QrCode } from "lucide-react";
+import { Users, Search, QrCode, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import QRCodeSheet from "@/components/profile/QRCodeSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
+import ConfirmSheet from "@/components/ConfirmSheet";
 
 interface HangoutStatus {
   entry_type: string;
