@@ -294,7 +294,7 @@ const FeedPage = () => {
       emoji: "🤗",
     });
     if (error) {
-      toast.success("Du skickade kärlek 💛");
+      toast.success("Kärlek skickad 💛");
     } else {
       toast.success("Du skickade en kram 🤗");
     }

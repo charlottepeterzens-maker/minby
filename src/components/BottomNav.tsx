@@ -3,8 +3,8 @@ import { Home, User, UserPlus, Settings } from "lucide-react";
 import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 
 const navItems = [
-  { label: "Flödet", icon: Home, path: "/" },
-  { label: "Min plats", icon: User, path: "/profile" },
+  { label: "Hemma", icon: Home, path: "/" },
+  { label: "Mitt", icon: User, path: "/profile" },
   { label: "Min krets", icon: UserPlus, path: "/friends" },
   { label: "Inställningar", icon: Settings, path: "/settings" },
 ];
