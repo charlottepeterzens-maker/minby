@@ -45,6 +45,7 @@ const FeedPage = () => {
   const { isFirstTime, dismiss: dismissOnboarding } = useFirstTimeUser();
   const [showOverlay, setShowOverlay] = useState(true);
   const [inviteCompleted, setInviteCompleted] = useState(false);
+  const [showInviteDialog, setShowInviteDialog] = useState(false);
 
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [profiles, setProfiles] = useState<ProfileMap>({});
