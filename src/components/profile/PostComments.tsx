@@ -24,6 +24,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
   const [text, setText] = useState("");
   const [posting, setPosting] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [myInitials, setMyInitials] = useState("?");
 
   useEffect(() => {

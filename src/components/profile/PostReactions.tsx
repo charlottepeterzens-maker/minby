@@ -87,9 +87,11 @@ const PostReactions = ({ postId, readOnly }: Props) => {
     if (data) setDetailNames(data.map((p) => (p.user_id === user?.id ? "Du" : p.display_name || "Nagon")));
   };
 
+  const totalCount = Object.values(counts).reduce((sum, r) => sum + r.count, 0);
+
   return (
     <div style={{ marginTop: 10, position: "relative" }}>
-      {/* Alltid synliga emoji-pills */}
+      {/* Emoji pills */}
       <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
         {REACTION_EMOJIS.map((emoji) => {
           const r = counts[emoji];
@@ -127,7 +129,14 @@ const PostReactions = ({ postId, readOnly }: Props) => {
         })}
       </div>
 
-      {/* Detail popup – vem har reagerat */}
+      {/* Activity micro-signal */}
+      {totalCount > 0 && !readOnly && (
+        <p style={{ fontSize: 10, color: "#B0A8B5", marginTop: 4 }}>
+          {totalCount === 1 ? "Någon reagerade" : `${totalCount} personer har reagerat`}
+        </p>
+      )}
+
+      {/* Detail popup */}
       {detailEmoji && counts[detailEmoji]?.count > 0 && (
         <div
           style={{
@@ -153,7 +162,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
             </button>
           </div>
           {detailNames.length === 0 ? (
-            <p style={{ fontSize: 11, color: "#9B8BA5" }}>Ingen annu</p>
+            <p style={{ fontSize: 11, color: "#9B8BA5" }}>Ingen ännu</p>
           ) : (
             detailNames.map((name, i) => (
               <p key={i} style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", marginBottom: 2 }}>

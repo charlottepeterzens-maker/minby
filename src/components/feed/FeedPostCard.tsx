@@ -103,11 +103,11 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
         <PostReactions postId={post.id} />
       )}
 
-      {/* Föreslå något – diskret, bara för vänners inlägg */}
+      {/* Föreslå att ses – mjukt, direkt under innehåll */}
       {!isOwn && onSuggestPlan && (
-        <div style={{ marginTop: 8, textAlign: "right" }}>
-          <button onClick={onSuggestPlan} style={{ fontSize: 11, color: "#B0A0B5" }}>
-            Föreslå något →
+        <div style={{ marginTop: 6 }}>
+          <button onClick={onSuggestPlan} style={{ fontSize: 11, color: "#B0A0B5" }} className="hover:underline">
+            Föreslå att ses →
           </button>
         </div>
       )}
