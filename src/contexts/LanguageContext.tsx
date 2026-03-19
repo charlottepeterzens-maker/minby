@@ -35,8 +35,8 @@ const translations = {
     swedish: "Svenska",
 
     howWeUseData: "How we use your data",
-    dataPrivacy1: "Your life updates are only shared with friends you've explicitly granted access to, based on the tier you assign them (Close, Inner, Outer).",
-    dataPrivacy2: "We never sell your personal data or share it with third parties. Your content stays between you and your circles.",
+    dataPrivacy1: "Your life updates are only shared with people you've explicitly granted access to, based on the tier you assign them (Close, Inner, Outer).",
+    dataPrivacy2: "We never sell your personal data or share it with third parties. Your content stays between you and your circle.",
     dataPrivacy3: "You can delete your account and all associated data at any time by contacting us.",
 
     logOut: "Log out",
