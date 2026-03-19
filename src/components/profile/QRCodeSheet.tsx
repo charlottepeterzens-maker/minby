@@ -117,7 +117,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
                 />
               </div>
               <p className="text-[12px] mt-4 text-center" style={{ color: "#9B8BA5" }}>
-                Låt en vän skanna din kod för att kopplas ihop
+                Låt någon skanna din kod för att kopplas ihop
               </p>
             </div>
           ) : (

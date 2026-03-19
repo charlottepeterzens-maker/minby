@@ -24,13 +24,13 @@ interface Props {
 }
 
 const TYPE_OPTIONS: { value: EntryType; title: string; desc: string; hint: string }[] = [
-  { value: "available", title: "Jag är ledig", desc: "Välj datum, berätta vad du vill göra", hint: "Berätta när du kan ses – vänner ser det och kan föreslå något." },
-  { value: "confirmed", title: "Jag har en plan", desc: "Du och någon ska göra något – bjud in fler", hint: "Du har redan bestämt något – bjud in vänner att hänga med." },
+  { value: "available", title: "Jag är ledig", desc: "Välj datum, berätta vad du vill göra", hint: "Berätta när du kan ses – din krets ser det och kan föreslå något." },
+  { value: "confirmed", title: "Jag har en plan", desc: "Du och någon ska göra något – bjud in fler", hint: "Du har redan bestämt något – bjud in fler att hänga med." },
   { value: "activity", title: "Jag vill göra något", desc: "Välj aktivitet, föreslå flera möjliga datum", hint: "Föreslå en aktivitet och se vem som är sugen." },
 ];
 
 const VISIBILITY_OPTIONS: { value: Visibility; label: string }[] = [
-  { value: "all", label: "Alla nära vänner" },
+  { value: "all", label: "Hela din krets" },
   { value: "selected", label: "Utvalda" },
   { value: "private", label: "Bara oss" },
 ];
@@ -340,7 +340,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     <Input
                       value={friendSearch}
                       onChange={(e) => searchFriends(e.target.value)}
-                      placeholder="Sök och lägg till vänner..."
+                      placeholder="Sök och lägg till personer..."
                       className="bg-white text-[13px]"
                       style={{ borderColor: '#EDE8F4' }}
                     />

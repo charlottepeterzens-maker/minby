@@ -378,11 +378,11 @@ const FriendsPage = () => {
         user_id: targetUserId,
         from_user_id: user.id,
         type: "friend_request",
-        title: "Vänförfrågan",
-        body: `${profile?.display_name || "Någon"} vill bli din vän`,
+        title: "Vill vara med i din vardag",
+        body: `${profile?.display_name || "Någon"} vill vara med i din vardag`,
       });
 
-      toast.success("Förfrågan skickad!");
+      toast.success("Skickat!");
       setSearchResults((prev) =>
         prev.map((r) => r.user_id === targetUserId ? { ...r, status: "sent" as const } : r)
       );
@@ -399,7 +399,7 @@ const FriendsPage = () => {
       .eq("id", requestId);
 
     if (error) {
-      toast.error("Kunde inte acceptera förfrågan");
+      toast.error("Kunde inte lägga till");
     } else {
       await supabase.from("friend_access_tiers").upsert([
         { owner_id: user.id, friend_user_id: fromUserId, tier: "outer" as const },
@@ -416,11 +416,11 @@ const FriendsPage = () => {
         user_id: fromUserId,
         from_user_id: user.id,
         type: "friend_accepted",
-        title: "Vänförfrågan accepterad",
-        body: `${profile?.display_name || "Någon"} accepterade din vänförfrågan`,
+        title: "Nu i din krets!",
+        body: `${profile?.display_name || "Någon"} är nu en del av din vardag`,
       });
 
-      toast.success("Vänförfrågan accepterad! 🎉");
+      toast.success("Tillagd i din krets! 🎉");
       fetchData();
     }
     setRespondingId(null);
@@ -434,10 +434,10 @@ const FriendsPage = () => {
       .eq("id", requestId);
 
     if (error) {
-      toast.error("Kunde inte avvisa förfrågan");
+      toast.error("Något gick fel");
     } else {
       setPendingRequests((prev) => prev.filter((r) => r.id !== requestId));
-      toast("Förfrågan avvisad");
+      toast("Inte nu");
     }
     setRespondingId(null);
   };
@@ -606,7 +606,7 @@ const FriendsPage = () => {
                     {r.status === "friend" ? (
                       <span className="text-[11px]" style={{ color: "#9B8BA5" }}>I din krets</span>
                     ) : r.status === "sent" ? (
-                      <span className="text-[11px]" style={{ color: "#9B8BA5" }}>Förfrågan skickad</span>
+                      <span className="text-[11px]" style={{ color: "#9B8BA5" }}>Skickat</span>
                     ) : (
                       <button
                         onClick={() => handleSendFriendRequest(r.user_id)}
@@ -665,7 +665,7 @@ const FriendsPage = () => {
             {pendingRequests.length > 0 && (
               <div>
                 <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
-                  Vänförfrågningar ({pendingRequests.length})
+                  Vill vara med ({pendingRequests.length})
                 </p>
                 <div className="space-y-2">
                   {pendingRequests.map((r) => (
@@ -692,7 +692,7 @@ const FriendsPage = () => {
                           {r.display_name}
                         </p>
                         <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>
-                          Vill bli din vän
+                          Vill vara med i din vardag
                         </p>
                       </div>
                       <div className="flex items-center gap-1.5 shrink-0">
@@ -702,7 +702,7 @@ const FriendsPage = () => {
                           className="px-3 py-1.5 rounded-[20px] text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
                           style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
                         >
-                          Acceptera
+                          Ja, gärna
                         </button>
                         <button
                           onClick={() => handleDecline(r.id)}
@@ -710,7 +710,7 @@ const FriendsPage = () => {
                           className="px-3 py-1.5 rounded-[20px] text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
                           style={{ backgroundColor: "#F7F3EF", color: "#A32D2D" }}
                         >
-                          Neka
+                          Inte nu
                         </button>
                       </div>
                     </div>
@@ -735,7 +735,7 @@ const FriendsPage = () => {
                       Lägg till några du vill ha lite extra nära
                     </p>
                     <p className="text-[11px] mt-1" style={{ color: "#9B8BA5" }}>
-                      Tryck ••• bredvid en vän för att lägga till
+                      Tryck ••• bredvid en person för att lägga till
                     </p>
                   </div>
                 ) : (
@@ -751,12 +751,12 @@ const FriendsPage = () => {
               <div>
                 {closeFriends.length > 0 && (
                   <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
-                    Övriga vänner ({otherFriends.length})
+                    Övriga i kretsen ({otherFriends.length})
                   </p>
                 )}
                 {closeFriends.length === 0 && pendingRequests.length > 0 && (
                   <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
-                    Dina vänner ({friends.length})
+                    Din krets ({friends.length})
                   </p>
                 )}
 
@@ -766,7 +766,7 @@ const FriendsPage = () => {
                     <input
                       value={friendSearch}
                       onChange={(e) => setFriendSearch(e.target.value)}
-                      placeholder="Sök bland vänner..."
+                      placeholder="Sök i din krets..."
                       className="w-full pl-9 pr-3 py-2.5 rounded-[10px] text-[13px] outline-none placeholder:text-[#9B8BA5]"
                       style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", color: "#3C2A4D" }}
                     />
@@ -776,7 +776,7 @@ const FriendsPage = () => {
                 <div className="space-y-2">
                   {otherFriends.length === 0 ? (
                     <p className="text-center py-8 text-[13px]" style={{ color: "#9B8BA5" }}>
-                      Inga vänner matchar sökningen
+                      Inga resultat i din krets
                     </p>
                   ) : (
                     otherFriends.map(renderFriendCard)
@@ -800,8 +800,8 @@ const FriendsPage = () => {
       <ConfirmSheet
         open={!!removeConfirm}
         onOpenChange={(open) => { if (!open) setRemoveConfirm(null); }}
-        title="Ta bort vän"
-        description={`Vill du ta bort ${removeConfirm?.name || ""} från din krets? De kan inte längre se din vardag.`}
+        title="Ta bort från kretsen"
+        description={`Vill du ta bort ${removeConfirm?.name || ""} från din krets? Ni delar inte längre era vardagar.`}
         confirmLabel="Ta bort"
         confirmStyle={{ backgroundColor: "#A32D2D" }}
         onConfirm={() => {

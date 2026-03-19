@@ -59,7 +59,7 @@ const InviteFriendDialog = () => {
         className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
       >
         <UserPlus className="w-3.5 h-3.5" />
-        <span>{loading ? "Skapar länk..." : "Bjud in en vän till din vardag"}</span>
+        <span>{loading ? "Skapar länk..." : "Bjud in någon till din vardag"}</span>
       </button>
 
       <Sheet open={open} onOpenChange={setOpen}>
@@ -69,7 +69,7 @@ const InviteFriendDialog = () => {
           style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}
         >
           <SheetHeader>
-            <SheetTitle className="font-display text-base font-medium text-left">Bjud in en vän</SheetTitle>
+            <SheetTitle className="font-display text-base font-medium text-left">Bjud in någon</SheetTitle>
           </SheetHeader>
 
           <p className="text-sm text-muted-foreground mt-2 mb-4">

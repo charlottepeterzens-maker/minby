@@ -135,7 +135,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               minby
             </span>
             <h1 className="font-display" style={{ fontWeight: 500, fontSize: "20px", color: "#3C2A4D" }}>
-              Vad ska dina vänner kalla dig?
+              Vad ska din krets kalla dig?
             </h1>
             <Input
               value={displayName}
@@ -161,7 +161,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               Lägg till en profilbild
             </h1>
             <p style={{ fontSize: "14px", color: "#7A6A85" }}>
-              Så dina vänner känner igen dig
+              Så din krets känner igen dig
             </p>
 
             <div className="flex justify-center">

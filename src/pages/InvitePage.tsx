@@ -93,7 +93,7 @@ const InvitePage = () => {
           .limit(1);
 
         if (pendingReq && pendingReq.length > 0) {
-          toast.info("En vänförfrågan finns redan!");
+          toast.info("Ni har redan en koppling!");
           await supabase
             .from("invite_links")
             .update({ used_by: user.id })
@@ -126,11 +126,11 @@ const InvitePage = () => {
           user_id: inviterId,
           from_user_id: user.id,
           type: "friend_request",
-          title: "Vänförfrågan",
-          body: `${profile?.display_name || "Någon"} vill bli din vän`,
+          title: "Vill vara med i din vardag",
+          body: `${profile?.display_name || "Någon"} vill vara med i din vardag`,
         });
 
-        toast.success("Vänförfrågan skickad! 🎉");
+        toast.success("Skickat! 🎉");
         navigate("/friends", { replace: true });
       } catch (err) {
         console.error("Invite error:", err);

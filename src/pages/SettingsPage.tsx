@@ -261,7 +261,7 @@ const SettingsPage = () => {
             <p>{t("dataPrivacy1")}</p>
             <p>{t("dataPrivacy2")}</p>
             <p>{t("dataPrivacy3")}</p>
-            <p>Vi skickar push-notiser för att hålla dig uppdaterad om dina vänners aktiviteter. Du kan när som helst stänga av notiser i Inställningar eller i din enhets inställningar.</p>
+            <p>Vi skickar push-notiser för att hålla dig uppdaterad om din krets. Du kan när som helst stänga av notiser i Inställningar eller i din enhets inställningar.</p>
           </CardContent>
         </Card>
 
