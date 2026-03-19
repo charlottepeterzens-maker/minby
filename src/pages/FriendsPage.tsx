@@ -4,12 +4,13 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, Search, QrCode } from "lucide-react";
+import { Users, Search, QrCode, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import QRCodeSheet from "@/components/profile/QRCodeSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
+import ConfirmSheet from "@/components/ConfirmSheet";
 
 interface HangoutStatus {
   entry_type: string;
@@ -75,6 +76,11 @@ const FriendsPage = () => {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [sendingTo, setSendingTo] = useState<string | null>(null);
+
+  // Friend menu state
+  const [menuOpenFor, setMenuOpenFor] = useState<string | null>(null);
+  const [mutedUsers, setMutedUsers] = useState<string[]>([]);
+  const [removeConfirm, setRemoveConfirm] = useState<{ userId: string; name: string } | null>(null);
 
   const fetchData = useCallback(async () => {
     if (!user) return;
@@ -182,9 +188,57 @@ const FriendsPage = () => {
     setLoading(false);
   }, [user]);
 
+  // Fetch muted users
+  const fetchMutedUsers = useCallback(async () => {
+    if (!user) return;
+    const { data } = await supabase
+      .from("profiles")
+      .select("muted_users")
+      .eq("user_id", user.id)
+      .single();
+    if (data?.muted_users) {
+      setMutedUsers((data.muted_users as any) || []);
+    }
+  }, [user]);
+
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    fetchMutedUsers();
+  }, [fetchData, fetchMutedUsers]);
+
+  // Remove friend handler
+  const handleRemoveFriend = async (friendUserId: string) => {
+    if (!user) return;
+    // Remove access tiers both ways
+    await Promise.all([
+      supabase.from("friend_access_tiers").delete().eq("owner_id", user.id).eq("friend_user_id", friendUserId),
+      supabase.from("friend_access_tiers").delete().eq("owner_id", friendUserId).eq("friend_user_id", user.id),
+    ]);
+    // Update friend request status
+    await supabase
+      .from("friend_requests")
+      .delete()
+      .or(`and(from_user_id.eq.${user.id},to_user_id.eq.${friendUserId}),and(from_user_id.eq.${friendUserId},to_user_id.eq.${user.id})`)
+      .eq("status", "accepted");
+    setFriends((prev) => prev.filter((f) => f.user_id !== friendUserId));
+    toast.success("Borttagen från din krets");
+  };
+
+  // Mute/unmute friend handler
+  const handleToggleMute = async (friendUserId: string) => {
+    if (!user) return;
+    const isMuted = mutedUsers.includes(friendUserId);
+    const updated = isMuted
+      ? mutedUsers.filter((id) => id !== friendUserId)
+      : [...mutedUsers, friendUserId];
+    setMutedUsers(updated);
+    await (supabase as any)
+      .from("profiles")
+      .update({ muted_users: updated })
+      .eq("user_id", user.id);
+    toast.success(isMuted ? "Avmutad" : "Mutad");
+    setMenuOpenFor(null);
+  };
 
   // People search
   useEffect(() => {
@@ -551,27 +605,65 @@ const FriendsPage = () => {
                       } else if (f.last_activity) {
                         statusText = `Lade upp något ${timeAgo(f.last_activity)}`;
                       }
+                      const isMuted = mutedUsers.includes(f.user_id);
                       return (
-                        <button
+                        <div
                           key={f.user_id}
-                          onClick={() => navigate(`/profile/${f.user_id}`)}
-                          className="w-full flex items-center gap-3 p-3 rounded-[16px] text-left transition-colors hover:opacity-90"
+                          className="relative flex items-center gap-3 p-3 rounded-[16px] transition-colors hover:opacity-90"
                           style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
                         >
-                          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden" style={{ backgroundColor: "#EDE8F4" }}>
-                            {f.avatar_url ? (
-                              <img src={f.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
-                            ) : (
-                              <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>{f.initial}</span>
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
-                            {statusText && (
-                              <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{statusText}</p>
-                            )}
-                          </div>
-                        </button>
+                          <button
+                            onClick={() => navigate(`/profile/${f.user_id}`)}
+                            className="flex items-center gap-3 flex-1 min-w-0 text-left"
+                          >
+                            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden" style={{ backgroundColor: "#EDE8F4" }}>
+                              {f.avatar_url ? (
+                                <img src={f.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                              ) : (
+                                <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>{f.initial}</span>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
+                              {isMuted && (
+                                <p className="text-[10px] mt-0.5" style={{ color: "#9B8BA5" }}>Mutad</p>
+                              )}
+                              {!isMuted && statusText && (
+                                <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{statusText}</p>
+                              )}
+                            </div>
+                          </button>
+
+                          {/* Three-dot menu */}
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setMenuOpenFor(menuOpenFor === f.user_id ? null : f.user_id); }}
+                            className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full"
+                          >
+                            <MoreHorizontal className="w-4 h-4" style={{ color: "#9B8BA5" }} />
+                          </button>
+
+                          {menuOpenFor === f.user_id && (
+                            <div
+                              className="absolute right-3 top-12 z-20 py-1 shadow-lg"
+                              style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 6, minWidth: 180 }}
+                            >
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleToggleMute(f.user_id); }}
+                                className="w-full text-left px-4 py-2.5 text-[13px]"
+                                style={{ color: "#3C2A4D" }}
+                              >
+                                {isMuted ? `Sluta muta ${f.display_name}` : `Muta ${f.display_name}`}
+                              </button>
+                              <button
+                                onClick={(e) => { e.stopPropagation(); setMenuOpenFor(null); setRemoveConfirm({ userId: f.user_id, name: f.display_name }); }}
+                                className="w-full text-left px-4 py-2.5 text-[13px]"
+                                style={{ color: "#A32D2D" }}
+                              >
+                                Ta bort från kretsen
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       );
                     })
                   )}
@@ -589,6 +681,20 @@ const FriendsPage = () => {
       <QRCodeSheet open={qrOpen} onOpenChange={setQrOpen} />
       <ScrollToTopButton />
       <BottomNav />
+
+      {/* Remove friend confirmation */}
+      <ConfirmSheet
+        open={!!removeConfirm}
+        onOpenChange={(open) => { if (!open) setRemoveConfirm(null); }}
+        title="Ta bort vän"
+        description={`Vill du ta bort ${removeConfirm?.name || ""} från din krets? De kan inte längre se din vardag.`}
+        confirmLabel="Ta bort"
+        confirmStyle={{ backgroundColor: "#A32D2D" }}
+        onConfirm={() => {
+          if (removeConfirm) handleRemoveFriend(removeConfirm.userId);
+          setRemoveConfirm(null);
+        }}
+      />
     </div>
   );
 };

@@ -604,6 +604,7 @@ export type Database = {
           friend_request_notifications: boolean
           id: string
           meetup_notifications: boolean
+          muted_users: Json
           notification_permission_asked: boolean
           notification_settings: Json
           onboarded_at: string | null
@@ -619,6 +620,7 @@ export type Database = {
           friend_request_notifications?: boolean
           id?: string
           meetup_notifications?: boolean
+          muted_users?: Json
           notification_permission_asked?: boolean
           notification_settings?: Json
           onboarded_at?: string | null
@@ -634,6 +636,7 @@ export type Database = {
           friend_request_notifications?: boolean
           id?: string
           meetup_notifications?: boolean
+          muted_users?: Json
           notification_permission_asked?: boolean
           notification_settings?: Json
           onboarded_at?: string | null

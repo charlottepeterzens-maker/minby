@@ -397,7 +397,7 @@ const GroupChatPage = () => {
         open={leaveConfirmOpen}
         onOpenChange={setLeaveConfirmOpen}
         title="Lämna grupp"
-        description="Är du säker på att du vill lämna gruppen?"
+        description={`Är du säker på att du vill lämna ${groupName}?`}
         confirmLabel="Lämna"
         onConfirm={async () => {
           if (!user || !groupId) return;

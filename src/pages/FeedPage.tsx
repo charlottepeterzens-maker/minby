@@ -47,6 +47,7 @@ const FeedPage = () => {
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [profiles, setProfiles] = useState<ProfileMap>({});
   const [currentUserName, setCurrentUserName] = useState<string>("");
+  const [mutedUsers, setMutedUsers] = useState<string[]>([]);
   const [filter, setFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
@@ -54,11 +55,12 @@ const FeedPage = () => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("display_name")
+      .select("display_name, muted_users")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
         if (data?.display_name) setCurrentUserName(data.display_name);
+        if (data?.muted_users) setMutedUsers((data.muted_users as any) || []);
       });
   }, [user]);
 
@@ -232,6 +234,8 @@ const FeedPage = () => {
   };
 
   const filteredItems = feedItems.filter((item) => {
+    // Filter out muted users
+    if (mutedUsers.includes(item.userId)) return false;
     if (filter === "all") return true;
     if (filter === "posts") return item.type === "post";
     if (filter === "hangout") return item.type === "hangout" || item.type === "activity_group";
