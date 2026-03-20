@@ -122,6 +122,7 @@ const ProfilePage = () => {
   const [bioText, setBioText] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [reordering, setReordering] = useState(false);
+  const [recentRefreshKey, setRecentRefreshKey] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [notifHangoutId, setNotifHangoutId] = useState<string | null>(null);
   const { refresh: refreshUnread } = useUnreadNotifications();
