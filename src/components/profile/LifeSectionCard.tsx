@@ -106,7 +106,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       .update({ name: editName.trim(), min_tier: editTier as any })
       .eq("id", section.id);
     if (error) {
-      toast.error("Kunde inte uppdatera rummet");
+      toast.error("Kunde inte uppdatera delen");
     } else {
       toast.success("Rummet uppdaterat");
       setEditing(false);
