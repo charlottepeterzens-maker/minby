@@ -217,6 +217,27 @@ const ProfilePage = () => {
                   )}
                 </div>
               ))}
+              {/* Dashed empty card for adding new section */}
+              {isOwnProfile && !reordering && (
+                <div className="animate-fade-up" style={{ animationDelay: `${visibleSections.length * 60}ms` }}>
+                  <CreateSectionDialog
+                    onCreated={fetchSections}
+                    trigger={
+                      <button
+                        className="w-full aspect-[4/5] rounded-[16px] flex flex-col items-center justify-center gap-1 transition-all active:scale-[0.97]"
+                        style={{
+                          border: "1px dashed #C9B8D8",
+                          background: "transparent",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Plus className="w-4 h-4" style={{ color: "#C9B8D8" }} />
+                        <span className="text-[8px]" style={{ color: "#B0A0B5" }}>Ny del</span>
+                      </button>
+                    }
+                  />
+                </div>
+              )}
             </div>
           </SortableContext>
         </DndContext>
