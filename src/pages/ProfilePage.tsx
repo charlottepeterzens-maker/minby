@@ -391,8 +391,7 @@ const ProfilePage = () => {
 
         {/* ===== (2) INVITE ROW ===== */}
         {isOwnProfile && (
-          <div className="mb-5 flex items-center gap-2">
-            <UserPlus className="w-4 h-4 shrink-0" style={{ color: "#C9503A" }} />
+          <div className="mb-5">
             <InviteFriendDialog />
           </div>
         )}

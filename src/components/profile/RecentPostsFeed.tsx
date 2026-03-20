@@ -324,19 +324,6 @@ const PostCard = ({
       <div className="px-3 pb-1">
         <span className="text-[10px]" style={{ color: "#B0A0B5" }}>{dateStr}</span>
       </div>
-      <div className="px-3 pb-2">
-        <div className="flex items-center gap-[6px]">
-          {["❤️", "🥂", "😮", "🙌"].map((emoji) => (
-            <span
-              key={emoji}
-              className="text-[11px] px-2 py-0.5 rounded-full"
-              style={{ background: "#F7F3EF", border: "1px solid #EDE8E0" }}
-            >
-              {emoji}
-            </span>
-          ))}
-        </div>
-      </div>
       <div className="px-3 pb-3">
         <PostReactions postId={post.id} />
         <PostComments postId={post.id} isOwner={true} />
