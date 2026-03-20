@@ -4,16 +4,28 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import QRCodeSheet from "@/components/profile/QRCodeSheet";
+import { Check } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface Props {
   onComplete: () => void;
 }
+
+const SUGGESTED_SECTIONS = [
+  { name: "Barnen", icon: "👤", bg: "#EDE8F4", desc: "Dela barnens vardag med familjen" },
+  { name: "Jobbet", icon: "📅", bg: "#EAF2E8", desc: "Vad händer på jobbet" },
+  { name: "Vardagen", icon: "❤️", bg: "#FCF0F3", desc: "Allt det lilla som händer" },
+];
 
 const OnboardingFlow = ({ onComplete }: Props) => {
   const { user } = useAuth();
   const [step, setStep] = useState(0);
   const [showInvite, setShowInvite] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [customName, setCustomName] = useState("");
+  const [showCustom, setShowCustom] = useState(false);
+  const [creatingSection, setCreatingSection] = useState(false);
 
   const markOnboarded = async () => {
     if (!user) return;
@@ -24,18 +36,26 @@ const OnboardingFlow = ({ onComplete }: Props) => {
   };
 
   const next = async () => {
-    if (step < 3) {
-      setStep(step + 1);
-    }
+    if (step < 4) setStep(step + 1);
   };
 
-  const handleInviteAction = () => {
-    setShowInvite(true);
+  const handleCreateSectionAndContinue = async () => {
+    if (!user) return;
+    const name = selectedSection || customName.trim();
+    if (!name) return;
+    setCreatingSection(true);
+    await supabase.from("life_sections").insert({
+      user_id: user.id,
+      name,
+      emoji: "—",
+      min_tier: "outer" as any,
+      section_type: "posts",
+    });
+    setCreatingSection(false);
+    next();
   };
 
-  const handleQRAction = () => {
-    setShowQR(true);
-  };
+  const handleSkipSection = () => next();
 
   const handleFinish = async () => {
     await markOnboarded();
@@ -44,7 +64,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
 
   const dots = (
     <div className="flex justify-center gap-2 mb-8">
-      {[0, 1, 2, 3].map((i) => (
+      {[0, 1, 2, 3, 4].map((i) => (
         <div
           key={i}
           className="rounded-full transition-all duration-300"
@@ -58,6 +78,8 @@ const OnboardingFlow = ({ onComplete }: Props) => {
       ))}
     </div>
   );
+
+  const sectionName = selectedSection || customName.trim();
 
   return (
     <div
@@ -103,39 +125,24 @@ const OnboardingFlow = ({ onComplete }: Props) => {
               <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "#7A6A85" }}>
                 Dela det som faktiskt händer. Och när du vill ses – säg till.
               </p>
-
-              {/* Mini cards */}
               <div className="flex gap-3 mb-8">
                 <div className="flex-1 rounded-xl p-4" style={{ backgroundColor: "#FCF0F3" }}>
                   <p className="font-light text-[11px] mb-1" style={{ color: "#7A6A85" }}>Vardagen</p>
                   <p className="font-fraunces text-[13px] font-medium leading-snug mb-3" style={{ color: "#3C2A4D" }}>
                     Jobbet gick äntligen rätt idag
                   </p>
-                  <span
-                    className="inline-block text-[11px] px-2 py-0.5 rounded-full"
-                    style={{ backgroundColor: "#FCE4EC" }}
-                  >
-                    ❤️
-                  </span>
+                  <span className="inline-block text-[11px] px-2 py-0.5 rounded-full" style={{ backgroundColor: "#FCE4EC" }}>❤️</span>
                 </div>
                 <div className="flex-1 rounded-xl p-4" style={{ backgroundColor: "#EAF2E8" }}>
                   <p className="font-light text-[11px] mb-1" style={{ color: "#7A6A85" }}>Ses vi?</p>
                   <p className="font-fraunces text-[13px] font-medium leading-snug mb-3" style={{ color: "#3C2A4D" }}>
                     Sugen på en promenad i helgen
                   </p>
-                  <span
-                    className="inline-block text-[11px] px-2.5 py-0.5 rounded-full"
-                    style={{
-                      backgroundColor: "#EAF2E8",
-                      border: "1px solid #B5CCBF",
-                      color: "#1F4A1A",
-                    }}
-                  >
+                  <span className="inline-block text-[11px] px-2.5 py-0.5 rounded-full" style={{ backgroundColor: "#EAF2E8", border: "1px solid #B5CCBF", color: "#1F4A1A" }}>
                     häng med
                   </span>
                 </div>
               </div>
-
               <OnboardingButton onClick={next}>Enkelt →</OnboardingButton>
             </StepCard>
           )}
@@ -143,59 +150,120 @@ const OnboardingFlow = ({ onComplete }: Props) => {
           {step === 3 && (
             <StepCard key="s3">
               <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "#3C2A4D" }}>
+                Vilken del av din vardag vill du dela med din krets?
+              </h1>
+
+              <div className="space-y-2 mb-4">
+                {SUGGESTED_SECTIONS.map((s) => (
+                  <button
+                    key={s.name}
+                    onClick={() => {
+                      setSelectedSection(selectedSection === s.name ? null : s.name);
+                      setShowCustom(false);
+                      setCustomName("");
+                    }}
+                    className="w-full flex items-center gap-3 text-left transition-all"
+                    style={{
+                      backgroundColor: selectedSection === s.name ? "#EDE8F4" : "#FFFFFF",
+                      border: selectedSection === s.name ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                      borderRadius: 8,
+                      padding: "12px 14px",
+                    }}
+                  >
+                    <div
+                      className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                      style={{ backgroundColor: s.bg }}
+                    >
+                      <span className="text-base">{s.icon}</span>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[14px] font-medium" style={{ color: "#3C2A4D" }}>{s.name}</p>
+                      <p className="text-[12px] font-light" style={{ color: "#7A6A85" }}>{s.desc}</p>
+                    </div>
+                    {selectedSection === s.name && (
+                      <Check className="w-4 h-4 shrink-0" style={{ color: "#3C2A4D" }} />
+                    )}
+                  </button>
+                ))}
+
+                {/* Custom section */}
+                <button
+                  onClick={() => {
+                    setShowCustom(!showCustom);
+                    setSelectedSection(null);
+                  }}
+                  className="w-full flex items-center gap-3 text-left"
+                  style={{
+                    border: "1px dashed #C9B8D8",
+                    borderRadius: 8,
+                    padding: "12px 14px",
+                    background: "transparent",
+                  }}
+                >
+                  <span className="text-[14px]" style={{ color: "#7A6A85" }}>Skapa en egen del...</span>
+                </button>
+                {showCustom && (
+                  <Input
+                    value={customName}
+                    onChange={(e) => setCustomName(e.target.value)}
+                    placeholder="Namn på din del"
+                    className="mt-1 text-sm"
+                    autoFocus
+                  />
+                )}
+              </div>
+
+              <OnboardingButton
+                onClick={handleCreateSectionAndContinue}
+                disabled={!sectionName || creatingSection}
+              >
+                {sectionName ? `Fortsätt med ${sectionName}` : "Välj en del"}
+              </OnboardingButton>
+              <button
+                onClick={handleSkipSection}
+                className="w-full text-center mt-3 text-[13px]"
+                style={{ color: "#B0A0B5", background: "none", border: "none", cursor: "pointer" }}
+              >
+                Hoppa över
+              </button>
+            </StepCard>
+          )}
+
+          {step === 4 && (
+            <StepCard key="s4">
+              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "#3C2A4D" }}>
                 Vem vill du ha i din by?
               </h1>
               <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "#7A6A85" }}>
                 Bjud in en person du faktiskt vill hålla kontakten med. Det tar en minut – och det är där allt börjar.
               </p>
 
-              {/* Action cards */}
               <div className="space-y-3 mb-4">
                 <button
-                  onClick={handleInviteAction}
+                  onClick={() => setShowInvite(true)}
                   className="w-full flex items-center gap-3 text-left"
-                  style={{
-                    backgroundColor: "#FFFFFF",
-                    border: "1px solid #EDE8E0",
-                    borderRadius: 8,
-                    padding: "14px 16px",
-                  }}
+                  style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8, padding: "14px 16px" }}
                 >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "#EDE8F4" }}
-                  >
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#EDE8F4" }}>
                     <span className="text-lg">👋</span>
                   </div>
                   <div>
                     <p className="font-medium text-[14px]" style={{ color: "#3C2A4D" }}>Bjud in via länk</p>
-                    <p className="font-light text-[12px]" style={{ color: "#7A6A85" }}>
-                      Skicka en länk – de är med på sekunden
-                    </p>
+                    <p className="font-light text-[12px]" style={{ color: "#7A6A85" }}>Skicka en länk – de är med på sekunden</p>
                   </div>
                 </button>
 
                 <button
-                  onClick={handleQRAction}
+                  onClick={() => setShowQR(true)}
                   className="w-full flex items-center gap-3 text-left"
-                  style={{
-                    backgroundColor: "#FFFFFF",
-                    border: "1px solid #EDE8E0",
-                    borderRadius: 8,
-                    padding: "14px 16px",
-                  }}
+                  style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8, padding: "14px 16px" }}
                 >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "#EAF2E8" }}
-                  >
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#EAF2E8" }}>
                     <span className="text-lg">📱</span>
                   </div>
                   <div>
                     <p className="font-medium text-[14px]" style={{ color: "#3C2A4D" }}>Visa QR-kod</p>
-                    <p className="font-light text-[12px]" style={{ color: "#7A6A85" }}>
-                      Perfekt om ni är på samma plats
-                    </p>
+                    <p className="font-light text-[12px]" style={{ color: "#7A6A85" }}>Perfekt om ni är på samma plats</p>
                   </div>
                 </button>
               </div>
@@ -210,14 +278,12 @@ const OnboardingFlow = ({ onComplete }: Props) => {
         </AnimatePresence>
       </div>
 
-      {/* Invite sheet (reusing existing component logic) */}
       <InviteSheet open={showInvite} onOpenChange={setShowInvite} />
       <QRCodeSheet open={showQR} onOpenChange={setShowQR} />
     </div>
   );
 };
 
-/** Animated wrapper */
 const StepCard = ({ children }: { children: React.ReactNode }) => (
   <motion.div
     initial={{ opacity: 0, x: 30 }}
@@ -229,16 +295,18 @@ const StepCard = ({ children }: { children: React.ReactNode }) => (
   </motion.div>
 );
 
-/** Primary CTA button */
 const OnboardingButton = ({
   children,
   onClick,
+  disabled,
 }: {
   children: React.ReactNode;
   onClick: () => void;
+  disabled?: boolean;
 }) => (
   <button
     onClick={onClick}
+    disabled={disabled}
     className="w-full text-[14px] font-medium"
     style={{
       backgroundColor: "#3C2A4D",
@@ -246,14 +314,14 @@ const OnboardingButton = ({
       borderRadius: 99,
       height: 52,
       border: "none",
-      cursor: "pointer",
+      cursor: disabled ? "default" : "pointer",
+      opacity: disabled ? 0.5 : 1,
     }}
   >
     {children}
   </button>
 );
 
-/** Invite link sheet – extracted from InviteFriendDialog to be controllable */
 import { Copy, Share2 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
@@ -281,7 +349,6 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
     }
   };
 
-  // Generate link when sheet opens
   if (open && !link && !loading) {
     generate();
   }
@@ -295,11 +362,7 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
   const handleShare = async () => {
     if (!link) return;
     if (navigator.share) {
-      await navigator.share({
-        title: "Gå med i min by på Minby",
-        text: "Jag vill bjuda in dig till Minby.",
-        url: link,
-      });
+      await navigator.share({ title: "Gå med i min by på Minby", text: "Jag vill bjuda in dig till Minby.", url: link });
     } else {
       handleCopy();
     }
@@ -307,51 +370,21 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="bottom"
-        className="rounded-t-[20px] z-[70]"
-        style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}
-      >
+      <SheetContent side="bottom" className="rounded-t-[20px] z-[70]" style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}>
         <SheetHeader>
           <SheetTitle className="font-display text-base font-medium text-left">Bjud in någon</SheetTitle>
         </SheetHeader>
-        <p className="text-sm mt-2 mb-4" style={{ color: "#7A6A85" }}>
-          Dela länken via SMS, WhatsApp eller hur du vill.
-        </p>
+        <p className="text-sm mt-2 mb-4" style={{ color: "#7A6A85" }}>Dela länken via SMS, WhatsApp eller hur du vill.</p>
         {link ? (
           <>
-            <div
-              style={{
-                background: "#EDE8F4",
-                borderRadius: 10,
-                padding: "10px 14px",
-                fontSize: 12,
-                color: "#3C2A4D",
-                wordBreak: "break-all",
-                marginBottom: 16,
-              }}
-            >
+            <div style={{ background: "#EDE8F4", borderRadius: 10, padding: "10px 14px", fontSize: 12, color: "#3C2A4D", wordBreak: "break-all", marginBottom: 16 }}>
               {link}
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <button
-                onClick={handleShare}
-                style={{
-                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                  background: "#3C2A4D", color: "#F7F3EF", borderRadius: 10, padding: 10,
-                  fontSize: 13, fontWeight: 500, border: "none", cursor: "pointer",
-                }}
-              >
+              <button onClick={handleShare} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, background: "#3C2A4D", color: "#F7F3EF", borderRadius: 10, padding: 10, fontSize: 13, fontWeight: 500, border: "none", cursor: "pointer" }}>
                 <Share2 style={{ width: 14, height: 14 }} /> Dela
               </button>
-              <button
-                onClick={handleCopy}
-                style={{
-                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                  background: "#EDE8F4", color: "#3C2A4D", borderRadius: 10, padding: 10,
-                  fontSize: 13, fontWeight: 500, border: "none", cursor: "pointer",
-                }}
-              >
+              <button onClick={handleCopy} style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6, background: "#EDE8F4", color: "#3C2A4D", borderRadius: 10, padding: 10, fontSize: 13, fontWeight: 500, border: "none", cursor: "pointer" }}>
                 <Copy style={{ width: 14, height: 14 }} /> Kopiera
               </button>
             </div>
