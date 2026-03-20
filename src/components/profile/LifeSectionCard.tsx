@@ -255,7 +255,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     cursor: "pointer",
                   }}
                 >
-                  Redigera rum
+                  Redigera del
                 </button>
                 <button
                   onClick={() => setShowCompose(!showCompose)}
