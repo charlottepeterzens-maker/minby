@@ -391,19 +391,9 @@ const ProfilePage = () => {
 
         {/* ===== (2) INVITE ROW ===== */}
         {isOwnProfile && (
-          <InviteFriendDialog
-            trigger={
-              <button
-                className="flex items-center gap-2 mb-5 w-full active:scale-[0.98] transition-transform"
-                style={{ cursor: "pointer", background: "none", border: "none", padding: 0 }}
-              >
-                <UserPlus className="w-4 h-4 shrink-0" style={{ color: "#C9503A" }} />
-                <span className="text-[11px] font-medium" style={{ color: "#C9503A" }}>
-                  Bjud in någon till din vardag
-                </span>
-              </button>
-            }
-          />
+          <div className="mb-5 flex items-center gap-2">
+            <UserPlus className="w-4 h-4 shrink-0" style={{ color: "#C9503A" }} />
+            <InviteFriendDialog />
         )}
 
         {/* ===== (3) HEALTH TEASER ===== */}
