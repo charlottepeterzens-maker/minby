@@ -394,6 +394,7 @@ const ProfilePage = () => {
           <div className="mb-5 flex items-center gap-2">
             <UserPlus className="w-4 h-4 shrink-0" style={{ color: "#C9503A" }} />
             <InviteFriendDialog />
+          </div>
         )}
 
         {/* ===== (3) HEALTH TEASER ===== */}
