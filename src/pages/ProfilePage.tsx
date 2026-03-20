@@ -492,6 +492,19 @@ const ProfilePage = () => {
           />
         )}
 
+        {/* Quick post card */}
+        {isOwnProfile && (
+          <QuickPostCard
+            profile={profile}
+            sections={sections}
+            onPosted={() => {
+              setRecentRefreshKey((k) => k + 1);
+              fetchSections();
+            }}
+            onSectionsChanged={fetchSections}
+          />
+        )}
+
         {/* Invite friend */}
         {isOwnProfile && (
           <div className="mb-6 flex justify-start">
