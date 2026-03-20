@@ -348,7 +348,7 @@ export type Database = {
           link_title: string | null
           link_url: string | null
           photo_layout: string
-          section_id: string
+          section_id: string | null
           user_id: string
         }
         Insert: {
@@ -359,7 +359,7 @@ export type Database = {
           link_title?: string | null
           link_url?: string | null
           photo_layout?: string
-          section_id: string
+          section_id?: string | null
           user_id: string
         }
         Update: {
@@ -370,7 +370,7 @@ export type Database = {
           link_title?: string | null
           link_url?: string | null
           photo_layout?: string
-          section_id?: string
+          section_id?: string | null
           user_id?: string
         }
         Relationships: [
