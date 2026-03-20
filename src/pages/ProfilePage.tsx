@@ -404,7 +404,7 @@ const ProfilePage = () => {
             >
               <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </button>
-            <span className="font-display text-[20px] font-medium text-foreground">Min plats</span>
+            <span className="font-display text-[20px] font-medium text-foreground">Mitt</span>
           </div>
           <div className="flex items-center gap-1">{targetUserId && <ProfileShareDialog userId={targetUserId} />}</div>
         </div>
