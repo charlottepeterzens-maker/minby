@@ -82,7 +82,6 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
 
   return (
     <div
-      className="mb-6"
       style={{
         background: "#FFFFFF",
         border: "1px solid #EDE8E0",
