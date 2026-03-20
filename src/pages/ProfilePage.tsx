@@ -23,6 +23,8 @@ import CurvedSeparator from "@/components/CurvedSeparator";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
 import SectionGridCard from "@/components/profile/SectionGridCard";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
+import QuickPostCard from "@/components/profile/QuickPostCard";
+import RecentPostsFeed from "@/components/profile/RecentPostsFeed";
 
 import WorkoutTracker from "@/components/profile/WorkoutTracker";
 import HangoutAvailability from "@/components/profile/HangoutAvailability";
@@ -120,6 +122,7 @@ const ProfilePage = () => {
   const [bioText, setBioText] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [reordering, setReordering] = useState(false);
+  const [recentRefreshKey, setRecentRefreshKey] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [notifHangoutId, setNotifHangoutId] = useState<string | null>(null);
   const { refresh: refreshUnread } = useUnreadNotifications();
@@ -214,6 +217,27 @@ const ProfilePage = () => {
                   )}
                 </div>
               ))}
+              {/* Dashed empty card for adding new section */}
+              {isOwnProfile && !reordering && (
+                <div className="animate-fade-up" style={{ animationDelay: `${visibleSections.length * 60}ms` }}>
+                  <CreateSectionDialog
+                    onCreated={fetchSections}
+                    trigger={
+                      <button
+                        className="w-full aspect-[4/5] rounded-[16px] flex flex-col items-center justify-center gap-1 transition-all active:scale-[0.97]"
+                        style={{
+                          border: "1px dashed #C9B8D8",
+                          background: "transparent",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Plus className="w-4 h-4" style={{ color: "#C9B8D8" }} />
+                        <span className="text-[8px]" style={{ color: "#B0A0B5" }}>Ny del</span>
+                      </button>
+                    }
+                  />
+                </div>
+              )}
             </div>
           </SortableContext>
         </DndContext>
@@ -380,7 +404,7 @@ const ProfilePage = () => {
             >
               <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </button>
-            <span className="font-display text-[20px] font-medium text-foreground">Min plats</span>
+            <span className="font-display text-[20px] font-medium text-foreground">Mitt</span>
           </div>
           <div className="flex items-center gap-1">{targetUserId && <ProfileShareDialog userId={targetUserId} />}</div>
         </div>
@@ -489,6 +513,19 @@ const ProfilePage = () => {
           />
         )}
 
+        {/* Quick post card */}
+        {isOwnProfile && (
+          <QuickPostCard
+            profile={profile}
+            sections={sections}
+            onPosted={() => {
+              setRecentRefreshKey((k) => k + 1);
+              fetchSections();
+            }}
+            onSectionsChanged={fetchSections}
+          />
+        )}
+
         {/* Invite friend */}
         {isOwnProfile && (
           <div className="mb-6 flex justify-start">
@@ -536,18 +573,33 @@ const ProfilePage = () => {
           </div>
         )}
 
+        {/* Recent posts feed (own profile only) */}
+        {isOwnProfile && (
+          <RecentPostsFeed sections={sections} refreshKey={recentRefreshKey} />
+        )}
+
         {/* Life sections as thumbnail grid */}
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xs font-medium text-muted-foreground font-body">Min vardag</h2>
+          <h2 className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "#B0A0B5" }}>
+            Delar av min vardag
+          </h2>
           {isOwnProfile && (
             <CreateSectionDialog
               onCreated={fetchSections}
               trigger={
                 <button
-                  className="w-5 h-5 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: "#EDE8F4" }}
+                  className="inline-flex items-center gap-1"
+                  style={{
+                    fontSize: 11,
+                    padding: "4px 10px",
+                    borderRadius: 99,
+                    background: "#EDE8F4",
+                    border: "1px solid #C9B8D8",
+                    color: "#3C2A4D",
+                    cursor: "pointer",
+                  }}
                 >
-                  <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
+                  Lägg till en del
                 </button>
               }
             />

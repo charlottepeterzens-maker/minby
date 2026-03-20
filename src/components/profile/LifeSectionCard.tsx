@@ -106,9 +106,9 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       .update({ name: editName.trim(), min_tier: editTier as any })
       .eq("id", section.id);
     if (error) {
-      toast.error("Kunde inte uppdatera rummet");
+      toast.error("Kunde inte uppdatera delen");
     } else {
-      toast.success("Rummet uppdaterat");
+      toast.success("Delen uppdaterad");
       setEditing(false);
       onUpdated?.();
     }
@@ -194,8 +194,8 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="close">Nara vanner</SelectItem>
-                <SelectItem value="inner">Vanner</SelectItem>
+                <SelectItem value="close">Nära</SelectItem>
+                <SelectItem value="inner">Vänner</SelectItem>
                 <SelectItem value="outer">Alla</SelectItem>
               </SelectContent>
             </Select>
@@ -255,7 +255,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     cursor: "pointer",
                   }}
                 >
-                  Redigera rum
+                  Redigera del
                 </button>
                 <button
                   onClick={() => setShowCompose(!showCompose)}
