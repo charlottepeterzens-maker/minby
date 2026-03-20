@@ -23,6 +23,8 @@ import CurvedSeparator from "@/components/CurvedSeparator";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
 import SectionGridCard from "@/components/profile/SectionGridCard";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
+import QuickPostCard from "@/components/profile/QuickPostCard";
+import RecentPostsFeed from "@/components/profile/RecentPostsFeed";
 
 import WorkoutTracker from "@/components/profile/WorkoutTracker";
 import HangoutAvailability from "@/components/profile/HangoutAvailability";
