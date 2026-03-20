@@ -35,6 +35,8 @@ interface LifePost {
 interface Props {
   sections: LifeSection[];
   refreshKey: number;
+  limit?: number;
+  showFade?: boolean;
 }
 
 const PILL_COLORS = [
@@ -46,7 +48,7 @@ const PILL_COLORS = [
   { bg: "#EAF2E8", text: "#1F4A1A" },
 ];
 
-const RecentPostsFeed = ({ sections, refreshKey }: Props) => {
+const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }: Props) => {
   const { user } = useAuth();
   const [posts, setPosts] = useState<LifePost[]>([]);
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
@@ -62,9 +64,9 @@ const RecentPostsFeed = ({ sections, refreshKey }: Props) => {
       .select("id, content, image_url, photo_layout, created_at, section_id")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
-      .limit(10);
+      .limit(limit);
     if (data) setPosts(data as LifePost[]);
-  }, [user]);
+  }, [user, limit]);
 
   useEffect(() => {
     fetchPosts();
@@ -109,8 +111,9 @@ const RecentPostsFeed = ({ sections, refreshKey }: Props) => {
     const colors = PILL_COLORS[idx % PILL_COLORS.length];
     return (
       <span
+        className="absolute top-2 right-10 z-[5]"
         style={{
-          fontSize: 10,
+          fontSize: 8,
           padding: "2px 8px",
           borderRadius: 99,
           background: colors.bg,
@@ -126,14 +129,8 @@ const RecentPostsFeed = ({ sections, refreshKey }: Props) => {
   if (posts.length === 0) return null;
 
   return (
-    <div className="mb-6">
-      <p
-        className="text-[10px] uppercase font-medium tracking-wider mb-3"
-        style={{ color: "#B0A0B5" }}
-      >
-        Senaste
-      </p>
-      <div className="flex flex-col gap-2.5">
+    <div className="relative">
+      <div className="flex flex-col gap-2">
         {posts.map((post, i) => (
           <motion.div
             key={post.id}
@@ -155,6 +152,17 @@ const RecentPostsFeed = ({ sections, refreshKey }: Props) => {
           </motion.div>
         ))}
       </div>
+
+      {/* Fade overlay on last post */}
+      {showFade && posts.length >= 3 && (
+        <div
+          className="absolute bottom-0 left-0 right-0 pointer-events-none"
+          style={{
+            height: 80,
+            background: "linear-gradient(to bottom, transparent, #F7F3EF)",
+          }}
+        />
+      )}
 
       {/* Delete confirm */}
       <ConfirmSheet
@@ -244,6 +252,9 @@ const PostCard = ({
         position: "relative",
       }}
     >
+      {/* Category pill */}
+      {sectionPill}
+
       {/* Menu */}
       <div className="absolute top-2 right-2 z-10">
         <DropdownMenu>
@@ -268,33 +279,64 @@ const PostCard = ({
 
       {/* Large image */}
       {post.image_url && post.photo_layout !== "small" && (
-        <SignedImg
-          imageRef={post.image_url}
-          className="w-full max-h-72 object-cover cursor-pointer hover:opacity-90 transition-opacity"
-          onClick={() => onImageClick(post.image_url!)}
-        />
-      )}
-
-      <div className="p-3 flex gap-2.5">
-        {/* Small image */}
-        {post.image_url && post.photo_layout === "small" && (
+        <div className="relative">
           <SignedImg
             imageRef={post.image_url}
-            className="w-[60px] h-[60px] object-cover rounded-md shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+            className="w-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
+            style={{ maxHeight: 200, borderRadius: "8px 8px 0 0" }}
             onClick={() => onImageClick(post.image_url!)}
           />
-        )}
-        <div className="flex-1 min-w-0">
           {post.content && (
-            <p className="text-[13px] leading-relaxed mb-1" style={{ color: "#2A1A3C" }}>{post.content}</p>
+            <div
+              className="absolute bottom-0 left-0 right-0 p-3"
+              style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5), transparent)" }}
+            >
+              <p className="text-[13px] leading-relaxed text-white">{post.content}</p>
+            </div>
           )}
-          <div className="flex items-center gap-2 mt-1">
-            <span className="text-[10px]" style={{ color: "#B0A0B5" }}>{dateStr}</span>
-            {sectionPill}
+        </div>
+      )}
+
+      {/* Text-only or small image */}
+      {(!post.image_url || post.photo_layout === "small") && (
+        <div className="p-3 flex gap-2.5">
+          {post.image_url && post.photo_layout === "small" && (
+            <SignedImg
+              imageRef={post.image_url}
+              className="w-[60px] h-[60px] object-cover rounded-md shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={() => onImageClick(post.image_url!)}
+            />
+          )}
+          <div className="flex-1 min-w-0">
+            {post.content && (
+              <p className="text-[13px] leading-relaxed" style={{ color: "#2A1A3C" }}>{post.content}</p>
+            )}
           </div>
         </div>
-      </div>
+      )}
 
+      {/* Large image with content already shown in overlay — show date row */}
+      {post.image_url && post.photo_layout !== "small" && !post.content && (
+        <div className="p-3" />
+      )}
+
+      {/* Date + reactions */}
+      <div className="px-3 pb-1">
+        <span className="text-[10px]" style={{ color: "#B0A0B5" }}>{dateStr}</span>
+      </div>
+      <div className="px-3 pb-2">
+        <div className="flex items-center gap-[6px]">
+          {["❤️", "🥂", "😮", "🙌"].map((emoji) => (
+            <span
+              key={emoji}
+              className="text-[11px] px-2 py-0.5 rounded-full"
+              style={{ background: "#F7F3EF", border: "1px solid #EDE8E0" }}
+            >
+              {emoji}
+            </span>
+          ))}
+        </div>
+      </div>
       <div className="px-3 pb-3">
         <PostReactions postId={post.id} />
         <PostComments postId={post.id} isOwner={true} />
@@ -307,10 +349,12 @@ const PostCard = ({
 const SignedImg = ({
   imageRef,
   className,
+  style,
   onClick,
 }: {
   imageRef: string;
   className?: string;
+  style?: React.CSSProperties;
   onClick?: () => void;
 }) => {
   const url = useSignedImageUrl(imageRef);
@@ -318,7 +362,7 @@ const SignedImg = ({
   const Tag = onClick ? "button" : "div";
   return (
     <Tag onClick={onClick} className={onClick ? "" : undefined}>
-      <img src={url} alt="" className={className} />
+      <img src={url} alt="" className={className} style={style} />
     </Tag>
   );
 };

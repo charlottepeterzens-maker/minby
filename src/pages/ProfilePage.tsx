@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X, GripVertical, Heart } from "lucide-react";
+import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X, GripVertical, Heart, UserPlus } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -123,6 +123,7 @@ const ProfilePage = () => {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [reordering, setReordering] = useState(false);
   const [recentRefreshKey, setRecentRefreshKey] = useState(0);
+  const [showAllPosts, setShowAllPosts] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [notifHangoutId, setNotifHangoutId] = useState<string | null>(null);
   const { refresh: refreshUnread } = useUnreadNotifications();
@@ -130,129 +131,6 @@ const ProfilePage = () => {
 
   const targetUserId = userId || user?.id;
   const isOwnProfile = !userId || userId === user?.id;
-
-  // Grid with row-aware expansion
-  const GridWithExpansion = ({
-    sections,
-    expandedSection,
-    reordering,
-    isOwnProfile,
-    toggleSection,
-    fetchSections,
-    sensors,
-    handleDragEnd,
-  }: {
-    sections: LifeSection[];
-    expandedSection: string | null;
-    reordering: boolean;
-    isOwnProfile: boolean;
-    toggleSection: (id: string) => void;
-    fetchSections: () => void;
-    sensors: any;
-    handleDragEnd: (event: DragEndEvent) => void;
-  }) => {
-    const gridRef = useRef<HTMLDivElement>(null);
-    const [cols, setCols] = useState(3);
-    const [showAll, setShowAll] = useState(false);
-
-    useEffect(() => {
-      const measure = () => {
-        if (!gridRef.current) return;
-        const style = getComputedStyle(gridRef.current);
-        const colCount = style.gridTemplateColumns.split(" ").length;
-        setCols(colCount);
-      };
-      measure();
-      window.addEventListener("resize", measure);
-      return () => window.removeEventListener("resize", measure);
-    }, []);
-
-    // Build items with expansion inserted after the last item in the expanded item's row
-    const expandedIdx = expandedSection ? sections.findIndex((s) => s.id === expandedSection) : -1;
-    const expandedRowEnd = expandedIdx >= 0 ? Math.floor(expandedIdx / cols) * cols + cols - 1 : -1;
-    // Clamp to last index
-    const insertAfterIdx = Math.min(expandedRowEnd, sections.length - 1);
-    const visibleSections = showAll ? sections : sections.slice(0, 6);
-    return (
-      <>
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={sections.map((s) => s.id)} strategy={rectSortingStrategy}>
-            <div ref={gridRef} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
-              {visibleSections.map((section, i) => (
-                <div key={section.id} className="contents">
-                  <div className="animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
-                    <SortableGridCard
-                      section={section}
-                      isOwner={isOwnProfile}
-                      isExpanded={expandedSection === section.id}
-                      onClick={() => toggleSection(section.id)}
-                      onDeleted={fetchSections}
-                      onRenamed={fetchSections}
-                      index={i}
-                      reordering={reordering}
-                    />
-                  </div>
-                  {i === insertAfterIdx && expandedSection && !reordering && (
-                    <div className="col-span-3 sm:col-span-4 md:col-span-5">
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={expandedSection}
-                          id={`section-${expandedSection}`}
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.25, ease: "easeInOut" }}
-                          className="overflow-hidden"
-                        >
-                          {(() => {
-                            const sec = sections.find((s) => s.id === expandedSection);
-                            if (!sec) return null;
-                            if (sec.section_type === "workout")
-                              return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
-                            return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
-                          })()}
-                        </motion.div>
-                      </AnimatePresence>
-                    </div>
-                  )}
-                </div>
-              ))}
-              {/* Dashed empty card for adding new section */}
-              {isOwnProfile && !reordering && (
-                <div className="animate-fade-up" style={{ animationDelay: `${visibleSections.length * 60}ms` }}>
-                  <CreateSectionDialog
-                    onCreated={fetchSections}
-                    trigger={
-                      <button
-                        className="w-full aspect-[4/5] rounded-[16px] flex flex-col items-center justify-center gap-1 transition-all active:scale-[0.97]"
-                        style={{
-                          border: "1px dashed #C9B8D8",
-                          background: "transparent",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <Plus className="w-4 h-4" style={{ color: "#C9B8D8" }} />
-                        <span className="text-[8px]" style={{ color: "#B0A0B5" }}>Ny del</span>
-                      </button>
-                    }
-                  />
-                </div>
-              )}
-            </div>
-          </SortableContext>
-        </DndContext>
-        {!showAll && sections.length > 6 && (
-          <button
-            onClick={() => setShowAll(true)}
-            className="w-full mt-3 text-center text-xs font-medium"
-            style={{ color: "#7A6A85" }}
-          >
-            Visa alla ({sections.length})
-          </button>
-        )}
-      </>
-    );
-  };
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -340,11 +218,9 @@ const ProfilePage = () => {
     const [moved] = updated.splice(oldIndex, 1);
     updated.splice(newIndex, 0, moved);
 
-    // Update sort_order
     const withOrder = updated.map((s, i) => ({ ...s, sort_order: i }));
     setSections(withOrder);
 
-    // Persist
     await Promise.all(
       withOrder.map((s) => supabase.from("life_sections").update({ sort_order: s.sort_order }).eq("id", s.id)),
     );
@@ -412,8 +288,8 @@ const ProfilePage = () => {
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-6 pb-24">
-        {/* Profile header with avatar */}
-        <div className="flex items-start gap-4 mb-8">
+        {/* ===== (1) PROFILE HEADER ===== */}
+        <div className="flex items-start gap-4 mb-4">
           <div className="relative shrink-0">
             <div
               className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden"
@@ -447,7 +323,7 @@ const ProfilePage = () => {
               {!isOwnProfile && targetUserId && <FriendRequestButton targetUserId={targetUserId} />}
             </div>
 
-            {/* Bio / Quote */}
+            {/* Bio */}
             {isOwnProfile ? (
               <div className="mt-1">
                 {editingBio ? (
@@ -498,7 +374,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        {/* New notification list */}
+        {/* Notifications */}
         {isOwnProfile && notifItems.length > 0 && (
           <NotificationList
             notifications={notifItems}
@@ -513,56 +389,59 @@ const ProfilePage = () => {
           />
         )}
 
-        {/* Quick post card */}
+        {/* ===== (2) INVITE ROW ===== */}
         {isOwnProfile && (
-          <QuickPostCard
-            profile={profile}
-            sections={sections}
-            onPosted={() => {
-              setRecentRefreshKey((k) => k + 1);
-              fetchSections();
-            }}
-            onSectionsChanged={fetchSections}
+          <InviteFriendDialog
+            trigger={
+              <button
+                className="flex items-center gap-2 mb-5 w-full active:scale-[0.98] transition-transform"
+                style={{ cursor: "pointer", background: "none", border: "none", padding: 0 }}
+              >
+                <UserPlus className="w-4 h-4 shrink-0" style={{ color: "#C9503A" }} />
+                <span className="text-[11px] font-medium" style={{ color: "#C9503A" }}>
+                  Bjud in någon till din vardag
+                </span>
+              </button>
+            }
           />
         )}
 
-        {/* Invite friend */}
-        {isOwnProfile && (
-          <div className="mb-6 flex justify-start">
-            <InviteFriendDialog />
-          </div>
-        )}
-
-        {/* Hangout notifications */}
-        {isOwnProfile && (
-          <HangoutNotificationList
-            onOpenHangout={(hangoutId) => setNotifHangoutId(hangoutId)}
-            onNotificationsRead={refreshUnread}
-          />
-        )}
-
-        {/* Health coming soon placeholder */}
-        <div className="mb-6 flex items-center gap-3 rounded-[16px] border border-[#EDE8F4] bg-[#FFFFFF] p-3">
+        {/* ===== (3) HEALTH TEASER ===== */}
+        <div
+          className="mb-5 flex items-center gap-3"
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #EDE8E0",
+            borderRadius: 8,
+            padding: 12,
+          }}
+        >
           <div
-            className="shrink-0 flex items-center justify-center rounded-full"
-            style={{ width: 36, height: 36, backgroundColor: "#FCF0F3" }}
+            className="shrink-0 flex items-center justify-center"
+            style={{ width: 36, height: 36, backgroundColor: "#FCF0F3", borderRadius: 8 }}
           >
             <Heart className="w-4 h-4" style={{ color: "#993556" }} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>
+            <p className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
               Hälsa
             </p>
-            <p className="text-[11px]" style={{ color: "#7A6A85" }}>
+            <p className="text-[10px]" style={{ color: "#B0A0B5" }}>
               Menscykel, graviditet och mer – kommer snart
             </p>
           </div>
           <Lock className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
         </div>
 
-        {/* Hangout Availability */}
+        {/* ===== (4) SES VI? ===== */}
+        {isOwnProfile && (
+          <HangoutNotificationList
+            onOpenHangout={(hangoutId) => setNotifHangoutId(hangoutId)}
+            onNotificationsRead={refreshUnread}
+          />
+        )}
         {targetUserId && (
-          <div className="mb-6">
+          <div className="mb-5">
             <ProfileHangoutHint isOwner={isOwnProfile} />
             <HangoutAvailability
               userId={targetUserId}
@@ -573,63 +452,188 @@ const ProfilePage = () => {
           </div>
         )}
 
-        {/* Recent posts feed (own profile only) */}
-        {isOwnProfile && (
-          <RecentPostsFeed sections={sections} refreshKey={recentRefreshKey} />
-        )}
+        {/* ===== (5+6) MIN VARDAG BLOCK ===== */}
+        <div
+          className="mb-5"
+          style={{
+            background: "#F7F3EF",
+            borderRadius: 8,
+            padding: "14px 12px",
+            overflow: "hidden",
+          }}
+        >
+          {/* Block header */}
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[13px] font-medium" style={{ color: "#2A1A3C" }}>
+              Min vardag
+            </span>
+            {isOwnProfile && (
+              <CreateSectionDialog
+                onCreated={fetchSections}
+                trigger={
+                  <button
+                    className="w-6 h-6 rounded-full flex items-center justify-center"
+                    style={{ background: "#3C2A4D", border: "none", cursor: "pointer" }}
+                  >
+                    <Plus className="w-3 h-3" style={{ color: "#F7F3EF" }} />
+                  </button>
+                }
+              />
+            )}
+          </div>
 
-        {/* Life sections as thumbnail grid */}
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "#B0A0B5" }}>
-            Delar av min vardag
-          </h2>
+          {/* Quick post */}
           {isOwnProfile && (
-            <CreateSectionDialog
-              onCreated={fetchSections}
-              trigger={
-                <button
-                  className="inline-flex items-center gap-1"
-                  style={{
-                    fontSize: 11,
-                    padding: "4px 10px",
-                    borderRadius: 99,
-                    background: "#EDE8F4",
-                    border: "1px solid #C9B8D8",
-                    color: "#3C2A4D",
-                    cursor: "pointer",
-                  }}
-                >
-                  Lägg till en del
-                </button>
-              }
-            />
+            <div className="mb-3">
+              <QuickPostCard
+                profile={profile}
+                sections={sections}
+                onPosted={() => {
+                  setRecentRefreshKey((k) => k + 1);
+                  fetchSections();
+                }}
+                onSectionsChanged={fetchSections}
+              />
+            </div>
           )}
+
+          {/* Recent 3 posts with fade */}
+          <RecentPostsFeed
+            sections={sections}
+            refreshKey={recentRefreshKey}
+            limit={showAllPosts ? 50 : 3}
+            showFade={!showAllPosts}
+          />
+
+          {/* Section header */}
+          <div className="flex items-center justify-between mt-4 mb-2">
+            <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "#B0A0B5" }}>
+              Delar av min vardag
+            </span>
+            {isOwnProfile && (
+              <CreateSectionDialog
+                onCreated={fetchSections}
+                trigger={
+                  <button
+                    className="text-[11px] font-medium"
+                    style={{ color: "#C9503A", background: "none", border: "none", cursor: "pointer" }}
+                  >
+                    + Lägg till en del
+                  </button>
+                }
+              />
+            )}
+          </div>
+
+          {/* Horizontal sections scroll */}
+          {loading ? (
+            <div className="text-center py-4 text-muted-foreground text-xs">{t("loading")}</div>
+          ) : sections.length === 0 ? (
+            <p className="text-[11px] text-center py-4" style={{ color: "#B0A0B5" }}>
+              {isOwnProfile ? "Lägg till en del av din vardag" : t("nothingSharedYet")}
+            </p>
+          ) : (
+            <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
+              {sections.map((section, i) => {
+                const colors = [
+                  { bg: "#EDE8F4" },
+                  { bg: "#EAF2E8" },
+                  { bg: "#FCF0F3" },
+                  { bg: "#EDE8F4" },
+                  { bg: "#EAF2E8" },
+                  { bg: "#FCF0F3" },
+                ];
+                const color = colors[i % colors.length];
+                return (
+                  <button
+                    key={section.id}
+                    onClick={() => toggleSection(section.id)}
+                    className="shrink-0 flex flex-col items-center justify-center transition-all active:scale-[0.97]"
+                    style={{
+                      minWidth: 72,
+                      height: 64,
+                      borderRadius: 8,
+                      background: expandedSection === section.id ? "#3C2A4D" : color.bg,
+                      border: expandedSection === section.id ? "none" : "1px solid #EDE8E0",
+                      cursor: "pointer",
+                      marginRight: 0,
+                    }}
+                  >
+                    <span
+                      className="text-[9px] font-medium"
+                      style={{ color: expandedSection === section.id ? "#F7F3EF" : "#2A1A3C" }}
+                    >
+                      {section.name}
+                    </span>
+                  </button>
+                );
+              })}
+              {/* Dashed new section card */}
+              {isOwnProfile && (
+                <CreateSectionDialog
+                  onCreated={fetchSections}
+                  trigger={
+                    <button
+                      className="shrink-0 flex flex-col items-center justify-center"
+                      style={{
+                        minWidth: 72,
+                        height: 64,
+                        borderRadius: 8,
+                        border: "1px dashed #C9B8D8",
+                        background: "transparent",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Plus className="w-3 h-3 mb-0.5" style={{ color: "#C9B8D8" }} />
+                      <span className="text-[8px]" style={{ color: "#B0A0B5" }}>Ny del</span>
+                    </button>
+                  }
+                />
+              )}
+            </div>
+          )}
+
+          {/* Expanded section content */}
+          <AnimatePresence mode="wait">
+            {expandedSection && (
+              <motion.div
+                key={expandedSection}
+                id={`section-${expandedSection}`}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                className="overflow-hidden mt-2"
+              >
+                {(() => {
+                  const sec = sections.find((s) => s.id === expandedSection);
+                  if (!sec) return null;
+                  if (sec.section_type === "workout")
+                    return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
+                  return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
+                })()}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* View all link */}
+          <button
+            onClick={() => setShowAllPosts(!showAllPosts)}
+            className="w-full text-center mt-3"
+            style={{
+              fontSize: 11,
+              color: "#7A6A85",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 10,
+            }}
+          >
+            {showAllPosts ? "Visa färre" : "Visa alla inlägg →"}
+          </button>
         </div>
 
-        {loading ? (
-          <div className="text-center py-16 text-muted-foreground">{t("loading")}</div>
-        ) : sections.length === 0 ? (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
-            <Plus className="w-10 h-10 text-primary/30 mx-auto mb-4" />
-            <p className="font-display text-lg text-muted-foreground">
-              {isOwnProfile ? t("addFirstSection") : t("nothingSharedYet")}
-            </p>
-            {isOwnProfile && <p className="text-sm text-muted-foreground/70 mt-1">{t("shareLifeHint")}</p>}
-          </motion.div>
-        ) : (
-          <GridWithExpansion
-            sections={sections}
-            expandedSection={expandedSection}
-            reordering={reordering}
-            isOwnProfile={isOwnProfile}
-            toggleSection={toggleSection}
-            fetchSections={fetchSections}
-            sensors={sensors}
-            handleDragEnd={handleDragEnd}
-          />
-        )}
-
-        {/* Tips & Favorites */}
+        {/* ===== (7) TIPS & FAVORITES ===== */}
         {targetUserId && <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />}
       </main>
       <ScrollToTopButton />
