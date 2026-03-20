@@ -552,18 +552,33 @@ const ProfilePage = () => {
           </div>
         )}
 
+        {/* Recent posts feed (own profile only) */}
+        {isOwnProfile && (
+          <RecentPostsFeed sections={sections} refreshKey={recentRefreshKey} />
+        )}
+
         {/* Life sections as thumbnail grid */}
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xs font-medium text-muted-foreground font-body">Min vardag</h2>
+          <h2 className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "#B0A0B5" }}>
+            Delar av min vardag
+          </h2>
           {isOwnProfile && (
             <CreateSectionDialog
               onCreated={fetchSections}
               trigger={
                 <button
-                  className="w-5 h-5 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: "#EDE8F4" }}
+                  className="inline-flex items-center gap-1"
+                  style={{
+                    fontSize: 11,
+                    padding: "4px 10px",
+                    borderRadius: 99,
+                    background: "#EDE8F4",
+                    border: "1px solid #C9B8D8",
+                    color: "#3C2A4D",
+                    cursor: "pointer",
+                  }}
                 >
-                  <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
+                  Lägg till en del
                 </button>
               }
             />
