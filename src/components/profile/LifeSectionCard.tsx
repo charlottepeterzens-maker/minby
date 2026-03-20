@@ -108,7 +108,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
     if (error) {
       toast.error("Kunde inte uppdatera delen");
     } else {
-      toast.success("Rummet uppdaterat");
+      toast.success("Delen uppdaterad");
       setEditing(false);
       onUpdated?.();
     }
