@@ -38,6 +38,7 @@ import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import BottomNav from "@/components/BottomNav";
+import { Container } from "@/components/layout";
 import { toast } from "@/hooks/use-toast";
 
 interface LifeSection {
