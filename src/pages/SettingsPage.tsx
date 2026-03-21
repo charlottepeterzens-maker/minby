@@ -297,7 +297,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Dev tools - only for charlotte */}
-        {user?.email?.includes("charlotte") && (
+        {(user?.email?.includes("charlotte") || user?.email?.includes("chaluda")) && (
           <Card className="rounded-[14px] border border-border">
             <CardHeader className="pb-2">
               <CardTitle className="text-xs text-muted-foreground font-body font-medium">
