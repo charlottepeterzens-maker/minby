@@ -458,19 +458,6 @@ const ProfilePage = () => {
             <span className="text-[13px] font-medium" style={{ color: "#2A1A3C" }}>
               Min vardag
             </span>
-            {isOwnProfile && (
-              <CreateSectionDialog
-                onCreated={fetchSections}
-                trigger={
-                  <button
-                    className="w-6 h-6 rounded-full flex items-center justify-center"
-                    style={{ background: "#3C2A4D", border: "none", cursor: "pointer" }}
-                  >
-                    <Plus className="w-3 h-3" style={{ color: "#F7F3EF" }} />
-                  </button>
-                }
-              />
-            )}
           </div>
 
           {/* Quick post */}
