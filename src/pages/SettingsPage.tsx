@@ -267,6 +267,20 @@ const SettingsPage = () => {
           </CardContent>
         </Card>
 
+        {/* Dev tools - only for charlotte */}
+        {user?.email?.includes("charlotte") && (
+          <Card className="rounded-[14px] border border-border">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs text-muted-foreground font-body font-medium">
+                Utvecklarverktyg
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SeedTestUsersButton />
+            </CardContent>
+          </Card>
+        )}
+
         {/* Log out */}
         <Button variant="outline" onClick={handleLogout} className="w-full rounded-[10px] border border-border text-muted-foreground hover:text-foreground hover:bg-muted">
           <LogOut className="w-4 h-4 mr-2" strokeWidth={1.5} /> {t("logOut")}
