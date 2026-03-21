@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { UserPlus, Copy, Share2 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-const InviteFriendDialog = () => {
+interface InviteFriendDialogProps {
+  trigger?: ReactNode;
+}
+
+const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [link, setLink] = useState<string | null>(null);
