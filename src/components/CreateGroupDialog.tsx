@@ -97,11 +97,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
       return;
     }
 
-    await supabase.from("group_memberships").insert({
-      group_id: group.id,
-      user_id: user.id,
-      role: "owner"
-    });
+    // Owner membership is auto-created by the handle_new_group trigger
 
     if (selectedFriends.length > 0) {
       await supabase.from("group_memberships").insert(
