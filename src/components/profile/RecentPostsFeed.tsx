@@ -415,11 +415,11 @@ const PostCard = ({
 
       {/* Large image */}
       {post.image_url && post.photo_layout !== "small" && (
-        <div className="relative">
+        <div className="relative overflow-hidden" style={{ borderRadius: "8px 8px 0 0" }}>
           <SignedImg
             imageRef={post.image_url}
             className="w-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
-            style={{ maxHeight: 200, borderRadius: "8px 8px 0 0" }}
+            style={{ maxHeight: 280, minHeight: 140 }}
             onClick={() => onImageClick(post.image_url!)}
           />
           {post.content && (
