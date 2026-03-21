@@ -50,7 +50,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Gå med i min by på Minby",
+          title: "Du är en av mina närmsta! Gå med i min by på Minby",
           text: "Jag vill bjuda in dig till Minby – appen för äkta kontakt med de som betyder mest.",
           url: link,
         });
@@ -90,17 +90,11 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
                 <UserPlus className="w-5 h-5" style={{ color: "#3C2A4D" }} />
               </div>
 
-              <h2
-                className="font-display text-center mb-2"
-                style={{ fontWeight: 500, fontSize: 20, color: "#3C2A4D" }}
-              >
+              <h2 className="font-display text-center mb-2" style={{ fontWeight: 500, fontSize: 20, color: "#3C2A4D" }}>
                 Din by börjar här
               </h2>
-              <p
-                className="text-center mb-6"
-                style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}
-              >
-                Bjud in de du faktiskt vill dela livet med. Det här är din lilla krets – inte hela världen.
+              <p className="text-center mb-6" style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>
+                Bjud in de du faktiskt vill dela din vardag med. Det här är din lilla krets, inte hela världen.
               </p>
 
               <button
@@ -146,15 +140,10 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               }}
             >
               <p className="text-2xl mb-3">💛</p>
-              <h2
-                className="font-display mb-2"
-                style={{ fontWeight: 500, fontSize: 18, color: "#3C2A4D" }}
-              >
-                Du är igång
+              <h2 className="font-display mb-2" style={{ fontWeight: 500, fontSize: 18, color: "#3C2A4D" }}>
+                Du är igång!
               </h2>
-              <p style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>
-                Din by börjar ta form.
-              </p>
+              <p style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>Din krets börjar ta form.</p>
               <button
                 onClick={onComplete}
                 className="w-full mt-5 text-[13px] font-medium"
@@ -182,9 +171,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
           style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}
         >
           <SheetHeader>
-            <SheetTitle className="font-display text-base font-medium text-left">
-              Dela inbjudan
-            </SheetTitle>
+            <SheetTitle className="font-display text-base font-medium text-left">Dela inbjudan</SheetTitle>
           </SheetHeader>
 
           <p className="text-sm mt-2 mb-4" style={{ color: "#7A6A85" }}>
