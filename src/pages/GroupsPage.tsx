@@ -6,6 +6,7 @@ import { Plus } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import CurvedSeparator from "@/components/CurvedSeparator";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
+import { Container } from "@/components/layout";
 
 interface Group {
   id: string;
@@ -111,13 +112,13 @@ const GroupsPage = () => {
   return (
     <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
       <nav className="sticky top-0 z-50" style={{ backgroundColor: "#F7F3EF" }}>
-        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
+        <Container className="py-4 flex items-center justify-between">
           <span className="font-display text-[20px] font-medium text-foreground">Grupper</span>
-        </div>
+        </Container>
         <CurvedSeparator />
       </nav>
 
-      <main className="max-w-2xl mx-auto px-5 py-5">
+      <Container className="py-5">
         {loading ?
         <div className="space-y-3">
             {[1, 2, 3].map((i) =>
@@ -222,7 +223,7 @@ const GroupsPage = () => {
           }
           </div>
         }
-      </main>
+      </Container>
       <BottomNav />
     </div>);
 

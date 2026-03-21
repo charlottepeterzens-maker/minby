@@ -38,6 +38,7 @@ import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import BottomNav from "@/components/BottomNav";
+import { Container } from "@/components/layout";
 import { toast } from "@/hooks/use-toast";
 
 interface LifeSection {
@@ -274,7 +275,7 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-background">
       {/* Top nav */}
       <nav className="sticky top-0 z-50 bg-background">
-        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
+        <Container className="py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate("/")}
@@ -285,11 +286,11 @@ const ProfilePage = () => {
             <span className="font-display text-[20px] font-medium text-foreground">Mitt</span>
           </div>
           <div className="flex items-center gap-1">{targetUserId && <ProfileShareDialog userId={targetUserId} />}</div>
-        </div>
+        </Container>
         <CurvedSeparator />
       </nav>
 
-      <main className="max-w-2xl mx-auto px-5 py-6 pb-24">
+      <Container className="py-6 pb-24">
         {/* ===== (1) PROFILE HEADER ===== */}
         <div className="flex items-start gap-4 mb-4">
           <div className="relative shrink-0">
@@ -614,7 +615,7 @@ const ProfilePage = () => {
 
         {/* ===== (7) TIPS & FAVORITES ===== */}
         {targetUserId && <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />}
-      </main>
+      </Container>
       <ScrollToTopButton />
       <BottomNav />
     </div>

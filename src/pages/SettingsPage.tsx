@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import BottomNav from "@/components/BottomNav";
 import CurvedSeparator from "@/components/CurvedSeparator";
 import ConfirmSheet from "@/components/ConfirmSheet";
+import { Container } from "@/components/layout";
 
 interface NotificationSettings {
   hangout_yes: boolean;
@@ -145,16 +146,16 @@ const SettingsPage = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background">
-        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center gap-2">
+        <Container className="py-4 flex items-center gap-2">
           <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground transition-colors duration-150">
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
           <span className="font-display text-[20px] font-medium text-foreground">{t("settings")}</span>
-        </div>
+        </Container>
         <CurvedSeparator />
       </nav>
 
-      <main className="max-w-2xl mx-auto px-5 py-6 space-y-4">
+      <Container className="py-6 space-y-4">
         {/* Language */}
         <Card className="rounded-[14px] border border-border">
           <CardHeader className="pb-2">
@@ -294,7 +295,7 @@ const SettingsPage = () => {
           confirmStyle={{ backgroundColor: "#A32D2D" }}
           onConfirm={handleDeleteAccount}
         />
-      </main>
+      </Container>
       <BottomNav />
     </div>
   );
