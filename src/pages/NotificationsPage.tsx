@@ -145,7 +145,7 @@ const NotificationsPage = () => {
             ))}
           </div>
         )}
-      </main>
+      </Container>
       <ScrollToTopButton />
       <BottomNav />
     </div>
