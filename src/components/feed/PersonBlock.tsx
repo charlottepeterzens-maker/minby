@@ -1,0 +1,297 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronRight, ChevronDown, Heart, Check, Calendar, Headphones } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
+import FeedAvatar from "@/components/feed/FeedAvatar";
+import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
+
+export interface PersonData {
+  userId: string;
+  displayName: string;
+  avatarUrl: string | null;
+  initials: string;
+  latestPost: {
+    id: string;
+    content: string | null;
+    image_url: string | null;
+    created_at: string;
+    sectionName: string;
+    photo_layout: string;
+  } | null;
+  recentPosts: {
+    id: string;
+    content: string | null;
+    image_url: string | null;
+    created_at: string;
+    sectionName: string;
+    photo_layout: string;
+  }[];
+  postCountLast7Days: number;
+  activeHangout: {
+    date: string;
+    activities: string[];
+    custom_note: string | null;
+  } | null;
+  latestTip: {
+    title: string;
+  } | null;
+  lastActivityAt: string;
+  isQuiet: boolean;
+}
+
+function formatRelativeTime(dateStr: string): string {
+  const now = Date.now();
+  const diff = now - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "nu";
+  if (mins < 60) return `${mins} min`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return "igår";
+  return `${days} dagar`;
+}
+
+function formatDateSwedish(dateStr: string): string {
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diffDays = Math.floor((now.getTime() - d.getTime()) / 86400000);
+  if (diffDays === 0) return "idag";
+  if (diffDays === 1) return "igår";
+  if (diffDays < 7) return `för ${diffDays} dagar sedan`;
+  const weekdays = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
+  const months = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+  return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+}
+
+function formatHangoutDate(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  const weekdays = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
+  const months = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+  return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+}
+
+const PostImage = ({ imageUrl }: { imageUrl: string }) => {
+  const signedUrl = useSignedImageUrl(imageUrl);
+  if (!signedUrl) return null;
+  return (
+    <div className="relative w-full rounded-lg overflow-hidden" style={{ maxHeight: 120 }}>
+      <img src={signedUrl} alt="" className="w-full h-full object-cover" style={{ maxHeight: 120 }} />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(transparent 40%, rgba(0,0,0,0.4))" }} />
+    </div>
+  );
+};
+
+const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentUserName: string }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [thinkingSent, setThinkingSent] = useState(false);
+  const [thinkingLoading, setThinkingLoading] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleThinkingOfYou = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user || thinkingLoading) return;
+    setThinkingLoading(true);
+    try {
+      await supabase.from("notifications").insert({
+        user_id: person.userId,
+        from_user_id: user.id,
+        type: "thinking_of_you",
+        title: `${currentUserName} tänker på dig`,
+        body: `${currentUserName} tänker på dig`,
+      });
+      setThinkingSent(true);
+      const pronoun = "hen";
+      toast.success(`${person.displayName} vet att du tänker på ${pronoun}`);
+    } catch {
+      toast.error("Något gick fel");
+    } finally {
+      setThinkingLoading(false);
+    }
+  };
+
+  const preview = person.latestPost?.content?.slice(0, 80) || (person.activeHangout ? "Vill ses" : "");
+
+  const signals: { icon: React.ReactNode; text: string }[] = [];
+  if (person.activeHangout) {
+    const activity = person.activeHangout.activities?.[0] || person.activeHangout.custom_note || "vill ses";
+    signals.push({
+      icon: <Calendar size={10} />,
+      text: `${formatHangoutDate(person.activeHangout.date)} · ${activity}`,
+    });
+  }
+  if (person.latestTip) {
+    signals.push({
+      icon: <Headphones size={10} />,
+      text: person.latestTip.title.slice(0, 20),
+    });
+  }
+
+  return (
+    <div
+      style={{
+        backgroundColor: "#FFFFFF",
+        border: expanded ? "1.5px solid #C9B8D8" : "1px solid #EDE8E0",
+        borderRadius: 10,
+        opacity: person.isQuiet && !expanded ? 0.7 : 1,
+        transition: "all 0.2s ease",
+      }}
+    >
+      {/* Collapsed header – always visible */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full flex items-center gap-3 text-left"
+        style={{ padding: "12px 14px" }}
+      >
+        <FeedAvatar
+          avatarUrl={person.avatarUrl}
+          displayName={person.displayName}
+          initials={person.initials}
+          size="w-9 h-9"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="font-medium text-[13px]" style={{ color: "#2A1A3C", fontFamily: "Lexend" }}>
+              {person.displayName}
+            </span>
+            <span className="text-[10px]" style={{ color: "#B0A0B5" }}>
+              {formatRelativeTime(person.lastActivityAt)}
+            </span>
+          </div>
+          {preview && (
+            <p className="text-[11px] truncate mt-0.5" style={{ color: "#7A6A85" }}>
+              {preview}
+            </p>
+          )}
+        </div>
+        {expanded ? (
+          <ChevronDown size={16} style={{ color: "#B0A0B5" }} className="shrink-0" />
+        ) : (
+          <ChevronRight size={16} style={{ color: "#B0A0B5" }} className="shrink-0" />
+        )}
+      </button>
+
+      {/* Thinking of you button for quiet persons */}
+      {person.isQuiet && !expanded && (
+        <div style={{ padding: "0 14px 10px" }}>
+          <button
+            onClick={handleThinkingOfYou}
+            disabled={thinkingLoading}
+            className="flex items-center gap-1.5"
+            style={{
+              backgroundColor: thinkingSent ? "#EAF2E8" : "#EDE8F4",
+              borderRadius: 99,
+              padding: "5px 12px",
+              fontSize: 10,
+              fontWeight: 500,
+              color: thinkingSent ? "#1F4A1A" : "#3C2A4D",
+            }}
+          >
+            {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
+            {thinkingSent ? "Skickat" : "Jag tänker på dig"}
+          </button>
+        </div>
+      )}
+
+      {/* Expanded content */}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            style={{ overflow: "hidden" }}
+          >
+            <div style={{ padding: "0 14px 14px" }}>
+              {/* Recent posts */}
+              <div className="space-y-3">
+                {person.recentPosts.slice(0, 3).map((post) => (
+                  <div key={post.id}>
+                    {post.image_url && <PostImage imageUrl={post.image_url} />}
+                    {post.content && (
+                      <p className="text-[13px] mt-1" style={{ color: "#2A1A3C" }}>
+                        {post.content}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[10px]" style={{ color: "#B0A0B5" }}>
+                        {formatDateSwedish(post.created_at)}
+                      </span>
+                      {post.sectionName && (
+                        <span
+                          className="text-[8px] px-2 py-0.5 rounded-full"
+                          style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+                        >
+                          {post.sectionName}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Thinking of you in expanded for quiet */}
+              {person.isQuiet && (
+                <div className="mt-3">
+                  <button
+                    onClick={handleThinkingOfYou}
+                    disabled={thinkingLoading}
+                    className="flex items-center gap-1.5"
+                    style={{
+                      backgroundColor: thinkingSent ? "#EAF2E8" : "#EDE8F4",
+                      borderRadius: 99,
+                      padding: "5px 12px",
+                      fontSize: 10,
+                      fontWeight: 500,
+                      color: thinkingSent ? "#1F4A1A" : "#3C2A4D",
+                    }}
+                  >
+                    {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
+                    {thinkingSent ? "Skickat" : "Jag tänker på dig"}
+                  </button>
+                </div>
+              )}
+
+              {/* View profile link */}
+              <button
+                onClick={() => navigate(`/profile/${person.userId}`)}
+                className="mt-3 text-[11px]"
+                style={{ color: "#7A6A85" }}
+              >
+                Se alla delar i {person.displayName}s vardag →
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Signal row */}
+      {signals.length > 0 && (
+        <div
+          className="flex items-center gap-1 flex-wrap"
+          style={{
+            borderTop: "1px solid #F7F3EF",
+            padding: "8px 14px",
+            fontSize: 10,
+            color: "#7A6A85",
+          }}
+        >
+          {signals.map((s, i) => (
+            <span key={i} className="flex items-center gap-1">
+              {i > 0 && <span style={{ color: "#C9B8D8" }}>·</span>}
+              {s.icon}
+              {s.text}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PersonBlock;
