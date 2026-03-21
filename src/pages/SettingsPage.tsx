@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,6 +39,35 @@ const DEFAULT_SETTINGS: NotificationSettings = {
   life_comment: true,
   daily_digest_enabled: false,
   daily_digest_time: "07:30",
+};
+
+const SeedTestUsersButton = () => {
+  const [seeding, setSeeding] = useState(false);
+  const { toast } = useToast();
+
+  const handleSeed = async () => {
+    setSeeding(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("seed-test-users", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (res.error) {
+        toast({ title: "Fel", description: res.error.message || "Kunde inte skapa testpersoner", variant: "destructive" });
+      } else {
+        toast({ title: "Testpersoner skapade!", description: "Emma, Sara och Karin är nu i din krets." });
+      }
+    } catch {
+      toast({ title: "Fel", description: "Något gick fel", variant: "destructive" });
+    }
+    setSeeding(false);
+  };
+
+  return (
+    <Button onClick={handleSeed} disabled={seeding} size="sm" className="w-full rounded-[10px] font-medium text-sm">
+      {seeding ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Skapar...</> : "Skapa testpersoner"}
+    </Button>
+  );
 };
 
 const SettingsPage = () => {
@@ -265,6 +295,20 @@ const SettingsPage = () => {
             <p>Vi skickar push-notiser för att hålla dig uppdaterad om din krets. Du kan när som helst stänga av notiser i Inställningar eller i din enhets inställningar.</p>
           </CardContent>
         </Card>
+
+        {/* Dev tools - only for charlotte */}
+        {user?.email?.includes("charlotte") && (
+          <Card className="rounded-[14px] border border-border">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-xs text-muted-foreground font-body font-medium">
+                Utvecklarverktyg
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SeedTestUsersButton />
+            </CardContent>
+          </Card>
+        )}
 
         {/* Log out */}
         <Button variant="outline" onClick={handleLogout} className="w-full rounded-[10px] border border-border text-muted-foreground hover:text-foreground hover:bg-muted">
