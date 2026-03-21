@@ -55,6 +55,9 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<LifePost | null>(null);
   const [editPostContent, setEditPostContent] = useState("");
+  const [editNewImage, setEditNewImage] = useState<File | null>(null);
+  const [editRemoveImage, setEditRemoveImage] = useState(false);
+  const [editPhotoLayout, setEditPhotoLayout] = useState<"large" | "small">("large");
   const [savingPost, setSavingPost] = useState(false);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
