@@ -4,13 +4,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
 
-const REACTION_EMOJIS = ["❤️", "🥂", "😮", "🙌"];
+const REACTION_EMOJIS = ["❤️", "🥂", "😮", "🙌", "😂"];
 
 const REACTION_TOASTS: Record<string, string> = {
   "❤️": "Kärlek skickad",
   "🥂": "Du firade tillsammans",
   "🙌": "Du hejade",
   "😮": "Du berördes",
+  "😂": "Du skrattade",
   "🤗": "Du skickade en kram",
 };
 
