@@ -82,17 +82,42 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
   };
 
   const handleSavePost = async () => {
-    if (!editingPost) return;
+    if (!editingPost || !user) return;
     setSavingPost(true);
+
+    let newImageUrl = editingPost.image_url;
+
+    // Handle new image upload
+    if (editNewImage) {
+      const compressed = await compressImage(editNewImage);
+      const sanitized = compressed.name.replace(/[^a-zA-Z0-9.]/g, "_").toLowerCase();
+      const filePath = `${user.id}/${Date.now()}-${sanitized}`;
+      const { error: uploadErr } = await supabase.storage.from("life-images").upload(filePath, compressed);
+      if (uploadErr) {
+        toast.error("Kunde inte ladda upp bild");
+        setSavingPost(false);
+        return;
+      }
+      newImageUrl = filePath;
+    } else if (editRemoveImage) {
+      newImageUrl = null;
+    }
+
     const { error } = await supabase
       .from("life_posts")
-      .update({ content: editPostContent.trim() || null })
+      .update({
+        content: editPostContent.trim() || null,
+        image_url: newImageUrl,
+        photo_layout: newImageUrl ? editPhotoLayout : "large",
+      } as any)
       .eq("id", editingPost.id);
     if (error) {
       toast.error("Kunde inte uppdatera");
     } else {
       toast.success("Inlägg uppdaterat");
       setEditingPost(null);
+      setEditNewImage(null);
+      setEditRemoveImage(false);
       fetchPosts();
     }
     setSavingPost(false);
