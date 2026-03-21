@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { UserPlus, Copy, Share2 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
-const InviteFriendDialog = () => {
+interface InviteFriendDialogProps {
+  trigger?: ReactNode;
+}
+
+const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [link, setLink] = useState<string | null>(null);
@@ -53,14 +57,20 @@ const InviteFriendDialog = () => {
 
   return (
     <>
-      <button
-        onClick={generateLink}
-        disabled={loading}
-        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <UserPlus className="w-3.5 h-3.5" />
-        <span>{loading ? "Skapar länk..." : "Bjud in någon till din vardag"}</span>
-      </button>
+      {trigger ? (
+        <span onClick={generateLink} className={loading ? "pointer-events-none opacity-50" : "cursor-pointer"}>
+          {trigger}
+        </span>
+      ) : (
+        <button
+          onClick={generateLink}
+          disabled={loading}
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <UserPlus className="w-3.5 h-3.5" />
+          <span>{loading ? "Skapar länk..." : "Bjud in någon till din vardag"}</span>
+        </button>
+      )}
 
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
