@@ -929,17 +929,7 @@ const FriendsPage = () => {
                         className="flex items-center gap-3 p-3"
                         style={{ border: "1.5px dashed #EDE8E0", borderRadius: 8, backgroundColor: "transparent" }}
                       >
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#FDF0EE" }}>
-                          <UserPlus className="w-4 h-4" style={{ color: "#C9503A" }} />
-                        </div>
-                        <InviteFriendDialog
-                          trigger={
-                            <button className="text-left">
-                              <p className="text-[13px] font-medium" style={{ color: "#C9503A" }}>Bjud in någon till din vardag</p>
-                              <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>Skicka en länk eller visa QR-kod</p>
-                            </button>
-                          }
-                        />
+                        <InviteFriendDialog />
                       </div>
                     </div>
                   </div>
