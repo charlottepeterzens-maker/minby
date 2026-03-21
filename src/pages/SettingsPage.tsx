@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import BottomNav from "@/components/BottomNav";
 import CurvedSeparator from "@/components/CurvedSeparator";
 import ConfirmSheet from "@/components/ConfirmSheet";
+import { Container } from "@/components/layout";
 
 interface NotificationSettings {
   hangout_yes: boolean;
