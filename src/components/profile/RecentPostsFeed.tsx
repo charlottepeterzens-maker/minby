@@ -484,7 +484,7 @@ const SignedImg = ({
   if (!url) return null;
   const Tag = onClick ? "button" : "div";
   return (
-    <Tag onClick={onClick} className={onClick ? "w-full block" : "w-full"}>
+    <Tag onClick={onClick} className={onClick ? "block shrink-0" : "shrink-0"} style={{ width: style?.width || "100%" }}>
       <img src={url} alt="" className={className} style={style} />
     </Tag>
   );
