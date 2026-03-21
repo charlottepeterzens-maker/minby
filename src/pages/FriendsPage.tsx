@@ -11,6 +11,7 @@ import ScrollToTopButton from "@/components/ScrollToTopButton";
 import QRCodeSheet from "@/components/profile/QRCodeSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import ConfirmSheet from "@/components/ConfirmSheet";
+import { Container } from "@/components/layout";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
 
 interface HangoutStatus {
