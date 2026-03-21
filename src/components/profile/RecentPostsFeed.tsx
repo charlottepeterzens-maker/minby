@@ -207,7 +207,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
       />
 
       {/* Edit sheet */}
-      <Sheet open={!!editingPost} onOpenChange={(open) => { if (!open) setEditingPost(null); }}>
+      <Sheet open={!!editingPost} onOpenChange={(open) => { if (!open) { setEditingPost(null); setEditNewImage(null); setEditRemoveImage(false); } }}>
         <SheetContent
           side="bottom"
           className="rounded-t-[20px]"
@@ -223,6 +223,113 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
               className="min-h-[100px] text-[13px] bg-white border-[#EDE8E0] rounded-lg resize-none"
               autoFocus
             />
+
+            {/* Image editing */}
+            <div>
+              <p className="text-[10px] mb-1.5" style={{ color: "#B0A0B5" }}>Bild</p>
+
+              {/* Current image preview */}
+              {editingPost?.image_url && !editRemoveImage && !editNewImage && (
+                <div className="relative inline-block mb-2">
+                  <SignedImg
+                    imageRef={editingPost.image_url}
+                    className="w-20 h-20 object-cover rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setEditRemoveImage(true)}
+                    className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                    style={{ background: "#A32D2D", border: "2px solid #F7F3EF" }}
+                  >
+                    <X className="w-3 h-3 text-white" />
+                  </button>
+                </div>
+              )}
+
+              {/* New image preview */}
+              {editNewImage && (
+                <div className="relative inline-block mb-2">
+                  <img
+                    src={URL.createObjectURL(editNewImage)}
+                    alt=""
+                    className="w-20 h-20 object-cover rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => { setEditNewImage(null); setEditRemoveImage(false); }}
+                    className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center"
+                    style={{ background: "#A32D2D", border: "2px solid #F7F3EF" }}
+                  >
+                    <X className="w-3 h-3 text-white" />
+                  </button>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 flex-wrap">
+                <label style={{ cursor: "pointer" }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) {
+                        setEditNewImage(f);
+                        setEditRemoveImage(false);
+                      }
+                    }}
+                  />
+                  <span
+                    className="inline-flex items-center gap-1"
+                    style={{
+                      fontSize: 11,
+                      padding: "4px 10px",
+                      borderRadius: 99,
+                      border: "1px solid #EDE8E0",
+                      background: "#F7F3EF",
+                      color: "#7A6A85",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Camera className="w-3 h-3" />
+                    {editRemoveImage ? "Lägg till bild" : "Byt bild"}
+                  </span>
+                </label>
+
+                {/* Layout toggle - show if there's an image */}
+                {((editingPost?.image_url && !editRemoveImage) || editNewImage) && (
+                  <div className="flex gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setEditPhotoLayout("large")}
+                      className="flex items-center justify-center"
+                      style={{
+                        width: 26, height: 26, borderRadius: 6,
+                        background: editPhotoLayout === "large" ? "#3C2A4D" : "#fff",
+                        border: "1px solid #3C2A4D",
+                      }}
+                      title="Stort foto"
+                    >
+                      <RectangleHorizontal className="w-3 h-3" style={{ color: editPhotoLayout === "large" ? "#fff" : "#3C2A4D" }} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditPhotoLayout("small")}
+                      className="flex items-center justify-center"
+                      style={{
+                        width: 26, height: 26, borderRadius: 6,
+                        background: editPhotoLayout === "small" ? "#3C2A4D" : "#fff",
+                        border: "1px solid #3C2A4D",
+                      }}
+                      title="Liten thumbnail"
+                    >
+                      <LayoutList className="w-3 h-3" style={{ color: editPhotoLayout === "small" ? "#fff" : "#3C2A4D" }} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
             <button
               onClick={handleSavePost}
               disabled={savingPost}

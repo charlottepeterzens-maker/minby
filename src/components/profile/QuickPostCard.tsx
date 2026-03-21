@@ -41,9 +41,10 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
 
     let image_url: string | null = null;
     if (imageFile) {
-      const sanitized = imageFile.name.replace(/[^a-zA-Z0-9.]/g, "_").toLowerCase();
+      const compressed = await compressImage(imageFile);
+      const sanitized = compressed.name.replace(/[^a-zA-Z0-9.]/g, "_").toLowerCase();
       const filePath = `${user.id}/${Date.now()}-${sanitized}`;
-      const { error: uploadErr } = await supabase.storage.from("life-images").upload(filePath, imageFile);
+      const { error: uploadErr } = await supabase.storage.from("life-images").upload(filePath, compressed);
       if (uploadErr) {
         toast.error("Kunde inte ladda upp bild");
         setPosting(false);
