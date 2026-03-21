@@ -6,6 +6,7 @@ import { Plus } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import CurvedSeparator from "@/components/CurvedSeparator";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
+import { Container } from "@/components/layout";
 
 interface Group {
   id: string;
