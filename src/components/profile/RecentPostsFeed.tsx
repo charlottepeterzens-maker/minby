@@ -5,7 +5,7 @@ import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
 import ConfirmSheet from "@/components/ConfirmSheet";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Camera, X, RectangleHorizontal, LayoutList } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { compressImage } from "@/utils/imageCompression";
 
 interface LifeSection {
   id: string;
