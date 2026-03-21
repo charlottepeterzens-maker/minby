@@ -52,6 +52,7 @@ function formatRelativeTime(dateStr: string): string {
   if (hours < 24) return `${hours}h`;
   const days = Math.floor(hours / 24);
   if (days === 1) return "igår";
+  if (days > 365) return "Ingen aktivitet ännu";
   return `${days} dagar`;
 }
 
