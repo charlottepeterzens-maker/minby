@@ -171,22 +171,24 @@ const ProfilePage = () => {
       .order("created_at", { ascending: false })
       .limit(20);
     if (data && data.length > 0) {
-      const fromIds = [...new Set(data.filter(n => n.from_user_id).map(n => n.from_user_id!))];
+      const fromIds = [...new Set(data.filter((n) => n.from_user_id).map((n) => n.from_user_id!))];
       let nameMap = new Map<string, string | null>();
       if (fromIds.length > 0) {
         const { data: profiles } = await supabase
           .from("profiles")
           .select("user_id, display_name")
           .in("user_id", fromIds);
-        if (profiles) nameMap = new Map(profiles.map(p => [p.user_id, p.display_name]));
+        if (profiles) nameMap = new Map(profiles.map((p) => [p.user_id, p.display_name]));
       }
-      setNotifItems(data.map(n => ({
-        id: n.id,
-        body: n.body,
-        created_at: n.created_at,
-        read: n.read,
-        from_user_name: n.from_user_id ? nameMap.get(n.from_user_id) || null : null,
-      })));
+      setNotifItems(
+        data.map((n) => ({
+          id: n.id,
+          body: n.body,
+          created_at: n.created_at,
+          read: n.read,
+          from_user_name: n.from_user_id ? nameMap.get(n.from_user_id) || null : null,
+        })),
+      );
     } else {
       setNotifItems([]);
     }
@@ -381,10 +383,15 @@ const ProfilePage = () => {
             onClick={() => {}}
             onMarkAllRead={() => {
               if (!user) return;
-              supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false).then(() => {
-                setNotifItems([]);
-                refreshUnread();
-              });
+              supabase
+                .from("notifications")
+                .update({ read: true })
+                .eq("user_id", user.id)
+                .eq("read", false)
+                .then(() => {
+                  setNotifItems([]);
+                  refreshUnread();
+                });
             }}
           />
         )}
@@ -417,7 +424,7 @@ const ProfilePage = () => {
               Hälsa
             </p>
             <p className="text-[10px]" style={{ color: "#B0A0B5" }}>
-              Menscykel, graviditet och mer – kommer snart
+              Information om din hälsa, menstruationscykel och mer – kommer snart
             </p>
           </div>
           <Lock className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
@@ -575,7 +582,9 @@ const ProfilePage = () => {
                       }}
                     >
                       <Plus className="w-3 h-3 mb-0.5" style={{ color: "#C9B8D8" }} />
-                      <span className="text-[8px]" style={{ color: "#B0A0B5" }}>Ny del</span>
+                      <span className="text-[8px]" style={{ color: "#B0A0B5" }}>
+                        Ny del
+                      </span>
                     </button>
                   }
                 />
@@ -598,8 +607,7 @@ const ProfilePage = () => {
                 {(() => {
                   const sec = sections.find((s) => s.id === expandedSection);
                   if (!sec) return null;
-                  if (sec.section_type === "workout")
-                    return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
+                  if (sec.section_type === "workout") return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
                   return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
                 })()}
               </motion.div>
@@ -631,7 +639,6 @@ const ProfilePage = () => {
     </div>
   );
 };
-
 
 /** One-time hint for the Ses vi? section */
 const ProfileHangoutHint = ({ isOwner }: { isOwner: boolean }) => {
