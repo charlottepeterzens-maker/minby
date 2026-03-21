@@ -1010,7 +1010,7 @@ const FriendsPage = () => {
             )}
           </>
         )}
-      </main>
+      </Container>
 
       <QRCodeSheet open={qrOpen} onOpenChange={setQrOpen} />
       <ScrollToTopButton />

@@ -295,7 +295,7 @@ const SettingsPage = () => {
           confirmStyle={{ backgroundColor: "#A32D2D" }}
           onConfirm={handleDeleteAccount}
         />
-      </main>
+      </Container>
       <BottomNav />
     </div>
   );

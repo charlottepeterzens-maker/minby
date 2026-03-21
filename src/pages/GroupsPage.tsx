@@ -223,7 +223,7 @@ const GroupsPage = () => {
           }
           </div>
         }
-      </main>
+      </Container>
       <BottomNav />
     </div>);
 

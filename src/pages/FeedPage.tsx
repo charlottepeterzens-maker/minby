@@ -293,7 +293,7 @@ const FeedPage = () => {
             ))}
           </div>
         )}
-      </main>
+      </Container>
 
       <ScrollToTopButton />
 
