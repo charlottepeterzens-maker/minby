@@ -415,7 +415,7 @@ const ProfilePage = () => {
         >
           <div className="flex-1 min-w-0">
             <p className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
-              Hälsa
+              Hälsa – kommer snart!
             </p>
             <p className="text-[10px]" style={{ color: "#B0A0B5" }}>
               Snart kan du dela med dig om din hälsa, menstruationscykel och träning
