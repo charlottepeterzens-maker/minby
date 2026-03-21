@@ -16,4 +16,6 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.scheduled-nudges]
+
+[functions.seed-test-users]
 verify_jwt = false
