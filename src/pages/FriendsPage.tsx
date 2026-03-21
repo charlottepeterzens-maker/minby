@@ -4,13 +4,14 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, Search, QrCode, MoreHorizontal, Heart } from "lucide-react";
+import { Users, Search, QrCode, MoreHorizontal, Heart, Plus } from "lucide-react";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import QRCodeSheet from "@/components/profile/QRCodeSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import ConfirmSheet from "@/components/ConfirmSheet";
+import CreateGroupDialog from "@/components/CreateGroupDialog";
 
 interface HangoutStatus {
   entry_type: string;
@@ -46,6 +47,17 @@ interface SearchResult {
   status: "none" | "sent" | "friend";
 }
 
+interface GroupRow {
+  id: string;
+  name: string;
+  emoji: string;
+  owner_id: string;
+  member_names: string[];
+  last_message: string | null;
+  last_message_at: string | null;
+  has_unread: boolean;
+}
+
 function timeAgo(dateStr: string): string {
   const now = new Date();
   const then = new Date(dateStr);
@@ -61,14 +73,27 @@ function timeAgo(dateStr: string): string {
   return "";
 }
 
+function formatTime(dateStr: string): string {
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffDays = Math.floor(diffMs / 86400000);
+  if (diffDays === 0) return d.toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit" });
+  if (diffDays === 1) return "Igår";
+  if (diffDays < 7) return d.toLocaleDateString("sv-SE", { weekday: "short" });
+  return d.toLocaleDateString("sv-SE", { month: "short", day: "numeric" });
+}
+
 const FriendsPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<"krets" | "sallskap">("krets");
+
+  // Friends state
   const [friends, setFriends] = useState<FriendRow[]>([]);
   const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  
   const [qrOpen, setQrOpen] = useState(false);
   const [friendSearch, setFriendSearch] = useState("");
   const [respondingId, setRespondingId] = useState<string | null>(null);
@@ -83,6 +108,19 @@ const FriendsPage = () => {
   const [menuOpenFor, setMenuOpenFor] = useState<string | null>(null);
   const [mutedUsers, setMutedUsers] = useState<string[]>([]);
   const [removeConfirm, setRemoveConfirm] = useState<{ userId: string; name: string } | null>(null);
+
+  // Groups state
+  const [groups, setGroups] = useState<GroupRow[]>([]);
+  const [groupsLoading, setGroupsLoading] = useState(true);
+  const [hasUnreadGroups, setHasUnreadGroups] = useState(false);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    if (!menuOpenFor) return;
+    const handler = () => setMenuOpenFor(null);
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, [menuOpenFor]);
 
   const fetchData = useCallback(async () => {
     if (!user) return;
@@ -115,10 +153,6 @@ const FriendsPage = () => {
       const pending = pendingRes.data || [];
       const tiers = tiersRes.data || [];
 
-      console.log("[FriendsPage] raw accepted friendships:", accepted);
-      console.log("[FriendsPage] raw pending requests:", pending);
-
-      // Build tier map
       const tierMap = new Map<string, string>();
       tiers.forEach((t) => tierMap.set(t.friend_user_id, t.tier));
 
@@ -151,9 +185,8 @@ const FriendsPage = () => {
         setPendingRequests([]);
       }
 
-      // Process accepted friends — normalize both directions
+      // Process accepted friends
       if (!accepted.length) {
-        console.log("[FriendsPage] No accepted friendships found");
         setFriends([]);
         setLoading(false);
         return;
@@ -167,16 +200,12 @@ const FriendsPage = () => {
         ),
       ];
 
-      console.log("[FriendsPage] mapped friend IDs:", friendIds);
-
       const today = format(new Date(), "yyyy-MM-dd");
       const [{ data: profiles }, { data: posts }, { data: hangouts }] = await Promise.all([
         supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", friendIds),
         supabase.from("life_posts").select("user_id, created_at").in("user_id", friendIds).order("created_at", { ascending: false }),
         supabase.from("hangout_availability").select("user_id, entry_type, date, activities, custom_note").in("user_id", friendIds).gte("date", today).order("date", { ascending: true }),
       ]);
-
-      console.log("[FriendsPage] fetched profiles:", profiles);
 
       const latestPostMap = new Map<string, string>();
       posts?.forEach((p) => {
@@ -221,7 +250,6 @@ const FriendsPage = () => {
     }
   }, [user]);
 
-  // Fetch muted users
   const fetchMutedUsers = useCallback(async () => {
     if (!user) return;
     const { data } = await supabase
@@ -234,10 +262,92 @@ const FriendsPage = () => {
     }
   }, [user]);
 
+  const fetchGroups = useCallback(async () => {
+    if (!user) return;
+    setGroupsLoading(true);
+    try {
+      const { data: memberships } = await supabase
+        .from("group_memberships")
+        .select("group_id, joined_at")
+        .eq("user_id", user.id);
+
+      if (!memberships?.length) {
+        setGroups([]);
+        setHasUnreadGroups(false);
+        setGroupsLoading(false);
+        return;
+      }
+
+      const groupIds = memberships.map((m) => m.group_id);
+      const joinedAtMap = new Map(memberships.map((m) => [m.group_id, m.joined_at]));
+
+      const { data: groupsData } = await supabase
+        .from("friend_groups")
+        .select("*")
+        .in("id", groupIds);
+
+      if (!groupsData) {
+        setGroups([]);
+        setGroupsLoading(false);
+        return;
+      }
+
+      let anyUnread = false;
+
+      const groupsWithMembers: GroupRow[] = await Promise.all(
+        groupsData.map(async (g) => {
+          const [{ data: members }, { data: lastMsg }] = await Promise.all([
+            supabase.from("group_memberships").select("user_id").eq("group_id", g.id),
+            supabase.from("group_messages").select("content, created_at, user_id").eq("group_id", g.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+          ]);
+
+          const memberIds = (members || []).map((m) => m.user_id);
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("display_name")
+            .in("user_id", memberIds);
+
+          const names = (profiles || []).map((p) => p.display_name || "Anonym").slice(0, 4);
+
+          // Check for unread: last message exists, is from someone else, and is after user joined
+          const hasUnread = !!(
+            lastMsg?.created_at &&
+            lastMsg.user_id !== user.id &&
+            new Date(lastMsg.created_at) > new Date(joinedAtMap.get(g.id) || 0)
+          );
+          if (hasUnread) anyUnread = true;
+
+          return {
+            ...g,
+            member_names: names,
+            last_message: lastMsg?.content || null,
+            last_message_at: lastMsg?.created_at || null,
+            has_unread: hasUnread,
+          };
+        })
+      );
+
+      groupsWithMembers.sort((a, b) => {
+        if (!a.last_message_at && !b.last_message_at) return 0;
+        if (!a.last_message_at) return 1;
+        if (!b.last_message_at) return -1;
+        return new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime();
+      });
+
+      setGroups(groupsWithMembers);
+      setHasUnreadGroups(anyUnread);
+    } catch {
+      setGroups([]);
+    } finally {
+      setGroupsLoading(false);
+    }
+  }, [user]);
+
   useEffect(() => {
     fetchData();
     fetchMutedUsers();
-  }, [fetchData, fetchMutedUsers]);
+    fetchGroups();
+  }, [fetchData, fetchMutedUsers, fetchGroups]);
 
   // Toggle close circle
   const handleToggleClose = async (friendUserId: string, currentTier: string) => {
@@ -260,7 +370,6 @@ const FriendsPage = () => {
     setMenuOpenFor(null);
   };
 
-  // Remove friend handler
   const handleRemoveFriend = async (friendUserId: string) => {
     if (!user) return;
     await Promise.all([
@@ -276,7 +385,6 @@ const FriendsPage = () => {
     toast.success("Borttagen från din krets");
   };
 
-  // Mute/unmute friend handler
   const handleToggleMute = async (friendUserId: string) => {
     if (!user) return;
     const isMuted = mutedUsers.includes(friendUserId);
@@ -448,7 +556,6 @@ const FriendsPage = () => {
 
   const closeFriends = filtered.filter((f) => f.tier === "close");
   const otherFriends = filtered.filter((f) => f.tier !== "close");
-
   const hasFriendsOrPending = friends.length > 0 || pendingRequests.length > 0;
 
   const renderFriendCard = (f: FriendRow) => {
@@ -474,10 +581,11 @@ const FriendsPage = () => {
     return (
       <div
         key={f.user_id}
-        className="relative flex items-center gap-3 p-3 rounded-[16px] transition-colors hover:opacity-90"
+        className="relative flex items-center gap-3 p-3 transition-colors hover:opacity-90"
         style={{
           backgroundColor: "#FFFFFF",
-          border: isClose ? "1.5px solid #C9B8D8" : "1px solid #EDE8F4",
+          border: isClose ? "1.5px solid #C9B8D8" : "1px solid #EDE8E0",
+          borderRadius: 8,
         }}
       >
         <button
@@ -492,7 +600,10 @@ const FriendsPage = () => {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
+            <div className="flex items-center gap-1.5">
+              <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
+              {isClose && <Heart className="w-3 h-3 shrink-0" style={{ color: "#C9B8D8" }} fill="#C9B8D8" />}
+            </div>
             {isMuted && (
               <p className="text-[10px] mt-0.5" style={{ color: "#9B8BA5" }}>Mutad</p>
             )}
@@ -512,8 +623,14 @@ const FriendsPage = () => {
 
         {menuOpenFor === f.user_id && (
           <div
-            className="absolute right-3 top-12 z-20 py-1 shadow-lg"
-            style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 6, minWidth: 200 }}
+            className="absolute right-3 top-12 z-20 py-1"
+            style={{
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #EDE8E0",
+              borderRadius: 8,
+              minWidth: 200,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+            }}
           >
             <button
               onClick={(e) => { e.stopPropagation(); handleToggleClose(f.user_id, f.tier); }}
@@ -545,7 +662,8 @@ const FriendsPage = () => {
 
   return (
     <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
-      <nav className="sticky top-0 z-50 border-b" style={{ backgroundColor: "#F7F3EF", borderColor: "#EDE8F4" }}>
+      {/* Header */}
+      <nav className="sticky top-0 z-50" style={{ backgroundColor: "#F7F3EF" }}>
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
           <span className="font-display text-[20px] font-medium" style={{ color: "#3C2A4D" }}>
             Min krets
@@ -558,237 +676,338 @@ const FriendsPage = () => {
             <QrCode className="w-4.5 h-4.5" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
           </button>
         </div>
+
+        {/* Tabs */}
+        <div className="max-w-2xl mx-auto px-5 flex gap-0" style={{ borderBottom: "1px solid #EDE8E0" }}>
+          <button
+            onClick={() => setActiveTab("krets")}
+            className="flex-1 pb-2.5 text-[13px] font-medium text-center transition-colors relative"
+            style={{ color: activeTab === "krets" ? "#3C2A4D" : "#9B8BA5" }}
+          >
+            Min krets
+            {activeTab === "krets" && (
+              <div className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full" style={{ backgroundColor: "#3C2A4D" }} />
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab("sallskap")}
+            className="flex-1 pb-2.5 text-[13px] font-medium text-center transition-colors relative"
+            style={{ color: activeTab === "sallskap" ? "#3C2A4D" : "#9B8BA5" }}
+          >
+            <span className="inline-flex items-center gap-1.5">
+              Sällskap
+              {hasUnreadGroups && (
+                <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "#C9503A" }} />
+              )}
+            </span>
+            {activeTab === "sallskap" && (
+              <div className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full" style={{ backgroundColor: "#3C2A4D" }} />
+            )}
+          </button>
+        </div>
       </nav>
 
       <main className="max-w-2xl mx-auto px-5 py-5 space-y-5">
-        {/* People search */}
-        <div>
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#9B8BA5" }} strokeWidth={1.5} />
-            <input
-              value={peopleSearch}
-              onChange={(e) => setPeopleSearch(e.target.value)}
-              placeholder="Sök på namn..."
-              className="w-full pl-10 pr-3 py-2.5 rounded-[10px] text-[13px] outline-none placeholder:text-[#9B8BA5] font-display"
-              style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", color: "#3C2A4D" }}
-            />
-          </div>
+        {activeTab === "krets" ? (
+          <>
+            {/* Search */}
+            <div>
+              <div className="relative">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#9B8BA5" }} strokeWidth={1.5} />
+                <input
+                  value={peopleSearch}
+                  onChange={(e) => setPeopleSearch(e.target.value)}
+                  placeholder="Sök på namn..."
+                  className="w-full pl-10 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#9B8BA5] font-display"
+                  style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8, color: "#3C2A4D" }}
+                />
+              </div>
 
-          {/* Search results */}
-          {peopleSearch.trim().length >= 2 && (
-            <div className="mt-2 space-y-1.5">
-              {searching ? (
-                <p className="text-[12px] py-3 text-center" style={{ color: "#9B8BA5" }}>Söker...</p>
-              ) : searchResults.length === 0 ? (
-                <p className="text-[12px] py-3 text-center" style={{ color: "#9B8BA5" }}>Inga resultat</p>
-              ) : (
-                searchResults.map((r) => (
-                  <div
-                    key={r.user_id}
-                    className="flex items-center gap-3 p-3 rounded-[12px]"
-                    style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
-                  >
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-                      style={{ backgroundColor: "#EDE8F4" }}
-                    >
-                      {r.avatar_url ? (
-                        <img src={r.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
-                      ) : (
-                        <span className="text-[12px] font-display font-medium" style={{ color: "#3C2A4D" }}>
-                          {r.initial}
-                        </span>
-                      )}
-                    </div>
-                    <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
-                      {r.display_name}
-                    </p>
-                    {r.status === "friend" ? (
-                      <span className="text-[11px]" style={{ color: "#9B8BA5" }}>I din krets</span>
-                    ) : r.status === "sent" ? (
-                      <span className="text-[11px]" style={{ color: "#9B8BA5" }}>Skickat</span>
-                    ) : (
-                      <button
-                        onClick={() => handleSendFriendRequest(r.user_id)}
-                        disabled={sendingTo === r.user_id}
-                        className="shrink-0 px-3 py-1.5 rounded-[20px] text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                        style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+              {/* Search results */}
+              {peopleSearch.trim().length >= 2 && (
+                <div className="mt-2 space-y-1.5">
+                  {searching ? (
+                    <p className="text-[12px] py-3 text-center" style={{ color: "#9B8BA5" }}>Söker...</p>
+                  ) : searchResults.length === 0 ? (
+                    <p className="text-[12px] py-3 text-center" style={{ color: "#9B8BA5" }}>Inga resultat</p>
+                  ) : (
+                    searchResults.map((r) => (
+                      <div
+                        key={r.user_id}
+                        className="flex items-center gap-3 p-3"
+                        style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8 }}
                       >
-                        Lägg till i min krets
-                      </button>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-          )}
-        </div>
-
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-16">
-            <div className="space-y-3 w-full">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="rounded-[16px] h-[64px] animate-pulse" style={{ backgroundColor: "#EDE8F4" }} />
-              ))}
-            </div>
-            <p className="text-[12px] mt-4" style={{ color: "#9B8BA5" }}>Laddar din krets…</p>
-          </div>
-        ) : error ? (
-          <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-            <p className="font-display text-[14px] font-medium mb-2" style={{ color: "#3C2A4D" }}>
-              Vi kunde inte hämta din krets
-            </p>
-            <button
-              onClick={() => fetchData()}
-              className="px-4 py-1.5 rounded-[20px] text-[12px] font-medium"
-              style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
-            >
-              Försök igen
-            </button>
-          </div>
-        ) : !hasFriendsOrPending && peopleSearch.trim().length < 2 ? (
-          <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "#EDE8F4" }}>
-              <Users className="w-7 h-7" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
-            </div>
-            <p className="font-display text-[16px] font-medium mb-1.5" style={{ color: "#3C2A4D" }}>
-              Din krets väntar – bjud in dina närmaste
-            </p>
-            <p className="text-[13px] mb-6" style={{ color: "#9B8BA5" }}>
-              Sök på namn eller skanna en QR-kod för att kopplas ihop
-            </p>
-            <InviteFriendDialog />
-          </div>
-        ) : (
-          <div className="space-y-5">
-            {/* Pending requests */}
-            {pendingRequests.length > 0 && (
-              <div>
-                <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
-                  Vill vara med ({pendingRequests.length})
-                </p>
-                <div className="space-y-2">
-                  {pendingRequests.map((r) => (
-                    <div
-                      key={r.id}
-                      className="flex items-center gap-3 p-3 rounded-[12px]"
-                      style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
-                    >
-                      <button
-                        onClick={() => navigate(`/profile/${r.from_user_id}`)}
-                        className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-                        style={{ backgroundColor: "#EDE8F4" }}
-                      >
-                        {r.avatar_url ? (
-                          <img src={r.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
-                        ) : (
-                          <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
-                            {r.initial}
-                          </span>
-                        )}
-                      </button>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
+                        <div
+                          className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
+                          style={{ backgroundColor: "#EDE8F4" }}
+                        >
+                          {r.avatar_url ? (
+                            <img src={r.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                          ) : (
+                            <span className="text-[12px] font-display font-medium" style={{ color: "#3C2A4D" }}>
+                              {r.initial}
+                            </span>
+                          )}
+                        </div>
+                        <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
                           {r.display_name}
                         </p>
-                        <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>
-                          Vill vara med i din vardag
-                        </p>
+                        {r.status === "friend" ? (
+                          <span className="text-[11px]" style={{ color: "#9B8BA5" }}>I din krets</span>
+                        ) : r.status === "sent" ? (
+                          <span className="text-[11px]" style={{ color: "#9B8BA5" }}>Skickat</span>
+                        ) : (
+                          <button
+                            onClick={() => handleSendFriendRequest(r.user_id)}
+                            disabled={sendingTo === r.user_id}
+                            className="shrink-0 px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                            style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderRadius: 20 }}
+                          >
+                            Lägg till i min krets
+                          </button>
+                        )}
                       </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <button
-                          onClick={() => handleAccept(r.id, r.from_user_id)}
-                          disabled={respondingId === r.id}
-                          className="px-3 py-1.5 rounded-[20px] text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                          style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
-                        >
-                          Ja, gärna
-                        </button>
-                        <button
-                          onClick={() => handleDecline(r.id)}
-                          disabled={respondingId === r.id}
-                          className="px-3 py-1.5 rounded-[20px] text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                          style={{ backgroundColor: "#F7F3EF", color: "#A32D2D" }}
-                        >
-                          Inte nu
-                        </button>
-                      </div>
-                    </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-16">
+                <div className="space-y-3 w-full">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-[64px] animate-pulse" style={{ backgroundColor: "#EDE8F4", borderRadius: 8 }} />
                   ))}
                 </div>
+                <p className="text-[12px] mt-4" style={{ color: "#9B8BA5" }}>Laddar din krets…</p>
               </div>
-            )}
-
-            {/* Close circle section */}
-            {friends.length > 0 && (
-              <div>
-                <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
-                  Din närmaste krets
+            ) : error ? (
+              <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                <p className="font-display text-[14px] font-medium mb-2" style={{ color: "#3C2A4D" }}>
+                  Vi kunde inte hämta din krets
                 </p>
-                {closeFriends.length === 0 ? (
-                  <div
-                    className="rounded-[12px] py-5 px-4 text-center"
-                    style={{ backgroundColor: "#F5F0FA", border: "1px dashed #C9B8D8" }}
-                  >
-                    <Heart className="w-5 h-5 mx-auto mb-2" style={{ color: "#C9B8D8" }} />
-                    <p className="text-[12px]" style={{ color: "#7A6A85" }}>
-                      Lägg till några du vill ha lite extra nära
-                    </p>
-                    <p className="text-[11px] mt-1" style={{ color: "#9B8BA5" }}>
-                      Tryck ••• bredvid en person för att lägga till
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    {closeFriends.map(renderFriendCard)}
-                  </div>
-                )}
+                <button
+                  onClick={() => fetchData()}
+                  className="px-4 py-1.5 text-[12px] font-medium"
+                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderRadius: 20 }}
+                >
+                  Försök igen
+                </button>
               </div>
-            )}
-
-            {/* Other friends */}
-            {otherFriends.length > 0 && (
-              <div>
-                {closeFriends.length > 0 && (
-                  <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
-                    Övriga i kretsen ({otherFriends.length})
-                  </p>
-                )}
-                {closeFriends.length === 0 && pendingRequests.length > 0 && (
-                  <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
-                    Din krets ({friends.length})
-                  </p>
-                )}
-
-                {friends.length > 3 && (
-                  <div className="relative mb-3">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#9B8BA5" }} strokeWidth={1.5} />
-                    <input
-                      value={friendSearch}
-                      onChange={(e) => setFriendSearch(e.target.value)}
-                      placeholder="Sök i din krets..."
-                      className="w-full pl-9 pr-3 py-2.5 rounded-[10px] text-[13px] outline-none placeholder:text-[#9B8BA5]"
-                      style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", color: "#3C2A4D" }}
-                    />
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  {otherFriends.length === 0 ? (
-                    <p className="text-center py-8 text-[13px]" style={{ color: "#9B8BA5" }}>
-                      Inga resultat i din krets
-                    </p>
-                  ) : (
-                    otherFriends.map(renderFriendCard)
-                  )}
-
-                  <div className="w-full flex items-center gap-3 p-3 rounded-[16px]" style={{ border: "1.5px dashed #EDE8F4", backgroundColor: "transparent" }}>
-                    <InviteFriendDialog />
-                  </div>
+            ) : !hasFriendsOrPending && peopleSearch.trim().length < 2 ? (
+              <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "#EDE8F4" }}>
+                  <Users className="w-7 h-7" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
                 </div>
+                <p className="font-display text-[16px] font-medium mb-1.5" style={{ color: "#3C2A4D" }}>
+                  Din krets väntar – bjud in dina närmaste
+                </p>
+                <p className="text-[13px] mb-6" style={{ color: "#9B8BA5" }}>
+                  Sök på namn eller skanna en QR-kod för att kopplas ihop
+                </p>
+                <InviteFriendDialog />
+              </div>
+            ) : (
+              <div className="space-y-5">
+                {/* Pending requests */}
+                {pendingRequests.length > 0 && (
+                  <div>
+                    <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
+                      Vill vara med ({pendingRequests.length})
+                    </p>
+                    <div className="space-y-2">
+                      {pendingRequests.map((r) => (
+                        <div
+                          key={r.id}
+                          className="flex items-center gap-3 p-3"
+                          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8 }}
+                        >
+                          <button
+                            onClick={() => navigate(`/profile/${r.from_user_id}`)}
+                            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
+                            style={{ backgroundColor: "#EDE8F4" }}
+                          >
+                            {r.avatar_url ? (
+                              <img src={r.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                            ) : (
+                              <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
+                                {r.initial}
+                              </span>
+                            )}
+                          </button>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
+                              {r.display_name}
+                            </p>
+                            <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>
+                              Vill vara med i din vardag
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button
+                              onClick={() => handleAccept(r.id, r.from_user_id)}
+                              disabled={respondingId === r.id}
+                              className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                              style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 20 }}
+                            >
+                              Ja, gärna
+                            </button>
+                            <button
+                              onClick={() => handleDecline(r.id)}
+                              disabled={respondingId === r.id}
+                              className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                              style={{ backgroundColor: "#F7F3EF", color: "#A32D2D", borderRadius: 20 }}
+                            >
+                              Inte nu
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Close circle section */}
+                {friends.length > 0 && (
+                  <div>
+                    <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
+                      Din närmaste krets
+                    </p>
+                    {closeFriends.length === 0 ? (
+                      <div
+                        className="py-5 px-4 text-center"
+                        style={{ backgroundColor: "#F5F0FA", border: "1px dashed #C9B8D8", borderRadius: 8 }}
+                      >
+                        <Heart className="w-5 h-5 mx-auto mb-2" style={{ color: "#C9B8D8" }} />
+                        <p className="text-[12px]" style={{ color: "#7A6A85" }}>
+                          Lägg till några du vill ha lite extra nära
+                        </p>
+                        <p className="text-[11px] mt-1" style={{ color: "#9B8BA5" }}>
+                          Tryck ••• bredvid en person för att lägga till
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {closeFriends.map(renderFriendCard)}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Other friends */}
+                {(otherFriends.length > 0 || closeFriends.length > 0) && (
+                  <div>
+                    <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
+                      Din krets ({friends.length})
+                    </p>
+
+                    {friends.length > 3 && (
+                      <div className="relative mb-3">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#9B8BA5" }} strokeWidth={1.5} />
+                        <input
+                          value={friendSearch}
+                          onChange={(e) => setFriendSearch(e.target.value)}
+                          placeholder="Sök i din krets..."
+                          className="w-full pl-9 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#9B8BA5]"
+                          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8, color: "#3C2A4D" }}
+                        />
+                      </div>
+                    )}
+
+                    <div className="space-y-2">
+                      {otherFriends.length === 0 && friendSearch ? (
+                        <p className="text-center py-8 text-[13px]" style={{ color: "#9B8BA5" }}>
+                          Inga resultat i din krets
+                        </p>
+                      ) : (
+                        otherFriends.map(renderFriendCard)
+                      )}
+
+                      {/* Invite row */}
+                      <div
+                        className="flex items-center gap-3 p-3"
+                        style={{ border: "1.5px dashed #EDE8E0", borderRadius: 8, backgroundColor: "transparent" }}
+                      >
+                        <InviteFriendDialog />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
-          </div>
+          </>
+        ) : (
+          /* Sällskap tab */
+          <>
+            {groupsLoading ? (
+              <div className="space-y-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-[72px] animate-pulse" style={{ backgroundColor: "#EDE8F4", borderRadius: 8 }} />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-2.5">
+                {groups.map((g) => (
+                  <button
+                    key={g.id}
+                    onClick={() => navigate(`/groups/${g.id}`)}
+                    className="w-full flex items-center gap-3 p-3 text-left transition-colors hover:opacity-90"
+                    style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8 }}
+                  >
+                    <div
+                      className="shrink-0 flex items-center justify-center"
+                      style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: "#F7F3EF" }}
+                    >
+                      <span className="text-lg">{g.emoji}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{g.name}</p>
+                      <p className="text-[11px] truncate italic" style={{ color: "#7A6A85" }}>
+                        {g.last_message || "Inga meddelanden än"}
+                      </p>
+                    </div>
+                    <div className="shrink-0 flex flex-col items-end gap-1">
+                      <span className="text-[10px]" style={{ color: "#7A6A85" }}>
+                        {g.last_message_at ? formatTime(g.last_message_at) : "–"}
+                      </span>
+                      {g.has_unread && (
+                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#C9503A" }} />
+                      )}
+                    </div>
+                  </button>
+                ))}
+
+                {/* Create new group */}
+                <CreateGroupDialog
+                  onGroupCreated={fetchGroups}
+                  trigger={
+                    <button
+                      className="w-full flex items-center gap-3 p-3 text-left transition-colors hover:opacity-80 outline-none focus:outline-none"
+                      style={{ border: "1.5px dashed #EDE8E0", borderRadius: 8 }}
+                    >
+                      <div
+                        className="shrink-0 flex items-center justify-center"
+                        style={{ width: 42, height: 42, borderRadius: 8, border: "1px dashed #EDE8E0" }}
+                      >
+                        <Plus className="w-4 h-4" style={{ color: "#7A6A85" }} />
+                      </div>
+                      <span className="text-[12px] font-medium" style={{ color: "#7A6A85" }}>
+                        Skapa ett nytt sällskap
+                      </span>
+                    </button>
+                  }
+                />
+
+                {groups.length === 0 && (
+                  <div className="text-center py-12">
+                    <p className="font-display text-base" style={{ color: "#7A6A85" }}>Inga sällskap ännu</p>
+                    <p className="text-[12px] mt-1" style={{ color: "#9B8BA5" }}>Skapa ett sällskap för att chatta med din krets</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
       </main>
 
@@ -796,7 +1015,6 @@ const FriendsPage = () => {
       <ScrollToTopButton />
       <BottomNav />
 
-      {/* Remove friend confirmation */}
       <ConfirmSheet
         open={!!removeConfirm}
         onOpenChange={(open) => { if (!open) setRemoveConfirm(null); }}
