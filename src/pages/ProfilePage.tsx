@@ -275,7 +275,7 @@ const ProfilePage = () => {
     <div className="min-h-screen bg-background">
       {/* Top nav */}
       <nav className="sticky top-0 z-50 bg-background">
-        <Container className="py-4 flex items-center justify-between">
+        <Container className="px-2 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate("/")}
@@ -290,7 +290,7 @@ const ProfilePage = () => {
         <CurvedSeparator />
       </nav>
 
-      <Container className="py-6 pb-24">
+      <Container className="px-2 py-6 pb-24">
         {/* ===== (1) PROFILE HEADER ===== */}
         <div className="flex items-start gap-4 mb-4">
           <div className="relative shrink-0">
@@ -450,7 +450,7 @@ const ProfilePage = () => {
           style={{
             background: "#F7F3EF",
             borderRadius: 8,
-            padding: "14px 16px",
+            padding: "14px 8px",
             overflow: "hidden",
           }}
         >
