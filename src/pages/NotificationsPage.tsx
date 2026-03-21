@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Check, UserCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
+import { Container } from "@/components/layout";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import { toast } from "@/hooks/use-toast";
 
