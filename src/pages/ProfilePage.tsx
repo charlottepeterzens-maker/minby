@@ -413,12 +413,6 @@ const ProfilePage = () => {
             padding: 12,
           }}
         >
-          <div
-            className="shrink-0 flex items-center justify-center"
-            style={{ width: 36, height: 36, backgroundColor: "#FCF0F3", borderRadius: 8 }}
-          >
-            <Heart className="w-4 h-4" style={{ color: "#993556" }} />
-          </div>
           <div className="flex-1 min-w-0">
             <p className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
               Hälsa
