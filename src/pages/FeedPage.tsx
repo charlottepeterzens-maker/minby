@@ -224,7 +224,7 @@ const FeedPage = () => {
   return (
     <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
       <nav className="sticky top-0 z-50" style={{ backgroundColor: "#F7F3EF" }}>
-        <div className="max-w-2xl mx-auto px-5 pt-5 pb-3">
+        <Container className="pt-5 pb-3">
           <h1 className="font-fraunces text-[20px] font-medium" style={{ color: "#2A1A3C" }}>
             {getGreeting()}, {currentUserName || "du"}.
           </h1>
@@ -235,11 +235,11 @@ const FeedPage = () => {
                 : "Tyst i din by idag – kanske är det din tur?"}
             </p>
           )}
-        </div>
+        </Container>
         <CurvedSeparator />
       </nav>
 
-      <main className="max-w-2xl mx-auto px-5 py-5">
+      <Container as="main" className="py-5">
         {/* Guidance card */}
         {(isFirstTime || inviteCompleted) && !showOverlay && <FeedGuidanceCard />}
 

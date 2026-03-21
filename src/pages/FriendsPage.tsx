@@ -665,7 +665,7 @@ const FriendsPage = () => {
     <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
       {/* Header */}
       <nav className="sticky top-0 z-50" style={{ backgroundColor: "#F7F3EF" }}>
-        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
+        <Container className="py-4 flex items-center justify-between">
           <span className="font-display text-[20px] font-medium" style={{ color: "#3C2A4D" }}>
             Min krets
           </span>
@@ -676,10 +676,10 @@ const FriendsPage = () => {
           >
             <QrCode className="w-4.5 h-4.5" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
           </button>
-        </div>
+        </Container>
 
         {/* Tabs */}
-        <div className="max-w-2xl mx-auto px-5 flex gap-0" style={{ borderBottom: "1px solid #EDE8E0" }}>
+        <Container className="flex gap-0" style={{ borderBottom: "1px solid #EDE8E0" }}>
           <button
             onClick={() => setActiveTab("krets")}
             className="flex-1 pb-2.5 text-[13px] font-medium text-center transition-colors relative"
@@ -705,10 +705,10 @@ const FriendsPage = () => {
               <div className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full" style={{ backgroundColor: "#3C2A4D" }} />
             )}
           </button>
-        </div>
+        </Container>
       </nav>
 
-      <main className="max-w-2xl mx-auto px-5 py-5 space-y-5">
+      <Container as="main" className="py-5 space-y-5">
         {activeTab === "krets" ? (
           <>
             {/* Search */}
