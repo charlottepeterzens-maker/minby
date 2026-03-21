@@ -424,7 +424,7 @@ const ProfilePage = () => {
               Hälsa
             </p>
             <p className="text-[10px]" style={{ color: "#B0A0B5" }}>
-              Information om din hälsa, menstruationscykel och mer – kommer snart
+              Snart kan du dela med dig om din hälsa, menstruationscykel och träning
             </p>
           </div>
           <Lock className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
