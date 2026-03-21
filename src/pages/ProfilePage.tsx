@@ -450,7 +450,7 @@ const ProfilePage = () => {
           style={{
             background: "#F7F3EF",
             borderRadius: 8,
-            padding: "14px 12px",
+            padding: "14px 16px",
             overflow: "hidden",
           }}
         >
