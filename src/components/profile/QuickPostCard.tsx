@@ -6,6 +6,7 @@ import { Camera, Plus, Send, RectangleHorizontal, LayoutList, X } from "lucide-r
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
+import { compressImage } from "@/utils/imageCompression";
 
 interface LifeSection {
   id: string;
