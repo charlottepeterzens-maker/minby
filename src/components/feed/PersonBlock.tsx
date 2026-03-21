@@ -64,14 +64,40 @@ function formatDateSwedish(dateStr: string): string {
   if (diffDays === 1) return "igår";
   if (diffDays < 7) return `för ${diffDays} dagar sedan`;
   const weekdays = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
-  const months = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+  const months = [
+    "januari",
+    "februari",
+    "mars",
+    "april",
+    "maj",
+    "juni",
+    "juli",
+    "augusti",
+    "september",
+    "oktober",
+    "november",
+    "december",
+  ];
   return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
 }
 
 function formatHangoutDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
   const weekdays = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
-  const months = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
+  const months = [
+    "januari",
+    "februari",
+    "mars",
+    "april",
+    "maj",
+    "juni",
+    "juli",
+    "augusti",
+    "september",
+    "oktober",
+    "november",
+    "december",
+  ];
   return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
 }
 
@@ -127,7 +153,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   }
   if (person.latestTip) {
     signals.push({
-      icon: <Headphones size={10} />,
+      icon: <bulb size={10} />,
       text: person.latestTip.title.slice(0, 20),
     });
   }
