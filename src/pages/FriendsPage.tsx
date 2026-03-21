@@ -708,7 +708,7 @@ const FriendsPage = () => {
         </Container>
       </nav>
 
-      <Container as="main" className="py-5 space-y-5">
+      <Container className="py-5 space-y-5">
         {activeTab === "krets" ? (
           <>
             {/* Search */}

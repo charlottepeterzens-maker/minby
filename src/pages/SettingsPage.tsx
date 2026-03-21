@@ -155,7 +155,7 @@ const SettingsPage = () => {
         <CurvedSeparator />
       </nav>
 
-      <Container as="main" className="py-6 space-y-4">
+      <Container className="py-6 space-y-4">
         {/* Language */}
         <Card className="rounded-[14px] border border-border">
           <CardHeader className="pb-2">

@@ -118,7 +118,7 @@ const GroupsPage = () => {
         <CurvedSeparator />
       </nav>
 
-      <Container as="main" className="py-5">
+      <Container className="py-5">
         {loading ?
         <div className="space-y-3">
             {[1, 2, 3].map((i) =>

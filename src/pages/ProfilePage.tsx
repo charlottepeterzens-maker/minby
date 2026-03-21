@@ -290,7 +290,7 @@ const ProfilePage = () => {
         <CurvedSeparator />
       </nav>
 
-      <Container as="main" className="py-6 pb-24">
+      <Container className="py-6 pb-24">
         {/* ===== (1) PROFILE HEADER ===== */}
         <div className="flex items-start gap-4 mb-4">
           <div className="relative shrink-0">

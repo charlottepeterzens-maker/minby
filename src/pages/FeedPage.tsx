@@ -239,7 +239,7 @@ const FeedPage = () => {
         <CurvedSeparator />
       </nav>
 
-      <Container as="main" className="py-5">
+      <Container className="py-5">
         {/* Guidance card */}
         {(isFirstTime || inviteCompleted) && !showOverlay && <FeedGuidanceCard />}
 
