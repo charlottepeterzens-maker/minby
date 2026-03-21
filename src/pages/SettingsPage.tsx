@@ -41,6 +41,35 @@ const DEFAULT_SETTINGS: NotificationSettings = {
   daily_digest_time: "07:30",
 };
 
+const SeedTestUsersButton = () => {
+  const [seeding, setSeeding] = useState(false);
+  const { toast } = useToast();
+
+  const handleSeed = async () => {
+    setSeeding(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("seed-test-users", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (res.error) {
+        toast({ title: "Fel", description: res.error.message || "Kunde inte skapa testpersoner", variant: "destructive" });
+      } else {
+        toast({ title: "Testpersoner skapade!", description: "Emma, Sara och Karin är nu i din krets." });
+      }
+    } catch {
+      toast({ title: "Fel", description: "Något gick fel", variant: "destructive" });
+    }
+    setSeeding(false);
+  };
+
+  return (
+    <Button onClick={handleSeed} disabled={seeding} size="sm" className="w-full rounded-[10px] font-medium text-sm">
+      {seeding ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Skapar...</> : "Skapa testpersoner"}
+    </Button>
+  );
+};
+
 const SettingsPage = () => {
   const navigate = useNavigate();
   const { signOut, user } = useAuth();
