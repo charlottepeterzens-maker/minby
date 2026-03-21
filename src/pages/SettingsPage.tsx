@@ -48,12 +48,18 @@ const SeedTestUsersButton = () => {
   const handleSeed = async () => {
     setSeeding(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       const res = await supabase.functions.invoke("seed-test-users", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
       if (res.error) {
-        toast({ title: "Fel", description: res.error.message || "Kunde inte skapa testpersoner", variant: "destructive" });
+        toast({
+          title: "Fel",
+          description: res.error.message || "Kunde inte skapa testpersoner",
+          variant: "destructive",
+        });
       } else {
         toast({ title: "Testpersoner skapade!", description: "Emma, Sara och Karin är nu i din krets." });
       }
@@ -65,7 +71,13 @@ const SeedTestUsersButton = () => {
 
   return (
     <Button onClick={handleSeed} disabled={seeding} size="sm" className="w-full rounded-[10px] font-medium text-sm">
-      {seeding ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Skapar...</> : "Skapa testpersoner"}
+      {seeding ? (
+        <>
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Skapar...
+        </>
+      ) : (
+        "Skapa testpersoner"
+      )}
     </Button>
   );
 };
@@ -99,15 +111,18 @@ const SettingsPage = () => {
       });
   }, [user]);
 
-  const updateNotifSetting = useCallback(async (key: keyof NotificationSettings, value: boolean | string) => {
-    if (!user) return;
-    const updated = { ...notifSettings, [key]: value };
-    setNotifSettings(updated);
-    await supabase
-      .from("profiles")
-      .update({ notification_settings: updated } as any)
-      .eq("user_id", user.id);
-  }, [user, notifSettings]);
+  const updateNotifSetting = useCallback(
+    async (key: keyof NotificationSettings, value: boolean | string) => {
+      if (!user) return;
+      const updated = { ...notifSettings, [key]: value };
+      setNotifSettings(updated);
+      await supabase
+        .from("profiles")
+        .update({ notification_settings: updated } as any)
+        .eq("user_id", user.id);
+    },
+    [user, notifSettings],
+  );
 
   const handleChangePassword = async () => {
     if (newPassword.length < 6) {
@@ -142,7 +157,9 @@ const SettingsPage = () => {
     if (!user) return;
     setDeleting(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       const res = await supabase.functions.invoke("delete-account", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
@@ -169,15 +186,19 @@ const SettingsPage = () => {
     { key: "life_comment", label: "Kommentarer på dina inlägg" },
   ];
 
-  const TIME_OPTIONS = Array.from({ length: 24 }, (_, h) =>
-    [`${String(h).padStart(2, "0")}:00`, `${String(h).padStart(2, "0")}:30`]
-  ).flat();
+  const TIME_OPTIONS = Array.from({ length: 24 }, (_, h) => [
+    `${String(h).padStart(2, "0")}:00`,
+    `${String(h).padStart(2, "0")}:30`,
+  ]).flat();
 
   return (
     <div className="min-h-screen bg-background pb-20">
       <nav className="sticky top-0 z-50 bg-background">
         <Container className="py-4 flex items-center gap-2">
-          <button onClick={() => navigate(-1)} className="text-muted-foreground hover:text-foreground transition-colors duration-150">
+          <button
+            onClick={() => navigate(-1)}
+            className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+          >
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
           <span className="font-display text-[20px] font-medium text-foreground">{t("settings")}</span>
@@ -189,9 +210,7 @@ const SettingsPage = () => {
         {/* Language */}
         <Card className="rounded-[14px] border border-border">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground font-body font-medium">
-              {t("language")}
-            </CardTitle>
+            <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("language")}</CardTitle>
           </CardHeader>
           <CardContent>
             <Select value={lang} onValueChange={(v) => setLang(v as "en" | "sv")}>
@@ -209,20 +228,35 @@ const SettingsPage = () => {
         {/* Password */}
         <Card className="rounded-[14px] border border-border">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground font-body font-medium">
-              {t("changePassword")}
-            </CardTitle>
+            <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("changePassword")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div>
               <Label className="text-xs text-muted-foreground">{t("newPassword")}</Label>
-              <Input type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="mt-1 rounded-[10px] border" />
+              <Input
+                type="password"
+                placeholder="••••••••"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="mt-1 rounded-[10px] border"
+              />
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">{t("confirmPassword")}</Label>
-              <Input type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} className="mt-1 rounded-[10px] border" />
+              <Input
+                type="password"
+                placeholder="••••••••"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="mt-1 rounded-[10px] border"
+              />
             </div>
-            <Button onClick={handleChangePassword} disabled={changingPassword} size="sm" className="w-full rounded-[10px] font-medium text-sm">
+            <Button
+              onClick={handleChangePassword}
+              disabled={changingPassword}
+              size="sm"
+              className="w-full rounded-[10px] font-medium text-sm"
+            >
               {changingPassword ? t("updating") : t("updatePassword")}
             </Button>
           </CardContent>
@@ -231,18 +265,13 @@ const SettingsPage = () => {
         {/* Notifications */}
         <Card className="rounded-[14px] border border-border">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground font-body font-medium">
-              Notiser
-            </CardTitle>
+            <CardTitle className="text-xs text-muted-foreground font-body font-medium">Notiser</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {NOTIF_TOGGLES.map(({ key, label }) => (
               <div key={key} className="flex items-center justify-between">
                 <Label className="text-sm">{label}</Label>
-                <Switch
-                  checked={notifSettings[key] as boolean}
-                  onCheckedChange={(v) => updateNotifSetting(key, v)}
-                />
+                <Switch checked={notifSettings[key] as boolean} onCheckedChange={(v) => updateNotifSetting(key, v)} />
               </div>
             ))}
 
@@ -251,7 +280,9 @@ const SettingsPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <Label className="text-sm">Morgonrapport</Label>
-                  <p className="text-[10px] mt-0.5" style={{ color: "#B0A8B5" }}>Kommer snart</p>
+                  <p className="text-[10px] mt-0.5" style={{ color: "#B0A8B5" }}>
+                    Kommer snart
+                  </p>
                 </div>
                 <Switch
                   checked={notifSettings.daily_digest_enabled}
@@ -270,8 +301,10 @@ const SettingsPage = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {TIME_OPTIONS.map(t => (
-                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                      {TIME_OPTIONS.map((t) => (
+                        <SelectItem key={t} value={t}>
+                          {t}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -284,25 +317,24 @@ const SettingsPage = () => {
         {/* Data & Privacy */}
         <Card className="rounded-[14px] border border-border">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground font-body font-medium">
-              {t("howWeUseData")}
-            </CardTitle>
+            <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("howWeUseData")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>{t("dataPrivacy1")}</p>
             <p>{t("dataPrivacy2")}</p>
             <p>{t("dataPrivacy3")}</p>
-            <p>Vi skickar push-notiser för att hålla dig uppdaterad om din krets. Du kan när som helst stänga av notiser i Inställningar eller i din enhets inställningar.</p>
+            <p>
+              Vi skickar push-notiser för att hålla dig uppdaterad om din krets. Du kan när som helst stänga av notiser
+              i Inställningar eller i din enhets inställningar.
+            </p>
           </CardContent>
         </Card>
 
         {/* Dev tools - only for charlotte */}
-        {(user?.email?.includes("charlotte") || user?.email?.includes("chaluda")) && (
+        {user?.email?.includes("charlotte.peterzens") && (
           <Card className="rounded-[14px] border border-border">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xs text-muted-foreground font-body font-medium">
-                Utvecklarverktyg
-              </CardTitle>
+              <CardTitle className="text-xs text-muted-foreground font-body font-medium">Utvecklarverktyg</CardTitle>
             </CardHeader>
             <CardContent>
               <SeedTestUsersButton />
@@ -311,7 +343,11 @@ const SettingsPage = () => {
         )}
 
         {/* Log out */}
-        <Button variant="outline" onClick={handleLogout} className="w-full rounded-[10px] border border-border text-muted-foreground hover:text-foreground hover:bg-muted">
+        <Button
+          variant="outline"
+          onClick={handleLogout}
+          className="w-full rounded-[10px] border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+        >
           <LogOut className="w-4 h-4 mr-2" strokeWidth={1.5} /> {t("logOut")}
         </Button>
 
