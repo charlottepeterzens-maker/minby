@@ -494,10 +494,10 @@ const ProfilePage = () => {
                 onCreated={fetchSections}
                 trigger={
                   <button
-                    className="text-[11px] font-medium"
-                    style={{ color: "#C9503A", background: "none", border: "none", cursor: "pointer" }}
+                    className="w-6 h-6 rounded-full flex items-center justify-center"
+                    style={{ backgroundColor: "#EDE8F4" }}
                   >
-                    + Lägg till en del
+                    <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
                   </button>
                 }
               />
