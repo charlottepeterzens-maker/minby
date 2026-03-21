@@ -547,30 +547,6 @@ const ProfilePage = () => {
                   </button>
                 );
               })}
-              {/* Dashed new section card */}
-              {isOwnProfile && (
-                <CreateSectionDialog
-                  onCreated={fetchSections}
-                  trigger={
-                    <button
-                      className="shrink-0 flex flex-col items-center justify-center"
-                      style={{
-                        minWidth: 72,
-                        height: 64,
-                        borderRadius: 8,
-                        border: "1px dashed #C9B8D8",
-                        background: "transparent",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <Plus className="w-3 h-3 mb-0.5" style={{ color: "#C9B8D8" }} />
-                      <span className="text-[8px]" style={{ color: "#B0A0B5" }}>
-                        Ny del
-                      </span>
-                    </button>
-                  }
-                />
-              )}
             </div>
           )}
 
