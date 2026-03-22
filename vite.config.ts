@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
+import svgr from "vite-plugin-svgr";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { VitePWA } from "vite-plugin-pwa";
@@ -15,6 +16,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
+    svgr(),
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",

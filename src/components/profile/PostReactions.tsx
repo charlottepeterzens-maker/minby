@@ -4,16 +4,28 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
 
-const REACTION_EMOJIS = ["❤️", "🥂", "😮", "🙌", "😂"];
+import LoveActive from "@/love_active.svg?react";
+import LoveInactive from "@/love_inactive.svg?react";
+import LolActive from "@/lol_active.svg?react";
+import LolInactive from "@/lol_inactive.svg?react";
+import SparkleActive from "@/sparkle_active.svg?react";
+import SparkleInactive from "@/sparkle_inactive.svg?react";
+import PrayActive from "@/pray_active.svg?react";
+import PrayInactive from "@/pray_inactive.svg?react";
 
-const REACTION_TOASTS: Record<string, string> = {
-  "❤️": "Kärlek skickad",
-  "🥂": "Du firade tillsammans",
-  "🙌": "Du hejade",
-  "😮": "Du berördes",
-  "😂": "Du skrattade",
-  "🤗": "Du skickade en kram",
-};
+interface ReactionDef {
+  key: string;
+  ActiveIcon: React.FC<React.SVGProps<SVGSVGElement>>;
+  InactiveIcon: React.FC<React.SVGProps<SVGSVGElement>>;
+  toastMsg: string;
+}
+
+const REACTIONS: ReactionDef[] = [
+  { key: "love", ActiveIcon: LoveActive, InactiveIcon: LoveInactive, toastMsg: "Kärlek skickad" },
+  { key: "lol", ActiveIcon: LolActive, InactiveIcon: LolInactive, toastMsg: "Du skrattade" },
+  { key: "sparkle", ActiveIcon: SparkleActive, InactiveIcon: SparkleInactive, toastMsg: "Du hejade" },
+  { key: "pray", ActiveIcon: PrayActive, InactiveIcon: PrayInactive, toastMsg: "Du skickade en tanke" },
+];
 
 interface ReactionRow {
   emoji: string;
@@ -34,12 +46,15 @@ interface Props {
 const PostReactions = ({ postId, readOnly }: Props) => {
   const { user } = useAuth();
   const [counts, setCounts] = useState<Record<string, ReactionCount>>({});
-  const [detailEmoji, setDetailEmoji] = useState<string | null>(null);
+  const [detailKey, setDetailKey] = useState<string | null>(null);
   const [detailNames, setDetailNames] = useState<string[]>([]);
   const [rawData, setRawData] = useState<ReactionRow[]>([]);
 
   const fetchReactions = useCallback(async () => {
-    const { data } = await supabase.from("post_reactions").select("emoji, user_id").eq("post_id", postId);
+    const { data } = await supabase
+      .from("post_reactions")
+      .select("emoji, user_id")
+      .eq("post_id", postId);
 
     if (data) {
       setRawData(data as ReactionRow[]);
@@ -57,21 +72,24 @@ const PostReactions = ({ postId, readOnly }: Props) => {
     fetchReactions();
   }, [fetchReactions]);
 
-  const toggleReaction = async (emoji: string) => {
+  const toggleReaction = async (key: string, toastMsg: string) => {
     if (!user || readOnly) return;
-    const existing = counts[emoji]?.reacted;
+    const existing = counts[key]?.reacted;
     if (existing) {
-      await supabase.from("post_reactions").delete().eq("post_id", postId).eq("user_id", user.id).eq("emoji", emoji);
+      await supabase
+        .from("post_reactions")
+        .delete()
+        .eq("post_id", postId)
+        .eq("user_id", user.id)
+        .eq("emoji", key);
     } else {
       await supabase.from("post_reactions").insert({
         post_id: postId,
         user_id: user.id,
-        emoji,
+        emoji: key,
       });
-      const msg = REACTION_TOASTS[emoji];
-      if (msg) toast.success(msg);
+      toast.success(toastMsg);
 
-      // Trigger 3: Send push to post owner (if not self)
       try {
         const { data: post } = await supabase
           .from("life_posts")
@@ -80,7 +98,6 @@ const PostReactions = ({ postId, readOnly }: Props) => {
           .single();
 
         if (post && post.user_id !== user.id) {
-          // Check if post owner has muted the reactor
           const { data: ownerProfile } = await supabase
             .from("profiles")
             .select("muted_users")
@@ -101,7 +118,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
               fromUserId: user.id,
               type: "life_reaction",
               referenceId: postId,
-              message: `${name} reagerade – de skickade ${emoji} på ditt inlägg.`,
+              message: `${name} reagerade på ditt inlägg.`,
             });
           }
         }
@@ -112,38 +129,39 @@ const PostReactions = ({ postId, readOnly }: Props) => {
     fetchReactions();
   };
 
-  const showDetail = async (emoji: string) => {
-    if (detailEmoji === emoji) {
-      setDetailEmoji(null);
+  const showDetail = async (key: string) => {
+    if (detailKey === key) {
+      setDetailKey(null);
       return;
     }
-    setDetailEmoji(emoji);
-    const userIds = rawData.filter((r) => r.emoji === emoji).map((r) => r.user_id);
+    setDetailKey(key);
+    const userIds = rawData.filter((r) => r.emoji === key).map((r) => r.user_id);
     if (userIds.length === 0) {
       setDetailNames([]);
       return;
     }
     const { data } = await supabase.from("profiles").select("user_id, display_name").in("user_id", userIds);
-    if (data) setDetailNames(data.map((p) => (p.user_id === user?.id ? "Du" : p.display_name || "Nagon")));
+    if (data) setDetailNames(data.map((p) => (p.user_id === user?.id ? "Du" : p.display_name || "Någon")));
   };
 
   const totalCount = Object.values(counts).reduce((sum, r) => sum + r.count, 0);
 
   return (
     <div style={{ marginTop: 10, position: "relative" }}>
-      {/* Emoji pills */}
       <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-        {REACTION_EMOJIS.map((emoji) => {
-          const r = counts[emoji];
+        {REACTIONS.map(({ key, ActiveIcon, InactiveIcon, toastMsg }) => {
+          const r = counts[key];
           const count = r?.count || 0;
           const reacted = r?.reacted || false;
+          const Icon = reacted ? ActiveIcon : InactiveIcon;
+
           return (
             <button
-              key={emoji}
-              onClick={() => (readOnly ? showDetail(emoji) : toggleReaction(emoji))}
+              key={key}
+              onClick={() => (readOnly ? showDetail(key) : toggleReaction(key, toastMsg))}
               onContextMenu={(e) => {
                 e.preventDefault();
-                showDetail(emoji);
+                showDetail(key);
               }}
               disabled={readOnly && count === 0}
               style={{
@@ -152,39 +170,39 @@ const PostReactions = ({ postId, readOnly }: Props) => {
                 gap: 4,
                 padding: count > 0 ? "4px 10px" : "4px 8px",
                 borderRadius: 99,
-                border: reacted ? "1px solid #C9B8D8" : "1px solid #EDE8E0",
-                background: reacted ? "#EDE8F4" : "#F7F3EF",
+                border: reacted ? "1px solid hsl(var(--accent))" : "1px solid hsl(var(--border))",
+                background: reacted ? "hsl(var(--accent))" : "hsl(var(--muted))",
                 cursor: readOnly && count === 0 ? "default" : "pointer",
                 fontSize: 13,
                 fontWeight: reacted ? 500 : 400,
-                color: reacted ? "#3C2A4D" : "#9B8BA5",
+                color: reacted ? "hsl(var(--foreground))" : "hsl(var(--muted-foreground))",
                 opacity: readOnly && count === 0 ? 0.4 : 1,
                 transition: "all 0.15s ease",
               }}
             >
-              <span>{emoji}</span>
-              {count > 0 && <span style={{ fontSize: 11, fontWeight: 500 }}>{count}</span>}
+              <Icon style={{ width: 18, height: 18 }} />
+              {count > 0 && (
+                <span style={{ fontSize: 11, fontWeight: 500 }}>{count}</span>
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* Activity micro-signal */}
       {totalCount > 0 && !readOnly && (
-        <p style={{ fontSize: 10, color: "#B0A8B5", marginTop: 4 }}>
+        <p style={{ fontSize: 10, color: "hsl(var(--muted-foreground))", marginTop: 4 }}>
           {totalCount === 1 ? "Någon reagerade" : `${totalCount} personer har reagerat`}
         </p>
       )}
 
-      {/* Detail popup */}
-      {detailEmoji && counts[detailEmoji]?.count > 0 && (
+      {detailKey && counts[detailKey]?.count > 0 && (
         <div
           style={{
             position: "absolute",
             left: 0,
             top: "calc(100% + 6px)",
-            background: "#fff",
-            border: "1px solid #EDE8F4",
+            background: "hsl(var(--background))",
+            border: "1px solid hsl(var(--border))",
             borderRadius: 10,
             padding: "10px 14px",
             zIndex: 30,
@@ -193,19 +211,24 @@ const PostReactions = ({ postId, readOnly }: Props) => {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-            <span style={{ fontSize: 16 }}>{detailEmoji}</span>
+            {(() => {
+              const def = REACTIONS.find((r) => r.key === detailKey);
+              if (!def) return null;
+              const Icon = def.ActiveIcon;
+              return <Icon style={{ width: 20, height: 20 }} />;
+            })()}
             <button
-              onClick={() => setDetailEmoji(null)}
-              style={{ fontSize: 10, color: "#B0A0B5", background: "none", border: "none", cursor: "pointer" }}
+              onClick={() => setDetailKey(null)}
+              style={{ fontSize: 10, color: "hsl(var(--muted-foreground))", background: "none", border: "none", cursor: "pointer" }}
             >
               ✕
             </button>
           </div>
           {detailNames.length === 0 ? (
-            <p style={{ fontSize: 11, color: "#9B8BA5" }}>Ingen ännu</p>
+            <p style={{ fontSize: 11, color: "hsl(var(--muted-foreground))" }}>Ingen ännu</p>
           ) : (
             detailNames.map((name, i) => (
-              <p key={i} style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", marginBottom: 2 }}>
+              <p key={i} style={{ fontSize: 12, fontWeight: 500, color: "hsl(var(--foreground))", marginBottom: 2 }}>
                 {name}
               </p>
             ))
