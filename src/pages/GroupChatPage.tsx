@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, Fragment } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, SendHorizontal, Plus, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
