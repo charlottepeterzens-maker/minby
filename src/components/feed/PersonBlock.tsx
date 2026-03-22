@@ -153,7 +153,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   }
   if (person.latestTip) {
     signals.push({
-      icon: <Sparkles size={10} />,
+      icon: <sparkles size={10} />,
       text: person.latestTip.title.slice(0, 20),
     });
   }
