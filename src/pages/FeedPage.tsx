@@ -23,7 +23,7 @@ const FeedPage = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [showHangoutSheet, setShowHangoutSheet] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(true);
+  
   const [inviteCompleted, setInviteCompleted] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
 
