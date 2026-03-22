@@ -14,7 +14,6 @@ interface PlanTimelineCardProps {
   title: string;
   dateText: string;
   location: string | null;
-  emoji: string;
   creatorName: string;
   time: string;
   rsvps: Rsvp[];
@@ -28,7 +27,6 @@ const PlanTimelineCard = ({
   title,
   dateText,
   location,
-  emoji,
   creatorName,
   time,
   rsvps,
@@ -81,7 +79,9 @@ const PlanTimelineCard = ({
       >
         {/* Header */}
         <div className="flex items-start gap-2">
-          <span className="text-lg">{emoji}</span>
+          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: "#EAF2E8" }}>
+            <CalendarDays className="w-4 h-4" style={{ color: "#1F4A1A" }} />
+          </div>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-medium leading-snug" style={{ color: "#3C2A4D" }}>
               {title}

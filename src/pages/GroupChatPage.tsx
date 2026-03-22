@@ -511,7 +511,7 @@ const GroupChatPage = () => {
                 title={plan.title}
                 dateText={plan.date_text}
                 location={plan.location}
-                emoji={plan.emoji}
+                
                 creatorName={creator?.display_name || "Anonym"}
                 time={formatTime(plan.created_at)}
                 rsvps={planRsvps}

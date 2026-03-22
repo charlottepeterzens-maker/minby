@@ -57,7 +57,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
     if (error) {
       toast.error("Kunde inte spara minnet");
     } else {
-      toast.success("Minne sparat! 📸");
+      toast.success("Minne sparat!");
       onMemorySaved();
     }
     setSaving(false);
@@ -73,7 +73,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
       <div className="flex items-start justify-between">
         <div>
           <p className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
-            Ni hade {planTitle.toLowerCase()} 🎉
+            Ni hade {planTitle.toLowerCase()}
           </p>
           <p className="text-[11px]" style={{ color: "#7A6A85" }}>
             {planDate} · Vill ni spara något från den kvällen?
