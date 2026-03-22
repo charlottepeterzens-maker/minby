@@ -10,7 +10,7 @@ interface Props {
   onClose?: () => void;
 }
 
-const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
+const FirstTimeOverlay = ({ onClose }: Props) => {
   const { user } = useAuth();
   const [step, setStep] = useState<"invite" | "done">("invite");
   const [sheetOpen, setSheetOpen] = useState(false);
