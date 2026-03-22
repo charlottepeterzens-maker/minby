@@ -25,6 +25,7 @@ interface Message {
   user_id: string;
   content: string;
   created_at: string;
+  reply_to_id: string | null;
 }
 
 interface Member {
