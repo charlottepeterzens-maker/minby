@@ -86,6 +86,7 @@ const GroupChatPage = () => {
   const [dismissedSuggestions, setDismissedSuggestions] = useState<Set<string>>(getDismissedSet);
   const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
   const [addMemberOpen, setAddMemberOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
