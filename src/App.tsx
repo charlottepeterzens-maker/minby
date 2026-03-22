@@ -60,9 +60,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
       {!onboarded && (
         <FirstTimeOverlay
-          onClose={() => {
-            setOnboarded(false);
-          }}
+          onComplete={() => setOnboarded(true)}
+          onDismiss={() => setOnboarded(true)}
         />
       )}
     </>
