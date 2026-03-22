@@ -1,13 +1,17 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, SendHorizontal, BarChart3, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut } from "lucide-react";
+import { ChevronLeft, SendHorizontal, Plus, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import CreatePollSheet from "@/components/chat/CreatePollSheet";
+import CreateActionSheet from "@/components/chat/CreateActionSheet";
 import PollCard from "@/components/chat/PollCard";
+import PlanTimelineCard from "@/components/chat/PlanTimelineCard";
+import ChatSummaryCard from "@/components/chat/ChatSummaryCard";
+import AfterEventCard from "@/components/chat/AfterEventCard";
 import DateSuggestionCard from "@/components/chat/DateSuggestionCard";
+import GroupStatusLine from "@/components/chat/GroupStatusLine";
 import { recognizeDates, type RecognizedDate } from "@/utils/dateRecognition";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import AddMemberSheet from "@/components/chat/AddMemberSheet";
@@ -45,9 +49,28 @@ interface PollVote {
   option_index: number;
 }
 
+interface Plan {
+  id: string;
+  group_id: string;
+  created_by: string;
+  title: string;
+  date_text: string;
+  location: string | null;
+  emoji: string;
+  created_at: string;
+}
+
+interface Rsvp {
+  id: string;
+  plan_id: string;
+  user_id: string;
+  status: string;
+}
+
 type TimelineItem =
   | { type: "message"; data: Message }
-  | { type: "poll"; data: Poll };
+  | { type: "poll"; data: Poll }
+  | { type: "plan"; data: Plan };
 
 interface PendingSuggestion extends RecognizedDate {
   sourceMessageId: string;
@@ -55,20 +78,21 @@ interface PendingSuggestion extends RecognizedDate {
 }
 
 const DISMISSED_KEY = "dismissed_date_suggestions";
+const DISMISSED_MEMORIES_KEY = "dismissed_memory_prompts";
 
-function getDismissedSet(): Set<string> {
+function getDismissedSet(key: string): Set<string> {
   try {
-    const raw = localStorage.getItem(DISMISSED_KEY);
+    const raw = localStorage.getItem(key);
     return new Set(raw ? JSON.parse(raw) : []);
   } catch {
     return new Set();
   }
 }
 
-function addDismissed(key: string) {
-  const set = getDismissedSet();
-  set.add(key);
-  localStorage.setItem(DISMISSED_KEY, JSON.stringify([...set]));
+function addToDismissed(key: string, val: string) {
+  const set = getDismissedSet(key);
+  set.add(val);
+  localStorage.setItem(key, JSON.stringify([...set]));
 }
 
 const GroupChatPage = () => {
@@ -82,8 +106,12 @@ const GroupChatPage = () => {
   const [sending, setSending] = useState(false);
   const [polls, setPolls] = useState<Poll[]>([]);
   const [pollVotes, setPollVotes] = useState<PollVote[]>([]);
-  const [pollSheetOpen, setPollSheetOpen] = useState(false);
-  const [dismissedSuggestions, setDismissedSuggestions] = useState<Set<string>>(getDismissedSet);
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [rsvps, setRsvps] = useState<Rsvp[]>([]);
+  const [actionSheetOpen, setActionSheetOpen] = useState(false);
+  const [actionSheetPrefill, setActionSheetPrefill] = useState<{ title: string; dateText: string } | null>(null);
+  const [dismissedSuggestions, setDismissedSuggestions] = useState<Set<string>>(getDismissedSet(DISMISSED_KEY));
+  const [dismissedMemories, setDismissedMemories] = useState<Set<string>>(getDismissedSet(DISMISSED_MEMORIES_KEY));
   const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
   const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -98,24 +126,15 @@ const GroupChatPage = () => {
   const fetchGroupInfo = useCallback(async () => {
     if (!groupId) return;
     const { data: group } = await supabase
-      .from("friend_groups")
-      .select("name")
-      .eq("id", groupId)
-      .single();
+      .from("friend_groups").select("name").eq("id", groupId).single();
     if (group) setGroupName(group.name);
 
     const { data: memberships } = await supabase
-      .from("group_memberships")
-      .select("user_id")
-      .eq("group_id", groupId);
-
+      .from("group_memberships").select("user_id").eq("group_id", groupId);
     if (memberships) {
       const ids = memberships.map((m) => m.user_id);
       const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, display_name")
-        .in("user_id", ids);
-
+        .from("profiles").select("user_id, display_name").in("user_id", ids);
       setMembers(
         (profiles || []).map((p) => ({
           user_id: p.user_id,
@@ -129,33 +148,39 @@ const GroupChatPage = () => {
   const fetchMessages = useCallback(async () => {
     if (!groupId) return;
     const { data } = await supabase
-      .from("group_messages")
-      .select("*")
-      .eq("group_id", groupId)
+      .from("group_messages").select("*").eq("group_id", groupId)
       .order("created_at", { ascending: true });
-    if (data) {
-      setMessages(data);
-      scrollToBottom();
-    }
+    if (data) { setMessages(data); scrollToBottom(); }
   }, [groupId]);
 
   const fetchPolls = useCallback(async () => {
     if (!groupId) return;
     const { data: pollData } = await supabase
-      .from("group_polls")
-      .select("*")
-      .eq("group_id", groupId)
+      .from("group_polls").select("*").eq("group_id", groupId)
       .order("created_at", { ascending: true });
-
     if (pollData) {
       setPolls(pollData as Poll[]);
       const pollIds = pollData.map((p) => p.id);
       if (pollIds.length > 0) {
         const { data: voteData } = await supabase
-          .from("poll_votes")
-          .select("*")
-          .in("poll_id", pollIds);
+          .from("poll_votes").select("*").in("poll_id", pollIds);
         if (voteData) setPollVotes(voteData as PollVote[]);
+      }
+    }
+  }, [groupId]);
+
+  const fetchPlans = useCallback(async () => {
+    if (!groupId) return;
+    const { data: planData } = await supabase
+      .from("plans").select("*").eq("group_id", groupId)
+      .order("created_at", { ascending: true });
+    if (planData) {
+      setPlans(planData as Plan[]);
+      const planIds = planData.map((p) => p.id);
+      if (planIds.length > 0) {
+        const { data: rsvpData } = await supabase
+          .from("rsvps").select("*").in("plan_id", planIds);
+        if (rsvpData) setRsvps(rsvpData as Rsvp[]);
       }
     }
   }, [groupId]);
@@ -164,7 +189,8 @@ const GroupChatPage = () => {
     fetchGroupInfo();
     fetchMessages();
     fetchPolls();
-  }, [fetchGroupInfo, fetchMessages, fetchPolls]);
+    fetchPlans();
+  }, [fetchGroupInfo, fetchMessages, fetchPolls, fetchPlans]);
 
   // --- Realtime ---
   useEffect(() => {
@@ -180,22 +206,27 @@ const GroupChatPage = () => {
           const nv = payload.new as PollVote;
           setPollVotes((prev) => prev.some((v) => v.id === nv.id) ? prev : [...prev, nv]);
         })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "plans", filter: `group_id=eq.${groupId}` },
+        (payload) => { setPlans((prev) => [...prev, payload.new as Plan]); scrollToBottom(); })
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "rsvps" },
+        (payload) => {
+          const nr = payload.new as Rsvp;
+          setRsvps((prev) => prev.some((r) => r.id === nr.id) ? prev : [...prev, nr]);
+        })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [groupId]);
 
-  // --- Date recognition with context detection ---
+  // --- Date recognition ---
   const activeSuggestion: PendingSuggestion | null = useMemo(() => {
     const pluralPatterns = /\b(vi|oss|alla|tillsammans)\b/i;
     const namePatterns = /\b(och|med|plus|\+)\s+[A-ZÅÄÖ]\w+/i;
-
     for (let i = messages.length - 1; i >= 0; i--) {
       const msg = messages[i];
       const dates = recognizeDates(msg.content);
       for (const d of dates) {
         const key = `${groupId}_${d.startDate}`;
         if (!dismissedSuggestions.has(key)) {
-          // Detect if message implies multiple people → plan type
           const impliesGroup = pluralPatterns.test(msg.content) || namePatterns.test(msg.content);
           return { ...d, sourceMessageId: msg.id, suggestedType: impliesGroup ? "confirmed" : "available" };
         }
@@ -208,7 +239,7 @@ const GroupChatPage = () => {
   const handleDismissSuggestion = () => {
     if (!activeSuggestion) return;
     const key = `${groupId}_${activeSuggestion.startDate}`;
-    addDismissed(key);
+    addToDismissed(DISMISSED_KEY, key);
     setDismissedSuggestions((prev) => new Set([...prev, key]));
   };
 
@@ -216,15 +247,10 @@ const GroupChatPage = () => {
     if (!activeSuggestion || !user) return;
     const label = activeSuggestion.label || groupName;
     const entryType = activeSuggestion.suggestedType;
-
     await supabase.from("hangout_availability").insert({
-      user_id: user.id,
-      date: activeSuggestion.startDate,
-      activities: [label],
-      custom_note: `Från gruppen "${groupName}"`,
-      entry_type: entryType,
+      user_id: user.id, date: activeSuggestion.startDate,
+      activities: [label], custom_note: `Från gruppen "${groupName}"`, entry_type: entryType,
     });
-
     if (activeSuggestion.endDate && activeSuggestion.endDate !== activeSuggestion.startDate) {
       const start = new Date(activeSuggestion.startDate);
       const end = new Date(activeSuggestion.endDate);
@@ -232,18 +258,43 @@ const GroupChatPage = () => {
       current.setDate(current.getDate() + 1);
       while (current <= end) {
         await supabase.from("hangout_availability").insert({
-          user_id: user.id,
-          date: current.toISOString().split("T")[0],
-          activities: [label],
-          custom_note: `Från gruppen "${groupName}"`,
-          entry_type: entryType,
+          user_id: user.id, date: current.toISOString().split("T")[0],
+          activities: [label], custom_note: `Från gruppen "${groupName}"`, entry_type: entryType,
         });
         current.setDate(current.getDate() + 1);
       }
     }
-
     handleDismissSuggestion();
   };
+
+  // --- Past plans for after-event ---
+  const pastPlanForMemory = useMemo(() => {
+    const now = new Date();
+    const pastKeywords = ["igår", "förra", "i lördags", "i söndags"];
+    return plans.find((p) => {
+      if (dismissedMemories.has(p.id)) return false;
+      // Simple heuristic: plan date_text contains past-like words or created > 1 day ago with rsvps
+      const createdAt = new Date(p.created_at);
+      const daysSince = (now.getTime() - createdAt.getTime()) / 86400000;
+      const hasRsvps = rsvps.filter((r) => r.plan_id === p.id && r.status === "in").length >= 2;
+      const looksOld = daysSince > 2 && hasRsvps;
+      const textLooksPast = pastKeywords.some((k) => p.date_text.toLowerCase().includes(k));
+      return looksOld || textLooksPast;
+    }) || null;
+  }, [plans, rsvps, dismissedMemories]);
+
+  // --- Latest plan status for header ---
+  const latestPlanStatus = useMemo(() => {
+    if (plans.length === 0) return null;
+    const latest = plans[plans.length - 1];
+    const planRsvps = rsvps.filter((r) => r.plan_id === latest.id);
+    return {
+      title: latest.title,
+      dateText: latest.date_text,
+      rsvpInCount: planRsvps.filter((r) => r.status === "in").length,
+      rsvpMaybeCount: planRsvps.filter((r) => r.status === "maybe").length,
+    };
+  }, [plans, rsvps]);
 
   // --- Actions ---
   const handleSend = async () => {
@@ -252,25 +303,14 @@ const GroupChatPage = () => {
     const content = newMessage.trim();
     setNewMessage("");
     await supabase.from("group_messages").insert({ group_id: groupId, user_id: user.id, content });
-    
-    // Send group_message notification to other members
     try {
       const otherMembers = members.filter(m => m.user_id !== user.id);
       if (otherMembers.length > 0) {
         await Promise.all(otherMembers.map(m =>
-          sendNotification({
-            recipientUserId: m.user_id,
-            fromUserId: user.id,
-            type: "group_message",
-            referenceId: groupId,
-            message: `Nytt meddelande i ${groupName}`,
-          })
+          sendNotification({ recipientUserId: m.user_id, fromUserId: user.id, type: "group_message", referenceId: groupId, message: `Nytt meddelande i ${groupName}` })
         ));
       }
-    } catch {
-      // Best effort
-    }
-
+    } catch { /* best effort */ }
     setSending(false);
     inputRef.current?.focus();
   };
@@ -280,86 +320,155 @@ const GroupChatPage = () => {
     await supabase.from("group_polls").insert({ group_id: groupId, user_id: user.id, question, options });
   };
 
+  const handleCreatePlan = async (title: string, dateText: string, location: string | null) => {
+    if (!user || !groupId) return;
+    const { data: plan } = await supabase.from("plans").insert({
+      group_id: groupId, created_by: user.id, title, date_text: dateText,
+      location, emoji: "📅", vibe: "chill",
+    }).select("id").single();
+
+    if (plan) {
+      // Auto-RSVP creator
+      await supabase.from("rsvps").insert({ plan_id: plan.id, user_id: user.id, status: "in" });
+    }
+  };
+
+  const handleRsvp = async (planId: string, status: string) => {
+    if (!user) return;
+    // Check existing
+    const existing = rsvps.find((r) => r.plan_id === planId && r.user_id === user.id);
+    if (existing) return;
+    await supabase.from("rsvps").insert({ plan_id: planId, user_id: user.id, status });
+  };
+
   const handleVote = async (pollId: string, optionIndex: number) => {
     if (!user) return;
     await supabase.from("poll_votes").insert({ poll_id: pollId, user_id: user.id, option_index: optionIndex });
   };
 
+  const handleSummaryCreatePlan = (suggestion: { title: string; dateText: string }) => {
+    setActionSheetPrefill(suggestion);
+    setActionSheetOpen(true);
+  };
+
   const getMember = (userId: string) => members.find((m) => m.user_id === userId);
   const formatTime = (dateStr: string) => format(new Date(dateStr), "HH:mm", { locale: sv });
 
-  const timeline: TimelineItem[] = [
+  // --- Summary messages for AI ---
+  const summaryMessages = useMemo(() => {
+    return messages.slice(-30).map((m) => ({
+      sender: getMember(m.user_id)?.display_name || "Anonym",
+      content: m.content,
+    }));
+  }, [messages, members]);
+
+  const timeline: TimelineItem[] = useMemo(() => [
     ...messages.map((m) => ({ type: "message" as const, data: m })),
     ...polls.map((p) => ({ type: "poll" as const, data: p })),
-  ].sort((a, b) => new Date(a.data.created_at).getTime() - new Date(b.data.created_at).getTime());
+    ...plans.map((p) => ({ type: "plan" as const, data: p })),
+  ].sort((a, b) => new Date(a.data.created_at).getTime() - new Date(b.data.created_at).getTime()), [messages, polls, plans]);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F3EF" }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 flex items-center px-4 py-3 gap-3" style={{ backgroundColor: "#3C2A4D" }}>
-        <button onClick={() => navigate("/groups")} className="shrink-0 p-1">
-          <ChevronLeft className="w-5 h-5" style={{ color: "#C9B8D8" }} />
-        </button>
-        <div className="flex-1 text-center">
-          <p className="text-[13px] font-medium" style={{ color: "#C9B8D8" }}>{groupName}</p>
-        </div>
-        <div className="shrink-0 flex items-center -space-x-2">
-          {members.slice(0, 4).map((m) => (
-            <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
-              style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
-              {m.initial}
-            </div>
-          ))}
-          {members.length > 4 && (
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
-              style={{ backgroundColor: "#7A6A85", color: "#F7F3EF", borderColor: "#3C2A4D" }}>
-              +{members.length - 4}
-            </div>
-          )}
-        </div>
-        <div className="shrink-0 relative">
-          <button onClick={() => setMenuOpen((v) => !v)} className="p-1">
-            <EllipsisVertical className="w-5 h-5" style={{ color: "#C9B8D8" }} />
+      <header className="sticky top-0 z-50 px-4 py-3" style={{ backgroundColor: "#3C2A4D" }}>
+        <div className="flex items-center gap-3">
+          <button onClick={() => navigate("/groups")} className="shrink-0 p-1">
+            <ChevronLeft className="w-5 h-5" style={{ color: "#C9B8D8" }} />
           </button>
-          {menuOpen && (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-              <div className="absolute right-0 top-full mt-1 z-50 py-1.5 rounded-[12px] shadow-lg min-w-[180px]"
-                style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}>
-                <button
-                  onClick={() => { setMenuOpen(false); setAddMemberOpen(true); }}
-                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
-                  style={{ color: "#3C2A4D" }}>
-                  <UserPlus className="w-4 h-4" style={{ color: "#7A6A85" }} />
-                  Lägg till vän
-                </button>
-                <InviteFriendDialog
-                  trigger={
-                    <button
-                      onClick={() => setMenuOpen(false)}
+          <div className="flex-1 text-center min-w-0">
+            <p className="text-[13px] font-medium truncate" style={{ color: "#C9B8D8" }}>{groupName}</p>
+            {latestPlanStatus && (
+              <GroupStatusLine
+                memberCount={members.length}
+                latestPlan={latestPlanStatus}
+                lastMessageAt={messages[messages.length - 1]?.created_at}
+                compact
+              />
+            )}
+          </div>
+          <div className="shrink-0 flex items-center -space-x-2">
+            {members.slice(0, 4).map((m) => (
+              <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
+                style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
+                {m.initial}
+              </div>
+            ))}
+            {members.length > 4 && (
+              <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
+                style={{ backgroundColor: "#7A6A85", color: "#F7F3EF", borderColor: "#3C2A4D" }}>
+                +{members.length - 4}
+              </div>
+            )}
+          </div>
+          <div className="shrink-0 relative">
+            <button onClick={() => setMenuOpen((v) => !v)} className="p-1">
+              <EllipsisVertical className="w-5 h-5" style={{ color: "#C9B8D8" }} />
+            </button>
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                <div className="absolute right-0 top-full mt-1 z-50 py-1.5 rounded-[12px] shadow-lg min-w-[180px]"
+                  style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}>
+                  <button onClick={() => { setMenuOpen(false); setAddMemberOpen(true); }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
+                    style={{ color: "#3C2A4D" }}>
+                    <UserPlus className="w-4 h-4" style={{ color: "#7A6A85" }} />
+                    Lägg till vän
+                  </button>
+                  <InviteFriendDialog trigger={
+                    <button onClick={() => setMenuOpen(false)}
                       className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
                       style={{ color: "#3C2A4D" }}>
                       <ArrowUpFromLine className="w-4 h-4" style={{ color: "#7A6A85" }} />
                       Bjud in till sällskapet
                     </button>
-                  }
-                />
-                <div className="mx-3 my-1" style={{ borderTop: "1px solid #EDE8F4" }} />
-                <button
-                  onClick={() => { setMenuOpen(false); setLeaveConfirmOpen(true); }}
-                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
-                  style={{ color: "#A32D2D" }}>
-                  <LogOut className="w-4 h-4" style={{ color: "#A32D2D" }} />
-                  Lämna grupp
-                </button>
-              </div>
-            </>
-          )}
+                  } />
+                  <div className="mx-3 my-1" style={{ borderTop: "1px solid #EDE8F4" }} />
+                  <button onClick={() => { setMenuOpen(false); setLeaveConfirmOpen(true); }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
+                    style={{ color: "#A32D2D" }}>
+                    <LogOut className="w-4 h-4" style={{ color: "#A32D2D" }} />
+                    Lämna grupp
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
+      {/* Summary + After Event cards */}
+      <div className="pt-2">
+        <div className="px-4 flex items-center gap-2 mb-2">
+          <ChatSummaryCard
+            messages={summaryMessages}
+            members={members}
+            groupName={groupName}
+            onCreatePlan={handleSummaryCreatePlan}
+          />
+        </div>
+
+        {pastPlanForMemory && (
+          <AfterEventCard
+            planId={pastPlanForMemory.id}
+            planTitle={pastPlanForMemory.title}
+            planDate={pastPlanForMemory.date_text}
+            groupId={groupId || ""}
+            onDismiss={() => {
+              addToDismissed(DISMISSED_MEMORIES_KEY, pastPlanForMemory.id);
+              setDismissedMemories((prev) => new Set([...prev, pastPlanForMemory.id]));
+            }}
+            onMemorySaved={() => {
+              addToDismissed(DISMISSED_MEMORIES_KEY, pastPlanForMemory.id);
+              setDismissedMemories((prev) => new Set([...prev, pastPlanForMemory.id]));
+            }}
+          />
+        )}
+      </div>
+
       {/* Timeline */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3">
         {timeline.length === 0 && (
           <div className="text-center py-16">
             <p className="text-[13px]" style={{ color: "#7A6A85" }}>Inga meddelanden ännu. Skriv det första!</p>
@@ -390,6 +499,29 @@ const GroupChatPage = () => {
               </div>
             );
           }
+
+          if (item.type === "plan") {
+            const plan = item.data as Plan;
+            const planRsvps = rsvps.filter((r) => r.plan_id === plan.id);
+            const creator = getMember(plan.created_by);
+            return (
+              <PlanTimelineCard
+                key={`plan-${plan.id}`}
+                planId={plan.id}
+                title={plan.title}
+                dateText={plan.date_text}
+                location={plan.location}
+                emoji={plan.emoji}
+                creatorName={creator?.display_name || "Anonym"}
+                time={formatTime(plan.created_at)}
+                rsvps={planRsvps}
+                currentUserId={user?.id || ""}
+                members={members}
+                onRsvp={handleRsvp}
+              />
+            );
+          }
+
           const poll = item.data as Poll;
           const votes = pollVotes.filter((v) => v.poll_id === poll.id);
           const creator = getMember(poll.user_id);
@@ -418,8 +550,8 @@ const GroupChatPage = () => {
       {/* Input field */}
       <div className="sticky bottom-0 px-4 py-3 safe-area-bottom" style={{ backgroundColor: "#F7F3EF" }}>
         <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "#FFFFFF", borderRadius: 20, border: "1px solid #EDE8F4" }}>
-          <button onClick={() => setPollSheetOpen(true)} className="shrink-0 flex items-center justify-center">
-            <BarChart3 className="w-5 h-5" style={{ color: "#3C2A4D" }} />
+          <button onClick={() => { setActionSheetPrefill(null); setActionSheetOpen(true); }} className="shrink-0 flex items-center justify-center">
+            <Plus className="w-5 h-5" style={{ color: "#3C2A4D" }} />
           </button>
           <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder="Skriv något..."
@@ -432,7 +564,14 @@ const GroupChatPage = () => {
         </div>
       </div>
 
-      <CreatePollSheet open={pollSheetOpen} onOpenChange={setPollSheetOpen} onSubmit={handleCreatePoll} sending={sending} />
+      <CreateActionSheet
+        open={actionSheetOpen}
+        onOpenChange={setActionSheetOpen}
+        onSubmitPoll={handleCreatePoll}
+        onSubmitPlan={handleCreatePlan}
+        sending={sending}
+        prefill={actionSheetPrefill}
+      />
       <ConfirmSheet
         open={leaveConfirmOpen}
         onOpenChange={setLeaveConfirmOpen}
