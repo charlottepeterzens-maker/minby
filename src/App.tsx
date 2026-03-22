@@ -27,7 +27,7 @@ import InvitePage from "./pages/InvitePage";
 
 const queryClient = new QueryClient();
 
-cconst ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   const [onboarded, setOnboarded] = useState<boolean | null>(null);
 
@@ -47,9 +47,7 @@ cconst ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (loading || onboarded === null) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">
-          minby
-        </span>
+        <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
       </div>
     );
   }
