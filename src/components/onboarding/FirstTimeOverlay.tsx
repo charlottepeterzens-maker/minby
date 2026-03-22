@@ -52,7 +52,7 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
       try {
         await navigator.share({
           title: "Du är en av mina närmsta! Gå med i min by på Minby",
-          text: "Jag vill bjuda in dig till Minby – appen för äkta kontakt med de som betyder mest.",
+          text: "Jag vill bjuda in dig till Minby, appen för äkta kontakt med de som betyder mest.",
           url: link,
         });
         setSheetOpen(false);
@@ -150,7 +150,7 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
                 Du är igång!
               </h2>
 
-              <p style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>Din krets börjar ta form.</p>
+              <p style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>Din närmsta krets börjar ta form.</p>
 
               {/* FIXED */}
               <button
