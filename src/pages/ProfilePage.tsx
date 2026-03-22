@@ -404,27 +404,6 @@ const ProfilePage = () => {
           </div>
         )}
 
-        {/* ===== (3) HEALTH TEASER ===== */}
-        <div
-          className="mb-5 flex items-center gap-3"
-          style={{
-            background: "#FFFFFF",
-            border: "1px solid #EDE8E0",
-            borderRadius: 8,
-            padding: 12,
-          }}
-        >
-          <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
-              Hälsa – kommer snart!
-            </p>
-            <p className="text-[10px]" style={{ color: "#B0A0B5" }}>
-              Snart kan du dela med dig om din hälsa, menstruationscykel och träning
-            </p>
-          </div>
-          <Lock className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
-        </div>
-
         {/* ===== (4) SES VI? ===== */}
         {isOwnProfile && (
           <HangoutNotificationList
@@ -434,7 +413,6 @@ const ProfilePage = () => {
         )}
         {targetUserId && (
           <div className="mb-5">
-            <ProfileHangoutHint isOwner={isOwnProfile} />
             <HangoutAvailability
               userId={targetUserId}
               isOwner={isOwnProfile}
