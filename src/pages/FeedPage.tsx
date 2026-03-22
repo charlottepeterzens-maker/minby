@@ -310,12 +310,9 @@ const FeedPage = () => {
 
       {isFirstTime && showOverlay && (
         <FirstTimeOverlay
-          onComplete={() => {
+          onClose={() => {
             setShowOverlay(false);
             setInviteCompleted(true);
-          }}
-          onDismiss={() => {
-            setShowOverlay(false);
             dismissOnboarding();
           }}
         />

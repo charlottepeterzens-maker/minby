@@ -16,6 +16,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
+    svgr(),
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
