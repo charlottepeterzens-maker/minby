@@ -421,13 +421,6 @@ const GroupChatPage = () => {
           <button onClick={() => setPollSheetOpen(true)} className="shrink-0 flex items-center justify-center">
             <BarChart3 className="w-5 h-5" style={{ color: "#3C2A4D" }} />
           </button>
-          <InviteFriendDialog
-            trigger={
-              <button className="shrink-0 flex items-center justify-center">
-                <Share2 className="w-4.5 h-4.5" style={{ color: "#3C2A4D" }} />
-              </button>
-            }
-          />
           <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder="Skriv något..."
             className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#9B8BA5]" style={{ color: "#3C2A4D" }} />
