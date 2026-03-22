@@ -12,6 +12,7 @@ import FeedGuidanceCard from "@/components/onboarding/FeedGuidanceCard";
 import PersonBlock, { type PersonData } from "@/components/feed/PersonBlock";
 import { Container } from "@/components/layout";
 import { useFirstTimeUser } from "@/hooks/useFirstTimeUser";
+import { ContentFeed } from "@/components/feed/ContentFeed";
 
 const FeedPage = () => {
   const [feedItems, setFeedItems] = useState<any[]>([]);
