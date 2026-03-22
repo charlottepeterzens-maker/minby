@@ -27,6 +27,7 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
         token,
       });
       if (error) throw error;
+
       setLink(`${window.location.origin}/invite/${token}`);
       setSheetOpen(true);
     } catch {
@@ -46,6 +47,7 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
 
   const handleShare = async () => {
     if (!link) return;
+
     if (navigator.share) {
       try {
         await navigator.share({
@@ -56,7 +58,7 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
         setSheetOpen(false);
         setStep("done");
       } catch {
-        // User cancelled share
+        // user cancelled
       }
     } else {
       handleCopy();
@@ -67,6 +69,7 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
     <>
       <div className="fixed inset-0 z-[60] flex items-center justify-center px-5 bg-black/30 backdrop-blur-sm">
         <AnimatePresence mode="wait">
+          {/* STEP 1 */}
           {step === "invite" && (
             <motion.div
               key="invite"
@@ -92,6 +95,7 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
               <h2 className="font-display text-center mb-2" style={{ fontWeight: 500, fontSize: 20, color: "#3C2A4D" }}>
                 Din by börjar här
               </h2>
+
               <p className="text-center mb-6" style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>
                 Bjud in de du faktiskt vill dela din vardag med. Det här är din lilla krets, inte hela världen.
               </p>
@@ -112,16 +116,18 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
                 {generating ? "..." : "Bjud in din första person"}
               </button>
 
+              {/* FIXED */}
               <button
-                onClick={onDismiss}
+                onClick={onClose}
                 className="w-full mt-3 text-[12px]"
                 style={{ color: "#7A6A85", background: "none", border: "none", cursor: "pointer" }}
               >
-                Hoppa över
+                Gör det senare
               </button>
             </motion.div>
           )}
 
+          {/* STEP 2 */}
           {step === "done" && (
             <motion.div
               key="done"
@@ -139,12 +145,16 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
               }}
             >
               <p className="text-2xl mb-3">💛</p>
+
               <h2 className="font-display mb-2" style={{ fontWeight: 500, fontSize: 18, color: "#3C2A4D" }}>
                 Du är igång!
               </h2>
+
               <p style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>Din krets börjar ta form.</p>
+
+              {/* FIXED */}
               <button
-                onClick={onComplete}
+                onClick={onClose}
                 className="w-full mt-5 text-[13px] font-medium"
                 style={{
                   backgroundColor: "#3C2A4D",
@@ -162,7 +172,7 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
         </AnimatePresence>
       </div>
 
-      {/* Invite share sheet */}
+      {/* SHARE SHEET */}
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent
           side="bottom"
@@ -213,6 +223,7 @@ const FirstTimeOverlay = ({ onClose }: Props) => {
               <Share2 style={{ width: 14, height: 14 }} />
               Dela
             </button>
+
             <button
               onClick={handleCopy}
               style={{
