@@ -241,7 +241,7 @@ const FeedPage = () => {
 
       <Container className="py-5">
         {/* Guidance card */}
-        {(isFirstTime || inviteCompleted) && !showOverlay && <FeedGuidanceCard />}
+        {(isFirstTime || inviteCompleted) && <FeedGuidanceCard />}
 
         {/* Filters */}
         {!isFirstTime && persons.length > 0 && (
