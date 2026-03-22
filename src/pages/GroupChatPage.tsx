@@ -303,8 +303,10 @@ const GroupChatPage = () => {
     if (!newMessage.trim() || !user || !groupId || sending) return;
     setSending(true);
     const content = newMessage.trim();
+    const replyId = replyTo?.id || null;
     setNewMessage("");
-    await supabase.from("group_messages").insert({ group_id: groupId, user_id: user.id, content });
+    setReplyTo(null);
+    await (supabase as any).from("group_messages").insert({ group_id: groupId, user_id: user.id, content, reply_to_id: replyId });
     try {
       const otherMembers = members.filter(m => m.user_id !== user.id);
       if (otherMembers.length > 0) {
