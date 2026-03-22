@@ -437,9 +437,7 @@ const ProfilePage = () => {
         >
           {/* Block header */}
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[13px] font-medium" style={{ color: "#2A1A3C" }}>
-              Min vardag
-            </span>
+            <h2 className="text-xs font-medium text-muted-foreground font-body">Min vardag</h2>
           </div>
 
           {/* Quick post */}
