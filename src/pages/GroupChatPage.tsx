@@ -302,19 +302,24 @@ const GroupChatPage = () => {
         <div className="flex-1 text-center">
           <p className="text-[13px] font-medium" style={{ color: "#C9B8D8" }}>{groupName}</p>
         </div>
-        <div className="shrink-0 flex items-center -space-x-2">
-          {members.slice(0, 4).map((m) => (
-            <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
-              style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
-              {m.initial}
-            </div>
-          ))}
-          {members.length > 4 && (
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
-              style={{ backgroundColor: "#7A6A85", color: "#F7F3EF", borderColor: "#3C2A4D" }}>
-              +{members.length - 4}
-            </div>
-          )}
+        <div className="shrink-0 flex items-center gap-1">
+          <button onClick={() => setAddMemberOpen(true)} className="p-1">
+            <UserPlus className="w-4 h-4" style={{ color: "#C9B8D8" }} />
+          </button>
+          <div className="flex -space-x-2 ml-1">
+            {members.slice(0, 4).map((m) => (
+              <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
+                style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
+                {m.initial}
+              </div>
+            ))}
+            {members.length > 4 && (
+              <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
+                style={{ backgroundColor: "#7A6A85", color: "#F7F3EF", borderColor: "#3C2A4D" }}>
+                +{members.length - 4}
+              </div>
+            )}
+          </div>
         </div>
         <button onClick={() => setLeaveConfirmOpen(true)} className="shrink-0 p-1">
           <LogOut className="w-4 h-4" style={{ color: "#C9B8D8" }} />
