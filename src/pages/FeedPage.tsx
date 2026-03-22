@@ -361,9 +361,9 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
               <p className="font-medium text-[14px]" style={{ color: "#3C2A4D" }}>
                 {c.title}
               </p>
-              <p className="font-light text-[12px]" style={{ color: "#7A6A85" }}>
-                {c.desc}
-              </p>
+              <span className="text-[12px]" style={{ color: "#3C2A4D", marginTop: 4, display: "inline-block" }}>
+                {c.cta} →
+              </span>
             </div>
           </button>
         ))}
