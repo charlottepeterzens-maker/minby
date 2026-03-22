@@ -356,12 +356,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
               padding: "14px 16px",
             }}
           >
-            <div
-              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: c.bg }}
-            >
-              <span className="text-base">{c.emoji}</span>
-            </div>
+            <div className="w-2 h-2 rounded-full shrink-0 mt-2" style={{ backgroundColor: c.bg }} />
             <div>
               <p className="font-medium text-[14px]" style={{ color: "#3C2A4D" }}>
                 {c.title}
