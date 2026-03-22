@@ -27,7 +27,6 @@ const PlanTimelineCard = ({
   title,
   dateText,
   location,
-  emoji,
   creatorName,
   time,
   rsvps,
