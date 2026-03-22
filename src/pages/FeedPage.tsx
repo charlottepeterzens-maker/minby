@@ -230,6 +230,14 @@ const FeedPage = () => {
     if (filter === "tips") return !!p.latestTip;
     return true;
   });
+  
+  // Filter content (för posts, hangouts, tips)
+const filteredItems = feedItems.filter((item) => {
+  if (filter === "posts") return item.type === "posts";
+  if (filter === "hangout") return item.type === "hangout";
+  if (filter === "tips") return item.type === "tips";
+  return false;
+});
 
   // Split into active and quiet for separator
   const activePersons = filtered.filter((p) => !p.isQuiet);
