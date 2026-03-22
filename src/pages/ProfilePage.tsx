@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X, GripVertical, Heart, UserPlus } from "lucide-react";
+import { ChevronLeft, Plus, Camera, Pencil, Check, X, GripVertical, UserPlus } from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -404,27 +404,6 @@ const ProfilePage = () => {
           </div>
         )}
 
-        {/* ===== (3) HEALTH TEASER ===== */}
-        <div
-          className="mb-5 flex items-center gap-3"
-          style={{
-            background: "#FFFFFF",
-            border: "1px solid #EDE8E0",
-            borderRadius: 8,
-            padding: 12,
-          }}
-        >
-          <div className="flex-1 min-w-0">
-            <p className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
-              Hälsa – kommer snart!
-            </p>
-            <p className="text-[10px]" style={{ color: "#B0A0B5" }}>
-              Snart kan du dela med dig om din hälsa, menstruationscykel och träning
-            </p>
-          </div>
-          <Lock className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
-        </div>
-
         {/* ===== (4) SES VI? ===== */}
         {isOwnProfile && (
           <HangoutNotificationList
@@ -434,7 +413,6 @@ const ProfilePage = () => {
         )}
         {targetUserId && (
           <div className="mb-5">
-            <ProfileHangoutHint isOwner={isOwnProfile} />
             <HangoutAvailability
               userId={targetUserId}
               isOwner={isOwnProfile}
@@ -443,6 +421,9 @@ const ProfilePage = () => {
             />
           </div>
         )}
+
+        {/* Section divider */}
+        <div className="mb-4" style={{ borderTop: "1px solid #EDE8E0" }} />
 
         {/* ===== (5+6) MIN VARDAG BLOCK ===== */}
         <div
@@ -456,9 +437,7 @@ const ProfilePage = () => {
         >
           {/* Block header */}
           <div className="flex items-center justify-between mb-3">
-            <span className="text-[13px] font-medium" style={{ color: "#2A1A3C" }}>
-              Min vardag
-            </span>
+            <h2 className="text-xs font-medium text-muted-foreground font-body">Min vardag</h2>
           </div>
 
           {/* Quick post */}
@@ -589,43 +568,14 @@ const ProfilePage = () => {
           </button>
         </div>
 
+        {/* Section divider */}
+        <div className="mb-4" style={{ borderTop: "1px solid #EDE8E0" }} />
+
         {/* ===== (7) TIPS & FAVORITES ===== */}
         {targetUserId && <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />}
       </Container>
       <ScrollToTopButton />
       <BottomNav />
-    </div>
-  );
-};
-
-/** One-time hint for the Ses vi? section */
-const ProfileHangoutHint = ({ isOwner }: { isOwner: boolean }) => {
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    if (!isOwner) return;
-    const shown = localStorage.getItem("minby_profile_hint_shown");
-    if (!shown) setShow(true);
-  }, [isOwner]);
-
-  const dismiss = () => {
-    setShow(false);
-    localStorage.setItem("minby_profile_hint_shown", "true");
-  };
-
-  if (!show) return null;
-
-  return (
-    <div
-      className="mb-2 p-3 rounded-[12px] flex items-start justify-between gap-2"
-      style={{ backgroundColor: "#FFFFFF", border: "1.5px solid #C9B8D8" }}
-    >
-      <p className="text-[11px]" style={{ color: "#7A6A85", lineHeight: 1.5 }}>
-        Här berättar du när du är ledig eller vill ses ✨
-      </p>
-      <button onClick={dismiss} className="shrink-0 mt-0.5">
-        <X className="w-3.5 h-3.5" style={{ color: "#C9B8D8" }} />
-      </button>
     </div>
   );
 };
