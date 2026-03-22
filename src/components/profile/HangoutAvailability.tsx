@@ -213,7 +213,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   return (
     <div style={{ padding: "0 0 20px 0" }}>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-fraunces font-normal text-[16px] mt-8 mb-3" style={{ color: "#2A1A3C" }}>
+        <h2 className="font-fraunces font-normal text-[16px] mt-6 mb-3" style={{ color: "#2A1A3C" }}>
           Ses vi?
         </h2>
         {isOwner && (
