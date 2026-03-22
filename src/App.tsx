@@ -51,8 +51,21 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     );
   }
   if (!user) return <AuthPage />;
-  if (!onboarded) return <OnboardingFlow onComplete={() => setOnboarded(true)} />;
-  return <>{children}</>;
+
+  return (
+    <>
+      {children}
+
+      {!onboarded && (
+        <FirstTimeOverlay
+          onClose={() => {
+            // stänger overlay men markerar INTE som klar
+            setOnboarded(false);
+          }}
+        />
+      )}
+    </>
+  );
 };
 
 const App = () => (
