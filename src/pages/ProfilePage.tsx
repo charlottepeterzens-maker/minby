@@ -582,36 +582,4 @@ const ProfilePage = () => {
   );
 };
 
-/** One-time hint for the Ses vi? section */
-const ProfileHangoutHint = ({ isOwner }: { isOwner: boolean }) => {
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    if (!isOwner) return;
-    const shown = localStorage.getItem("minby_profile_hint_shown");
-    if (!shown) setShow(true);
-  }, [isOwner]);
-
-  const dismiss = () => {
-    setShow(false);
-    localStorage.setItem("minby_profile_hint_shown", "true");
-  };
-
-  if (!show) return null;
-
-  return (
-    <div
-      className="mb-2 p-3 rounded-[12px] flex items-start justify-between gap-2"
-      style={{ backgroundColor: "#FFFFFF", border: "1.5px solid #C9B8D8" }}
-    >
-      <p className="text-[11px]" style={{ color: "#7A6A85", lineHeight: 1.5 }}>
-        Här berättar du när du är ledig eller vill ses ✨
-      </p>
-      <button onClick={dismiss} className="shrink-0 mt-0.5">
-        <X className="w-3.5 h-3.5" style={{ color: "#C9B8D8" }} />
-      </button>
-    </div>
-  );
-};
-
 export default ProfilePage;
