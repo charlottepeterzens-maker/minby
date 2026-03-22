@@ -1,6 +1,6 @@
-import { FeedPostCard } from "./FeedPostCard";
-import { FeedHangoutCard } from "./FeedHangoutCard";
-import { FeedHealthCard } from "./FeedHealthCard";
+import FeedPostCard from "./FeedPostCard";
+import FeedHangoutCard from "./FeedHangoutCard";
+import FeedHealthCard from "./FeedHealthCard";
 
 export const FeedItemRenderer = ({ item }: { item: any }) => {
   switch (item.type) {
