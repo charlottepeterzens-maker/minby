@@ -303,28 +303,30 @@ const FeedPage = () => {
             onOpenHangout={() => setShowHangoutSheet(true)}
             onOpenInvite={() => setShowInviteDialog(true)}
           />
-        ) : (
-          <div className="space-y-3">
-            {activePersons.map((p) => (
-              <PersonBlock key={p.userId} person={p} currentUserName={currentUserName} />
-            ))}
+   ) : filter === "all" ? (
+  <div className="space-y-3">
+    {activePersons.map((p) => (
+      <PersonBlock key={p.userId} person={p} currentUserName={currentUserName} />
+    ))}
 
-            {/* Separator */}
-            {quietPersons.length > 0 && activePersons.length > 0 && (
-              <div className="flex items-center gap-3 py-2">
-                <div className="flex-1 h-px" style={{ backgroundColor: "#EDE8E0" }} />
-                <span className="text-[9px] shrink-0" style={{ color: "#B0A0B5" }}>
-                  Inte hört av sig på ett tag
-                </span>
-                <div className="flex-1 h-px" style={{ backgroundColor: "#EDE8E0" }} />
-              </div>
-            )}
+    {/* Separator */}
+    {quietPersons.length > 0 && activePersons.length > 0 && (
+      <div className="flex items-center gap-3 py-2">
+        <div className="flex-1 h-px" style={{ backgroundColor: "#EDE8E0" }} />
+        <span className="text-[9px] shrink-0" style={{ color: "#B0A0B5" }}>
+          Inte hört av sig på ett tag
+        </span>
+        <div className="flex-1 h-px" style={{ backgroundColor: "#EDE8E0" }} />
+      </div>
+    )}
 
-            {quietPersons.map((p) => (
-              <PersonBlock key={p.userId} person={p} currentUserName={currentUserName} />
-            ))}
-          </div>
-        )}
+    {quietPersons.map((p) => (
+      <PersonBlock key={p.userId} person={p} currentUserName={currentUserName} />
+    ))}
+  </div>
+) : (
+  <ContentFeed items={filteredItems} />
+)}
       </Container>
 
       <ScrollToTopButton />
