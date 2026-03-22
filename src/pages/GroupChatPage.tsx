@@ -500,7 +500,7 @@ const GroupChatPage = () => {
                   {isOwn && (
                     <button
                       onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full"
+                      className="opacity-40 hover:opacity-100 active:opacity-100 transition-opacity p-1 rounded-full"
                       style={{ color: "#9B8BA5" }}
                     >
                       <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
@@ -519,7 +519,7 @@ const GroupChatPage = () => {
                   {!isOwn && (
                     <button
                       onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full"
+                      className="opacity-40 hover:opacity-100 active:opacity-100 transition-opacity p-1 rounded-full"
                       style={{ color: "#9B8BA5" }}
                     >
                       <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
