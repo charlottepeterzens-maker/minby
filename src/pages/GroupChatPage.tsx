@@ -583,12 +583,28 @@ const GroupChatPage = () => {
 
       {/* Input field */}
       <div className="sticky bottom-0 px-4 py-3 safe-area-bottom" style={{ backgroundColor: "#F7F3EF" }}>
+        {replyTo && (
+          <div className="flex items-center gap-2 px-4 py-1.5 mb-1 rounded-t-[12px]" style={{ backgroundColor: "#EDE8F4" }}>
+            <Reply className="w-3.5 h-3.5 shrink-0" style={{ color: "#7A6A85", transform: "scaleX(-1)" }} />
+            <div className="flex-1 min-w-0">
+              <span className="text-[10px] font-medium block" style={{ color: "#3C2A4D" }}>
+                {getMember(replyTo.user_id)?.display_name || "Anonym"}
+              </span>
+              <span className="text-[11px] truncate block" style={{ color: "#7A6A85" }}>
+                {replyTo.content}
+              </span>
+            </div>
+            <button onClick={() => setReplyTo(null)} className="shrink-0 p-0.5">
+              <X className="w-3.5 h-3.5" style={{ color: "#7A6A85" }} />
+            </button>
+          </div>
+        )}
         <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "#FFFFFF", borderRadius: 20, border: "1px solid #EDE8F4" }}>
           <button onClick={() => { setActionSheetPrefill(null); setActionSheetOpen(true); }} className="shrink-0 flex items-center justify-center">
             <Plus className="w-5 h-5" style={{ color: "#3C2A4D" }} />
           </button>
           <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder="Skriv något..."
+            onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder={replyTo ? "Svara..." : "Skriv något..."}
             className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#9B8BA5]" style={{ color: "#3C2A4D" }} />
           <button onClick={handleSend} disabled={!newMessage.trim() || sending}
             className="shrink-0 flex items-center justify-center rounded-full disabled:opacity-40 transition-opacity"
