@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, Plus, Lock, Camera, Pencil, Check, X, GripVertical, Heart, UserPlus } from "lucide-react";
+import { ChevronLeft, Plus, Camera, Pencil, Check, X, GripVertical, UserPlus } from "lucide-react";
 import {
   DndContext,
   closestCenter,
