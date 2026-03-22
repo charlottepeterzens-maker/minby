@@ -180,6 +180,39 @@ const FeedPage = () => {
     personList.sort((a, b) => new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime());
 
     setPersons(personList);
+    const items: any[] = [];
+
+    // posts
+    postsRes.data?.forEach((p: any) => {
+      items.push({
+        type: "posts",
+        created_at: p.created_at,
+        data: p,
+      });
+    });
+
+    // hangouts
+    hangoutsRes.data?.forEach((h: any) => {
+      items.push({
+        type: "hangout",
+        created_at: h.created_at,
+        data: h,
+      });
+    });
+
+    // tips
+    tipsRes.data?.forEach((t: any) => {
+      items.push({
+        type: "tips",
+        created_at: t.created_at,
+        data: t,
+      });
+    });
+
+    // sort latest first
+    items.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+    setFeedItems(items);
     setLoading(false);
   }, [user]);
 
