@@ -14,7 +14,6 @@ interface PlanTimelineCardProps {
   title: string;
   dateText: string;
   location: string | null;
-  emoji: string;
   creatorName: string;
   time: string;
   rsvps: Rsvp[];
