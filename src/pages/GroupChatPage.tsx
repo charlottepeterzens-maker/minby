@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, SendHorizontal, BarChart3, LogOut, UserPlus, Share2 } from "lucide-react";
+import { ChevronLeft, SendHorizontal, BarChart3, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
@@ -86,6 +86,7 @@ const GroupChatPage = () => {
   const [dismissedSuggestions, setDismissedSuggestions] = useState<Set<string>>(getDismissedSet);
   const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
   const [addMemberOpen, setAddMemberOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -302,28 +303,59 @@ const GroupChatPage = () => {
         <div className="flex-1 text-center">
           <p className="text-[13px] font-medium" style={{ color: "#C9B8D8" }}>{groupName}</p>
         </div>
-        <div className="shrink-0 flex items-center gap-1">
-          <button onClick={() => setAddMemberOpen(true)} className="p-1">
-            <UserPlus className="w-4 h-4" style={{ color: "#C9B8D8" }} />
-          </button>
-          <div className="flex -space-x-2 ml-1">
-            {members.slice(0, 4).map((m) => (
-              <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
-                style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
-                {m.initial}
-              </div>
-            ))}
-            {members.length > 4 && (
-              <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
-                style={{ backgroundColor: "#7A6A85", color: "#F7F3EF", borderColor: "#3C2A4D" }}>
-                +{members.length - 4}
-              </div>
-            )}
-          </div>
+        <div className="shrink-0 flex items-center -space-x-2">
+          {members.slice(0, 4).map((m) => (
+            <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
+              style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
+              {m.initial}
+            </div>
+          ))}
+          {members.length > 4 && (
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
+              style={{ backgroundColor: "#7A6A85", color: "#F7F3EF", borderColor: "#3C2A4D" }}>
+              +{members.length - 4}
+            </div>
+          )}
         </div>
-        <button onClick={() => setLeaveConfirmOpen(true)} className="shrink-0 p-1">
-          <LogOut className="w-4 h-4" style={{ color: "#C9B8D8" }} />
-        </button>
+        <div className="shrink-0 relative">
+          <button onClick={() => setMenuOpen((v) => !v)} className="p-1">
+            <EllipsisVertical className="w-5 h-5" style={{ color: "#C9B8D8" }} />
+          </button>
+          {menuOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+              <div className="absolute right-0 top-full mt-1 z-50 py-1.5 rounded-[12px] shadow-lg min-w-[180px]"
+                style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}>
+                <button
+                  onClick={() => { setMenuOpen(false); setAddMemberOpen(true); }}
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
+                  style={{ color: "#3C2A4D" }}>
+                  <UserPlus className="w-4 h-4" style={{ color: "#7A6A85" }} />
+                  Lägg till vän
+                </button>
+                <InviteFriendDialog
+                  trigger={
+                    <button
+                      onClick={() => setMenuOpen(false)}
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
+                      style={{ color: "#3C2A4D" }}>
+                      <ArrowUpFromLine className="w-4 h-4" style={{ color: "#7A6A85" }} />
+                      Bjud in till Minby
+                    </button>
+                  }
+                />
+                <div className="mx-3 my-1" style={{ borderTop: "1px solid #EDE8F4" }} />
+                <button
+                  onClick={() => { setMenuOpen(false); setLeaveConfirmOpen(true); }}
+                  className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
+                  style={{ color: "#A32D2D" }}>
+                  <LogOut className="w-4 h-4" style={{ color: "#A32D2D" }} />
+                  Lämna grupp
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </header>
 
       {/* Timeline */}
@@ -389,13 +421,6 @@ const GroupChatPage = () => {
           <button onClick={() => setPollSheetOpen(true)} className="shrink-0 flex items-center justify-center">
             <BarChart3 className="w-5 h-5" style={{ color: "#3C2A4D" }} />
           </button>
-          <InviteFriendDialog
-            trigger={
-              <button className="shrink-0 flex items-center justify-center">
-                <Share2 className="w-4.5 h-4.5" style={{ color: "#3C2A4D" }} />
-              </button>
-            }
-          />
           <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder="Skriv något..."
             className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#9B8BA5]" style={{ color: "#3C2A4D" }} />
