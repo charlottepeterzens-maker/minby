@@ -23,7 +23,7 @@ const FeedPage = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [showHangoutSheet, setShowHangoutSheet] = useState(false);
-  
+
   const [inviteCompleted, setInviteCompleted] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
 
@@ -135,21 +135,18 @@ const FeedPage = () => {
       }));
 
       const postCountLast7Days = posts.filter(
-        (p: any) => new Date(p.created_at).getTime() > Date.now() - 7 * 86400000
+        (p: any) => new Date(p.created_at).getTime() > Date.now() - 7 * 86400000,
       ).length;
 
       const hangout = hangoutByUser.get(fid) || null;
       const tip = tipByUser.get(fid) || null;
 
       // Determine last activity
-      const activityDates = [
-        latestPost?.created_at,
-        hangout?.created_at,
-        tip?.created_at,
-      ].filter(Boolean) as string[];
-      const lastActivityAt = activityDates.length > 0
-        ? activityDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0]
-        : new Date(0).toISOString();
+      const activityDates = [latestPost?.created_at, hangout?.created_at, tip?.created_at].filter(Boolean) as string[];
+      const lastActivityAt =
+        activityDates.length > 0
+          ? activityDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime())[0]
+          : new Date(0).toISOString();
 
       const isQuiet = Date.now() - new Date(lastActivityAt).getTime() > 7 * 86400000;
 
@@ -307,8 +304,6 @@ const FeedPage = () => {
       />
 
       <BottomNav />
-
-      
     </div>
   );
 };
@@ -318,25 +313,25 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
 
   const cards = [
     {
-      emoji: "👋",
       bg: "#EDE8F4",
-      title: "Bjud in någon till din vardag",
-      desc: "Ju fler som är med, desto mer händer",
+      title: "Bjud in din närmaste krets",
+      desc: "De du faktiskt vill hålla nära – på ett lugnare ställe.",
       action: onOpenInvite,
+      cta: "Skicka inbjudan",
     },
     {
-      emoji: "☀️",
       bg: "#FCF0F3",
       title: "Dela något från din vardag",
       desc: "Berätta vad som händer hos dig",
       action: () => navigate("/profile"),
+      cta: "Dela något",
     },
     {
-      emoji: "📅",
       bg: "#EAF2E8",
-      title: "Berätta när du är ledig",
-      desc: "Föreslå en träff med din krets",
+      title: "Föreslå en träff",
+      desc: "Se när det passar att ses",
       action: onOpenHangout,
+      cta: "Föreslå",
     },
   ];
 
