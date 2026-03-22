@@ -308,18 +308,7 @@ const FeedPage = () => {
 
       <BottomNav />
 
-      {isFirstTime && showOverlay && (
-        <FirstTimeOverlay
-          onComplete={() => {
-            setShowOverlay(false);
-            dismissOnboarding();
-          }}
-          onDismiss={() => {
-            setShowOverlay(false);
-            dismissOnboarding();
-          }}
-        />
-      )}
+      
     </div>
   );
 };
