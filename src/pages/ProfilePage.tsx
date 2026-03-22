@@ -570,6 +570,9 @@ const ProfilePage = () => {
           </button>
         </div>
 
+        {/* Section divider */}
+        <div className="mb-4" style={{ borderTop: "1px solid #EDE8E0" }} />
+
         {/* ===== (7) TIPS & FAVORITES ===== */}
         {targetUserId && <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />}
       </Container>
