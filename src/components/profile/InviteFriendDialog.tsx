@@ -83,7 +83,7 @@ const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
           </SheetHeader>
 
           <p className="text-sm text-muted-foreground mt-2 mb-4">
-            Dela länken hur du vill – via SMS, WhatsApp eller din egen mail.
+            Dela länken hur du vill, via SMS, WhatsApp eller din egen mail.
           </p>
 
           <div
