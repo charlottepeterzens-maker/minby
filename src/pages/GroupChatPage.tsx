@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, SendHorizontal, BarChart3, LogOut, UserPlus, Share2 } from "lucide-react";
+import { ChevronLeft, SendHorizontal, BarChart3, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
