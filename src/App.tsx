@@ -8,7 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import OnboardingFlow from "@/components/OnboardingFlow";
+import FirstTimeOverlay from "@/components/onboarding/FirstTimeOverlay";
 import PushPermissionDialog from "@/components/PushPermissionDialog";
 import FeedPage from "./pages/FeedPage";
 import AuthPage from "./pages/AuthPage";
@@ -62,27 +62,97 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <LanguageProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
-            <Route path="/circles" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-            <Route path="/groups" element={<ProtectedRoute><GroupsPage /></ProtectedRoute>} />
-            <Route path="/groups/:groupId" element={<ProtectedRoute><GroupChatPage /></ProtectedRoute>} />
-            <Route path="/friends" element={<ProtectedRoute><FriendsPage /></ProtectedRoute>} />
-            <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-            <Route path="/profile/:userId" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-            <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/invite/:token" element={<InvitePage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-        <PWAInstallBanner />
-        <PushPermissionDialog />
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <FeedPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/circles"
+                element={
+                  <ProtectedRoute>
+                    <Index />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/groups"
+                element={
+                  <ProtectedRoute>
+                    <GroupsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/groups/:groupId"
+                element={
+                  <ProtectedRoute>
+                    <GroupChatPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/friends"
+                element={
+                  <ProtectedRoute>
+                    <FriendsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/notifications"
+                element={
+                  <ProtectedRoute>
+                    <NotificationsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/:userId"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <SettingsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <AdminPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/invite/:token" element={<InvitePage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+          <PWAInstallBanner />
+          <PushPermissionDialog />
         </LanguageProvider>
       </AuthProvider>
     </TooltipProvider>
