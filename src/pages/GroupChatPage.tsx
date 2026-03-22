@@ -10,6 +10,8 @@ import PollCard from "@/components/chat/PollCard";
 import DateSuggestionCard from "@/components/chat/DateSuggestionCard";
 import { recognizeDates, type RecognizedDate } from "@/utils/dateRecognition";
 import ConfirmSheet from "@/components/ConfirmSheet";
+import AddMemberSheet from "@/components/chat/AddMemberSheet";
+import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
 
