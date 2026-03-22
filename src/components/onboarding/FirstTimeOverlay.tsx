@@ -7,8 +7,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { toast } from "sonner";
 
 interface Props {
-  onComplete: () => void;
-  onDismiss: () => void;
+  onClose?: () => void;
 }
 
 const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
