@@ -14,6 +14,7 @@ import { Container } from "@/components/layout";
 import { useFirstTimeUser } from "@/hooks/useFirstTimeUser";
 
 const FeedPage = () => {
+  const [feedItems, setFeedItems] = useState<any[]>([]);
   const { user } = useAuth();
   const navigate = useNavigate();
   const { isFirstTime, dismiss: dismissOnboarding } = useFirstTimeUser();
