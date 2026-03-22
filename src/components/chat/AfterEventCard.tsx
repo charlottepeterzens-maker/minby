@@ -57,7 +57,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
     if (error) {
       toast.error("Kunde inte spara minnet");
     } else {
-      toast.success("Minne sparat! 📸");
+      toast.success("Minne sparat!");
       onMemorySaved();
     }
     setSaving(false);
