@@ -148,6 +148,51 @@ export type Database = {
           },
         ]
       }
+      group_memories: {
+        Row: {
+          content: string | null
+          created_at: string
+          group_id: string
+          id: string
+          image_url: string | null
+          plan_id: string | null
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          group_id: string
+          id?: string
+          image_url?: string | null
+          plan_id?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          group_id?: string
+          id?: string
+          image_url?: string | null
+          plan_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_memories_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "friend_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_memories_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_messages: {
         Row: {
           content: string
