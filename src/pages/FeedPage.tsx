@@ -7,7 +7,7 @@ import CurvedSeparator from "@/components/CurvedSeparator";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
-import FirstTimeOverlay from "@/components/onboarding/FirstTimeOverlay";
+
 import FeedGuidanceCard from "@/components/onboarding/FeedGuidanceCard";
 import PersonBlock, { type PersonData } from "@/components/feed/PersonBlock";
 import { Container } from "@/components/layout";
@@ -23,7 +23,7 @@ const FeedPage = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [showHangoutSheet, setShowHangoutSheet] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(true);
+  
   const [inviteCompleted, setInviteCompleted] = useState(false);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
 
@@ -241,7 +241,7 @@ const FeedPage = () => {
 
       <Container className="py-5">
         {/* Guidance card */}
-        {(isFirstTime || inviteCompleted) && !showOverlay && <FeedGuidanceCard />}
+        {(isFirstTime || inviteCompleted) && <FeedGuidanceCard />}
 
         {/* Filters */}
         {!isFirstTime && persons.length > 0 && (
@@ -308,18 +308,7 @@ const FeedPage = () => {
 
       <BottomNav />
 
-      {isFirstTime && showOverlay && (
-        <FirstTimeOverlay
-          onComplete={() => {
-            setShowOverlay(false);
-            dismissOnboarding();
-          }}
-          onDismiss={() => {
-            setShowOverlay(false);
-            dismissOnboarding();
-          }}
-        />
-      )}
+      
     </div>
   );
 };

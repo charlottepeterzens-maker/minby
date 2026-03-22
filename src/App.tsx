@@ -60,8 +60,18 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
       {!onboarded && (
         <FirstTimeOverlay
-          onComplete={() => setOnboarded(true)}
-          onDismiss={() => setOnboarded(true)}
+          onComplete={() => {
+            setOnboarded(true);
+            if (user) {
+              supabase.from("profiles").update({ onboarded_at: new Date().toISOString() }).eq("user_id", user.id).then();
+            }
+          }}
+          onDismiss={() => {
+            setOnboarded(true);
+            if (user) {
+              supabase.from("profiles").update({ onboarded_at: new Date().toISOString() }).eq("user_id", user.id).then();
+            }
+          }}
         />
       )}
     </>
