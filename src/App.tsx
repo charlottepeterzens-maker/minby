@@ -27,12 +27,13 @@ import InvitePage from "./pages/InvitePage";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+cconst ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   const [onboarded, setOnboarded] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!user) return;
+
     supabase
       .from("profiles")
       .select("onboarded_at")
@@ -43,13 +44,16 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       });
   }, [user]);
 
-  if (loading || (user && onboarded === null)) {
+  if (loading || onboarded === null) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
+        <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">
+          minby
+        </span>
       </div>
     );
   }
+
   if (!user) return <AuthPage />;
 
   return (
@@ -59,7 +63,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       {!onboarded && (
         <FirstTimeOverlay
           onClose={() => {
-            // stänger overlay men markerar INTE som klar
             setOnboarded(false);
           }}
         />
