@@ -1,254 +1,190 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { UserPlus, Copy, Share2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { toast } from "sonner";
 
 interface Props {
-  onClose?: () => void;
+  onComplete: () => void;
+  onDismiss: () => void;
 }
 
-const FirstTimeOverlay = ({ onClose }: Props) => {
-  const { user } = useAuth();
-  const [step, setStep] = useState<"invite" | "done">("invite");
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const [link, setLink] = useState<string | null>(null);
-  const [generating, setGenerating] = useState(false);
+const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
+  const [step, setStep] = useState<"intro" | "intent" | "done">("intro");
+  const [intent, setIntent] = useState<"meet" | "browse" | "unsure" | null>(null);
 
-  const generateAndOpen = async () => {
-    if (!user) return;
-    setGenerating(true);
-    try {
-      const token = crypto.randomUUID();
-      const { error } = await (supabase as any).from("invite_links").insert({
-        created_by: user.id,
-        token,
-      });
-      if (error) throw error;
-
-      setLink(`${window.location.origin}/invite/${token}`);
-      setSheetOpen(true);
-    } catch {
-      toast.error("Kunde inte skapa länk. Försök igen.");
-    } finally {
-      setGenerating(false);
-    }
+  const next = () => {
+    if (step === "intro") setStep("intent");
+    else if (step === "intent") setStep("done");
   };
 
-  const handleCopy = async () => {
-    if (!link) return;
-    await navigator.clipboard.writeText(link);
-    toast.success("Länk kopierad!");
-    setSheetOpen(false);
-    setStep("done");
-  };
-
-  const handleShare = async () => {
-    if (!link) return;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Du är en av mina närmsta! Gå med i min by på Minby",
-          text: "Jag vill bjuda in dig till Minby, appen för äkta kontakt med de som betyder mest.",
-          url: link,
-        });
-        setSheetOpen(false);
-        setStep("done");
-      } catch {
-        // user cancelled
-      }
-    } else {
-      handleCopy();
+  const handleFinish = () => {
+    if (intent) {
+      localStorage.setItem("minby_intent", intent);
     }
+    onComplete();
   };
 
   return (
-    <>
-      <div className="fixed inset-0 z-[60] flex items-center justify-center px-5 bg-black/30 backdrop-blur-sm">
-        <AnimatePresence mode="wait">
-          {/* STEP 1 */}
-          {step === "invite" && (
-            <motion.div
-              key="invite"
-              initial={{ opacity: 0, scale: 0.95, y: 12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -12 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="w-full max-w-[320px]"
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: "1px solid #EDE8F4",
-                borderRadius: 16,
-                padding: 24,
-              }}
-            >
-              <div
-                className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
-                style={{ backgroundColor: "#EDE8F4" }}
-              >
-                <UserPlus className="w-5 h-5" style={{ color: "#3C2A4D" }} />
-              </div>
-
-              <h2 className="font-display text-center mb-2" style={{ fontWeight: 500, fontSize: 20, color: "#3C2A4D" }}>
-                Din by börjar här
-              </h2>
-
-              <p className="text-center mb-6" style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>
-                Bjud in de du faktiskt vill dela din vardag med. Det här är din lilla krets, inte hela världen.
-              </p>
-
-              <button
-                onClick={generateAndOpen}
-                disabled={generating}
-                className="w-full flex items-center justify-center gap-2 text-[13px] font-medium"
-                style={{
-                  backgroundColor: "#3C2A4D",
-                  color: "#fff",
-                  borderRadius: 20,
-                  height: 48,
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                {generating ? "..." : "Bjud in din första person"}
-              </button>
-
-              {/* FIXED */}
-              <button
-                onClick={onClose}
-                className="w-full mt-3 text-[12px]"
-                style={{ color: "#7A6A85", background: "none", border: "none", cursor: "pointer" }}
-              >
-                Gör det senare
-              </button>
-            </motion.div>
-          )}
-
-          {/* STEP 2 */}
-          {step === "done" && (
-            <motion.div
-              key="done"
-              initial={{ opacity: 0, scale: 0.95, y: 12 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="w-full max-w-[320px]"
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: "1px solid #EDE8F4",
-                borderRadius: 16,
-                padding: 24,
-                textAlign: "center",
-              }}
-            >
-              <p className="text-2xl mb-3">💛</p>
-
-              <h2 className="font-display mb-2" style={{ fontWeight: 500, fontSize: 18, color: "#3C2A4D" }}>
-                Du är igång!
-              </h2>
-
-              <p style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>Din närmsta krets börjar ta form.</p>
-
-              {/* FIXED */}
-              <button
-                onClick={onClose}
-                className="w-full mt-5 text-[13px] font-medium"
-                style={{
-                  backgroundColor: "#3C2A4D",
-                  color: "#fff",
-                  borderRadius: 20,
-                  height: 48,
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                Fortsätt
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* SHARE SHEET */}
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent
-          side="bottom"
-          className="rounded-t-[20px] z-[70]"
-          style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}
-        >
-          <SheetHeader>
-            <SheetTitle className="font-display text-base font-medium text-left">Dela inbjudan</SheetTitle>
-          </SheetHeader>
-
-          <p className="text-sm mt-2 mb-4" style={{ color: "#7A6A85" }}>
-            Dela länken via SMS, WhatsApp eller hur du vill.
-          </p>
-
-          <div
+    <div className="fixed inset-0 z-[60] flex items-center justify-center px-5 bg-black/30 backdrop-blur-sm">
+      <AnimatePresence mode="wait">
+        {step === "intro" && (
+          <motion.div
+            key="intro"
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -12 }}
+            transition={{ duration: 0.3 }}
+            className="w-full max-w-[320px]"
             style={{
-              background: "#EDE8F4",
-              borderRadius: 10,
-              padding: "10px 14px",
-              fontSize: 12,
-              color: "#3C2A4D",
-              wordBreak: "break-all",
-              marginBottom: 16,
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #EDE8F4",
+              borderRadius: 16,
+              padding: 24,
             }}
           >
-            {link}
-          </div>
+            <h2 className="text-center mb-3" style={{ fontSize: 18, color: "#3C2A4D" }}>
+              Det ska vara lättare att ses.
+            </h2>
 
-          <div style={{ display: "flex", gap: 8 }}>
+            <p className="text-center mb-6" style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>
+              Minby hjälper dig ta små steg mot att faktiskt hålla kontakten.
+            </p>
+
             <button
-              onClick={handleShare}
+              onClick={next}
+              className="w-full"
               style={{
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
-                background: "#3C2A4D",
-                color: "#F7F3EF",
-                borderRadius: 10,
-                padding: 10,
-                fontSize: 13,
-                fontWeight: 500,
+                backgroundColor: "#3C2A4D",
+                color: "#fff",
+                borderRadius: 20,
+                height: 44,
                 border: "none",
-                cursor: "pointer",
               }}
             >
-              <Share2 style={{ width: 14, height: 14 }} />
-              Dela
+              Fortsätt
             </button>
 
             <button
-              onClick={handleCopy}
+              onClick={onDismiss}
+              className="w-full mt-3 text-[12px]"
+              style={{ color: "#7A6A85", background: "none", border: "none" }}
+            >
+              Hoppa över
+            </button>
+          </motion.div>
+        )}
+
+        {step === "intent" && (
+          <motion.div
+            key="intent"
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="w-full max-w-[320px]"
+            style={{
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #EDE8F4",
+              borderRadius: 16,
+              padding: 24,
+            }}
+          >
+            <h2 className="text-center mb-4" style={{ fontSize: 18, color: "#3C2A4D" }}>
+              Hur känns det just nu?
+            </h2>
+
+            <div className="space-y-2 mb-6">
+              <button
+                onClick={() => setIntent("meet")}
+                className="w-full text-left"
+                style={{
+                  padding: "12px 14px",
+                  borderRadius: 8,
+                  border: intent === "meet" ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                  backgroundColor: intent === "meet" ? "#EDE8F4" : "#FFFFFF",
+                }}
+              >
+                Sugen på att ses
+              </button>
+
+              <button
+                onClick={() => setIntent("browse")}
+                className="w-full text-left"
+                style={{
+                  padding: "12px 14px",
+                  borderRadius: 8,
+                  border: intent === "browse" ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                  backgroundColor: intent === "browse" ? "#EDE8F4" : "#FFFFFF",
+                }}
+              >
+                Vill mest kolla läget
+              </button>
+
+              <button
+                onClick={() => setIntent("unsure")}
+                className="w-full text-left"
+                style={{
+                  padding: "12px 14px",
+                  borderRadius: 8,
+                  border: intent === "unsure" ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                  backgroundColor: intent === "unsure" ? "#EDE8F4" : "#FFFFFF",
+                }}
+              >
+                Vet inte riktigt
+              </button>
+            </div>
+
+            <button
+              onClick={next}
+              disabled={!intent}
+              className="w-full"
               style={{
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
-                background: "#EDE8F4",
-                color: "#3C2A4D",
-                borderRadius: 10,
-                padding: 10,
-                fontSize: 13,
-                fontWeight: 500,
+                backgroundColor: "#3C2A4D",
+                color: "#fff",
+                borderRadius: 20,
+                height: 44,
                 border: "none",
-                cursor: "pointer",
+                opacity: intent ? 1 : 0.5,
               }}
             >
-              <Copy style={{ width: 14, height: 14 }} />
-              Kopiera
+              Fortsätt
             </button>
-          </div>
-        </SheetContent>
-      </Sheet>
-    </>
+          </motion.div>
+        )}
+
+        {step === "done" && (
+          <motion.div
+            key="done"
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="w-full max-w-[320px]"
+            style={{
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #EDE8F4",
+              borderRadius: 16,
+              padding: 24,
+              textAlign: "center",
+            }}
+          >
+            <p className="mb-4" style={{ fontSize: 14, color: "#7A6A85" }}>
+              Du är igång.
+            </p>
+
+            <button
+              onClick={handleFinish}
+              className="w-full"
+              style={{
+                backgroundColor: "#3C2A4D",
+                color: "#fff",
+                borderRadius: 20,
+                height: 44,
+                border: "none",
+              }}
+            >
+              Fortsätt
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 
