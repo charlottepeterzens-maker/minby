@@ -7,7 +7,7 @@ import CurvedSeparator from "@/components/CurvedSeparator";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
-import FirstTimeOverlay from "@/components/onboarding/FirstTimeOverlay";
+
 import FeedGuidanceCard from "@/components/onboarding/FeedGuidanceCard";
 import PersonBlock, { type PersonData } from "@/components/feed/PersonBlock";
 import { Container } from "@/components/layout";
