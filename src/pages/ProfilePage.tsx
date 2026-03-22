@@ -437,7 +437,7 @@ const ProfilePage = () => {
         >
           {/* Block header */}
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-fraunces font-normal text-[16px] mt-8 mb-3" style={{ color: "#2A1A3C" }}>
+            <h2 className="font-fraunces font-normal text-[16px] mt-6 mb-3" style={{ color: "#2A1A3C" }}>
               Min vardag
             </h2>
           </div>
