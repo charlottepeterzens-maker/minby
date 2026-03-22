@@ -422,6 +422,9 @@ const ProfilePage = () => {
           </div>
         )}
 
+        {/* Section divider */}
+        <div className="mb-4" style={{ borderTop: "1px solid #EDE8E0" }} />
+
         {/* ===== (5+6) MIN VARDAG BLOCK ===== */}
         <div
           className="mb-5"
