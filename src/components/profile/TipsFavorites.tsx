@@ -306,7 +306,9 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-xs font-medium text-muted-foreground font-body">Tips & favoriter</h2>
+        <h2 className="font-fraunces font-normal text-[16px] mt-8 mb-3" style={{ color: "#2A1A3C" }}>
+          Tips & favoriter
+        </h2>
         {isOwner && tips.length < MAX_TIPS && (
           <Sheet
             open={sheetOpen}
@@ -359,7 +361,14 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
         ) : null
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <TipListWithCounts tips={tips} isOwner={isOwner} savedTipIds={savedTipIds} onDelete={handleDelete} onEdit={handleEdit} onSave={handleSave} />
+          <TipListWithCounts
+            tips={tips}
+            isOwner={isOwner}
+            savedTipIds={savedTipIds}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            onSave={handleSave}
+          />
         </div>
       )}
 
