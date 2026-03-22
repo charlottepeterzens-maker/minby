@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, Fragment } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, SendHorizontal, Plus, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut } from "lucide-react";
+import { ChevronLeft, SendHorizontal, Plus, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut, Reply, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
@@ -25,6 +25,7 @@ interface Message {
   user_id: string;
   content: string;
   created_at: string;
+  reply_to_id: string | null;
 }
 
 interface Member {
@@ -115,6 +116,7 @@ const GroupChatPage = () => {
   const [leaveConfirmOpen, setLeaveConfirmOpen] = useState(false);
   const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [replyTo, setReplyTo] = useState<Message | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -301,8 +303,10 @@ const GroupChatPage = () => {
     if (!newMessage.trim() || !user || !groupId || sending) return;
     setSending(true);
     const content = newMessage.trim();
+    const replyId = replyTo?.id || null;
     setNewMessage("");
-    await supabase.from("group_messages").insert({ group_id: groupId, user_id: user.id, content });
+    setReplyTo(null);
+    await (supabase as any).from("group_messages").insert({ group_id: groupId, user_id: user.id, content, reply_to_id: replyId });
     try {
       const otherMembers = members.filter(m => m.user_id !== user.id);
       if (otherMembers.length > 0) {
@@ -480,17 +484,47 @@ const GroupChatPage = () => {
             const msg = item.data;
             const isOwn = msg.user_id === user?.id;
             const member = getMember(msg.user_id);
+            const repliedMsg = msg.reply_to_id ? messages.find((m) => m.id === msg.reply_to_id) : null;
+            const repliedMember = repliedMsg ? getMember(repliedMsg.user_id) : null;
             return (
-              <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}>
-                <div className="px-3 py-2" style={{
-                  maxWidth: 200,
-                  borderRadius: isOwn ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
-                  backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
-                  color: isOwn ? "#FFFFFF" : "#3C2A4D",
-                  border: isOwn ? "none" : "1px solid #EDE8F4",
-                  fontSize: 13, lineHeight: "18px",
-                }}>
-                  {msg.content}
+              <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"} group`}>
+                {repliedMsg && (
+                  <div className="flex items-center gap-1 px-2 mb-0.5" style={{ maxWidth: 200 }}>
+                    <Reply className="w-3 h-3 shrink-0" style={{ color: "#9B8BA5", transform: "scaleX(-1)" }} />
+                    <span className="text-[10px] truncate" style={{ color: "#9B8BA5" }}>
+                      {repliedMember?.display_name || "Anonym"}: {repliedMsg.content}
+                    </span>
+                  </div>
+                )}
+                <div className="flex items-center gap-1">
+                  {isOwn && (
+                    <button
+                      onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
+                      className="opacity-40 hover:opacity-100 active:opacity-100 transition-opacity p-1 rounded-full"
+                      style={{ color: "#9B8BA5" }}
+                    >
+                      <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
+                    </button>
+                  )}
+                  <div className="px-3 py-2" style={{
+                    maxWidth: 200,
+                    borderRadius: isOwn ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
+                    backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
+                    color: isOwn ? "#FFFFFF" : "#3C2A4D",
+                    border: isOwn ? "none" : "1px solid #EDE8F4",
+                    fontSize: 13, lineHeight: "18px",
+                  }}>
+                    {msg.content}
+                  </div>
+                  {!isOwn && (
+                    <button
+                      onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
+                      className="opacity-40 hover:opacity-100 active:opacity-100 transition-opacity p-1 rounded-full"
+                      style={{ color: "#9B8BA5" }}
+                    >
+                      <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
+                    </button>
+                  )}
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 px-1">
                   {!isOwn && <span className="text-[10px]" style={{ color: "#7A6A85" }}>{member?.display_name || "Anonym"}</span>}
@@ -549,12 +583,28 @@ const GroupChatPage = () => {
 
       {/* Input field */}
       <div className="sticky bottom-0 px-4 py-3 safe-area-bottom" style={{ backgroundColor: "#F7F3EF" }}>
+        {replyTo && (
+          <div className="flex items-center gap-2 px-4 py-1.5 mb-1 rounded-t-[12px]" style={{ backgroundColor: "#EDE8F4" }}>
+            <Reply className="w-3.5 h-3.5 shrink-0" style={{ color: "#7A6A85", transform: "scaleX(-1)" }} />
+            <div className="flex-1 min-w-0">
+              <span className="text-[10px] font-medium block" style={{ color: "#3C2A4D" }}>
+                {getMember(replyTo.user_id)?.display_name || "Anonym"}
+              </span>
+              <span className="text-[11px] truncate block" style={{ color: "#7A6A85" }}>
+                {replyTo.content}
+              </span>
+            </div>
+            <button onClick={() => setReplyTo(null)} className="shrink-0 p-0.5">
+              <X className="w-3.5 h-3.5" style={{ color: "#7A6A85" }} />
+            </button>
+          </div>
+        )}
         <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "#FFFFFF", borderRadius: 20, border: "1px solid #EDE8F4" }}>
           <button onClick={() => { setActionSheetPrefill(null); setActionSheetOpen(true); }} className="shrink-0 flex items-center justify-center">
             <Plus className="w-5 h-5" style={{ color: "#3C2A4D" }} />
           </button>
           <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder="Skriv något..."
+            onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder={replyTo ? "Svara..." : "Skriv något..."}
             className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#9B8BA5]" style={{ color: "#3C2A4D" }} />
           <button onClick={handleSend} disabled={!newMessage.trim() || sending}
             className="shrink-0 flex items-center justify-center rounded-full disabled:opacity-40 transition-opacity"
