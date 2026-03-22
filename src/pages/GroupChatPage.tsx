@@ -421,6 +421,14 @@ const GroupChatPage = () => {
           navigate("/groups");
         }}
       />
+      <AddMemberSheet
+        open={addMemberOpen}
+        onOpenChange={setAddMemberOpen}
+        groupId={groupId || ""}
+        groupName={groupName}
+        existingMemberIds={members.map((m) => m.user_id)}
+        onMembersAdded={fetchGroupInfo}
+      />
     </div>
   );
 };
