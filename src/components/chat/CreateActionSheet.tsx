@@ -14,57 +14,27 @@ interface CreateActionSheetProps {
 type Mode = "choose" | "poll" | "plan";
 
 const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sending, prefill }: CreateActionSheetProps) => {
-  const [mode, setMode] = useState<Mode>(prefill ? "plan" : "choose");
+  const [mode, setMode] = useState<Mode>("choose");
   
   // Poll state
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
   
   // Plan state
-  const [planTitle, setPlanTitle] = useState(prefill?.title || "");
-  const [planDate, setPlanDate] = useState(prefill?.dateText || "");
+  const [planTitle, setPlanTitle] = useState("");
+  const [planDate, setPlanDate] = useState("");
   const [planLocation, setPlanLocation] = useState("");
 
-  const resetAll = () => {
-    setMode("choose");
-    setQuestion("");
-    setOptions(["", ""]);
-    setPlanTitle("");
-    setPlanDate("");
-    setPlanLocation("");
-  };
-
-  const handleOpenChange = (v: boolean) => {
-    if (!v) resetAll();
-    onOpenChange(v);
-  };
-
-  // Poll helpers
-  const addOption = () => { if (options.length < 4) setOptions([...options, ""]); };
-  const removeOption = (i: number) => { if (options.length > 2) setOptions(options.filter((_, idx) => idx !== i)); };
-  const updateOption = (i: number, val: string) => { const u = [...options]; u[i] = val; setOptions(u); };
-  const canSubmitPoll = question.trim() && options.filter((o) => o.trim()).length >= 2;
-
-  const handleSubmitPoll = () => {
-    if (!canSubmitPoll || sending) return;
-    onSubmitPoll(question.trim(), options.filter((o) => o.trim()));
-    handleOpenChange(false);
-  };
-
-  const canSubmitPlan = planTitle.trim() && planDate.trim();
-
-  const handleSubmitPlan = () => {
-    if (!canSubmitPlan || sending) return;
-    onSubmitPlan(planTitle.trim(), planDate.trim(), planLocation.trim() || null);
-    handleOpenChange(false);
-  };
-
-  // Set prefill values when provided
-  if (prefill && mode === "choose") {
-    setMode("plan");
-    setPlanTitle(prefill.title);
-    setPlanDate(prefill.dateText);
-  }
+  // Handle prefill when opening
+  const prevOpen = useRef(open);
+  useEffect(() => {
+    if (open && !prevOpen.current && prefill) {
+      setMode("plan");
+      setPlanTitle(prefill.title);
+      setPlanDate(prefill.dateText);
+    }
+    prevOpen.current = open;
+  }, [open, prefill]);
 
   const inputStyle = {
     backgroundColor: "#FFFFFF",
