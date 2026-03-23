@@ -236,9 +236,12 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
           >
             <div style={{ padding: "0 14px 14px" }}>
               {/* Recent posts */}
-              <div className="space-y-3">
-                {person.recentPosts.slice(0, 3).map((post) => (
+              <div className="space-y-0">
+                {person.recentPosts.slice(0, 3).map((post, idx) => (
                   <div key={post.id}>
+                    {idx > 0 && (
+                      <div className="my-2.5" style={{ borderTop: "1px solid #EDE8E0" }} />
+                    )}
                     {post.image_url && <PostImage imageUrl={post.image_url} />}
                     {post.content && (
                       <p className="text-[13px] mt-1" style={{ color: "#2A1A3C" }}>
