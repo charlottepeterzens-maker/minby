@@ -586,6 +586,12 @@ const ProfilePage = () => {
       </Container>
       <ScrollToTopButton />
       <BottomNav />
+      <AvatarCropDialog
+        file={cropFile}
+        open={cropOpen}
+        onOpenChange={setCropOpen}
+        onCropped={handleCroppedUpload}
+      />
     </div>
   );
 };
