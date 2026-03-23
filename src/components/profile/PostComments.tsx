@@ -210,9 +210,14 @@ const PostComments = ({ postId, isOwner }: Props) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            overflow: "hidden",
           }}
         >
-          <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{myInitials}</span>
+          {myAvatarUrl ? (
+            <img src={myAvatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{myInitials}</span>
+          )}
         </div>
         <input
           value={text}
