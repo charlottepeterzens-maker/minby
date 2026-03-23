@@ -32,19 +32,63 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [onboarded, setOnboarded] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    let isMounted = true;
+
+    if (!user) {
+      setOnboarded(false);
+      return () => {
+        isMounted = false;
+      };
+    }
 
     supabase
       .from("profiles")
-      .select("onboarded_at")
+      .select("onboarded_at, display_name")
       .eq("user_id", user.id)
-      .single()
-      .then(({ data }) => {
-        setOnboarded(!!data?.onboarded_at);
+      .maybeSingle()
+      .then(async ({ data, error }) => {
+        if (!isMounted) return;
+
+        if (error) {
+          console.error("Failed to load onboarding state", error);
+          setOnboarded(false);
+          return;
+        }
+
+        if (!data) {
+          const fallbackName =
+            (typeof user.user_metadata?.display_name === "string" && user.user_metadata.display_name) ||
+            user.email?.split("@")[0] ||
+            null;
+
+          const { error: upsertError } = await supabase.from("profiles").upsert(
+            {
+              user_id: user.id,
+              display_name: fallbackName,
+            },
+            { onConflict: "user_id" }
+          );
+
+          if (upsertError) {
+            console.error("Failed to create missing profile", upsertError);
+          }
+
+          if (isMounted) {
+            setOnboarded(false);
+          }
+
+          return;
+        }
+
+        setOnboarded(!!data.onboarded_at);
       });
+
+    return () => {
+      isMounted = false;
+    };
   }, [user]);
 
-  if (loading || onboarded === null) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
@@ -53,6 +97,14 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!user) return <AuthPage />;
+
+  if (onboarded === null) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
+      </div>
+    );
+  }
 
   return (
     <>
