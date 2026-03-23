@@ -1,14 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { X, Send, Trash2, Plus, Users, Pencil } from "lucide-react";
+import { X, Send, Trash2, Plus, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import { toast } from "@/hooks/use-toast";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
@@ -35,6 +34,7 @@ interface TaggedFriend {
   id: string;
   tagged_user_id: string;
   tagged_by: string;
+  status?: string;
   profile?: { display_name: string | null; avatar_url: string | null };
 }
 
@@ -56,11 +56,8 @@ interface Props {
   isOwner: boolean;
   onDeleted?: () => void;
   onEdited?: () => void;
-  /** All entries in the same activity group (for activity type) */
   groupedEntries?: AvailabilityEntry[];
-  /** Called after single date removal to refresh parent */
   onRefresh?: () => void;
-  /** Open AddHangoutSheet with prefilled activity name */
   onAddActivityDate?: (activityName: string) => void;
 }
 
@@ -74,9 +71,7 @@ const HangoutDetailSheet = ({
   const [taggedFriends, setTaggedFriends] = useState<TaggedFriend[]>([]);
   const [commentText, setCommentText] = useState("");
   const [sending, setSending] = useState(false);
-  const [showInvite, setShowInvite] = useState(false);
-  const [friendSearch, setFriendSearch] = useState("");
-  const [friendResults, setFriendResults] = useState<any[]>([]);
+  const [showCommentInput, setShowCommentInput] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteAllConfirm, setDeleteAllConfirm] = useState(false);
   const [ownerProfile, setOwnerProfile] = useState<{ display_name: string | null } | null>(null);
@@ -86,7 +81,6 @@ const HangoutDetailSheet = ({
   const fetchDetails = useCallback(async () => {
     if (!entry) return;
 
-    // For activity groups, fetch tags/comments for ALL entries in the group
     const entryIds = entry.entry_type === "activity" && groupedEntries && groupedEntries.length > 0
       ? groupedEntries.map(e => e.id)
       : [entry.id];
@@ -112,7 +106,6 @@ const HangoutDetailSheet = ({
       if (tids.length > 0) {
         const { data: profiles } = await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", tids);
         const pm = new Map((profiles || []).map((p: any) => [p.user_id, p]));
-        // Deduplicate tagged friends by user id
         const seen = new Set<string>();
         const deduped = tagsRes.data.filter((t: any) => {
           if (seen.has(t.tagged_user_id)) return false;
@@ -135,27 +128,29 @@ const HangoutDetailSheet = ({
     if (open && entry) {
       fetchDetails();
       setCommentText("");
-      setShowInvite(false);
+      setShowCommentInput(false);
     }
   }, [open, entry, fetchDetails]);
 
   if (!entry) return null;
 
   const dateObj = new Date(entry.date + "T00:00:00");
-  const weekday = format(dateObj, "EEEE", { locale: sv });
+  const dateDisplay = format(dateObj, "EEEE d MMMM", { locale: sv });
   const shortWeekday = format(dateObj, "EEE", { locale: sv }).replace(".", "");
   const day = format(dateObj, "d");
-  const month = format(dateObj, "MMMM", { locale: sv });
   const shortMonth = format(dateObj, "M");
-  const typeLabel = entry.entry_type === "confirmed" ? "häng med" : entry.entry_type === "activity" ? "sugen på" : "vill ses";
-  const activityName = entry.activities.length > 0 ? entry.activities.map(a => ACTIVITY_MAP[a] || a).join(", ") : entry.custom_note || null;
 
-  // Activity group data
+  const intentLabel = entry.entry_type === "confirmed" ? "Häng med" : entry.entry_type === "activity" ? "Sugen på" : "Jag vill ses";
+  const activityName = entry.activities.length > 0 ? entry.activities.map(a => ACTIVITY_MAP[a] || a).join(", ") : null;
+  const description = entry.custom_note || "";
+  const ownerName = ownerProfile?.display_name || "Någon";
+
   const activityEntries = entry.entry_type === "activity" && groupedEntries && groupedEntries.length > 0
     ? groupedEntries
     : entry.entry_type === "activity" ? [entry] : [];
-  const activityGroupName = activityName || "";
+  const activityGroupName = activityName || entry.custom_note || "";
 
+  // Handlers
   const handleAddComment = async () => {
     if (!commentText.trim() || !user) return;
     setSending(true);
@@ -164,13 +159,12 @@ const HangoutDetailSheet = ({
     if (entry.user_id !== user.id) {
       const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
       const name = myProfile?.display_name || "Någon";
-      const actLabel = activityName || entry.custom_note || "din dejt";
       await sendNotification({
         recipientUserId: entry.user_id,
         fromUserId: user.id,
         type: "hangout_comment",
         referenceId: entry.id,
-        message: `${name} kommenterade din dejt ${actLabel}`,
+        message: `${name} kommenterade på "${description || activityGroupName || "häng"}"`,
       });
     }
 
@@ -184,28 +178,36 @@ const HangoutDetailSheet = ({
     setComments(prev => prev.filter(c => c.id !== id));
   };
 
-  const searchFriends = async (q: string) => {
-    setFriendSearch(q);
-    if (q.length < 2) { setFriendResults([]); return; }
-    const { data } = await supabase.from("profiles").select("user_id, display_name, avatar_url").ilike("display_name", `%${q}%`).limit(5);
-    if (data) {
-      const already = new Set(taggedFriends.map(t => t.tagged_user_id));
-      setFriendResults(data.filter((p: any) => !already.has(p.user_id) && p.user_id !== user?.id));
-    }
-  };
-
-  const handleTagFriend = async (friendId: string) => {
+  const handleRSVP = async (status: "yes" | "maybe") => {
     if (!user) return;
-    await supabase.from("hangout_tagged_friends").insert({ availability_id: entry.id, tagged_user_id: friendId, tagged_by: user.id });
-    setFriendSearch("");
-    setFriendResults([]);
-    setShowInvite(false);
-    await fetchDetails();
-  };
+    const existing = taggedFriends.find(t => t.tagged_user_id === user.id);
+    if (!existing && status === "yes") {
+      await supabase.from("hangout_tagged_friends").insert({ availability_id: entry.id, tagged_user_id: user.id, tagged_by: user.id });
+    }
 
-  const handleRemoveTag = async (tagId: string) => {
-    await supabase.from("hangout_tagged_friends").delete().eq("id", tagId);
-    setTaggedFriends(prev => prev.filter(t => t.id !== tagId));
+    if (entry.user_id !== user.id) {
+      const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+      const name = myProfile?.display_name || "Någon";
+      const label = activityName || description || "häng";
+      const message = status === "yes"
+        ? `${name} vill hänga med på ${label}!`
+        : `${name} kanske hänger med på ${label}`;
+
+      await sendNotification({
+        recipientUserId: entry.user_id,
+        fromUserId: user.id,
+        type: status === "yes" ? "hangout_yes" : "hangout_maybe",
+        referenceId: entry.id,
+        message,
+      });
+    }
+
+    if (pushSupported && pushPermission === "default" && !pushSubscribed) {
+      subscribePush();
+    }
+
+    toast({ title: status === "yes" ? "Du är med! 💛" : "Kanske – vi ser!" });
+    await fetchDetails();
   };
 
   const handleDelete = async () => {
@@ -217,7 +219,6 @@ const HangoutDetailSheet = ({
   const handleRemoveSingleDate = async (entryId: string) => {
     await supabase.from("hangout_availability").delete().eq("id", entryId);
     toast({ title: "Datum borttaget" });
-    // If it was the last date in the group, close the sheet
     if (activityEntries.length <= 1) {
       onOpenChange(false);
     }
@@ -233,42 +234,11 @@ const HangoutDetailSheet = ({
     onDeleted?.();
   };
 
-  const handleRSVP = async (status: "yes" | "maybe") => {
-    if (!user) return;
-    const existing = taggedFriends.find(t => t.tagged_user_id === user.id);
-    if (!existing && status === "yes") {
-      await supabase.from("hangout_tagged_friends").insert({ availability_id: entry.id, tagged_user_id: user.id, tagged_by: user.id });
-    }
-
-    if (entry.user_id !== user.id) {
-      const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
-      const name = myProfile?.display_name || "Någon";
-      const actLabel = activityName || entry.custom_note || "häng";
-      const message = status === "yes"
-        ? `${name} vill hänga med på ${actLabel}!`
-        : `${name} kanske hänger med på ${actLabel}`;
-
-      await sendNotification({
-        recipientUserId: entry.user_id,
-        fromUserId: user.id,
-        type: status === "yes" ? "hangout_yes" : "hangout_maybe",
-        referenceId: entry.id,
-        message,
-      });
-    }
-
-    if (pushSupported && pushPermission === "default" && !pushSubscribed) {
-      subscribePush();
-    }
-
-    await fetchDetails();
-  };
-
   const handleCreateGroup = async () => {
     if (!user || creatingGroup) return;
     setCreatingGroup(true);
     try {
-      const groupName = `${activityName || "Häng"} ${shortWeekday} ${day}/${shortMonth}`;
+      const groupName = `${activityName || description || "Häng"} ${shortWeekday} ${day}/${shortMonth}`;
 
       const { data: group, error: groupError } = await supabase
         .from("friend_groups")
@@ -282,13 +252,10 @@ const HangoutDetailSheet = ({
         return;
       }
 
+      // Add all tagged friends + owner to group
       const memberInserts = taggedFriends
         .filter(tf => tf.tagged_user_id !== user.id)
-        .map(tf => ({
-          group_id: group.id,
-          user_id: tf.tagged_user_id,
-          role: "member",
-        }));
+        .map(tf => ({ group_id: group.id, user_id: tf.tagged_user_id, role: "member" }));
 
       if (memberInserts.length > 0) {
         await supabase.from("group_memberships").insert(memberInserts);
@@ -303,431 +270,8 @@ const HangoutDetailSheet = ({
   };
 
   const isSelfTagged = taggedFriends.some(t => t.tagged_user_id === user?.id);
-  const hasYesResponses = taggedFriends.length > 0;
-
-  // ── Shared UI blocks ──
-
-  const renderDateBlock = () => (
-    <div className="flex flex-col items-center gap-0.5">
-      <span className="text-[9px] uppercase tracking-wider" style={{ color: "#B0A8B5" }}>{weekday}</span>
-      <span className="text-[40px] font-medium leading-none" style={{ color: "#3C2A4D" }}>{day}</span>
-      <span className="text-[10px] uppercase font-medium" style={{ color: "#C9B8D8" }}>{month}</span>
-      <span className="text-[9px] uppercase tracking-wider mt-1" style={{ color: "#B0A8B5" }}>{typeLabel}</span>
-      {!isOwner && ownerProfile && (
-        <span className="text-[11px] mt-0.5" style={{ color: "#7A6A85" }}>{ownerProfile.display_name}</span>
-      )}
-    </div>
-  );
-
-  const renderNoteCard = () => (
-    (activityName || entry.custom_note) ? (
-      <div className="bg-card rounded-[12px] p-3 space-y-1" style={{ border: "1px solid #EDE8F4" }}>
-        {activityName && <p className="text-[13px] font-medium text-foreground">{activityName}</p>}
-        {entry.custom_note && entry.custom_note !== activityName && (
-          <p className="text-[12px]" style={{ color: "#7A6A85" }}>{entry.custom_note}</p>
-        )}
-      </div>
-    ) : null
-  );
-
-  const renderComments = () => (
-    <div className="space-y-2">
-      <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "#B0A8B5" }}>Kommentarer</p>
-      {comments.length > 0 && (
-        <div className="space-y-2">
-          {comments.map(c => (
-            <div key={c.id} className="flex items-start gap-2 group">
-              <Avatar className="w-5 h-5 mt-0.5">
-                <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[8px]">
-                  {(c.profile?.display_name || "?").charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <span className="text-[11px] font-medium text-foreground">{c.user_id === user?.id ? "Du" : (c.profile?.display_name || "Någon")}</span>
-                <p className="text-[12px]" style={{ color: "#7A6A85" }}>{c.content}</p>
-              </div>
-              {(c.user_id === user?.id || isOwner) && (
-                <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-destructive">
-                  <Trash2 className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-      <div className="flex gap-1.5 items-center">
-        <Input
-          value={commentText}
-          onChange={e => setCommentText(e.target.value)}
-          placeholder="Skriv en kommentar..."
-          className="h-8 text-[12px] flex-1 bg-card border-border/30"
-          onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleAddComment()}
-        />
-        <button
-          disabled={sending || !commentText.trim()}
-          onClick={handleAddComment}
-          className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-40 transition-colors"
-          style={{ backgroundColor: "#3C2A4D" }}
-        >
-          <Send className="w-3.5 h-3.5 text-white" />
-        </button>
-      </div>
-    </div>
-  );
-
-  const renderInviteRow = () => (
-    showInvite ? (
-      <div className="space-y-1.5">
-        <Input
-          value={friendSearch}
-          onChange={e => searchFriends(e.target.value)}
-          placeholder="Sök vän..."
-          className="h-8 text-[12px] bg-card border-border/30"
-          autoFocus
-        />
-        {friendResults.map(f => (
-          <button key={f.user_id} onClick={() => handleTagFriend(f.user_id)} className="flex items-center gap-2 w-full px-2 py-1.5 rounded-md hover:bg-muted/50 transition-colors">
-            <Avatar className="w-5 h-5">
-              <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[8px]">
-                {f.display_name?.charAt(0).toUpperCase() || "?"}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-[12px] text-foreground">{f.display_name}</span>
-          </button>
-        ))}
-      </div>
-    ) : (
-      <button onClick={() => setShowInvite(true)} className="flex items-center gap-2 py-1">
-        <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: "#EDE8F4" }}>
-          <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
-        </div>
-        <span className="text-[12px]" style={{ color: "#7A6A85" }}>Bjud in fler vänner</span>
-      </button>
-    )
-  );
-
-  const renderTaggedFriendsList = () => (
-    taggedFriends.length > 0 ? (
-      <div className="space-y-1.5">
-        {taggedFriends.map(tf => (
-          <div key={tf.id} className="flex items-center gap-2">
-            <Avatar className="w-6 h-6">
-              <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[9px] font-medium">
-                {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-[12px] text-foreground flex-1">{tf.profile?.display_name || "Okänd"}</span>
-            <Badge className="text-[9px] px-1.5 py-0 h-4 border-0" style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}>Ja</Badge>
-            {isOwner && (
-              <button onClick={() => handleRemoveTag(tf.id)} className="text-muted-foreground/40 hover:text-destructive">
-                <Trash2 className="w-3 h-3" />
-              </button>
-            )}
-          </div>
-        ))}
-      </div>
-    ) : null
-  );
-
-  const renderCreateGroupRow = () => (
-    hasYesResponses && isOwner ? (
-      <button
-        onClick={handleCreateGroup}
-        disabled={creatingGroup}
-        className="flex items-center gap-2.5 w-full p-2.5 transition-colors hover:opacity-90 disabled:opacity-60"
-        style={{ backgroundColor: "#EDE8F4", borderRadius: 9 }}
-      >
-        <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: "#3C2A4D" }}>
-          <Users className="w-3.5 h-3.5 text-white" />
-        </div>
-        <div className="flex-1 text-left min-w-0">
-          <p className="text-[12px] font-medium text-foreground">Skapa en grupp</p>
-          <p className="text-[10px] truncate" style={{ color: "#7A6A85" }}>
-            För {activityName || "häng"} {shortWeekday} {day}/{shortMonth}
-          </p>
-        </div>
-      </button>
-    ) : null
-  );
-
-  // ── Type-specific content ──
-
-  const renderActivityDetail = () => (
-    <div className="space-y-4">
-      {/* Activity name as heading */}
-      <p className="text-[14px] font-medium text-center" style={{ color: "#3C2A4D" }}>
-        {activityGroupName}
-      </p>
-
-      {/* Date chips */}
-      <div className="flex flex-wrap gap-1.5 justify-center">
-        {activityEntries.map(ae => {
-          const d = new Date(ae.date + "T00:00:00");
-          const label = format(d, "EEE d/M", { locale: sv }).replace(".", "");
-          return (
-            <span
-              key={ae.id}
-              className="inline-flex items-center gap-1 text-[11px]"
-              style={{ backgroundColor: "#B5CCBF", borderRadius: 6, padding: "3px 8px", color: "#1F4A1A" }}
-            >
-              {label}
-              {isOwner && (
-                <button onClick={() => handleRemoveSingleDate(ae.id)} className="hover:opacity-70 ml-0.5">
-                  <X className="w-2.5 h-2.5" />
-                </button>
-              )}
-            </span>
-          );
-        })}
-      </div>
-
-      {/* Add date button */}
-      {isOwner && onAddActivityDate && (
-        <button
-          onClick={() => { onOpenChange(false); onAddActivityDate(activityGroupName); }}
-          className="flex items-center gap-1.5 mx-auto py-1"
-        >
-          <Plus className="w-3.5 h-3.5" style={{ color: "#7A6A85" }} />
-          <span className="text-[12px]" style={{ color: "#7A6A85" }}>Lägg till datum</span>
-        </button>
-      )}
-
-      {/* Tagged friends count */}
-      {taggedFriends.length > 0 && (
-        <p className="text-[10px] text-center" style={{ color: "#7A6A85" }}>
-          {taggedFriends.length} kan
-        </p>
-      )}
-
-      {/* Svar section (owner) */}
-      {isOwner && (
-        <div className="space-y-2">
-          <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "#B0A8B5" }}>Svar</p>
-          {renderTaggedFriendsList()}
-          {renderInviteRow()}
-        </div>
-      )}
-
-      {/* Friend RSVP view */}
-      {!isOwner && (
-        <div className="space-y-2">
-          {taggedFriends.length > 0 && (
-            <>
-              <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "#B0A8B5" }}>Redan med</p>
-              <div className="flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {taggedFriends.slice(0, 5).map(tf => (
-                    <Avatar key={tf.id} className="w-7 h-7 border-2 border-card">
-                      <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[9px] font-medium">
-                        {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
-                      </AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-                <span className="text-[11px]" style={{ color: "#7A6A85" }}>
-                  {taggedFriends.map(t => t.profile?.display_name || "Okänd").join(", ")}
-                </span>
-              </div>
-            </>
-          )}
-          <div className="flex gap-2 mt-1">
-            <button
-              onClick={() => handleRSVP("yes")}
-              disabled={isSelfTagged}
-              className="flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-colors disabled:opacity-60"
-              style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
-            >
-              {isSelfTagged ? "Du är med!" : "Jag hänger med!"}
-            </button>
-            <button
-              className="px-4 py-2 text-[13px] font-medium rounded-[10px] transition-colors"
-              style={{ backgroundColor: "#FFFFFF", color: "#7A6A85", border: "1px solid #EDE8F4" }}
-            >
-              Kanske
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Custom note */}
-      {entry.custom_note && entry.custom_note !== activityGroupName && (
-        <div className="bg-card rounded-[12px] p-3" style={{ border: "1px solid #EDE8F4" }}>
-          <p className="text-[12px]" style={{ color: "#7A6A85" }}>{entry.custom_note}</p>
-        </div>
-      )}
-
-      {renderComments()}
-
-      {/* Owner actions */}
-      {isOwner && (
-        <div className="flex gap-2 pt-2">
-          <button
-            onClick={() => { onOpenChange(false); onEdited?.(); }}
-            className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px] text-white"
-            style={{ backgroundColor: "#3C2A4D" }}
-          >
-            Redigera
-          </button>
-          <button
-            onClick={() => setDeleteAllConfirm(true)}
-            className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px] text-white"
-            style={{ backgroundColor: "#993556" }}
-          >
-            Ta bort alla datum
-          </button>
-        </div>
-      )}
-    </div>
-  );
-
-  const renderConfirmedDetail = () => (
-    <div className="space-y-4">
-      {renderDateBlock()}
-      {renderNoteCard()}
-
-      {/* Svar section */}
-      {isOwner ? (
-        <div className="space-y-2">
-          <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "#B0A8B5" }}>Svar</p>
-          {renderTaggedFriendsList()}
-          {renderInviteRow()}
-          {renderCreateGroupRow()}
-        </div>
-      ) : (
-        <div className="space-y-2">
-          <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "#B0A8B5" }}>Redan med</p>
-          {taggedFriends.length > 0 && (
-            <div className="flex items-center gap-2">
-              <div className="flex -space-x-2">
-                {taggedFriends.slice(0, 5).map(tf => (
-                  <Avatar key={tf.id} className="w-7 h-7 border-2 border-card">
-                    <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[9px] font-medium">
-                      {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
-                    </AvatarFallback>
-                  </Avatar>
-                ))}
-              </div>
-              <span className="text-[11px]" style={{ color: "#7A6A85" }}>
-                {taggedFriends.map(t => t.profile?.display_name || "Okänd").join(", ")}
-              </span>
-            </div>
-          )}
-          <div className="flex gap-2 mt-1">
-            <button
-              onClick={() => handleRSVP("yes")}
-              disabled={isSelfTagged}
-              className="flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-colors disabled:opacity-60"
-              style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
-            >
-              {isSelfTagged ? "Du är med!" : "Jag hänger med!"}
-            </button>
-            <button
-              className="px-4 py-2 text-[13px] font-medium rounded-[10px] transition-colors"
-              style={{ backgroundColor: "#FFFFFF", color: "#7A6A85", border: "1px solid #EDE8F4" }}
-            >
-              Kanske
-            </button>
-          </div>
-        </div>
-      )}
-
-      {renderComments()}
-
-      {isOwner && (
-        <div className="flex gap-2 pt-2">
-          <button
-            onClick={() => { onOpenChange(false); onEdited?.(); }}
-            className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px] text-white"
-            style={{ backgroundColor: "#3C2A4D" }}
-          >
-            Redigera
-          </button>
-          <button
-            onClick={() => setDeleteConfirm(true)}
-            className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px] text-white"
-            style={{ backgroundColor: "#993556" }}
-          >
-            Ta bort
-          </button>
-        </div>
-      )}
-    </div>
-  );
-
-  const renderAvailableDetail = () => (
-    <div className="space-y-4">
-      {renderDateBlock()}
-      {renderNoteCard()}
-
-      {/* Svar section */}
-      {isOwner ? (
-        <div className="space-y-2">
-          <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "#B0A8B5" }}>Svar</p>
-          {renderTaggedFriendsList()}
-          {renderInviteRow()}
-        </div>
-      ) : (
-        <div className="space-y-2">
-          {taggedFriends.length > 0 && (
-            <>
-              <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: "#B0A8B5" }}>Redan med</p>
-              <div className="flex items-center gap-2">
-                <div className="flex -space-x-2">
-                  {taggedFriends.slice(0, 5).map(tf => (
-                    <Avatar key={tf.id} className="w-7 h-7 border-2 border-card">
-                      <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[9px] font-medium">
-                        {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
-                      </AvatarFallback>
-                    </Avatar>
-                  ))}
-                </div>
-                <span className="text-[11px]" style={{ color: "#7A6A85" }}>
-                  {taggedFriends.map(t => t.profile?.display_name || "Okänd").join(", ")}
-                </span>
-              </div>
-            </>
-          )}
-          <div className="flex gap-2 mt-1">
-            <button
-              onClick={() => handleRSVP("yes")}
-              disabled={isSelfTagged}
-              className="flex-1 py-2 text-[13px] font-medium rounded-[10px] transition-colors disabled:opacity-60"
-              style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
-            >
-              {isSelfTagged ? "Du är med!" : "Jag hänger med!"}
-            </button>
-            <button
-              className="px-4 py-2 text-[13px] font-medium rounded-[10px] transition-colors"
-              style={{ backgroundColor: "#FFFFFF", color: "#7A6A85", border: "1px solid #EDE8F4" }}
-            >
-              Kanske
-            </button>
-          </div>
-        </div>
-      )}
-
-      {renderComments()}
-
-      {isOwner && (
-        <div className="flex gap-2 pt-2">
-          <button
-            onClick={() => { onOpenChange(false); onEdited?.(); }}
-            className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px] text-white"
-            style={{ backgroundColor: "#3C2A4D" }}
-          >
-            Redigera
-          </button>
-          <button
-            onClick={() => setDeleteConfirm(true)}
-            className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px] text-white"
-            style={{ backgroundColor: "#993556" }}
-          >
-            Ta bort
-          </button>
-        </div>
-      )}
-    </div>
-  );
+  const totalResponses = taggedFriends.length;
+  const canCreateGroup = totalResponses >= 2;
 
   return (
     <>
@@ -736,40 +280,237 @@ const HangoutDetailSheet = ({
           className="mx-auto max-w-lg border-0 max-h-[85vh]"
           style={{ backgroundColor: "#F7F3EF", borderRadius: "20px 20px 0 0" }}
         >
-          {/* Handle + Close */}
-          <div className="flex justify-end px-4 pt-2">
+          {/* Close button */}
+          <div className="flex justify-end px-4 pt-1">
             <button onClick={() => onOpenChange(false)} className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-muted/50 transition-colors">
               <X className="w-4 h-4" style={{ color: "#7A6A85" }} />
             </button>
           </div>
 
-          <div className="px-5 pb-6 space-y-4 overflow-y-auto">
-            {entry.entry_type === "activity" ? renderActivityDetail()
-              : entry.entry_type === "confirmed" ? renderConfirmedDetail()
-              : renderAvailableDetail()}
+          <div className="px-5 pb-8 space-y-5 overflow-y-auto">
+            {/* ── HEADER ── */}
+            <div className="space-y-1.5">
+              {/* Date */}
+              <p className="font-fraunces text-[18px] font-normal capitalize" style={{ color: "#3C2A4D" }}>
+                {dateDisplay}
+              </p>
+
+              {/* Intent */}
+              <p className="text-[12px]" style={{ color: "#B0A0B5", fontWeight: 400 }}>
+                {intentLabel}
+                {activityName && ` · ${activityName}`}
+              </p>
+
+              {/* Description */}
+              {description && (
+                <p className="text-[14px] leading-[1.5] pt-1" style={{ color: "#3C2A4D", fontWeight: 400 }}>
+                  {description}
+                </p>
+              )}
+
+              {/* Owner name (if viewing someone else's) */}
+              {!isOwner && (
+                <p className="text-[12px] pt-0.5" style={{ color: "#7A6A85" }}>
+                  {ownerName}
+                </p>
+              )}
+            </div>
+
+            {/* ── ACTIVITY GROUP: date chips ── */}
+            {entry.entry_type === "activity" && activityEntries.length > 1 && (
+              <div className="flex flex-wrap gap-1.5">
+                {activityEntries.map(ae => {
+                  const d = new Date(ae.date + "T00:00:00");
+                  const label = format(d, "EEE d/M", { locale: sv }).replace(".", "");
+                  return (
+                    <span
+                      key={ae.id}
+                      className="inline-flex items-center gap-1 text-[11px]"
+                      style={{ backgroundColor: "#EDE8F4", borderRadius: 6, padding: "4px 10px", color: "#3C2A4D" }}
+                    >
+                      {label}
+                      {isOwner && (
+                        <button onClick={() => handleRemoveSingleDate(ae.id)} className="hover:opacity-70 ml-0.5">
+                          <X className="w-2.5 h-2.5" />
+                        </button>
+                      )}
+                    </span>
+                  );
+                })}
+                {isOwner && onAddActivityDate && (
+                  <button
+                    onClick={() => { onOpenChange(false); onAddActivityDate(activityGroupName); }}
+                    className="inline-flex items-center gap-1 text-[11px]"
+                    style={{ backgroundColor: "#EDE8F4", borderRadius: 6, padding: "4px 10px", color: "#7A6A85" }}
+                  >
+                    <Plus className="w-3 h-3" /> Lägg till
+                  </button>
+                )}
+              </div>
+            )}
+
+            {/* ── ACTIONS (non-owner) ── */}
+            {!isOwner && (
+              <div className="space-y-2.5">
+                {/* Primary CTA */}
+                <button
+                  onClick={() => handleRSVP("yes")}
+                  disabled={isSelfTagged}
+                  className="w-full py-2.5 text-[14px] font-medium text-white disabled:opacity-60 transition-colors"
+                  style={{ backgroundColor: "#3C2A4D", borderRadius: 99 }}
+                >
+                  {isSelfTagged ? "Du är med! 💛" : "Jag kan"}
+                </button>
+
+                {/* Secondary actions row */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleRSVP("maybe")}
+                    className="flex-1 py-2 text-[13px] font-medium transition-colors"
+                    style={{ color: "#7A6A85", backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 99 }}
+                  >
+                    Kanske
+                  </button>
+                  <button
+                    onClick={() => setShowCommentInput(true)}
+                    className="flex-1 py-2 text-[13px] font-medium transition-colors"
+                    style={{ color: "#7A6A85", backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 99 }}
+                  >
+                    Skriv något
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ── COMMENT INPUT (inline) ── */}
+            {(showCommentInput || isOwner || comments.length > 0) && (
+              <div className="space-y-2">
+                {comments.length > 0 && (
+                  <div className="space-y-2">
+                    {comments.map(c => (
+                      <div key={c.id} className="flex items-start gap-2 group">
+                        <Avatar className="w-5 h-5 mt-0.5">
+                          <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[8px]">
+                            {(c.profile?.display_name || "?").charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-[11px] font-medium" style={{ color: "#3C2A4D" }}>
+                            {c.user_id === user?.id ? "Du" : (c.profile?.display_name || "Någon")}
+                          </span>
+                          <p className="text-[12px]" style={{ color: "#7A6A85" }}>{c.content}</p>
+                        </div>
+                        {(c.user_id === user?.id || isOwner) && (
+                          <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-destructive">
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex gap-1.5 items-center">
+                  <Input
+                    value={commentText}
+                    onChange={e => setCommentText(e.target.value)}
+                    placeholder={`Skriv något till ${isOwner ? "alla" : ownerName}...`}
+                    className="h-9 text-[13px] flex-1 bg-white border-border/30 rounded-full px-4"
+                    onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleAddComment()}
+                    autoFocus={showCommentInput}
+                  />
+                  <button
+                    disabled={sending || !commentText.trim()}
+                    onClick={handleAddComment}
+                    className="w-9 h-9 rounded-full flex items-center justify-center disabled:opacity-40 transition-colors shrink-0"
+                    style={{ backgroundColor: "#3C2A4D" }}
+                  >
+                    <Send className="w-3.5 h-3.5 text-white" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ── RESPONSES ── */}
+            {totalResponses > 0 && (
+              <div className="space-y-1.5">
+                <p className="text-[11px] uppercase tracking-wider font-medium" style={{ color: "#B0A0B5" }}>
+                  Svar
+                </p>
+                {taggedFriends.map(tf => (
+                  <div key={tf.id} className="flex items-center gap-2 py-0.5">
+                    <Avatar className="w-5 h-5">
+                      <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[8px] font-medium">
+                        {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-[12px] flex-1" style={{ color: "#7A6A85" }}>
+                      {tf.profile?.display_name || "Okänd"} kan
+                    </span>
+                    {isOwner && (
+                      <button onClick={async () => {
+                        await supabase.from("hangout_tagged_friends").delete().eq("id", tf.id);
+                        setTaggedFriends(prev => prev.filter(t => t.id !== tf.id));
+                      }} className="text-muted-foreground/30 hover:text-destructive">
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* ── CREATE GROUP SUGGESTION ── */}
+            {canCreateGroup && (
+              <div className="space-y-2 pt-1">
+                <p className="text-[12px] text-center" style={{ color: "#7A6A85" }}>
+                  Ni verkar bli några – vill ni ta det vidare?
+                </p>
+                <button
+                  onClick={handleCreateGroup}
+                  disabled={creatingGroup}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 text-[13px] font-medium transition-colors disabled:opacity-60"
+                  style={{ color: "#3C2A4D", backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 99 }}
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  Starta sällskap att chatta i
+                </button>
+              </div>
+            )}
+
+            {/* ── OWNER ACTIONS ── */}
+            {isOwner && (
+              <div className="pt-2">
+                <button
+                  onClick={() => entry.entry_type === "activity" && activityEntries.length > 1 ? setDeleteAllConfirm(true) : setDeleteConfirm(true)}
+                  className="text-[12px] mx-auto block"
+                  style={{ color: "#B0A0B5" }}
+                >
+                  Ta bort
+                </button>
+              </div>
+            )}
           </div>
         </DrawerContent>
       </Drawer>
 
-      {/* Single entry delete confirm */}
       <ConfirmSheet
         open={deleteConfirm}
         onOpenChange={setDeleteConfirm}
         title="Ta bort datum"
         description="Vill du ta bort detta datum?"
         confirmLabel="Ta bort"
-        confirmStyle={{ backgroundColor: "#993556" }}
+        confirmStyle={{ backgroundColor: "#A32D2D" }}
         onConfirm={handleDelete}
       />
 
-      {/* Activity group delete all confirm */}
       <ConfirmSheet
         open={deleteAllConfirm}
         onOpenChange={setDeleteAllConfirm}
         title="Ta bort aktivitet"
-        description={`Vill du ta bort ${activityGroupName} och alla tillhörande datum?`}
+        description={`Vill du ta bort ${activityGroupName} och alla datum?`}
         confirmLabel="Ta bort alla"
-        confirmStyle={{ backgroundColor: "#993556" }}
+        confirmStyle={{ backgroundColor: "#A32D2D" }}
         onConfirm={handleDeleteAllActivityDates}
       />
     </>
