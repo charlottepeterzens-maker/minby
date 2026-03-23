@@ -7,7 +7,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import FeedAvatar from "@/components/feed/FeedAvatar";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
 
 export interface PersonData {
   userId: string;
