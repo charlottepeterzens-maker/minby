@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
+import { motion, AnimatePresence } from "framer-motion";
 
 const REACTION_EMOJIS = ["❤️", "🥂", "😮", "🙌", "😂"];
 
@@ -71,7 +72,6 @@ const PostReactions = ({ postId, readOnly }: Props) => {
       const msg = REACTION_TOASTS[emoji];
       if (msg) toast.success(msg);
 
-      // Trigger 3: Send push to post owner (if not self)
       try {
         const { data: post } = await supabase
           .from("life_posts")
@@ -80,7 +80,6 @@ const PostReactions = ({ postId, readOnly }: Props) => {
           .single();
 
         if (post && post.user_id !== user.id) {
-          // Check if post owner has muted the reactor
           const { data: ownerProfile } = await supabase
             .from("profiles")
             .select("muted_users")
@@ -138,7 +137,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
           const count = r?.count || 0;
           const reacted = r?.reacted || false;
           return (
-            <button
+            <motion.button
               key={emoji}
               onClick={() => (readOnly ? showDetail(emoji) : toggleReaction(emoji))}
               onContextMenu={(e) => {
@@ -146,6 +145,9 @@ const PostReactions = ({ postId, readOnly }: Props) => {
                 showDetail(emoji);
               }}
               disabled={readOnly && count === 0}
+              whileTap={{ scale: 0.85 }}
+              animate={reacted ? { scale: [1, 1.15, 1] } : {}}
+              transition={{ duration: 0.25 }}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -159,12 +161,24 @@ const PostReactions = ({ postId, readOnly }: Props) => {
                 fontWeight: reacted ? 500 : 400,
                 color: reacted ? "#3C2A4D" : "#9B8BA5",
                 opacity: readOnly && count === 0 ? 0.4 : 1,
-                transition: "all 0.15s ease",
+                transition: "background 0.15s ease, border 0.15s ease",
               }}
             >
               <span>{emoji}</span>
-              {count > 0 && <span style={{ fontSize: 11, fontWeight: 500 }}>{count}</span>}
-            </button>
+              <AnimatePresence mode="popLayout">
+                {count > 0 && (
+                  <motion.span
+                    key={count}
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.5, opacity: 0 }}
+                    style={{ fontSize: 11, fontWeight: 500 }}
+                  >
+                    {count}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
           );
         })}
       </div>
@@ -177,41 +191,47 @@ const PostReactions = ({ postId, readOnly }: Props) => {
       )}
 
       {/* Detail popup */}
-      {detailEmoji && counts[detailEmoji]?.count > 0 && (
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: "calc(100% + 6px)",
-            background: "#fff",
-            border: "1px solid #EDE8F4",
-            borderRadius: 10,
-            padding: "10px 14px",
-            zIndex: 30,
-            minWidth: 140,
-            boxShadow: "0 4px 16px rgba(60,42,77,0.08)",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-            <span style={{ fontSize: 16 }}>{detailEmoji}</span>
-            <button
-              onClick={() => setDetailEmoji(null)}
-              style={{ fontSize: 10, color: "#B0A0B5", background: "none", border: "none", cursor: "pointer" }}
-            >
-              ✕
-            </button>
-          </div>
-          {detailNames.length === 0 ? (
-            <p style={{ fontSize: 11, color: "#9B8BA5" }}>Ingen ännu</p>
-          ) : (
-            detailNames.map((name, i) => (
-              <p key={i} style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", marginBottom: 2 }}>
-                {name}
-              </p>
-            ))
-          )}
-        </div>
-      )}
+      <AnimatePresence>
+        {detailEmoji && counts[detailEmoji]?.count > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 4, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            style={{
+              position: "absolute",
+              left: 0,
+              top: "calc(100% + 6px)",
+              background: "#fff",
+              border: "1px solid #EDE8F4",
+              borderRadius: 10,
+              padding: "10px 14px",
+              zIndex: 30,
+              minWidth: 140,
+              boxShadow: "0 4px 16px rgba(60,42,77,0.08)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+              <span style={{ fontSize: 16 }}>{detailEmoji}</span>
+              <button
+                onClick={() => setDetailEmoji(null)}
+                style={{ fontSize: 10, color: "#B0A0B5", background: "none", border: "none", cursor: "pointer" }}
+              >
+                ✕
+              </button>
+            </div>
+            {detailNames.length === 0 ? (
+              <p style={{ fontSize: 11, color: "#9B8BA5" }}>Ingen ännu</p>
+            ) : (
+              detailNames.map((name, i) => (
+                <p key={i} style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", marginBottom: 2 }}>
+                  {name}
+                </p>
+              ))
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

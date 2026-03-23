@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Home, User, UserPlus, Settings } from "lucide-react";
 import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
+import { motion } from "framer-motion";
 
 const navItems = [
   { label: "Hemma", icon: Home, path: "/" },
@@ -22,33 +23,44 @@ const BottomNav = () => {
           const showBadge = item.path === "/profile" && unreadCount > 0;
 
           return (
-            <button
+            <motion.button
               key={item.label}
               onClick={() => navigate(item.path)}
-              className="flex flex-col items-center gap-1 px-4 py-1.5 relative transition-colors duration-150"
+              whileTap={{ scale: 0.88 }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              className="flex flex-col items-center gap-1 px-4 py-1.5 relative"
             >
-              <div className="relative">
+              <motion.div
+                className="relative"
+                animate={{ y: isActive ? -2 : 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
                 <item.icon
-                  className="w-5 h-5"
-                  strokeWidth={1.5}
+                  className="w-5 h-5 transition-colors duration-200"
+                  strokeWidth={isActive ? 2 : 1.5}
                   style={{ color: isActive ? "#3C2A4D" : "#9B8BA5" }}
                 />
                 {showBadge && (
-                  <span
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 20 }}
                     className="absolute -top-1.5 -right-2 min-w-[16px] h-4 flex items-center justify-center rounded-full text-[9px] font-bold text-white px-1"
                     style={{ backgroundColor: "#993556" }}
                   >
                     {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
+                  </motion.span>
                 )}
-              </div>
+              </motion.div>
               {isActive && (
-                <span
+                <motion.span
+                  layoutId="nav-dot"
                   className="absolute bottom-0.5 w-1 h-1 rounded-full"
                   style={{ backgroundColor: "#3C2A4D" }}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}
-            </button>
+            </motion.button>
           );
         })}
       </div>

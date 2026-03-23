@@ -563,8 +563,9 @@ const ProfilePage = () => {
           </AnimatePresence>
 
           {/* View all link */}
-          <button
+          <motion.button
             onClick={() => setShowAllPosts(!showAllPosts)}
+            whileTap={{ scale: 0.97 }}
             className="w-full text-center mt-3"
             style={{
               fontSize: 11,
@@ -575,8 +576,13 @@ const ProfilePage = () => {
               padding: 10,
             }}
           >
-            {showAllPosts ? "Visa färre" : "Visa alla inlägg →"}
-          </button>
+            <motion.span
+              animate={{ x: showAllPosts ? 0 : [0, 3, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
+            >
+              {showAllPosts ? "Visa färre" : "Visa alla inlägg →"}
+            </motion.span>
+          </motion.button>
         </div>
 
         {/* Section divider */}
