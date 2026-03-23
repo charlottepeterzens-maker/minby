@@ -93,7 +93,7 @@ const HangoutDetailSheet = ({
     if (commentsRes.data) {
       const uids = [...new Set(commentsRes.data.map((c: any) => c.user_id))];
       if (uids.length > 0) {
-        const { data: profiles } = await supabase.from("profiles").select("user_id, display_name").in("user_id", uids);
+        const { data: profiles } = await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", uids);
         const pm = new Map((profiles || []).map((p: any) => [p.user_id, p]));
         setComments(commentsRes.data.map((c: any) => ({ ...c, profile: pm.get(c.user_id) })));
       } else {
