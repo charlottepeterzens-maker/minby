@@ -207,7 +207,17 @@ const FeedPage = () => {
       items.push({
         type: "tips",
         created_at: t.created_at,
-        data: t,
+        data: {
+          id: t.id,
+          title: t.title,
+          comment: t.comment,
+          category: t.category,
+          url: t.url,
+          created_at: t.created_at,
+          user_id: t.user_id,
+          display_name: profileMap.get(t.user_id)?.display_name || null,
+          avatar_url: profileMap.get(t.user_id)?.avatar_url || null,
+        },
       });
     });
 
