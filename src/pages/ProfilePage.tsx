@@ -291,20 +291,20 @@ const ProfilePage = () => {
         <CurvedSeparator />
       </nav>
 
-      <Container className="px-2 py-6 pb-24">
+      <Container className="px-4 pt-6 pb-24">
         {/* ===== (1) PROFILE HEADER ===== */}
-        <div className="flex items-start gap-4 mb-4">
+        <div className="flex items-start gap-4 mb-6">
           <div className="relative shrink-0">
             <motion.div
               whileTap={isOwnProfile ? { scale: 0.92 } : undefined}
-              className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden"
+              className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden"
               style={{ backgroundColor: "#EDE8F4" }}
               onClick={isOwnProfile ? () => fileInputRef.current?.click() : undefined}
             >
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-lg font-display font-medium" style={{ color: "#3C2A4D" }}>
+                <span className="text-xl font-display font-medium" style={{ color: "#3C2A4D" }}>
                   {initial}
                 </span>
               )}
@@ -322,9 +322,9 @@ const ProfilePage = () => {
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
           </div>
 
-          <div className="flex-1 min-w-0 pt-1">
+          <div className="flex-1 min-w-0 pt-1.5">
             <div className="flex items-center gap-2">
-              <h1 className="font-fraunces text-base font-medium text-foreground">
+              <h1 className="font-fraunces text-[18px] font-medium text-foreground">
                 {profile?.display_name || t("anonymous")}
               </h1>
               {!isOwnProfile && targetUserId && <FriendRequestButton targetUserId={targetUserId} />}
@@ -332,7 +332,7 @@ const ProfilePage = () => {
 
             {/* Bio */}
             {isOwnProfile ? (
-              <div className="mt-1">
+              <div className="mt-1.5">
                 {editingBio ? (
                   <div className="flex items-center gap-2">
                     <Input
@@ -369,12 +369,12 @@ const ProfilePage = () => {
                     ) : (
                       <span className="not-italic">{t("addQuoteOrBio")}</span>
                     )}
-                    <Pencil className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Pencil className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 mt-0.5" />
                   </button>
                 )}
               </div>
             ) : profile?.bio ? (
-              <p className="mt-1 text-[13px]" style={{ color: "#7A6A85" }}>
+              <p className="mt-1.5 text-[13px]" style={{ color: "#7A6A85" }}>
                 {profile.bio}
               </p>
             ) : null}
@@ -383,27 +383,29 @@ const ProfilePage = () => {
 
         {/* Notifications */}
         {isOwnProfile && notifItems.length > 0 && (
-          <NotificationList
-            notifications={notifItems}
-            onClick={() => {}}
-            onMarkAllRead={() => {
-              if (!user) return;
-              supabase
-                .from("notifications")
-                .update({ read: true })
-                .eq("user_id", user.id)
-                .eq("read", false)
-                .then(() => {
-                  setNotifItems([]);
-                  refreshUnread();
-                });
-            }}
-          />
+          <div className="mb-6">
+            <NotificationList
+              notifications={notifItems}
+              onClick={() => {}}
+              onMarkAllRead={() => {
+                if (!user) return;
+                supabase
+                  .from("notifications")
+                  .update({ read: true })
+                  .eq("user_id", user.id)
+                  .eq("read", false)
+                  .then(() => {
+                    setNotifItems([]);
+                    refreshUnread();
+                  });
+              }}
+            />
+          </div>
         )}
 
         {/* ===== (2) INVITE ROW ===== */}
         {isOwnProfile && (
-          <div className="mb-5">
+          <div className="mb-6">
             <InviteFriendDialog />
           </div>
         )}
@@ -416,7 +418,7 @@ const ProfilePage = () => {
           />
         )}
         {targetUserId && (
-          <div className="mb-5">
+          <div className="mb-8">
             <HangoutAvailability
               userId={targetUserId}
               isOwner={isOwnProfile}
@@ -426,29 +428,16 @@ const ProfilePage = () => {
           </div>
         )}
 
-        {/* Section divider */}
-        <div className="mb-4" style={{ borderTop: "1px solid #EDE8E0" }} />
-
-        {/* ===== (5+6) MIN VARDAG BLOCK ===== */}
-        <div
-          className="mb-5"
-          style={{
-            background: "#F7F3EF",
-            borderRadius: 8,
-            padding: "14px 8px",
-            overflow: "hidden",
-          }}
-        >
-          {/* Block header */}
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="font-fraunces font-normal text-[16px] mt-4 mb-3" style={{ color: "#2A1A3C" }}>
-              Min vardag
-            </h2>
-          </div>
+        {/* ===== (5+6) MIN VARDAG ===== */}
+        <div className="mb-8">
+          {/* Section label */}
+          <h2 className="font-fraunces font-normal text-[16px] mb-4" style={{ color: "#2A1A3C" }}>
+            Min vardag
+          </h2>
 
           {/* Quick post */}
           {isOwnProfile && (
-            <div className="mb-3">
+            <div className="mb-4">
               <QuickPostCard
                 profile={profile}
                 sections={sections}
@@ -461,7 +450,7 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {/* Recent 3 posts with fade */}
+          {/* Recent posts */}
           <RecentPostsFeed
             sections={sections}
             refreshKey={recentRefreshKey}
@@ -469,8 +458,24 @@ const ProfilePage = () => {
             showFade={!showAllPosts}
           />
 
-          {/* Section header */}
-          <div className="flex items-center justify-between mt-4 mb-2">
+          {/* View all link */}
+          <button
+            onClick={() => setShowAllPosts(!showAllPosts)}
+            className="w-full text-center mt-3"
+            style={{
+              fontSize: 11,
+              color: "#7A6A85",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: "8px 0",
+            }}
+          >
+            {showAllPosts ? "Visa färre" : "Visa alla inlägg →"}
+          </button>
+
+          {/* Delar av min vardag */}
+          <div className="flex items-center justify-between mt-6 mb-3">
             <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "#B0A0B5" }}>
               Delar av min vardag
             </span>
@@ -497,7 +502,7 @@ const ProfilePage = () => {
               {isOwnProfile ? "Lägg till en del av din vardag" : t("nothingSharedYet")}
             </p>
           ) : (
-            <div className="flex gap-1.5 overflow-x-auto pb-1 -mx-1 px-1" style={{ scrollbarWidth: "none" }}>
+            <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
               {sections.map((section, i) => {
                 const colors = [
                   { bg: "#EDE8F4" },
@@ -520,11 +525,10 @@ const ProfilePage = () => {
                     className="shrink-0 flex flex-col items-center justify-center"
                     style={{
                       minWidth: 72,
-                      height: 64,
+                      height: 56,
                       borderRadius: 8,
                       border: expandedSection === section.id ? "none" : "1px solid #EDE8E0",
                       cursor: "pointer",
-                      marginRight: 0,
                     }}
                   >
                     <motion.span
@@ -550,7 +554,7 @@ const ProfilePage = () => {
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.25, ease: "easeInOut" }}
-                className="overflow-hidden mt-2"
+                className="overflow-hidden mt-3"
               >
                 {(() => {
                   const sec = sections.find((s) => s.id === expandedSection);
@@ -561,32 +565,7 @@ const ProfilePage = () => {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* View all link */}
-          <motion.button
-            onClick={() => setShowAllPosts(!showAllPosts)}
-            whileTap={{ scale: 0.97 }}
-            className="w-full text-center mt-3"
-            style={{
-              fontSize: 11,
-              color: "#7A6A85",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 10,
-            }}
-          >
-            <motion.span
-              animate={{ x: showAllPosts ? 0 : [0, 3, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
-            >
-              {showAllPosts ? "Visa färre" : "Visa alla inlägg →"}
-            </motion.span>
-          </motion.button>
         </div>
-
-        {/* Section divider */}
-        <div className="mb-4" style={{ borderTop: "1px solid #EDE8E0" }} />
 
         {/* ===== (7) TIPS & FAVORITES ===== */}
         {targetUserId && <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />}
