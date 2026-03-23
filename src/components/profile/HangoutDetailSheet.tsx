@@ -441,6 +441,7 @@ const HangoutDetailSheet = ({
                 {taggedFriends.map(tf => (
                   <div key={tf.id} className="flex items-center gap-2 py-0.5">
                     <Avatar className="w-5 h-5">
+                      {tf.profile?.avatar_url && <AvatarImage src={tf.profile.avatar_url} alt={tf.profile?.display_name || ""} />}
                       <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[8px] font-medium">
                         {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                       </AvatarFallback>
