@@ -99,13 +99,29 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
 
       {!isOwn && (
         <div className="px-4 pb-4">
-          <button
+          <motion.button
             onClick={handleSendHug}
             disabled={sending}
-            className="text-[13px] font-medium px-4 py-2 rounded-[10px] bg-dusty-rose-bg text-foreground border border-dusty-rose transition-colors hover:bg-dusty-rose disabled:opacity-50"
+            whileTap={{ scale: 0.92 }}
+            animate={hugSent ? { scale: [1, 1.12, 1] } : {}}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="inline-flex items-center gap-2 text-[13px] font-medium px-4 py-2 rounded-full border transition-colors disabled:opacity-50"
+            style={{
+              backgroundColor: hugSent ? "#EDE8F4" : "transparent",
+              borderColor: hugSent ? "#C9B8D8" : "#EDE8E0",
+              color: hugSent ? "#3C2A4D" : "#7A6A85",
+            }}
           >
-            {hugSent ? "Kärlek skickad 💛" : "Skicka kärlek"}
-          </button>
+            <Heart
+              size={16}
+              strokeWidth={1.8}
+              style={{
+                stroke: hugSent ? "#3C2A4D" : "#C9B8D8",
+                fill: hugSent ? "#EDE8F4" : "none",
+              }}
+            />
+            {hugSent ? "Kärlek skickad" : "Skicka kärlek"}
+          </motion.button>
         </div>
       )}
     </div>
