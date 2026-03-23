@@ -85,7 +85,7 @@ const FeedPage = () => {
         .order("date", { ascending: true }),
       supabase
         .from("user_tips")
-        .select("user_id, title, created_at")
+        .select("user_id, id, title, comment, category, url, created_at")
         .in("user_id", friendIdArr)
         .order("created_at", { ascending: false }),
     ]);
