@@ -273,9 +273,12 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               {/* Thinking of you in expanded for quiet */}
               {person.isQuiet && (
                 <div className="mt-3">
-                  <button
+                  <motion.button
                     onClick={handleThinkingOfYou}
                     disabled={thinkingLoading}
+                    whileTap={{ scale: 0.93 }}
+                    animate={thinkingSent ? { scale: [1, 1.08, 1] } : {}}
+                    transition={{ duration: 0.3 }}
                     className="flex items-center gap-1.5"
                     style={{
                       backgroundColor: thinkingSent ? "#EAF2E8" : "#EDE8F4",
@@ -284,11 +287,12 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                       fontSize: 10,
                       fontWeight: 500,
                       color: thinkingSent ? "#1F4A1A" : "#3C2A4D",
+                      transition: "background-color 0.2s ease",
                     }}
                   >
                     {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
                     {thinkingSent ? "Skickat" : "Jag tänker på dig"}
-                  </button>
+                  </motion.button>
                 </div>
               )}
 
