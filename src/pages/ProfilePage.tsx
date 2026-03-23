@@ -173,13 +173,13 @@ const ProfilePage = () => {
       .limit(20);
     if (data && data.length > 0) {
       const fromIds = [...new Set(data.filter((n) => n.from_user_id).map((n) => n.from_user_id!))];
-      let nameMap = new Map<string, string | null>();
+      let profileMap = new Map<string, { name: string | null; avatar: string | null }>();
       if (fromIds.length > 0) {
         const { data: profiles } = await supabase
           .from("profiles")
-          .select("user_id, display_name")
+          .select("user_id, display_name, avatar_url")
           .in("user_id", fromIds);
-        if (profiles) nameMap = new Map(profiles.map((p) => [p.user_id, p.display_name]));
+        if (profiles) profileMap = new Map(profiles.map((p) => [p.user_id, { name: p.display_name, avatar: p.avatar_url }]));
       }
       setNotifItems(
         data.map((n) => ({
@@ -187,7 +187,8 @@ const ProfilePage = () => {
           body: n.body,
           created_at: n.created_at,
           read: n.read,
-          from_user_name: n.from_user_id ? nameMap.get(n.from_user_id) || null : null,
+          from_user_name: n.from_user_id ? profileMap.get(n.from_user_id)?.name || null : null,
+          from_user_avatar: n.from_user_id ? profileMap.get(n.from_user_id)?.avatar || null : null,
         })),
       );
     } else {

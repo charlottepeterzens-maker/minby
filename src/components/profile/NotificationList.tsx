@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export interface NotificationItem {
   id: string;
@@ -7,6 +7,7 @@ export interface NotificationItem {
   created_at: string;
   read: boolean;
   from_user_name: string | null;
+  from_user_avatar?: string | null;
 }
 
 interface Props {
@@ -76,6 +77,7 @@ const NotificationList = ({ notifications, onClick, onMarkAllRead }: Props) => {
             >
               {/* Avatar */}
               <Avatar className="w-9 h-9 shrink-0">
+                {n.from_user_avatar && <AvatarImage src={n.from_user_avatar} alt={n.from_user_name || ""} />}
                 <AvatarFallback
                   className="text-[11px] font-medium"
                   style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}

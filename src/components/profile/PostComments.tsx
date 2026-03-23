@@ -10,6 +10,7 @@ interface Comment {
   created_at: string;
   user_id: string;
   display_name: string | null;
+  avatar_url: string | null;
   initials: string;
 }
 
@@ -26,17 +27,21 @@ const PostComments = ({ postId, isOwner }: Props) => {
   const [focused, setFocused] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [myInitials, setMyInitials] = useState("?");
+  const [myAvatarUrl, setMyAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("display_name")
+      .select("display_name, avatar_url")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
         if (data?.display_name) {
           setMyInitials(data.display_name.slice(0, 2).toUpperCase());
+        }
+        if (data?.avatar_url) {
+          setMyAvatarUrl(data.avatar_url);
         }
       });
   }, [user]);
@@ -54,18 +59,19 @@ const PostComments = ({ postId, isOwner }: Props) => {
     }
 
     const userIds = [...new Set(data.map((c) => c.user_id))];
-    const { data: profiles } = await supabase.from("profiles").select("user_id, display_name").in("user_id", userIds);
+    const { data: profiles } = await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", userIds);
 
-    const profileMap: Record<string, string | null> = {};
+    const profileMap: Record<string, { display_name: string | null; avatar_url: string | null }> = {};
     profiles?.forEach((p) => {
-      profileMap[p.user_id] = p.display_name;
+      profileMap[p.user_id] = { display_name: p.display_name, avatar_url: p.avatar_url };
     });
 
     setComments(
       data.map((c) => ({
         ...c,
-        display_name: profileMap[c.user_id] || null,
-        initials: (profileMap[c.user_id] || "?").slice(0, 2).toUpperCase(),
+        display_name: profileMap[c.user_id]?.display_name || null,
+        avatar_url: profileMap[c.user_id]?.avatar_url || null,
+        initials: (profileMap[c.user_id]?.display_name || "?").slice(0, 2).toUpperCase(),
       })),
     );
   }, [postId]);
@@ -155,9 +161,14 @@ const PostComments = ({ postId, isOwner }: Props) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  overflow: "hidden",
                 }}
               >
-                <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{c.initials}</span>
+                {c.avatar_url ? (
+                  <img src={c.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{c.initials}</span>
+                )}
               </div>
               <div style={{ flex: 1, background: "#F7F3EF", borderRadius: "0 8px 8px 8px", padding: "7px 10px" }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 2 }}>
@@ -199,9 +210,14 @@ const PostComments = ({ postId, isOwner }: Props) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            overflow: "hidden",
           }}
         >
-          <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{myInitials}</span>
+          {myAvatarUrl ? (
+            <img src={myAvatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{myInitials}</span>
+          )}
         </div>
         <input
           value={text}

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import { toast } from "@/hooks/use-toast";
@@ -27,7 +27,7 @@ interface Comment {
   user_id: string;
   content: string;
   created_at: string;
-  profile?: { display_name: string | null };
+  profile?: { display_name: string | null; avatar_url: string | null };
 }
 
 interface TaggedFriend {
@@ -93,7 +93,7 @@ const HangoutDetailSheet = ({
     if (commentsRes.data) {
       const uids = [...new Set(commentsRes.data.map((c: any) => c.user_id))];
       if (uids.length > 0) {
-        const { data: profiles } = await supabase.from("profiles").select("user_id, display_name").in("user_id", uids);
+        const { data: profiles } = await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", uids);
         const pm = new Map((profiles || []).map((p: any) => [p.user_id, p]));
         setComments(commentsRes.data.map((c: any) => ({ ...c, profile: pm.get(c.user_id) })));
       } else {
@@ -390,6 +390,7 @@ const HangoutDetailSheet = ({
                     {comments.map(c => (
                       <div key={c.id} className="flex items-start gap-2 group">
                         <Avatar className="w-5 h-5 mt-0.5">
+                          {c.profile?.avatar_url && <AvatarImage src={c.profile.avatar_url} alt={c.profile?.display_name || ""} />}
                           <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[8px]">
                             {(c.profile?.display_name || "?").charAt(0).toUpperCase()}
                           </AvatarFallback>
@@ -440,6 +441,7 @@ const HangoutDetailSheet = ({
                 {taggedFriends.map(tf => (
                   <div key={tf.id} className="flex items-center gap-2 py-0.5">
                     <Avatar className="w-5 h-5">
+                      {tf.profile?.avatar_url && <AvatarImage src={tf.profile.avatar_url} alt={tf.profile?.display_name || ""} />}
                       <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[8px] font-medium">
                         {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                       </AvatarFallback>
