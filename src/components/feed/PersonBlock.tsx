@@ -145,21 +145,6 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
 
   const preview = person.latestPost?.content?.slice(0, 80) || (person.activeHangout ? "Vill ses" : "");
 
-  const signals: { icon: React.ReactNode; text: string }[] = [];
-  if (person.activeHangout) {
-    const activity = person.activeHangout.activities?.[0] || person.activeHangout.custom_note || "vill ses";
-    signals.push({
-      icon: <Calendar size={10} />,
-      text: `${formatHangoutDate(person.activeHangout.date)} · ${activity}`,
-    });
-  }
-  if (person.latestTip) {
-    signals.push({
-      icon: <Heart size={10} />,
-      text: person.latestTip.title.slice(0, 20),
-    });
-  }
-
   return (
     <div
       style={{
