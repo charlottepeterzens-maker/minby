@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
+import AddHangoutFreeText from "@/components/profile/AddHangoutFreeText";
 import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
 
 interface AvailabilityEntry {
