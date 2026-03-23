@@ -333,7 +333,7 @@ const ProfilePage = () => {
                 <Camera className="w-3 h-3" />
               </motion.button>
             )}
-            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarSelect} />
           </div>
 
           <div className="flex-1 min-w-0 pt-1.5">
