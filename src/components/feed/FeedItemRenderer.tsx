@@ -1,6 +1,6 @@
 import FeedPostCard from "./FeedPostCard";
 import FeedHangoutCard from "./FeedHangoutCard";
-import FeedHealthCard from "./FeedHealthCard";
+import FeedTipCard from "./FeedTipCard";
 
 export const FeedItemRenderer = ({ item }: { item: any }) => {
   const data = item.data;
@@ -48,12 +48,14 @@ export const FeedItemRenderer = ({ item }: { item: any }) => {
 
     case "tips":
       return (
-        <FeedHealthCard
-          post={{
+        <FeedTipCard
+          tip={{
             id: data.id,
-            content: data.comment || data.title || null,
+            title: data.title || "",
+            comment: data.comment || null,
+            category: data.category || "",
+            url: data.url || null,
             created_at: data.created_at,
-            sectionName: data.category || "",
           }}
           profile={profile}
           onProfileClick={onProfileClick}
