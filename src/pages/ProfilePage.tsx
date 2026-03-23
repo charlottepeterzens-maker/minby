@@ -127,6 +127,8 @@ const ProfilePage = () => {
   const [recentRefreshKey, setRecentRefreshKey] = useState(0);
   const [showAllPosts, setShowAllPosts] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [cropOpen, setCropOpen] = useState(false);
   const [notifHangoutId, setNotifHangoutId] = useState<string | null>(null);
   const { refresh: refreshUnread } = useUnreadNotifications();
   const [notifItems, setNotifItems] = useState<NotificationItem[]>([]);
