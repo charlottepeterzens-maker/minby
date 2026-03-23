@@ -26,7 +26,8 @@ const PostComments = ({ postId, isOwner }: Props) => {
   const [posting, setPosting] = useState(false);
   const [focused, setFocused] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [myInitials, setMyInitials] = useState("?");
+  const [myInitials, setMyInitials] = "?");
+  const [myAvatarUrl, setMyAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
