@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import FeedAvatar from "@/components/feed/FeedAvatar";
+import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
 import { toast } from "sonner";
 
 export interface PersonData {
@@ -116,6 +117,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   const [expanded, setExpanded] = useState(false);
   const [thinkingSent, setThinkingSent] = useState(false);
   const [thinkingLoading, setThinkingLoading] = useState(false);
+  const [hangoutSheetOpen, setHangoutSheetOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -142,21 +144,6 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   };
 
   const preview = person.latestPost?.content?.slice(0, 80) || (person.activeHangout ? "Vill ses" : "");
-
-  const signals: { icon: React.ReactNode; text: string }[] = [];
-  if (person.activeHangout) {
-    const activity = person.activeHangout.activities?.[0] || person.activeHangout.custom_note || "vill ses";
-    signals.push({
-      icon: <Calendar size={10} />,
-      text: `${formatHangoutDate(person.activeHangout.date)} · ${activity}`,
-    });
-  }
-  if (person.latestTip) {
-    signals.push({
-      icon: <Heart size={10} />,
-      text: person.latestTip.title.slice(0, 20),
-    });
-  }
 
   return (
     <div
@@ -308,25 +295,65 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
         )}
       </AnimatePresence>
 
-      {/* Signal row */}
-      {signals.length > 0 && (
-        <div
-          className="flex items-center gap-1 flex-wrap"
-          style={{
-            borderTop: "1px solid #F7F3EF",
-            padding: "8px 14px",
-            fontSize: 10,
-            color: "#7A6A85",
-          }}
-        >
-          {signals.map((s, i) => (
-            <span key={i} className="flex items-center gap-1">
-              {i > 0 && <span style={{ color: "#C9B8D8" }}>·</span>}
-              {s.icon}
-              {s.text}
+      {/* Hangout inline card */}
+      {person.activeHangout && (
+        <div style={{ borderTop: "1px solid #F7F3EF", padding: "10px 14px" }}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <Calendar size={11} style={{ color: "#7A6A85" }} />
+            <span className="text-[11px]" style={{ color: "#7A6A85" }}>
+              {formatHangoutDate(person.activeHangout.date)}
             </span>
-          ))}
+          </div>
+          <p className="text-[13px] line-clamp-1 mb-2.5" style={{ color: "#3C2A4D" }}>
+            {person.activeHangout.custom_note || person.activeHangout.activities?.[0] || "Vill ses"}
+          </p>
+          {user?.id !== person.userId && (
+            <div className="flex gap-2">
+              <button
+                onClick={(e) => { e.stopPropagation(); setHangoutSheetOpen(true); }}
+                className="text-[12px] font-medium py-1.5 px-4 rounded-full"
+                style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
+              >
+                Jag kan
+              </button>
+              <button
+                onClick={(e) => { e.stopPropagation(); setHangoutSheetOpen(true); }}
+                className="text-[12px] font-medium py-1.5 px-4 rounded-full"
+                style={{ border: "1px solid #EDE8F4", color: "#3C2A4D" }}
+              >
+                Kanske
+              </button>
+            </div>
+          )}
         </div>
+      )}
+
+      {/* Tip signal */}
+      {person.latestTip && !person.activeHangout && (
+        <div
+          className="flex items-center gap-1"
+          style={{ borderTop: "1px solid #F7F3EF", padding: "8px 14px", fontSize: 10, color: "#7A6A85" }}
+        >
+          <Heart size={10} />
+          {person.latestTip.title.slice(0, 30)}
+        </div>
+      )}
+
+      {/* Hangout detail sheet */}
+      {person.activeHangout && (
+        <HangoutDetailSheet
+          entry={{
+            id: "",
+            date: person.activeHangout.date,
+            activities: person.activeHangout.activities,
+            custom_note: person.activeHangout.custom_note,
+            entry_type: "available",
+            user_id: person.userId,
+          }}
+          open={hangoutSheetOpen}
+          onOpenChange={setHangoutSheetOpen}
+          isOwner={false}
+        />
       )}
     </div>
   );
