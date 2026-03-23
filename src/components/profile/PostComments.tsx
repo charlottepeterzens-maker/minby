@@ -33,12 +33,15 @@ const PostComments = ({ postId, isOwner }: Props) => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("display_name")
+      .select("display_name, avatar_url")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
         if (data?.display_name) {
           setMyInitials(data.display_name.slice(0, 2).toUpperCase());
+        }
+        if (data?.avatar_url) {
+          setMyAvatarUrl(data.avatar_url);
         }
       });
   }, [user]);
