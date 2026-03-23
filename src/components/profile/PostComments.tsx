@@ -59,18 +59,19 @@ const PostComments = ({ postId, isOwner }: Props) => {
     }
 
     const userIds = [...new Set(data.map((c) => c.user_id))];
-    const { data: profiles } = await supabase.from("profiles").select("user_id, display_name").in("user_id", userIds);
+    const { data: profiles } = await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", userIds);
 
-    const profileMap: Record<string, string | null> = {};
+    const profileMap: Record<string, { display_name: string | null; avatar_url: string | null }> = {};
     profiles?.forEach((p) => {
-      profileMap[p.user_id] = p.display_name;
+      profileMap[p.user_id] = { display_name: p.display_name, avatar_url: p.avatar_url };
     });
 
     setComments(
       data.map((c) => ({
         ...c,
-        display_name: profileMap[c.user_id] || null,
-        initials: (profileMap[c.user_id] || "?").slice(0, 2).toUpperCase(),
+        display_name: profileMap[c.user_id]?.display_name || null,
+        avatar_url: profileMap[c.user_id]?.avatar_url || null,
+        initials: (profileMap[c.user_id]?.display_name || "?").slice(0, 2).toUpperCase(),
       })),
     );
   }, [postId]);
