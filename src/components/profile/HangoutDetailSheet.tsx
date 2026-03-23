@@ -27,7 +27,7 @@ interface Comment {
   user_id: string;
   content: string;
   created_at: string;
-  profile?: { display_name: string | null };
+  profile?: { display_name: string | null; avatar_url: string | null };
 }
 
 interface TaggedFriend {
