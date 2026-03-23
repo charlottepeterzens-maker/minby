@@ -295,9 +295,11 @@ const ProfilePage = () => {
         {/* ===== (1) PROFILE HEADER ===== */}
         <div className="flex items-start gap-4 mb-4">
           <div className="relative shrink-0">
-            <div
+            <motion.div
+              whileTap={isOwnProfile ? { scale: 0.92 } : undefined}
               className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden"
               style={{ backgroundColor: "#EDE8F4" }}
+              onClick={isOwnProfile ? () => fileInputRef.current?.click() : undefined}
             >
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -306,15 +308,16 @@ const ProfilePage = () => {
                   {initial}
                 </span>
               )}
-            </div>
+            </motion.div>
             {isOwnProfile && (
-              <button
+              <motion.button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar}
-                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center transition-colors duration-150 disabled:opacity-50"
+                whileTap={{ scale: 0.85 }}
+                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
               >
                 <Camera className="w-3 h-3" />
-              </button>
+              </motion.button>
             )}
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
           </div>
