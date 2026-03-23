@@ -615,6 +615,7 @@ const TipCard = ({
           side="bottom"
           className="rounded-t-[20px]"
           style={{ backgroundColor: "#F7F3EF", padding: 0, maxHeight: "85vh" }}
+          onOpenAutoFocus={(e) => e.preventDefault()}
         >
           {signedUrl && (
             <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden", borderRadius: "20px 20px 0 0" }}>
