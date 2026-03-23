@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronLeft, Plus, Camera, Pencil, Check, X, GripVertical, UserPlus } from "lucide-react";
+import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 import {
   DndContext,
   closestCenter,
@@ -126,6 +127,8 @@ const ProfilePage = () => {
   const [recentRefreshKey, setRecentRefreshKey] = useState(0);
   const [showAllPosts, setShowAllPosts] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cropFile, setCropFile] = useState<File | null>(null);
+  const [cropOpen, setCropOpen] = useState(false);
   const [notifHangoutId, setNotifHangoutId] = useState<string | null>(null);
   const { refresh: refreshUnread } = useUnreadNotifications();
   const [notifItems, setNotifItems] = useState<NotificationItem[]>([]);
@@ -230,22 +233,33 @@ const ProfilePage = () => {
     );
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !user) return;
+    if (!file) return;
+    setCropFile(file);
+    setCropOpen(true);
+    // Reset input so same file can be re-selected
+    e.target.value = "";
+  };
+
+  const handleCroppedUpload = async (blob: Blob) => {
+    if (!user) return;
     setUploadingAvatar(true);
-    const ext = file.name.split(".").pop();
-    const path = `${user.id}/avatar.${ext}`;
-    const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+    const path = `${user.id}/avatar.jpg`;
+    const { error: uploadError } = await supabase.storage.from("avatars").upload(path, blob, {
+      upsert: true,
+      contentType: "image/jpeg",
+    });
     if (uploadError) {
       toast({ title: t("error"), description: uploadError.message, variant: "destructive" });
       setUploadingAvatar(false);
       return;
     }
     const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+    const ts = Date.now();
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ avatar_url: urlData.publicUrl })
+      .update({ avatar_url: `${urlData.publicUrl}?t=${ts}` })
       .eq("user_id", user.id);
     if (updateError) {
       toast({ title: t("error"), description: updateError.message, variant: "destructive" });
@@ -319,7 +333,7 @@ const ProfilePage = () => {
                 <Camera className="w-3 h-3" />
               </motion.button>
             )}
-            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarSelect} />
           </div>
 
           <div className="flex-1 min-w-0 pt-1.5">
@@ -572,6 +586,12 @@ const ProfilePage = () => {
       </Container>
       <ScrollToTopButton />
       <BottomNav />
+      <AvatarCropDialog
+        file={cropFile}
+        open={cropOpen}
+        onOpenChange={setCropOpen}
+        onCropped={handleCroppedUpload}
+      />
     </div>
   );
 };
