@@ -10,6 +10,7 @@ interface Comment {
   created_at: string;
   user_id: string;
   display_name: string | null;
+  avatar_url: string | null;
   initials: string;
 }
 
