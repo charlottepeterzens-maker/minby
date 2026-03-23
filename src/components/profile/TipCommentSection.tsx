@@ -139,9 +139,14 @@ const TipCommentSection = ({
                   fontSize: 10,
                   fontWeight: 600,
                   flexShrink: 0,
+                  overflow: "hidden",
                 }}
               >
-                {initials(c.profile?.display_name || null)}
+                {c.profile?.avatar_url ? (
+                  <img src={c.profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  initials(c.profile?.display_name || null)
+                )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
