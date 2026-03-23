@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import FeedAvatar from "@/components/feed/FeedAvatar";
+import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
 import { toast } from "sonner";
 
 export interface PersonData {
