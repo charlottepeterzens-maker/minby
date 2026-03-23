@@ -3,18 +3,39 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { Heart, Smile, Sparkles, HeartHandshake } from "lucide-react";
+import ReactionButton from "@/components/reactions/ReactionButton";
+import type { LucideIcon } from "lucide-react";
 
-const REACTION_EMOJIS = ["❤️", "🥂", "😮", "🙌", "😂"];
+interface ReactionDef {
+  key: string;
+  icon: LucideIcon;
+  toast: string;
+}
 
-const REACTION_TOASTS: Record<string, string> = {
-  "❤️": "Kärlek skickad",
-  "🥂": "Du firade tillsammans",
-  "🙌": "Du hejade",
-  "😮": "Du berördes",
-  "😂": "Du skrattade",
-  "🤗": "Du skickade en kram",
+const REACTIONS: ReactionDef[] = [
+  { key: "love", icon: Heart, toast: "Du skickade kärlek" },
+  { key: "laugh", icon: Smile, toast: "Du skrattade" },
+  { key: "sparkle", icon: Sparkles, toast: "Du tyckte det var magiskt" },
+  { key: "thanks", icon: HeartHandshake, toast: "Du tackade" },
+];
+
+const REACTION_KEYS = REACTIONS.map((r) => r.key);
+
+// Legacy emoji → new key mapping for backward compat
+const LEGACY_MAP: Record<string, string> = {
+  "❤️": "love",
+  "🥂": "love",
+  "😂": "laugh",
+  "😮": "sparkle",
+  "🙌": "thanks",
+  "🤗": "love",
 };
+
+function normalizeKey(emoji: string): string {
+  return LEGACY_MAP[emoji] || emoji;
+}
 
 interface ReactionRow {
   emoji: string;
@@ -22,7 +43,6 @@ interface ReactionRow {
 }
 
 interface ReactionCount {
-  emoji: string;
   count: number;
   reacted: boolean;
 }
@@ -35,20 +55,25 @@ interface Props {
 const PostReactions = ({ postId, readOnly }: Props) => {
   const { user } = useAuth();
   const [counts, setCounts] = useState<Record<string, ReactionCount>>({});
-  const [detailEmoji, setDetailEmoji] = useState<string | null>(null);
+  const [detailKey, setDetailKey] = useState<string | null>(null);
   const [detailNames, setDetailNames] = useState<string[]>([]);
   const [rawData, setRawData] = useState<ReactionRow[]>([]);
 
   const fetchReactions = useCallback(async () => {
-    const { data } = await supabase.from("post_reactions").select("emoji, user_id").eq("post_id", postId);
+    const { data } = await supabase
+      .from("post_reactions")
+      .select("emoji, user_id")
+      .eq("post_id", postId);
 
     if (data) {
       setRawData(data as ReactionRow[]);
       const map: Record<string, ReactionCount> = {};
       data.forEach((r: any) => {
-        if (!map[r.emoji]) map[r.emoji] = { emoji: r.emoji, count: 0, reacted: false };
-        map[r.emoji].count++;
-        if (r.user_id === user?.id) map[r.emoji].reacted = true;
+        const key = normalizeKey(r.emoji);
+        if (!REACTION_KEYS.includes(key)) return;
+        if (!map[key]) map[key] = { count: 0, reacted: false };
+        map[key].count++;
+        if (r.user_id === user?.id) map[key].reacted = true;
       });
       setCounts(map);
     }
@@ -58,20 +83,26 @@ const PostReactions = ({ postId, readOnly }: Props) => {
     fetchReactions();
   }, [fetchReactions]);
 
-  const toggleReaction = async (emoji: string) => {
+  const toggleReaction = async (key: string) => {
     if (!user || readOnly) return;
-    const existing = counts[emoji]?.reacted;
+    const existing = counts[key]?.reacted;
     if (existing) {
-      await supabase.from("post_reactions").delete().eq("post_id", postId).eq("user_id", user.id).eq("emoji", emoji);
+      await supabase
+        .from("post_reactions")
+        .delete()
+        .eq("post_id", postId)
+        .eq("user_id", user.id)
+        .eq("emoji", key);
     } else {
       await supabase.from("post_reactions").insert({
         post_id: postId,
         user_id: user.id,
-        emoji,
+        emoji: key,
       });
-      const msg = REACTION_TOASTS[emoji];
-      if (msg) toast.success(msg);
+      const def = REACTIONS.find((r) => r.key === key);
+      if (def) toast.success(def.toast);
 
+      // Notify post owner
       try {
         const { data: post } = await supabase
           .from("life_posts")
@@ -100,7 +131,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
               fromUserId: user.id,
               type: "life_reaction",
               referenceId: postId,
-              message: `${name} reagerade – de skickade ${emoji} på ditt inlägg.`,
+              message: `${name} reagerade på ditt inlägg.`,
             });
           }
         }
@@ -111,111 +142,87 @@ const PostReactions = ({ postId, readOnly }: Props) => {
     fetchReactions();
   };
 
-  const showDetail = async (emoji: string) => {
-    if (detailEmoji === emoji) {
-      setDetailEmoji(null);
+  const showDetail = async (key: string) => {
+    if (detailKey === key) {
+      setDetailKey(null);
       return;
     }
-    setDetailEmoji(emoji);
-    const userIds = rawData.filter((r) => r.emoji === emoji).map((r) => r.user_id);
+    setDetailKey(key);
+    const userIds = rawData
+      .filter((r) => normalizeKey(r.emoji) === key)
+      .map((r) => r.user_id);
     if (userIds.length === 0) {
       setDetailNames([]);
       return;
     }
-    const { data } = await supabase.from("profiles").select("user_id, display_name").in("user_id", userIds);
-    if (data) setDetailNames(data.map((p) => (p.user_id === user?.id ? "Du" : p.display_name || "Nagon")));
+    const { data } = await supabase
+      .from("profiles")
+      .select("user_id, display_name")
+      .in("user_id", userIds);
+    if (data)
+      setDetailNames(
+        data.map((p) => (p.user_id === user?.id ? "Du" : p.display_name || "Någon"))
+      );
   };
 
   const totalCount = Object.values(counts).reduce((sum, r) => sum + r.count, 0);
 
   return (
     <div style={{ marginTop: 10, position: "relative" }}>
-      {/* Emoji pills */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-        {REACTION_EMOJIS.map((emoji) => {
-          const r = counts[emoji];
+      <div className="flex items-center gap-1.5 flex-wrap">
+        {REACTIONS.map(({ key, icon }) => {
+          const r = counts[key];
           const count = r?.count || 0;
           const reacted = r?.reacted || false;
           return (
-            <motion.button
-              key={emoji}
-              onClick={() => (readOnly ? showDetail(emoji) : toggleReaction(emoji))}
+            <ReactionButton
+              key={key}
+              icon={icon}
+              active={reacted}
+              count={count}
+              disabled={readOnly && count === 0}
+              onClick={() => (readOnly ? showDetail(key) : toggleReaction(key))}
               onContextMenu={(e) => {
                 e.preventDefault();
-                showDetail(emoji);
+                showDetail(key);
               }}
-              disabled={readOnly && count === 0}
-              whileTap={{ scale: 0.85 }}
-              animate={reacted ? { scale: [1, 1.15, 1] } : {}}
-              transition={{ duration: 0.25 }}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 4,
-                padding: count > 0 ? "4px 10px" : "4px 8px",
-                borderRadius: 99,
-                border: reacted ? "1px solid #C9B8D8" : "1px solid #EDE8E0",
-                background: reacted ? "#EDE8F4" : "#F7F3EF",
-                cursor: readOnly && count === 0 ? "default" : "pointer",
-                fontSize: 13,
-                fontWeight: reacted ? 500 : 400,
-                color: reacted ? "#3C2A4D" : "#9B8BA5",
-                opacity: readOnly && count === 0 ? 0.4 : 1,
-                transition: "background 0.15s ease, border 0.15s ease",
-              }}
-            >
-              <span>{emoji}</span>
-              <AnimatePresence mode="popLayout">
-                {count > 0 && (
-                  <motion.span
-                    key={count}
-                    initial={{ scale: 0.5, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    exit={{ scale: 0.5, opacity: 0 }}
-                    style={{ fontSize: 11, fontWeight: 500 }}
-                  >
-                    {count}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
+            />
           );
         })}
       </div>
 
-      {/* Activity micro-signal */}
       {totalCount > 0 && !readOnly && (
         <p style={{ fontSize: 10, color: "#B0A8B5", marginTop: 4 }}>
           {totalCount === 1 ? "Någon reagerade" : `${totalCount} personer har reagerat`}
         </p>
       )}
 
-      {/* Detail popup */}
       <AnimatePresence>
-        {detailEmoji && counts[detailEmoji]?.count > 0 && (
+        {detailKey && counts[detailKey]?.count > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 4, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.95 }}
             transition={{ duration: 0.2 }}
+            className="absolute left-0 bg-card border rounded-xl z-30 shadow-sm"
             style={{
-              position: "absolute",
-              left: 0,
               top: "calc(100% + 6px)",
-              background: "#fff",
-              border: "1px solid #EDE8F4",
-              borderRadius: 10,
+              borderColor: "#EDE8F4",
               padding: "10px 14px",
-              zIndex: 30,
               minWidth: 140,
-              boxShadow: "0 4px 16px rgba(60,42,77,0.08)",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-              <span style={{ fontSize: 16 }}>{detailEmoji}</span>
+            <div className="flex items-center justify-between mb-2">
+              {(() => {
+                const def = REACTIONS.find((r) => r.key === detailKey);
+                if (!def) return null;
+                const Icon = def.icon;
+                return <Icon size={16} strokeWidth={1.8} style={{ stroke: "#3C2A4D" }} />;
+              })()}
               <button
-                onClick={() => setDetailEmoji(null)}
-                style={{ fontSize: 10, color: "#B0A0B5", background: "none", border: "none", cursor: "pointer" }}
+                onClick={() => setDetailKey(null)}
+                className="text-[10px] bg-transparent border-none cursor-pointer"
+                style={{ color: "#B0A0B5" }}
               >
                 ✕
               </button>

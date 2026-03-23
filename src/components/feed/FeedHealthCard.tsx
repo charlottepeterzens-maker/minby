@@ -2,6 +2,8 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { Heart } from "lucide-react";
+import { motion } from "framer-motion";
 import FeedAvatar from "@/components/feed/FeedAvatar";
 
 interface FeedHealthCardProps {
