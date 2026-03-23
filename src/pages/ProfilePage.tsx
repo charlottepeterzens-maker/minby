@@ -509,27 +509,32 @@ const ProfilePage = () => {
                 ];
                 const color = colors[i % colors.length];
                 return (
-                  <button
+                  <motion.button
                     key={section.id}
                     onClick={() => toggleSection(section.id)}
-                    className="shrink-0 flex flex-col items-center justify-center transition-all active:scale-[0.97]"
+                    whileTap={{ scale: 0.93 }}
+                    animate={{
+                      background: expandedSection === section.id ? "#3C2A4D" : color.bg,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="shrink-0 flex flex-col items-center justify-center"
                     style={{
                       minWidth: 72,
                       height: 64,
                       borderRadius: 8,
-                      background: expandedSection === section.id ? "#3C2A4D" : color.bg,
                       border: expandedSection === section.id ? "none" : "1px solid #EDE8E0",
                       cursor: "pointer",
                       marginRight: 0,
                     }}
                   >
-                    <span
+                    <motion.span
                       className="text-[9px] font-medium"
-                      style={{ color: expandedSection === section.id ? "#F7F3EF" : "#2A1A3C" }}
+                      animate={{ color: expandedSection === section.id ? "#F7F3EF" : "#2A1A3C" }}
+                      transition={{ duration: 0.2 }}
                     >
                       {section.name}
-                    </span>
-                  </button>
+                    </motion.span>
+                  </motion.button>
                 );
               })}
             </div>
