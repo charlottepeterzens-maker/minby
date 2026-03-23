@@ -343,62 +343,54 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                 );
               }
 
-              const style = getTypeStyle(item.entry_type);
               const dateObj = new Date(item.date + "T00:00:00");
-              const weekday = format(dateObj, "EEE", { locale: sv }).replace(".", "");
-              const day = format(dateObj, "d");
-              const month = format(dateObj, "MMM", { locale: sv }).replace(".", "");
+              const dateDisplay = format(dateObj, "EEE d MMMM", { locale: sv }).replace(".", "");
+              const intentLabel = getTypeLabel(item.entry_type);
               const activityNameLabel =
                 item.activities.length > 0
                   ? item.activities.map((a) => ACTIVITY_MAP[a] || a).join(", ")
-                  : item.custom_note || "";
+                  : null;
+              const description = item.custom_note || "";
               const isSelected = selectedEntry?.id === item.id && sheetOpen;
 
               return (
                 <button
                   key={item.id}
                   onClick={() => handleCardClick(item)}
-                  className="flex-shrink-0 flex flex-col text-left transition-all relative overflow-hidden"
+                  className="flex-shrink-0 flex flex-col text-left transition-all"
                   style={{
-                    width: 130,
-                    height: 110,
-                    borderRadius: 12,
-                    padding: 10,
-                    backgroundColor: style.bg,
-                    border: isSelected ? "2px solid #3C2A4D" : `1px solid ${style.border}`,
+                    width: 160,
+                    minHeight: 100,
+                    borderRadius: 8,
+                    padding: 16,
+                    backgroundColor: "#FFFFFF",
+                    border: isSelected ? "1.5px solid #3C2A4D" : "1px solid #EDE8F4",
                   }}
                 >
-                  <span className="text-[9px] lowercase tracking-wider" style={{ color: "#B0A8B5" }}>
-                    {getTypeLabel(item.entry_type)}
-                  </span>
-                  <span className="text-[9px] uppercase mt-1" style={{ color: "#7A6A85" }}>
-                    {weekday}
-                  </span>
-                  <span className="text-[22px] font-medium leading-tight text-foreground">{day}</span>
-                  <span className="text-[9px]" style={{ color: "#C9B8D8" }}>
-                    {month}
-                  </span>
-                  {activityNameLabel && (
+                  <p
+                    className="text-[12px] mb-0.5"
+                    style={{ color: "#7A6A85", fontWeight: 400 }}
+                  >
+                    {dateDisplay}
+                  </p>
+                  <p className="text-[11px] mb-1.5" style={{ color: "#B0A0B5" }}>
+                    {intentLabel}
+                    {activityNameLabel && ` · ${activityNameLabel}`}
+                  </p>
+                  {description && (
                     <p
-                      className="text-[11px] leading-snug text-foreground mt-auto"
+                      className="text-[13px] leading-[1.45]"
                       style={{
+                        color: "#3C2A4D",
                         display: "-webkit-box",
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: "vertical",
                         overflow: "hidden",
                       }}
                     >
-                      {activityNameLabel}
+                      {description}
                     </p>
                   )}
-                  <div
-                    className="absolute bottom-0 left-0 right-0 pointer-events-none"
-                    style={{
-                      height: 20,
-                      background: `linear-gradient(to bottom, transparent, ${style.bg})`,
-                      borderRadius: "0 0 12px 12px",
-                    }}
-                  />
                 </button>
               );
             })}
