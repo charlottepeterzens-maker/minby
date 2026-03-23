@@ -233,22 +233,33 @@ const ProfilePage = () => {
     );
   };
 
-  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !user) return;
+    if (!file) return;
+    setCropFile(file);
+    setCropOpen(true);
+    // Reset input so same file can be re-selected
+    e.target.value = "";
+  };
+
+  const handleCroppedUpload = async (blob: Blob) => {
+    if (!user) return;
     setUploadingAvatar(true);
-    const ext = file.name.split(".").pop();
-    const path = `${user.id}/avatar.${ext}`;
-    const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+    const path = `${user.id}/avatar.jpg`;
+    const { error: uploadError } = await supabase.storage.from("avatars").upload(path, blob, {
+      upsert: true,
+      contentType: "image/jpeg",
+    });
     if (uploadError) {
       toast({ title: t("error"), description: uploadError.message, variant: "destructive" });
       setUploadingAvatar(false);
       return;
     }
     const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+    const ts = Date.now();
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ avatar_url: urlData.publicUrl })
+      .update({ avatar_url: `${urlData.publicUrl}?t=${ts}` })
       .eq("user_id", user.id);
     if (updateError) {
       toast({ title: t("error"), description: updateError.message, variant: "destructive" });
