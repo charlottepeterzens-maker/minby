@@ -295,9 +295,11 @@ const ProfilePage = () => {
         {/* ===== (1) PROFILE HEADER ===== */}
         <div className="flex items-start gap-4 mb-4">
           <div className="relative shrink-0">
-            <div
+            <motion.div
+              whileTap={isOwnProfile ? { scale: 0.92 } : undefined}
               className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden"
               style={{ backgroundColor: "#EDE8F4" }}
+              onClick={isOwnProfile ? () => fileInputRef.current?.click() : undefined}
             >
               {profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -306,15 +308,16 @@ const ProfilePage = () => {
                   {initial}
                 </span>
               )}
-            </div>
+            </motion.div>
             {isOwnProfile && (
-              <button
+              <motion.button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar}
-                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center transition-colors duration-150 disabled:opacity-50"
+                whileTap={{ scale: 0.85 }}
+                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
               >
                 <Camera className="w-3 h-3" />
-              </button>
+              </motion.button>
             )}
             <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
           </div>
@@ -506,27 +509,32 @@ const ProfilePage = () => {
                 ];
                 const color = colors[i % colors.length];
                 return (
-                  <button
+                  <motion.button
                     key={section.id}
                     onClick={() => toggleSection(section.id)}
-                    className="shrink-0 flex flex-col items-center justify-center transition-all active:scale-[0.97]"
+                    whileTap={{ scale: 0.93 }}
+                    animate={{
+                      background: expandedSection === section.id ? "#3C2A4D" : color.bg,
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="shrink-0 flex flex-col items-center justify-center"
                     style={{
                       minWidth: 72,
                       height: 64,
                       borderRadius: 8,
-                      background: expandedSection === section.id ? "#3C2A4D" : color.bg,
                       border: expandedSection === section.id ? "none" : "1px solid #EDE8E0",
                       cursor: "pointer",
                       marginRight: 0,
                     }}
                   >
-                    <span
+                    <motion.span
                       className="text-[9px] font-medium"
-                      style={{ color: expandedSection === section.id ? "#F7F3EF" : "#2A1A3C" }}
+                      animate={{ color: expandedSection === section.id ? "#F7F3EF" : "#2A1A3C" }}
+                      transition={{ duration: 0.2 }}
                     >
                       {section.name}
-                    </span>
-                  </button>
+                    </motion.span>
+                  </motion.button>
                 );
               })}
             </div>
@@ -555,8 +563,9 @@ const ProfilePage = () => {
           </AnimatePresence>
 
           {/* View all link */}
-          <button
+          <motion.button
             onClick={() => setShowAllPosts(!showAllPosts)}
+            whileTap={{ scale: 0.97 }}
             className="w-full text-center mt-3"
             style={{
               fontSize: 11,
@@ -567,8 +576,13 @@ const ProfilePage = () => {
               padding: 10,
             }}
           >
-            {showAllPosts ? "Visa färre" : "Visa alla inlägg →"}
-          </button>
+            <motion.span
+              animate={{ x: showAllPosts ? 0 : [0, 3, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
+            >
+              {showAllPosts ? "Visa färre" : "Visa alla inlägg →"}
+            </motion.span>
+          </motion.button>
         </div>
 
         {/* Section divider */}
