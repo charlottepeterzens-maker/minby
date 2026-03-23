@@ -227,7 +227,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         )}
       </div>
 
-      <AddHangoutSheet
+      <AddHangoutFreeText
         open={showAdd}
         onOpenChange={(v) => {
           setShowAdd(v);
