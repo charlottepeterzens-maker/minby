@@ -141,10 +141,7 @@ const FriendsPage = () => {
           .eq("to_user_id", user.id)
           .eq("status", "pending")
           .order("created_at", { ascending: false }),
-        supabase
-          .from("friend_access_tiers")
-          .select("friend_user_id, tier")
-          .eq("owner_id", user.id),
+        supabase.from("friend_access_tiers").select("friend_user_id, tier").eq("owner_id", user.id),
       ]);
 
       if (acceptedRes.error) throw acceptedRes.error;
@@ -165,9 +162,7 @@ const FriendsPage = () => {
           .select("user_id, display_name, avatar_url")
           .in("user_id", pendingUserIds);
 
-        const profileMap = new Map(
-          (pendingProfiles || []).map((p) => [p.user_id, p])
-        );
+        const profileMap = new Map((pendingProfiles || []).map((p) => [p.user_id, p]));
 
         setPendingRequests(
           pending.map((r) => {
@@ -180,7 +175,7 @@ const FriendsPage = () => {
               initial: (p?.display_name || "?").charAt(0).toUpperCase(),
               created_at: r.created_at,
             };
-          })
+          }),
         );
       } else {
         setPendingRequests([]);
@@ -193,19 +188,22 @@ const FriendsPage = () => {
         return;
       }
 
-      const friendIds = [
-        ...new Set(
-          accepted.map((r) =>
-            r.from_user_id === user.id ? r.to_user_id : r.from_user_id
-          )
-        ),
-      ];
+      const friendIds = [...new Set(accepted.map((r) => (r.from_user_id === user.id ? r.to_user_id : r.from_user_id)))];
 
       const today = format(new Date(), "yyyy-MM-dd");
       const [{ data: profiles }, { data: posts }, { data: hangouts }] = await Promise.all([
         supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", friendIds),
-        supabase.from("life_posts").select("user_id, created_at").in("user_id", friendIds).order("created_at", { ascending: false }),
-        supabase.from("hangout_availability").select("user_id, entry_type, date, activities, custom_note").in("user_id", friendIds).gte("date", today).order("date", { ascending: true }),
+        supabase
+          .from("life_posts")
+          .select("user_id, created_at")
+          .in("user_id", friendIds)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("hangout_availability")
+          .select("user_id, entry_type, date, activities, custom_note")
+          .in("user_id", friendIds)
+          .gte("date", today)
+          .order("date", { ascending: true }),
       ]);
 
       const latestPostMap = new Map<string, string>();
@@ -253,11 +251,7 @@ const FriendsPage = () => {
 
   const fetchMutedUsers = useCallback(async () => {
     if (!user) return;
-    const { data } = await supabase
-      .from("profiles")
-      .select("muted_users")
-      .eq("user_id", user.id)
-      .single();
+    const { data } = await supabase.from("profiles").select("muted_users").eq("user_id", user.id).single();
     if (data?.muted_users) {
       setMutedUsers((data.muted_users as any) || []);
     }
@@ -282,10 +276,7 @@ const FriendsPage = () => {
       const groupIds = memberships.map((m) => m.group_id);
       const joinedAtMap = new Map(memberships.map((m) => [m.group_id, m.joined_at]));
 
-      const { data: groupsData } = await supabase
-        .from("friend_groups")
-        .select("*")
-        .in("id", groupIds);
+      const { data: groupsData } = await supabase.from("friend_groups").select("*").in("id", groupIds);
 
       if (!groupsData) {
         setGroups([]);
@@ -299,14 +290,17 @@ const FriendsPage = () => {
         groupsData.map(async (g) => {
           const [{ data: members }, { data: lastMsg }] = await Promise.all([
             supabase.from("group_memberships").select("user_id").eq("group_id", g.id),
-            supabase.from("group_messages").select("content, created_at, user_id").eq("group_id", g.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+            supabase
+              .from("group_messages")
+              .select("content, created_at, user_id")
+              .eq("group_id", g.id)
+              .order("created_at", { ascending: false })
+              .limit(1)
+              .maybeSingle(),
           ]);
 
           const memberIds = (members || []).map((m) => m.user_id);
-          const { data: profiles } = await supabase
-            .from("profiles")
-            .select("display_name")
-            .in("user_id", memberIds);
+          const { data: profiles } = await supabase.from("profiles").select("display_name").in("user_id", memberIds);
 
           const names = (profiles || []).map((p) => p.display_name || "Anonym").slice(0, 4);
 
@@ -325,7 +319,7 @@ const FriendsPage = () => {
             last_message_at: lastMsg?.created_at || null,
             has_unread: hasUnread,
           };
-        })
+        }),
       );
 
       groupsWithMembers.sort((a, b) => {
@@ -363,9 +357,7 @@ const FriendsPage = () => {
     if (error) {
       toast.error("Kunde inte uppdatera");
     } else {
-      setFriends((prev) =>
-        prev.map((f) => f.user_id === friendUserId ? { ...f, tier: newTier } : f)
-      );
+      setFriends((prev) => prev.map((f) => (f.user_id === friendUserId ? { ...f, tier: newTier } : f)));
       toast.success(newTier === "close" ? "Tillagd i närmaste krets" : "Borttagen från närmaste krets");
     }
     setMenuOpenFor(null);
@@ -380,7 +372,9 @@ const FriendsPage = () => {
     await supabase
       .from("friend_requests")
       .delete()
-      .or(`and(from_user_id.eq.${user.id},to_user_id.eq.${friendUserId}),and(from_user_id.eq.${friendUserId},to_user_id.eq.${user.id})`)
+      .or(
+        `and(from_user_id.eq.${user.id},to_user_id.eq.${friendUserId}),and(from_user_id.eq.${friendUserId},to_user_id.eq.${user.id})`,
+      )
       .eq("status", "accepted");
     setFriends((prev) => prev.filter((f) => f.user_id !== friendUserId));
     toast.success("Borttagen från din krets");
@@ -389,14 +383,9 @@ const FriendsPage = () => {
   const handleToggleMute = async (friendUserId: string) => {
     if (!user) return;
     const isMuted = mutedUsers.includes(friendUserId);
-    const updated = isMuted
-      ? mutedUsers.filter((id) => id !== friendUserId)
-      : [...mutedUsers, friendUserId];
+    const updated = isMuted ? mutedUsers.filter((id) => id !== friendUserId) : [...mutedUsers, friendUserId];
     setMutedUsers(updated);
-    await (supabase as any)
-      .from("profiles")
-      .update({ muted_users: updated })
-      .eq("user_id", user.id);
+    await (supabase as any).from("profiles").update({ muted_users: updated }).eq("user_id", user.id);
     toast.success(isMuted ? "Avmutad" : "Mutad");
     setMenuOpenFor(null);
   };
@@ -430,7 +419,9 @@ const FriendsPage = () => {
       const { data: friendTiers } = await supabase
         .from("friend_access_tiers")
         .select("friend_user_id, owner_id")
-        .or(`and(owner_id.eq.${user.id},friend_user_id.in.(${foundIds.join(",")})),and(owner_id.in.(${foundIds.join(",")}),friend_user_id.eq.${user.id})`);
+        .or(
+          `and(owner_id.eq.${user.id},friend_user_id.in.(${foundIds.join(",")})),and(owner_id.in.(${foundIds.join(",")}),friend_user_id.eq.${user.id})`,
+        );
 
       const friendSet = new Set<string>();
       friendTiers?.forEach((t) => {
@@ -442,7 +433,9 @@ const FriendsPage = () => {
         .from("friend_requests")
         .select("from_user_id, to_user_id")
         .eq("status", "pending")
-        .or(`and(from_user_id.eq.${user.id},to_user_id.in.(${foundIds.join(",")})),and(to_user_id.eq.${user.id},from_user_id.in.(${foundIds.join(",")}))`);
+        .or(
+          `and(from_user_id.eq.${user.id},to_user_id.in.(${foundIds.join(",")})),and(to_user_id.eq.${user.id},from_user_id.in.(${foundIds.join(",")}))`,
+        );
 
       const sentSet = new Set<string>();
       pendingReqs?.forEach((r) => {
@@ -456,8 +449,12 @@ const FriendsPage = () => {
           display_name: p.display_name || "Okänd",
           avatar_url: p.avatar_url,
           initial: (p.display_name || "?").charAt(0).toUpperCase(),
-          status: friendSet.has(p.user_id) ? "friend" as const : sentSet.has(p.user_id) ? "sent" as const : "none" as const,
-        }))
+          status: friendSet.has(p.user_id)
+            ? ("friend" as const)
+            : sentSet.has(p.user_id)
+              ? ("sent" as const)
+              : ("none" as const),
+        })),
       );
       setSearching(false);
     }, 400);
@@ -477,11 +474,7 @@ const FriendsPage = () => {
     if (error) {
       toast.error("Kunde inte skicka förfrågan");
     } else {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("display_name")
-        .eq("user_id", user.id)
-        .single();
+      const { data: profile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
 
       await supabase.from("notifications").insert({
         user_id: targetUserId,
@@ -492,9 +485,7 @@ const FriendsPage = () => {
       });
 
       toast.success("Skickat!");
-      setSearchResults((prev) =>
-        prev.map((r) => r.user_id === targetUserId ? { ...r, status: "sent" as const } : r)
-      );
+      setSearchResults((prev) => prev.map((r) => (r.user_id === targetUserId ? { ...r, status: "sent" as const } : r)));
     }
     setSendingTo(null);
   };
@@ -502,24 +493,20 @@ const FriendsPage = () => {
   const handleAccept = async (requestId: string, fromUserId: string) => {
     if (!user) return;
     setRespondingId(requestId);
-    const { error } = await supabase
-      .from("friend_requests")
-      .update({ status: "accepted" })
-      .eq("id", requestId);
+    const { error } = await supabase.from("friend_requests").update({ status: "accepted" }).eq("id", requestId);
 
     if (error) {
       toast.error("Kunde inte lägga till");
     } else {
-      await supabase.from("friend_access_tiers").upsert([
-        { owner_id: user.id, friend_user_id: fromUserId, tier: "outer" as const },
-        { owner_id: fromUserId, friend_user_id: user.id, tier: "outer" as const },
-      ], { onConflict: "owner_id,friend_user_id" });
+      await supabase.from("friend_access_tiers").upsert(
+        [
+          { owner_id: user.id, friend_user_id: fromUserId, tier: "outer" as const },
+          { owner_id: fromUserId, friend_user_id: user.id, tier: "outer" as const },
+        ],
+        { onConflict: "owner_id,friend_user_id" },
+      );
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("display_name")
-        .eq("user_id", user.id)
-        .single();
+      const { data: profile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
 
       await supabase.from("notifications").insert({
         user_id: fromUserId,
@@ -529,7 +516,7 @@ const FriendsPage = () => {
         body: `${profile?.display_name || "Någon"} är nu en del av din vardag`,
       });
 
-      toast.success("Tillagd i din krets! 🎉");
+      toast.success("Tillagd i din krets");
       fetchData();
     }
     setRespondingId(null);
@@ -537,10 +524,7 @@ const FriendsPage = () => {
 
   const handleDecline = async (requestId: string) => {
     setRespondingId(requestId);
-    const { error } = await supabase
-      .from("friend_requests")
-      .update({ status: "declined" })
-      .eq("id", requestId);
+    const { error } = await supabase.from("friend_requests").update({ status: "declined" }).eq("id", requestId);
 
     if (error) {
       toast.error("Något gick fel");
@@ -551,9 +535,7 @@ const FriendsPage = () => {
     setRespondingId(null);
   };
 
-  const filtered = friends.filter((f) =>
-    f.display_name.toLowerCase().includes(friendSearch.toLowerCase())
-  );
+  const filtered = friends.filter((f) => f.display_name.toLowerCase().includes(friendSearch.toLowerCase()));
 
   const closeFriends = filtered.filter((f) => f.tier === "close");
   const otherFriends = filtered.filter((f) => f.tier !== "close");
@@ -593,30 +575,44 @@ const FriendsPage = () => {
           onClick={() => navigate(`/profile/${f.user_id}`)}
           className="flex items-center gap-3 flex-1 min-w-0 text-left"
         >
-          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden" style={{ backgroundColor: "#EDE8F4" }}>
+          <div
+            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
+            style={{ backgroundColor: "#EDE8F4" }}
+          >
             {f.avatar_url ? (
               <img src={f.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
             ) : (
-              <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>{f.initial}</span>
+              <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
+                {f.initial}
+              </span>
             )}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
-              <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{f.display_name}</p>
+              <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
+                {f.display_name}
+              </p>
               {isClose && <Heart className="w-3 h-3 shrink-0" style={{ color: "#C9B8D8" }} fill="#C9B8D8" />}
             </div>
             {isMuted && (
-              <p className="text-[10px] mt-0.5" style={{ color: "#9B8BA5" }}>Mutad</p>
+              <p className="text-[10px] mt-0.5" style={{ color: "#9B8BA5" }}>
+                Mutad
+              </p>
             )}
             {!isMuted && statusText && (
-              <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>{statusText}</p>
+              <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>
+                {statusText}
+              </p>
             )}
           </div>
         </button>
 
         {/* Three-dot menu */}
         <button
-          onClick={(e) => { e.stopPropagation(); setMenuOpenFor(menuOpenFor === f.user_id ? null : f.user_id); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setMenuOpenFor(menuOpenFor === f.user_id ? null : f.user_id);
+          }}
           className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full"
         >
           <MoreHorizontal className="w-4 h-4" style={{ color: "#9B8BA5" }} />
@@ -634,22 +630,36 @@ const FriendsPage = () => {
             }}
           >
             <button
-              onClick={(e) => { e.stopPropagation(); handleToggleClose(f.user_id, f.tier); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggleClose(f.user_id, f.tier);
+              }}
               className="w-full text-left px-4 py-2.5 text-[13px] flex items-center gap-2"
               style={{ color: "#3C2A4D" }}
             >
-              <Heart className="w-3.5 h-3.5" style={{ color: isClose ? "#C9B8D8" : "#9B8BA5" }} fill={isClose ? "#C9B8D8" : "none"} />
+              <Heart
+                className="w-3.5 h-3.5"
+                style={{ color: isClose ? "#C9B8D8" : "#9B8BA5" }}
+                fill={isClose ? "#C9B8D8" : "none"}
+              />
               {isClose ? "Ta bort från närmaste krets" : "Lägg till i närmaste krets"}
             </button>
             <button
-              onClick={(e) => { e.stopPropagation(); handleToggleMute(f.user_id); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleToggleMute(f.user_id);
+              }}
               className="w-full text-left px-4 py-2.5 text-[13px]"
               style={{ color: "#3C2A4D" }}
             >
               {isMuted ? `Sluta muta ${f.display_name}` : `Muta ${f.display_name}`}
             </button>
             <button
-              onClick={(e) => { e.stopPropagation(); setMenuOpenFor(null); setRemoveConfirm({ userId: f.user_id, name: f.display_name }); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuOpenFor(null);
+                setRemoveConfirm({ userId: f.user_id, name: f.display_name });
+              }}
               className="w-full text-left px-4 py-2.5 text-[13px]"
               style={{ color: "#A32D2D" }}
             >
@@ -687,7 +697,10 @@ const FriendsPage = () => {
           >
             Min krets
             {activeTab === "krets" && (
-              <div className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full" style={{ backgroundColor: "#3C2A4D" }} />
+              <div
+                className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full"
+                style={{ backgroundColor: "#3C2A4D" }}
+              />
             )}
           </button>
           <button
@@ -702,7 +715,10 @@ const FriendsPage = () => {
               )}
             </span>
             {activeTab === "sallskap" && (
-              <div className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full" style={{ backgroundColor: "#3C2A4D" }} />
+              <div
+                className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full"
+                style={{ backgroundColor: "#3C2A4D" }}
+              />
             )}
           </button>
         </Container>
@@ -714,7 +730,11 @@ const FriendsPage = () => {
             {/* Search */}
             <div>
               <div className="relative">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#9B8BA5" }} strokeWidth={1.5} />
+                <Search
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
+                  style={{ color: "#9B8BA5" }}
+                  strokeWidth={1.5}
+                />
                 <input
                   value={peopleSearch}
                   onChange={(e) => setPeopleSearch(e.target.value)}
@@ -728,9 +748,13 @@ const FriendsPage = () => {
               {peopleSearch.trim().length >= 2 && (
                 <div className="mt-2 space-y-1.5">
                   {searching ? (
-                    <p className="text-[12px] py-3 text-center" style={{ color: "#9B8BA5" }}>Söker...</p>
+                    <p className="text-[12px] py-3 text-center" style={{ color: "#9B8BA5" }}>
+                      Söker...
+                    </p>
                   ) : searchResults.length === 0 ? (
-                    <p className="text-[12px] py-3 text-center" style={{ color: "#9B8BA5" }}>Inga resultat</p>
+                    <p className="text-[12px] py-3 text-center" style={{ color: "#9B8BA5" }}>
+                      Inga resultat
+                    </p>
                   ) : (
                     searchResults.map((r) => (
                       <div
@@ -754,9 +778,13 @@ const FriendsPage = () => {
                           {r.display_name}
                         </p>
                         {r.status === "friend" ? (
-                          <span className="text-[11px]" style={{ color: "#9B8BA5" }}>I din krets</span>
+                          <span className="text-[11px]" style={{ color: "#9B8BA5" }}>
+                            I din krets
+                          </span>
                         ) : r.status === "sent" ? (
-                          <span className="text-[11px]" style={{ color: "#9B8BA5" }}>Skickat</span>
+                          <span className="text-[11px]" style={{ color: "#9B8BA5" }}>
+                            Skickat
+                          </span>
                         ) : (
                           <button
                             onClick={() => handleSendFriendRequest(r.user_id)}
@@ -778,10 +806,16 @@ const FriendsPage = () => {
               <div className="flex flex-col items-center justify-center py-16">
                 <div className="space-y-3 w-full">
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="h-[64px] animate-pulse" style={{ backgroundColor: "#EDE8F4", borderRadius: 8 }} />
+                    <div
+                      key={i}
+                      className="h-[64px] animate-pulse"
+                      style={{ backgroundColor: "#EDE8F4", borderRadius: 8 }}
+                    />
                   ))}
                 </div>
-                <p className="text-[12px] mt-4" style={{ color: "#9B8BA5" }}>Laddar din krets…</p>
+                <p className="text-[12px] mt-4" style={{ color: "#9B8BA5" }}>
+                  Laddar din krets…
+                </p>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
@@ -798,7 +832,10 @@ const FriendsPage = () => {
               </div>
             ) : !hasFriendsOrPending && peopleSearch.trim().length < 2 ? (
               <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "#EDE8F4" }}>
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
+                  style={{ backgroundColor: "#EDE8F4" }}
+                >
                   <Users className="w-7 h-7" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
                 </div>
                 <p className="font-display text-[16px] font-medium mb-1.5" style={{ color: "#3C2A4D" }}>
@@ -814,7 +851,10 @@ const FriendsPage = () => {
                 {/* Pending requests */}
                 {pendingRequests.length > 0 && (
                   <div>
-                    <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
+                    <p
+                      className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
+                      style={{ color: "#9B8BA5" }}
+                    >
                       Vill vara med ({pendingRequests.length})
                     </p>
                     <div className="space-y-2">
@@ -872,7 +912,10 @@ const FriendsPage = () => {
                 {/* Close circle section */}
                 {friends.length > 0 && (
                   <div>
-                    <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
+                    <p
+                      className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
+                      style={{ color: "#9B8BA5" }}
+                    >
                       Din närmaste krets
                     </p>
                     {closeFriends.length === 0 ? (
@@ -889,9 +932,7 @@ const FriendsPage = () => {
                         </p>
                       </div>
                     ) : (
-                      <div className="space-y-2">
-                        {closeFriends.map(renderFriendCard)}
-                      </div>
+                      <div className="space-y-2">{closeFriends.map(renderFriendCard)}</div>
                     )}
                   </div>
                 )}
@@ -899,19 +940,31 @@ const FriendsPage = () => {
                 {/* Other friends */}
                 {(otherFriends.length > 0 || closeFriends.length > 0) && (
                   <div>
-                    <p className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1" style={{ color: "#9B8BA5" }}>
+                    <p
+                      className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
+                      style={{ color: "#9B8BA5" }}
+                    >
                       Din krets ({friends.length})
                     </p>
 
                     {friends.length > 3 && (
                       <div className="relative mb-3">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "#9B8BA5" }} strokeWidth={1.5} />
+                        <Search
+                          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+                          style={{ color: "#9B8BA5" }}
+                          strokeWidth={1.5}
+                        />
                         <input
                           value={friendSearch}
                           onChange={(e) => setFriendSearch(e.target.value)}
                           placeholder="Sök i din krets..."
                           className="w-full pl-9 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#9B8BA5]"
-                          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8, color: "#3C2A4D" }}
+                          style={{
+                            backgroundColor: "#FFFFFF",
+                            border: "1px solid #EDE8E0",
+                            borderRadius: 8,
+                            color: "#3C2A4D",
+                          }}
                         />
                       </div>
                     )}
@@ -944,7 +997,11 @@ const FriendsPage = () => {
             {groupsLoading ? (
               <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-[72px] animate-pulse" style={{ backgroundColor: "#EDE8F4", borderRadius: 8 }} />
+                  <div
+                    key={i}
+                    className="h-[72px] animate-pulse"
+                    style={{ backgroundColor: "#EDE8F4", borderRadius: 8 }}
+                  />
                 ))}
               </div>
             ) : (
@@ -963,7 +1020,9 @@ const FriendsPage = () => {
                       <span className="text-lg">{g.emoji}</span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{g.name}</p>
+                      <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
+                        {g.name}
+                      </p>
                       <p className="text-[11px] truncate italic" style={{ color: "#7A6A85" }}>
                         {g.last_message || "Inga meddelanden än"}
                       </p>
@@ -1002,8 +1061,12 @@ const FriendsPage = () => {
 
                 {groups.length === 0 && (
                   <div className="text-center py-12">
-                    <p className="font-display text-base" style={{ color: "#7A6A85" }}>Inga sällskap ännu</p>
-                    <p className="text-[12px] mt-1" style={{ color: "#9B8BA5" }}>Skapa ett sällskap för att chatta med din krets</p>
+                    <p className="font-display text-base" style={{ color: "#7A6A85" }}>
+                      Inga sällskap ännu
+                    </p>
+                    <p className="text-[12px] mt-1" style={{ color: "#9B8BA5" }}>
+                      Skapa ett sällskap för att chatta med din krets
+                    </p>
                   </div>
                 )}
               </div>
@@ -1018,7 +1081,9 @@ const FriendsPage = () => {
 
       <ConfirmSheet
         open={!!removeConfirm}
-        onOpenChange={(open) => { if (!open) setRemoveConfirm(null); }}
+        onOpenChange={(open) => {
+          if (!open) setRemoveConfirm(null);
+        }}
         title="Ta bort från kretsen"
         description={`Vill du ta bort ${removeConfirm?.name || ""} från din krets? Ni delar inte längre era vardagar.`}
         confirmLabel="Ta bort"
