@@ -117,6 +117,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   const [expanded, setExpanded] = useState(false);
   const [thinkingSent, setThinkingSent] = useState(false);
   const [thinkingLoading, setThinkingLoading] = useState(false);
+  const [hangoutSheetOpen, setHangoutSheetOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
