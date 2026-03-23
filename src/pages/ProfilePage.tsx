@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronLeft, Plus, Camera, Pencil, Check, X, GripVertical, UserPlus } from "lucide-react";
+import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 import {
   DndContext,
   closestCenter,
