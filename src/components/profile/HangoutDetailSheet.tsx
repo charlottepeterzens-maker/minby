@@ -390,6 +390,7 @@ const HangoutDetailSheet = ({
                     {comments.map(c => (
                       <div key={c.id} className="flex items-start gap-2 group">
                         <Avatar className="w-5 h-5 mt-0.5">
+                          {c.profile?.avatar_url && <AvatarImage src={c.profile.avatar_url} alt={c.profile?.display_name || ""} />}
                           <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[8px]">
                             {(c.profile?.display_name || "?").charAt(0).toUpperCase()}
                           </AvatarFallback>
