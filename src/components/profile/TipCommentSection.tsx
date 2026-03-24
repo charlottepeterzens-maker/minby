@@ -143,8 +143,8 @@ const TipCommentSection = ({
                   overflow: "hidden",
                 }}
               >
-                {c.profile?.avatar_url ? (
-                  <img src={c.profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                {resolveAvatarUrl(c.profile?.avatar_url ?? null) ? (
+                  <img src={resolveAvatarUrl(c.profile?.avatar_url ?? null)!} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
                   initials(c.profile?.display_name || null)
                 )}

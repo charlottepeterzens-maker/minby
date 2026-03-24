@@ -870,8 +870,8 @@ const FriendsPage = () => {
                             className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
                             style={{ backgroundColor: "#EDE8F4" }}
                           >
-                            {r.avatar_url ? (
-                              <img src={r.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                            {resolveAvatarUrl(r.avatar_url) ? (
+                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
                             ) : (
                               <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
                                 {r.initial}
