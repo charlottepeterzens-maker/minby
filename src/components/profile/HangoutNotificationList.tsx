@@ -163,7 +163,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
 
               {/* Avatar */}
               <Avatar className="w-9 h-9 shrink-0">
-                {n.fromProfile?.avatar_url && <AvatarImage src={n.fromProfile.avatar_url} />}
+                {resolveAvatarUrl(n.fromProfile?.avatar_url ?? null) && <AvatarImage src={resolveAvatarUrl(n.fromProfile?.avatar_url ?? null)!} className="object-cover" />}
                 <AvatarFallback
                   style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
                   className="text-[11px] font-medium"
