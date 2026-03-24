@@ -5,6 +5,7 @@ import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Users, Search, QrCode, MoreHorizontal, Heart, Plus } from "lucide-react";
+import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
