@@ -316,8 +316,8 @@ const ProfilePage = () => {
               style={{ backgroundColor: "#EDE8F4" }}
               onClick={isOwnProfile ? () => fileInputRef.current?.click() : undefined}
             >
-              {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+              {resolveAvatarUrl(profile?.avatar_url ?? null) ? (
+                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="" className="w-full h-full object-cover" />
               ) : (
                 <span className="text-xl font-display font-medium" style={{ color: "#3C2A4D" }}>
                   {initial}
