@@ -7,6 +7,7 @@ import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import { Input } from "@/components/ui/input";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import { toast } from "@/hooks/use-toast";
@@ -390,7 +391,7 @@ const HangoutDetailSheet = ({
                     {comments.map(c => (
                       <div key={c.id} className="flex items-start gap-2 group">
                         <Avatar className="w-5 h-5 mt-0.5">
-                          {c.profile?.avatar_url && <AvatarImage src={c.profile.avatar_url} alt={c.profile?.display_name || ""} />}
+                          {resolveAvatarUrl(c.profile?.avatar_url ?? null) && <AvatarImage src={resolveAvatarUrl(c.profile?.avatar_url ?? null)!} alt={c.profile?.display_name || ""} className="object-cover" />}
                           <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[8px]">
                             {(c.profile?.display_name || "?").charAt(0).toUpperCase()}
                           </AvatarFallback>
@@ -441,7 +442,7 @@ const HangoutDetailSheet = ({
                 {taggedFriends.map(tf => (
                   <div key={tf.id} className="flex items-center gap-2 py-0.5">
                     <Avatar className="w-5 h-5">
-                      {tf.profile?.avatar_url && <AvatarImage src={tf.profile.avatar_url} alt={tf.profile?.display_name || ""} />}
+                      {resolveAvatarUrl(tf.profile?.avatar_url ?? null) && <AvatarImage src={resolveAvatarUrl(tf.profile?.avatar_url ?? null)!} alt={tf.profile?.display_name || ""} className="object-cover" />}
                       <AvatarFallback style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }} className="text-[8px] font-medium">
                         {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                       </AvatarFallback>

@@ -5,6 +5,7 @@ import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Users, Search, QrCode, MoreHorizontal, Heart, Plus } from "lucide-react";
+import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
@@ -579,8 +580,8 @@ const FriendsPage = () => {
             className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
             style={{ backgroundColor: "#EDE8F4" }}
           >
-            {f.avatar_url ? (
-              <img src={f.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+            {resolveAvatarUrl(f.avatar_url) ? (
+              <img src={resolveAvatarUrl(f.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
             ) : (
               <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
                 {f.initial}
@@ -766,8 +767,8 @@ const FriendsPage = () => {
                           className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
                           style={{ backgroundColor: "#EDE8F4" }}
                         >
-                          {r.avatar_url ? (
-                            <img src={r.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                          {resolveAvatarUrl(r.avatar_url) ? (
+                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
                           ) : (
                             <span className="text-[12px] font-display font-medium" style={{ color: "#3C2A4D" }}>
                               {r.initial}
@@ -869,8 +870,8 @@ const FriendsPage = () => {
                             className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
                             style={{ backgroundColor: "#EDE8F4" }}
                           >
-                            {r.avatar_url ? (
-                              <img src={r.avatar_url} alt="" className="w-full h-full rounded-full object-cover" />
+                            {resolveAvatarUrl(r.avatar_url) ? (
+                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
                             ) : (
                               <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
                                 {r.initial}

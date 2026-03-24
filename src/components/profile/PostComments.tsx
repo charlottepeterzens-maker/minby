@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Send, Trash2 } from "lucide-react";
 import { sendNotification } from "@/utils/notifications";
+import { resolveAvatarUrl } from "@/utils/avatarUrl";
 
 interface Comment {
   id: string;
@@ -164,8 +165,8 @@ const PostComments = ({ postId, isOwner }: Props) => {
                   overflow: "hidden",
                 }}
               >
-                {c.avatar_url ? (
-                  <img src={c.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                {resolveAvatarUrl(c.avatar_url) ? (
+                  <img src={resolveAvatarUrl(c.avatar_url)!} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
                   <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{c.initials}</span>
                 )}
@@ -213,8 +214,8 @@ const PostComments = ({ postId, isOwner }: Props) => {
             overflow: "hidden",
           }}
         >
-          {myAvatarUrl ? (
-            <img src={myAvatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          {resolveAvatarUrl(myAvatarUrl) ? (
+            <img src={resolveAvatarUrl(myAvatarUrl)!} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
             <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{myInitials}</span>
           )}

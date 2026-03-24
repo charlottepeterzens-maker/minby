@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronLeft, Plus, Camera, Pencil, Check, X, GripVertical, UserPlus } from "lucide-react";
+import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 import {
   DndContext,
@@ -315,8 +316,8 @@ const ProfilePage = () => {
               style={{ backgroundColor: "#EDE8F4" }}
               onClick={isOwnProfile ? () => fileInputRef.current?.click() : undefined}
             >
-              {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+              {resolveAvatarUrl(profile?.avatar_url ?? null) ? (
+                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="" className="w-full h-full object-cover" />
               ) : (
                 <span className="text-xl font-display font-medium" style={{ color: "#3C2A4D" }}>
                   {initial}

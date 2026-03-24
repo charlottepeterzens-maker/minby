@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
 import { compressImage } from "@/utils/imageCompression";
+import { resolveAvatarUrl } from "@/utils/avatarUrl";
 
 interface LifeSection {
   id: string;
@@ -99,8 +100,8 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
               className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center overflow-hidden"
               style={{ backgroundColor: "#EDE8F4" }}
             >
-              {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+              {resolveAvatarUrl(profile?.avatar_url ?? null) ? (
+                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="" className="w-full h-full object-cover" />
               ) : (
                 <span className="text-[10px] font-medium" style={{ color: "#3C2A4D" }}>{initial}</span>
               )}
