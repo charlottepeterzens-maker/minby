@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Send, Trash2 } from "lucide-react";
 import { sendNotification } from "@/utils/notifications";
+import { resolveAvatarUrl } from "@/utils/avatarUrl";
 
 interface Comment {
   id: string;
