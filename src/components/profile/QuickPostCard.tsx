@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
 import { compressImage } from "@/utils/imageCompression";
+import { resolveAvatarUrl } from "@/utils/avatarUrl";
 
 interface LifeSection {
   id: string;
