@@ -165,8 +165,8 @@ const PostComments = ({ postId, isOwner }: Props) => {
                   overflow: "hidden",
                 }}
               >
-                {c.avatar_url ? (
-                  <img src={c.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                {resolveAvatarUrl(c.avatar_url) ? (
+                  <img src={resolveAvatarUrl(c.avatar_url)!} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
                   <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{c.initials}</span>
                 )}
