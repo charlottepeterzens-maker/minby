@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
+import { resolveAvatarUrl } from "@/utils/avatarUrl";
 
 interface TipComment {
   id: string;
