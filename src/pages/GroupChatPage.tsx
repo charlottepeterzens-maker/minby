@@ -442,16 +442,15 @@ const GroupChatPage = () => {
         </div>
       </header>
 
-      {/* Summary + After Event cards */}
-      <div className="pt-2">
-        <div className="px-4 flex items-center gap-2 mb-2">
-          <ChatSummaryCard
-            messages={summaryMessages}
-            members={members}
-            groupName={groupName}
-            onCreatePlan={handleSummaryCreatePlan}
-          />
-        </div>
+      {/* Timeline with sticky summary */}
+      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3 relative">
+        <ChatSummaryCard
+          messages={summaryMessages}
+          members={members}
+          groupName={groupName}
+          onCreatePlan={handleSummaryCreatePlan}
+          totalMessageCount={messages.length}
+        />
 
         {pastPlanForMemory && (
           <AfterEventCard
@@ -469,10 +468,6 @@ const GroupChatPage = () => {
             }}
           />
         )}
-      </div>
-
-      {/* Timeline */}
-      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3">
         {timeline.length === 0 && (
           <div className="text-center py-16">
             <p className="text-[13px]" style={{ color: "#7A6A85" }}>Inga meddelanden ännu. Skriv det första!</p>
