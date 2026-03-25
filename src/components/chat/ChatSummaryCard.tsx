@@ -17,6 +17,13 @@ interface SummaryData {
   planSuggestion: { title: string; dateText: string } | null;
 }
 
+const stickyClass = "sticky top-0 z-30 px-4 pt-2 pb-1";
+const stickyStyle = {
+  backgroundColor: "rgba(247, 243, 239, 0.82)",
+  backdropFilter: "blur(12px)",
+  WebkitBackdropFilter: "blur(12px)",
+} as const;
+
 const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount }: ChatSummaryCardProps) => {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -48,7 +55,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
   // No summary yet — show compact pill
   if (!summary && !loading) {
     return (
-      <div className="sticky top-0 z-30 px-4 pt-2 pb-1" style={{ backgroundColor: "#F7F3EF" }}>
+      <div className={stickyClass} style={stickyStyle}>
         <button
           onClick={fetchSummary}
           disabled={messages.length < 3}
@@ -64,8 +71,15 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
 
   if (loading) {
     return (
-      <div className="sticky top-0 z-30 px-4 pt-2 pb-1" style={{ backgroundColor: "#F7F3EF" }}>
-        <div className="p-2.5 rounded-[10px] flex items-center gap-2" style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}>
+      <div className={stickyClass} style={stickyStyle}>
+        <div
+          className="p-2.5 rounded-[10px] flex items-center gap-2"
+          style={{
+            backgroundColor: "rgba(255,255,255,0.85)",
+            border: "1px solid #EDE8F4",
+            boxShadow: "0 2px 12px -2px rgba(60,42,77,0.08)",
+          }}
+        >
           <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ color: "#7A6A85" }} />
           <span className="text-[11px]" style={{ color: "#7A6A85" }}>Sammanfattar...</span>
         </div>
@@ -75,7 +89,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
 
   if (error) {
     return (
-      <div className="sticky top-0 z-30 px-4 pt-2 pb-1" style={{ backgroundColor: "#F7F3EF" }}>
+      <div className={stickyClass} style={stickyStyle}>
         <button onClick={fetchSummary} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium" style={{ backgroundColor: "#EDE8F4", color: "#7A6A85" }}>
           <Sparkles className="w-3 h-3" />
           Försök igen
@@ -87,12 +101,16 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
   if (!summary) return null;
 
   return (
-    <div className="sticky top-0 z-30 px-4 pt-2 pb-1" style={{ backgroundColor: "#F7F3EF" }}>
+    <div className={stickyClass} style={stickyStyle}>
       <motion.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
         className="rounded-[10px] overflow-hidden"
-        style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
+        style={{
+          backgroundColor: "rgba(255,255,255,0.88)",
+          border: "1px solid rgba(237,232,244,0.7)",
+          boxShadow: "0 2px 16px -4px rgba(60,42,77,0.10)",
+        }}
       >
         {/* Collapsed bar — always visible */}
         <button
