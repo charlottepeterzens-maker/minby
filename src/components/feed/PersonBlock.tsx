@@ -156,8 +156,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
       }}
     >
       {/* Collapsed header – always visible */}
-      <button
-        onClick={() => setExpanded(!expanded)}
+      <div
         className="w-full flex items-center gap-3 text-left"
         style={{ padding: "12px 14px" }}
       >
@@ -166,28 +165,39 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
           displayName={person.displayName}
           initials={person.initials}
           size="w-9 h-9"
+          onClick={() => navigate(`/profile/${person.userId}`)}
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-medium text-[13px]" style={{ color: "#2A1A3C", fontFamily: "Lexend" }}>
+            <button
+              onClick={() => navigate(`/profile/${person.userId}`)}
+              className="font-medium text-[13px] hover:underline"
+              style={{ color: "#2A1A3C", fontFamily: "Lexend" }}
+            >
               {person.displayName}
-            </span>
+            </button>
             <span className="text-[10px]" style={{ color: "#B0A0B5" }}>
               {formatRelativeTime(person.lastActivityAt)}
             </span>
           </div>
           {preview && (
-            <p className="text-[11px] truncate mt-0.5" style={{ color: "#7A6A85" }}>
+            <p
+              className="text-[11px] truncate mt-0.5 cursor-pointer"
+              style={{ color: "#7A6A85" }}
+              onClick={() => setExpanded(!expanded)}
+            >
               {preview}
             </p>
           )}
         </div>
-        {expanded ? (
-          <ChevronDown size={16} style={{ color: "#B0A0B5" }} className="shrink-0" />
-        ) : (
-          <ChevronRight size={16} style={{ color: "#B0A0B5" }} className="shrink-0" />
-        )}
-      </button>
+        <button onClick={() => setExpanded(!expanded)} className="shrink-0 p-1">
+          {expanded ? (
+            <ChevronDown size={16} style={{ color: "#B0A0B5" }} />
+          ) : (
+            <ChevronRight size={16} style={{ color: "#B0A0B5" }} />
+          )}
+        </button>
+      </div>
 
       {/* Thinking of you button for quiet persons */}
       {person.isQuiet && !expanded && (

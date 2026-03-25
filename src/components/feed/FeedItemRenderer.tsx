@@ -1,15 +1,20 @@
+import { useNavigate } from "react-router-dom";
 import FeedPostCard from "./FeedPostCard";
 import FeedHangoutCard from "./FeedHangoutCard";
 import FeedTipCard from "./FeedTipCard";
 
 export const FeedItemRenderer = ({ item }: { item: any }) => {
+  const navigate = useNavigate();
   const data = item.data;
+  const userId = data.user_id;
   const profile = {
     display_name: data.profiles?.display_name || data.display_name || null,
     avatar_url: data.profiles?.avatar_url || data.avatar_url || null,
     initials: (data.profiles?.display_name || data.display_name || "?").slice(0, 2).toUpperCase(),
   };
-  const onProfileClick = () => {};
+  const onProfileClick = () => {
+    if (userId) navigate(`/profile/${userId}`);
+  };
 
   switch (item.type) {
     case "posts":
