@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { Plus } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -335,6 +335,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                   ? item.activities.map((a) => ACTIVITY_MAP[a] || a).join(", ")
                   : null;
               const description = item.custom_note || "";
+              const isFromGroup = description.includes("— via ");
               const isSelected = selectedEntry?.id === item.id && sheetOpen;
 
               return (
@@ -374,6 +375,14 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                     >
                       {description}
                     </p>
+                  )}
+                  {isFromGroup && (
+                    <div className="flex items-center gap-1 mt-auto pt-1">
+                      <Users className="w-3 h-3" style={{ color: "#9B8BA5" }} />
+                      <span className="text-[10px]" style={{ color: "#9B8BA5" }}>
+                        {description.split("— via ")[1] || "Sällskap"}
+                      </span>
+                    </div>
                   )}
                 </button>
               );
