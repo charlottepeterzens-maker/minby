@@ -334,15 +334,36 @@ const GroupChatPage = () => {
     if (plan) {
       // Auto-RSVP creator
       await supabase.from("rsvps").insert({ plan_id: plan.id, user_id: user.id, status: "in" });
+      // Bridge to profile "Ses vi?"
+      await supabase.from("hangout_availability").insert({
+        user_id: user.id,
+        date: new Date().toISOString().split("T")[0],
+        activities: [title],
+        custom_note: `${dateText}${location ? ` · ${location}` : ""} — via ${groupName}`,
+        entry_type: "confirmed",
+      });
     }
   };
 
   const handleRsvp = async (planId: string, status: string) => {
     if (!user) return;
-    // Check existing
     const existing = rsvps.find((r) => r.plan_id === planId && r.user_id === user.id);
     if (existing) return;
     await supabase.from("rsvps").insert({ plan_id: planId, user_id: user.id, status });
+
+    // Bridge to profile "Ses vi?" when user says "Jag kan" or "Kanske"
+    if (status === "in" || status === "maybe") {
+      const plan = plans.find((p) => p.id === planId);
+      if (plan) {
+        await supabase.from("hangout_availability").insert({
+          user_id: user.id,
+          date: new Date().toISOString().split("T")[0],
+          activities: [plan.title],
+          custom_note: `${plan.date_text}${plan.location ? ` · ${plan.location}` : ""} — via ${groupName}`,
+          entry_type: status === "in" ? "confirmed" : "available",
+        });
+      }
+    }
   };
 
   const handleVote = async (pollId: string, optionIndex: number) => {
