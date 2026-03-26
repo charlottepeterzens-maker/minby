@@ -313,6 +313,10 @@ const filteredItems = feedItems.filter((item) => {
       <Container className="py-5">
         {/* Guidance card */}
         {(isFirstTime || inviteCompleted) && <FeedGuidanceCard />}
+
+        {/* Empty state */}
+        {!loading && persons.length === 0 ? (
+          <EmptyFeedCard
             onOpenHangout={() => setShowHangoutSheet(true)}
             onOpenInvite={() => setShowInviteDialog(true)}
           />
