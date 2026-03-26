@@ -274,7 +274,7 @@ const filteredItems = feedItems.filter((item) => {
   return (
     <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
       <nav className="sticky top-0 z-50" style={{ backgroundColor: "#F7F3EF" }}>
-        <Container className="pt-5 pb-3">
+        <Container className="pt-5 pb-2">
           <h1 className="font-fraunces text-[20px] font-medium" style={{ color: "#2A1A3C" }}>
             {getGreeting()}, {currentUserName || "du"}.
           </h1>
@@ -285,6 +285,27 @@ const filteredItems = feedItems.filter((item) => {
                 : "Tyst i din by idag – kanske är det din tur?"}
             </p>
           )}
+          {/* Filters — inside sticky nav */}
+          {!isFirstTime && persons.length > 0 && (
+            <div className="flex items-center gap-2 mt-3 overflow-x-auto pb-1">
+              {filters.map((f) => (
+                <button
+                  key={f.value}
+                  onClick={() => setFilter(f.value)}
+                  className="text-xs font-medium shrink-0"
+                  style={{
+                    padding: "6px 14px",
+                    borderRadius: 99,
+                    backgroundColor: filter === f.value ? "#3C2A4D" : "transparent",
+                    color: filter === f.value ? "#F7F3EF" : "#9B8BA5",
+                    border: filter === f.value ? "none" : "1px solid #EDE8E0",
+                  }}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          )}
         </Container>
         <CurvedSeparator />
       </nav>
@@ -292,32 +313,6 @@ const filteredItems = feedItems.filter((item) => {
       <Container className="py-5">
         {/* Guidance card */}
         {(isFirstTime || inviteCompleted) && <FeedGuidanceCard />}
-
-        {/* Filters */}
-        {!isFirstTime && persons.length > 0 && (
-          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
-            {filters.map((f) => (
-              <button
-                key={f.value}
-                onClick={() => setFilter(f.value)}
-                className="text-xs font-medium shrink-0"
-                style={{
-                  padding: "6px 14px",
-                  borderRadius: 99,
-                  backgroundColor: filter === f.value ? "#3C2A4D" : "transparent",
-                  color: filter === f.value ? "#F7F3EF" : "#9B8BA5",
-                  border: filter === f.value ? "none" : "1px solid #EDE8E0",
-                }}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!loading && persons.length === 0 ? (
-          <EmptyFeedCard
             onOpenHangout={() => setShowHangoutSheet(true)}
             onOpenInvite={() => setShowInviteDialog(true)}
           />
