@@ -17,6 +17,7 @@ interface FeedHangoutCardProps {
     custom_note: string | null;
     created_at: string;
     entry_type?: string;
+    isMatch?: boolean;
   };
   profile: {
     display_name: string | null;
