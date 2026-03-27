@@ -135,7 +135,7 @@ const GroupsPage = () => {
                 key={g.id}
                 onClick={() => navigate(`/groups/${g.id}`)}
                 className="w-full flex items-center gap-3 rounded-[16px] p-3 text-left transition-colors hover:opacity-90"
-                style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
+                style={{ backgroundColor: "#FFFFFF" }}
               >
                 <div className="shrink-0 flex items-center justify-center"
                   style={{ width: 42, height: 42, borderRadius: 10, backgroundColor: "#F7F3EF" }}>
@@ -190,11 +190,11 @@ const GroupsPage = () => {
                     <span className="text-lg">👯</span>
                   </div>
                   <div className="absolute left-7 top-0 rounded-xl flex items-center justify-center z-10"
-                    style={{ width: 44, height: 44, backgroundColor: "#FCF0F3", border: "2px solid #F7F3EF" }}>
+                    style={{ width: 44, height: 44, backgroundColor: "#FCF0F3" }}>
                     <span className="text-lg">💬</span>
                   </div>
                   <div className="absolute left-14 top-2 rounded-xl flex items-center justify-center z-20"
-                    style={{ width: 44, height: 44, backgroundColor: "#EAF2E8", border: "2px solid #F7F3EF" }}>
+                    style={{ width: 44, height: 44, backgroundColor: "#EAF2E8" }}>
                     <span className="text-lg">📅</span>
                   </div>
                 </div>

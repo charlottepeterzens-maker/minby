@@ -404,7 +404,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
         <button
           onClick={onOpenInvite}
           className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
-          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
+          style={{ backgroundColor: "#FFFFFF" }}
         >
           <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
             style={{ backgroundColor: "#EDE8F4" }}>
@@ -420,7 +420,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
         <button
           onClick={() => navigate("/profile")}
           className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
-          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
+          style={{ backgroundColor: "#FFFFFF" }}
         >
           <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
             style={{ backgroundColor: "#FCF0F3" }}>
@@ -436,7 +436,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
         <button
           onClick={onOpenHangout}
           className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
-          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
+          style={{ backgroundColor: "#FFFFFF" }}
         >
           <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
             style={{ backgroundColor: "#EAF2E8" }}>
