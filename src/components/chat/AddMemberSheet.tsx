@@ -143,7 +143,7 @@ const AddMemberSheet = ({
                   className="w-full flex items-center gap-3 rounded-[10px] p-2.5 text-left transition-colors"
                   style={{
                     backgroundColor: isSelected ? "#EAF2E8" : "#FFFFFF",
-                    border: `1px solid ${isSelected ? "#B5CCBF" : "#EDE8F4"}`,
+                    border: `1px solid ${isSelected ? "#B5CCBF" : "transparent"}`,
                   }}
                 >
                   <div
