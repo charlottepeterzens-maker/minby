@@ -78,11 +78,17 @@ const FeedPage = () => {
         .limit(200),
       supabase
         .from("hangout_availability")
-        .select("user_id, date, activities, custom_note, created_at")
+        .select("id, user_id, date, activities, custom_note, created_at, entry_type")
         .in("user_id", friendIdArr)
         .gte("date", todayStr)
         .neq("visibility", "private")
         .order("date", { ascending: true }),
+      // Current user's own hangout dates for matching
+      supabase
+        .from("hangout_availability")
+        .select("date")
+        .eq("user_id", user.id)
+        .gte("date", todayStr),
       supabase
         .from("user_tips")
         .select("user_id, id, title, comment, category, url, created_at")
