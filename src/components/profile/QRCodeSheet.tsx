@@ -106,7 +106,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
             <div className="flex flex-col items-center py-6">
               <div
                 className="p-5 rounded-[16px]"
-                style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
+                style={{ backgroundColor: "#FFFFFF" }}
               >
                 <QRCodeSVG
                   value={inviteUrl}

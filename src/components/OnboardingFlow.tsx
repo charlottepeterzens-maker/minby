@@ -113,7 +113,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                   className="w-full text-left"
                   style={{
                     backgroundColor: intent === "meet" ? "#EDE8F4" : "#FFFFFF",
-                    border: intent === "meet" ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                    border: intent === "meet" ? "1.5px solid #3C2A4D" : "none",
                     borderRadius: 8,
                     padding: "14px 16px",
                   }}
@@ -126,7 +126,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                   className="w-full text-left"
                   style={{
                     backgroundColor: intent === "browse" ? "#EDE8F4" : "#FFFFFF",
-                    border: intent === "browse" ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                    border: intent === "browse" ? "1.5px solid #3C2A4D" : "none",
                     borderRadius: 8,
                     padding: "14px 16px",
                   }}
@@ -139,7 +139,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                   className="w-full text-left"
                   style={{
                     backgroundColor: intent === "unsure" ? "#EDE8F4" : "#FFFFFF",
-                    border: intent === "unsure" ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                    border: intent === "unsure" ? "1.5px solid #3C2A4D" : "none",
                     borderRadius: 8,
                     padding: "14px 16px",
                   }}
@@ -172,7 +172,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                   className="w-full text-left"
                   style={{
                     backgroundColor: "#FFFFFF",
-                    border: "1px solid #EDE8E0",
+                     border: "none",
                     borderRadius: 8,
                     padding: "14px 16px",
                   }}
@@ -185,7 +185,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                   className="w-full text-left"
                   style={{
                     backgroundColor: "#FFFFFF",
-                    border: "1px solid #EDE8E0",
+                    border: "none",
                     borderRadius: 8,
                     padding: "14px 16px",
                   }}
