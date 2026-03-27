@@ -36,8 +36,8 @@ const FeedTipCard = ({ tip, profile, onProfileClick }: FeedTipCardProps) => {
 
   return (
     <div
-      className="rounded-xl border p-4"
-      style={{ backgroundColor: "#FFFFFF", borderColor: "#EDE8F4" }}
+      className="rounded-xl p-4"
+      style={{ backgroundColor: "#FFFFFF" }}
     >
       <div className="flex items-center gap-2.5 mb-3">
         <FeedAvatar

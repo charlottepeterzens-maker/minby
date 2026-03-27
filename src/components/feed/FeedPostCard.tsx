@@ -36,7 +36,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
       style={{
         backgroundColor: "#FFFFFF",
         borderRadius: 6,
-        border: "1px solid #DDD5CC",
+        border: "none",
         padding: 16,
       }}
     >
