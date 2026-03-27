@@ -308,7 +308,7 @@ const filteredItems = feedItems.filter((item) => {
                     borderRadius: 99,
                     backgroundColor: filter === f.value ? "#3C2A4D" : "transparent",
                     color: filter === f.value ? "#F7F3EF" : "#9B8BA5",
-                    border: filter === f.value ? "none" : "1px solid #EDE8E0",
+                    border: filter === f.value ? "none" : "none",
                   }}
                 >
                   {f.label}
@@ -384,11 +384,11 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
           <span className="text-xl">🌸</span>
         </div>
         <div className="absolute left-10 top-0 rounded-full flex items-center justify-center z-10"
-          style={{ width: 56, height: 56, backgroundColor: "#FCF0F3", border: "2px solid #F7F3EF" }}>
+          style={{ width: 56, height: 56, backgroundColor: "#FCF0F3" }}>
           <span className="text-xl">🏡</span>
         </div>
         <div className="absolute left-20 top-3 rounded-full flex items-center justify-center z-20"
-          style={{ width: 56, height: 56, backgroundColor: "#EAF2E8", border: "2px solid #F7F3EF" }}>
+          style={{ width: 56, height: 56, backgroundColor: "#EAF2E8" }}>
           <span className="text-xl">☀️</span>
         </div>
       </div>
