@@ -87,8 +87,8 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
     <div
       style={{
         background: "#FFFFFF",
-        border: "1px solid #EDE8E0",
-        borderRadius: 8,
+        border: "none",
+        boxShadow: "0 1px 4px 0 rgba(0,0,0,0.04)",
         padding: "10px 12px",
       }}
     >
@@ -111,7 +111,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
               className="flex-1 text-left"
               style={{
                 background: "#F7F3EF",
-                border: "1px solid #EDE8E0",
+                border: "none",
                 borderRadius: 99,
                 padding: "6px 14px",
                 fontSize: 11,
@@ -138,7 +138,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                   fontSize: 11,
                   padding: "4px 10px",
                   borderRadius: 99,
-                  border: "1px solid #EDE8E0",
+                   border: "none",
                   background: "#F7F3EF",
                   color: "#7A6A85",
                   cursor: "pointer",
@@ -207,7 +207,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                     fontSize: 11,
                     padding: "4px 10px",
                     borderRadius: 99,
-                    border: "1px solid #EDE8E0",
+                    border: "none",
                     background: imageFile ? "#EDE8F4" : "#F7F3EF",
                     color: imageFile ? "#3C2A4D" : "#7A6A85",
                     cursor: "pointer",
@@ -266,7 +266,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                       padding: "4px 10px",
                       borderRadius: 99,
                       background: selectedSection === s.id ? "#EDE8F4" : "#F7F3EF",
-                      border: selectedSection === s.id ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                      border: selectedSection === s.id ? "1.5px solid #3C2A4D" : "none",
                       color: "#3C2A4D",
                       cursor: "pointer",
                     }}

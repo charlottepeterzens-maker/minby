@@ -35,7 +35,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             className="w-full max-w-[320px]"
             style={{
               backgroundColor: "#FFFFFF",
-              border: "1px solid #EDE8F4",
+               border: "none",
               borderRadius: 16,
               padding: 24,
             }}
@@ -82,7 +82,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             className="w-full max-w-[320px]"
             style={{
               backgroundColor: "#FFFFFF",
-              border: "1px solid #EDE8F4",
+               border: "none",
               borderRadius: 16,
               padding: 24,
             }}
@@ -98,7 +98,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 8,
-                  border: intent === "meet" ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                  border: intent === "meet" ? "1.5px solid #3C2A4D" : "none",
                   backgroundColor: intent === "meet" ? "#EDE8F4" : "#FFFFFF",
                 }}
               >
@@ -111,7 +111,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 8,
-                  border: intent === "browse" ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                  border: intent === "browse" ? "1.5px solid #3C2A4D" : "none",
                   backgroundColor: intent === "browse" ? "#EDE8F4" : "#FFFFFF",
                 }}
               >
@@ -124,7 +124,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 8,
-                  border: intent === "unsure" ? "1.5px solid #3C2A4D" : "1px solid #EDE8E0",
+                  border: intent === "unsure" ? "1.5px solid #3C2A4D" : "none",
                   backgroundColor: intent === "unsure" ? "#EDE8F4" : "#FFFFFF",
                 }}
               >
@@ -158,7 +158,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             className="w-full max-w-[320px]"
             style={{
               backgroundColor: "#FFFFFF",
-              border: "1px solid #EDE8F4",
+              border: "none",
               borderRadius: 16,
               padding: 24,
               textAlign: "center",
