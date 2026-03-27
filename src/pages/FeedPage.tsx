@@ -68,7 +68,7 @@ const FeedPage = () => {
     const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
     const todayStr = new Date().toISOString().split("T")[0];
 
-    const [profilesRes, postsRes, hangoutsRes, tipsRes, myHangoutsRes] = await Promise.all([
+    const [profilesRes, postsRes, hangoutsRes, myHangoutsRes, tipsRes] = await Promise.all([
       supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", friendIdArr),
       supabase
         .from("life_posts")
