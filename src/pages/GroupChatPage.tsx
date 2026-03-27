@@ -197,12 +197,26 @@ const GroupChatPage = () => {
     }
   }, [groupId]);
 
+  const fetchReactions = useCallback(async () => {
+    if (!groupId) return;
+    // Fetch reactions for all messages in this group
+    const msgIds = messages.map((m) => m.id);
+    if (msgIds.length === 0) { setMessageReactions([]); return; }
+    const { data } = await (supabase as any)
+      .from("message_reactions").select("*").in("message_id", msgIds);
+    if (data) setMessageReactions(data as MessageReaction[]);
+  }, [groupId, messages]);
+
   useEffect(() => {
     fetchGroupInfo();
     fetchMessages();
     fetchPolls();
     fetchPlans();
   }, [fetchGroupInfo, fetchMessages, fetchPolls, fetchPlans]);
+
+  useEffect(() => {
+    fetchReactions();
+  }, [fetchReactions]);
 
   // --- Realtime ---
   useEffect(() => {
