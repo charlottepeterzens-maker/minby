@@ -68,7 +68,7 @@ const FeedPage = () => {
     const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
     const todayStr = new Date().toISOString().split("T")[0];
 
-    const [profilesRes, postsRes, hangoutsRes, tipsRes] = await Promise.all([
+    const [profilesRes, postsRes, hangoutsRes, myHangoutsRes, tipsRes] = await Promise.all([
       supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", friendIdArr),
       supabase
         .from("life_posts")
@@ -78,11 +78,17 @@ const FeedPage = () => {
         .limit(200),
       supabase
         .from("hangout_availability")
-        .select("user_id, date, activities, custom_note, created_at")
+        .select("id, user_id, date, activities, custom_note, created_at, entry_type")
         .in("user_id", friendIdArr)
         .gte("date", todayStr)
         .neq("visibility", "private")
         .order("date", { ascending: true }),
+      // Current user's own hangout dates for matching
+      supabase
+        .from("hangout_availability")
+        .select("date")
+        .eq("user_id", user.id)
+        .gte("date", todayStr),
       supabase
         .from("user_tips")
         .select("user_id, id, title, comment, category, url, created_at")
@@ -93,6 +99,10 @@ const FeedPage = () => {
     // Build profile map
     const profileMap = new Map<string, { display_name: string | null; avatar_url: string | null }>();
     profilesRes.data?.forEach((p) => profileMap.set(p.user_id, p));
+
+    // Build set of current user's hangout dates for matching
+    const myHangoutDates = new Set<string>();
+    myHangoutsRes.data?.forEach((h: any) => myHangoutDates.add(h.date));
 
     // Group posts by user
     const postsByUser = new Map<string, typeof postsRes.data>();
@@ -198,7 +208,7 @@ const FeedPage = () => {
       items.push({
         type: "hangout",
         created_at: h.created_at,
-        data: h,
+        data: { ...h, isMatch: myHangoutDates.has(h.date) },
       });
     });
 

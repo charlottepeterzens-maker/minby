@@ -45,6 +45,7 @@ export const FeedItemRenderer = ({ item }: { item: any }) => {
             custom_note: data.custom_note,
             created_at: data.created_at,
             entry_type: data.entry_type,
+            isMatch: data.isMatch,
           }}
           profile={profile}
           onProfileClick={onProfileClick}

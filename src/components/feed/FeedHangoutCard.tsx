@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { Sparkles } from "lucide-react";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +18,7 @@ interface FeedHangoutCardProps {
     custom_note: string | null;
     created_at: string;
     entry_type?: string;
+    isMatch?: boolean;
   };
   profile: {
     display_name: string | null;
@@ -120,6 +122,19 @@ const UnifiedHangoutCard = ({
         >
           {formatDate(hangout.date)}
         </p>
+      )}
+
+      {/* Match indicator */}
+      {hangout.isMatch && !isOwn && (
+        <div
+          className="flex items-center gap-1.5 rounded-full px-2.5 py-1 mb-2 w-fit"
+          style={{ backgroundColor: "#F0EAF6" }}
+        >
+          <Sparkles className="w-3 h-3" style={{ color: "#7A5AA6" }} />
+          <span className="text-[11px] font-medium" style={{ color: "#7A5AA6" }}>
+            Du är också ledig!
+          </span>
+        </div>
       )}
 
       {/* Main text */}
