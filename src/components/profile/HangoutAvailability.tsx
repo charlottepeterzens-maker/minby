@@ -237,33 +237,67 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
       />
 
       {entries.length === 0 && !isOwner ? (
-        <div className="flex flex-col items-center py-5">
-          <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
-            style={{ backgroundColor: "#F0EAF6" }}>
+        <motion.div
+          className="flex flex-col items-center py-5"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
+          <motion.div
+            className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
+            style={{ backgroundColor: "#F0EAF6" }}
+            initial={{ scale: 0.6, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 20 }}
+          >
             <span className="text-lg">🌿</span>
-          </div>
+          </motion.div>
           <p className="text-[12px] text-center" style={{ color: "#9B8BA5" }}>
             Inga förslag just nu
           </p>
-        </div>
+        </motion.div>
       ) : entries.length === 0 && isOwner ? (
-        <div className="flex flex-col items-center py-5">
-          {/* Illustration: overlapping soft circles */}
+        <motion.div
+          className="flex flex-col items-center py-5"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        >
           <div className="relative mb-4" style={{ width: 100, height: 50 }}>
-            <div className="absolute left-1 top-0 rounded-full"
-              style={{ width: 36, height: 36, backgroundColor: "#EDE8F4" }} />
-            <div className="absolute left-8 top-1 rounded-full z-10"
-              style={{ width: 36, height: 36, backgroundColor: "#EAF2E8" }} />
-            <div className="absolute left-[54px] top-0 rounded-full z-20"
-              style={{ width: 36, height: 36, backgroundColor: "#FCF0F3" }} />
+            {[
+              { left: 4, top: 0, bg: "#EDE8F4", delay: 0.15 },
+              { left: 32, top: 4, bg: "#EAF2E8", delay: 0.25 },
+              { left: 54, top: 0, bg: "#FCF0F3", delay: 0.35 },
+            ].map((c, i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full"
+                style={{ left: c.left, top: c.top, width: 36, height: 36, backgroundColor: c.bg, zIndex: i }}
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: c.delay, type: "spring", stiffness: 260, damping: 20 }}
+              />
+            ))}
           </div>
-          <p className="text-center font-medium" style={{ fontSize: 13, color: "#3C2A4D" }}>
+          <motion.p
+            className="text-center font-medium"
+            style={{ fontSize: 13, color: "#3C2A4D" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
             Vad vill du hitta på?
-          </p>
-          <p className="text-center mt-1" style={{ fontSize: 12, color: "#7A6A85", maxWidth: 200 }}>
+          </motion.p>
+          <motion.p
+            className="text-center mt-1"
+            style={{ fontSize: 12, color: "#7A6A85", maxWidth: 200 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
             Dela ett datum eller en idé med din krets
-          </p>
-          <button
+          </motion.p>
+          <motion.button
             onClick={() => setShowAdd(true)}
             className="mt-3 text-white font-medium"
             style={{
@@ -272,10 +306,14 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
               padding: "8px 20px",
               fontSize: 13,
             }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.3 }}
+            whileTap={{ scale: 0.95 }}
           >
             Kom igång
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       ) : (
         <>
           {/* Carousel */}
