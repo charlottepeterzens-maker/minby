@@ -79,7 +79,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
             <div className="space-y-2">
               <button onClick={() => setMode("plan")}
                 className="w-full flex items-center gap-3 p-3.5 rounded-[12px] text-left transition-colors hover:opacity-90"
-                style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}>
+                style={{ backgroundColor: "#FFFFFF" }}>
                 <div className="w-9 h-9 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: "#EAF2E8" }}>
                   <CalendarPlus className="w-4 h-4" style={{ color: "#1F4A1A" }} />
                 </div>
@@ -90,7 +90,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
               </button>
               <button onClick={() => setMode("poll")}
                 className="w-full flex items-center gap-3 p-3.5 rounded-[12px] text-left transition-colors hover:opacity-90"
-                style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}>
+                style={{ backgroundColor: "#FFFFFF" }}>
                 <div className="w-9 h-9 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: "#EDE8F4" }}>
                   <BarChart3 className="w-4 h-4" style={{ color: "#3C2A4D" }} />
                 </div>

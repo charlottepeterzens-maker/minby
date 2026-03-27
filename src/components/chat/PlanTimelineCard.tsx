@@ -73,7 +73,7 @@ const PlanTimelineCard = ({
         className="p-3 space-y-2.5"
         style={{
           backgroundColor: "#FFFFFF",
-          border: "1px solid #DDD5CC",
+          border: "none",
           borderRadius: 12,
         }}
       >
