@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo, Fragment } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, SendHorizontal, Plus, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut, Reply, X } from "lucide-react";
+import { ChevronLeft, SendHorizontal, Plus, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut, Reply, X, SmilePlus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
@@ -12,12 +12,20 @@ import ChatSummaryCard from "@/components/chat/ChatSummaryCard";
 import AfterEventCard from "@/components/chat/AfterEventCard";
 import DateSuggestionCard from "@/components/chat/DateSuggestionCard";
 import GroupStatusLine from "@/components/chat/GroupStatusLine";
+import MessageReactions from "@/components/chat/MessageReactions";
 import { recognizeDates, type RecognizedDate } from "@/utils/dateRecognition";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import AddMemberSheet from "@/components/chat/AddMemberSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
+
+interface MessageReaction {
+  id: string;
+  message_id: string;
+  user_id: string;
+  emoji: string;
+}
 
 interface Message {
   id: string;
@@ -117,6 +125,8 @@ const GroupChatPage = () => {
   const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
+  const [messageReactions, setMessageReactions] = useState<MessageReaction[]>([]);
+  const [reactionPickerMsgId, setReactionPickerMsgId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -187,12 +197,26 @@ const GroupChatPage = () => {
     }
   }, [groupId]);
 
+  const fetchReactions = useCallback(async () => {
+    if (!groupId) return;
+    // Fetch reactions for all messages in this group
+    const msgIds = messages.map((m) => m.id);
+    if (msgIds.length === 0) { setMessageReactions([]); return; }
+    const { data } = await (supabase as any)
+      .from("message_reactions").select("*").in("message_id", msgIds);
+    if (data) setMessageReactions(data as MessageReaction[]);
+  }, [groupId, messages]);
+
   useEffect(() => {
     fetchGroupInfo();
     fetchMessages();
     fetchPolls();
     fetchPlans();
   }, [fetchGroupInfo, fetchMessages, fetchPolls, fetchPlans]);
+
+  useEffect(() => {
+    fetchReactions();
+  }, [fetchReactions]);
 
   // --- Realtime ---
   useEffect(() => {
@@ -214,6 +238,16 @@ const GroupChatPage = () => {
         (payload) => {
           const nr = payload.new as Rsvp;
           setRsvps((prev) => prev.some((r) => r.id === nr.id) ? prev : [...prev, nr]);
+        })
+      .on("postgres_changes", { event: "*", schema: "public", table: "message_reactions" },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const nr = payload.new as MessageReaction;
+            setMessageReactions((prev) => prev.some((r) => r.id === nr.id) ? prev : [...prev, nr]);
+          } else if (payload.eventType === "DELETE") {
+            const old = payload.old as { id: string };
+            setMessageReactions((prev) => prev.filter((r) => r.id !== old.id));
+          }
         })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -502,6 +536,8 @@ const GroupChatPage = () => {
             const member = getMember(msg.user_id);
             const repliedMsg = msg.reply_to_id ? messages.find((m) => m.id === msg.reply_to_id) : null;
             const repliedMember = repliedMsg ? getMember(repliedMsg.user_id) : null;
+            const msgReactions = messageReactions.filter((r) => r.message_id === msg.id);
+            const showPicker = reactionPickerMsgId === msg.id;
             return (
               <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"} group`}>
                 {repliedMsg && (
@@ -514,35 +550,65 @@ const GroupChatPage = () => {
                 )}
                 <div className="flex items-center gap-1">
                   {isOwn && (
-                    <button
-                      onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-                      className="opacity-40 hover:opacity-100 active:opacity-100 transition-opacity p-1 rounded-full"
-                      style={{ color: "#9B8BA5" }}
-                    >
-                      <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
-                    </button>
+                    <>
+                      <button
+                        onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
+                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        style={{ color: "#9B8BA5" }}
+                      >
+                        <SmilePlus className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
+                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        style={{ color: "#9B8BA5" }}
+                      >
+                        <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
+                      </button>
+                    </>
                   )}
-                  <div className="px-3 py-2" style={{
-                    maxWidth: 200,
-                    borderRadius: isOwn ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
-                    backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
-                    color: isOwn ? "#FFFFFF" : "#3C2A4D",
-                    border: isOwn ? "none" : "1px solid #EDE8F4",
-                    fontSize: 13, lineHeight: "18px",
-                  }}>
+                  <div
+                    onDoubleClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
+                    className="px-3 py-2 select-none"
+                    style={{
+                      maxWidth: 200,
+                      borderRadius: isOwn ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
+                      backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
+                      color: isOwn ? "#FFFFFF" : "#3C2A4D",
+                      border: isOwn ? "none" : "1px solid #EDE8F4",
+                      fontSize: 13, lineHeight: "18px",
+                    }}
+                  >
                     {msg.content}
                   </div>
                   {!isOwn && (
-                    <button
-                      onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-                      className="opacity-40 hover:opacity-100 active:opacity-100 transition-opacity p-1 rounded-full"
-                      style={{ color: "#9B8BA5" }}
-                    >
-                      <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
-                    </button>
+                    <>
+                      <button
+                        onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
+                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        style={{ color: "#9B8BA5" }}
+                      >
+                        <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
+                      </button>
+                      <button
+                        onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
+                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        style={{ color: "#9B8BA5" }}
+                      >
+                        <SmilePlus className="w-3.5 h-3.5" />
+                      </button>
+                    </>
                   )}
                 </div>
-                <div className="flex items-center gap-1.5 mt-1 px-1">
+                <MessageReactions
+                  messageId={msg.id}
+                  isOwn={isOwn}
+                  reactions={msgReactions}
+                  onReactionsChange={fetchReactions}
+                  pickerOpen={showPicker}
+                  onPickerToggle={(open) => setReactionPickerMsgId(open ? msg.id : null)}
+                />
+                <div className="flex items-center gap-1.5 mt-0.5 px-1">
                   {!isOwn && <span className="text-[10px]" style={{ color: "#7A6A85" }}>{member?.display_name || "Anonym"}</span>}
                   <span className="text-[10px]" style={{ color: "#9B8BA5" }}>{formatTime(msg.created_at)}</span>
                 </div>
