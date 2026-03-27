@@ -962,7 +962,6 @@ const FriendsPage = () => {
                           className="w-full pl-9 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#9B8BA5]"
                           style={{
                             backgroundColor: "#FFFFFF",
-                            backgroundColor: "#FFFFFF",
                             borderRadius: 8,
                             color: "#3C2A4D",
                           }}
