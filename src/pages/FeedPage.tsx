@@ -375,62 +375,79 @@ const filteredItems = feedItems.filter((item) => {
 const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => void; onOpenInvite: () => void }) => {
   const navigate = useNavigate();
 
-  const cards = [
-    {
-      bg: "#EDE8F4",
-      title: "Bjud in din närmaste krets",
-      desc: "De du faktiskt vill hålla nära – på ett lugnare ställe.",
-      action: onOpenInvite,
-      cta: "Skicka inbjudan",
-    },
-    {
-      bg: "#FCF0F3",
-      title: "Dela något från din vardag",
-      desc: "Berätta vad som händer hos dig",
-      action: () => navigate("/profile"),
-      cta: "Dela något",
-    },
-    {
-      bg: "#EAF2E8",
-      title: "Föreslå en träff",
-      desc: "Se när det passar att ses",
-      action: onOpenHangout,
-      cta: "Föreslå",
-    },
-  ];
-
   return (
-    <div>
-      <h2 className="font-fraunces text-[18px] font-medium text-center mb-1" style={{ color: "#3C2A4D" }}>
-        Din by är tyst just nu.
+    <div className="flex flex-col items-center pt-6 pb-4">
+      {/* Illustration: three overlapping circles with people silhouettes */}
+      <div className="relative mb-6" style={{ width: 140, height: 80 }}>
+        <div className="absolute left-0 top-2 rounded-full flex items-center justify-center"
+          style={{ width: 56, height: 56, backgroundColor: "#EDE8F4" }}>
+          <span className="text-xl">🌸</span>
+        </div>
+        <div className="absolute left-10 top-0 rounded-full flex items-center justify-center z-10"
+          style={{ width: 56, height: 56, backgroundColor: "#FCF0F3", border: "2px solid #F7F3EF" }}>
+          <span className="text-xl">🏡</span>
+        </div>
+        <div className="absolute left-20 top-3 rounded-full flex items-center justify-center z-20"
+          style={{ width: 56, height: 56, backgroundColor: "#EAF2E8", border: "2px solid #F7F3EF" }}>
+          <span className="text-xl">☀️</span>
+        </div>
+      </div>
+
+      <h2 className="font-fraunces text-[18px] font-medium text-center mb-1.5" style={{ color: "#3C2A4D" }}>
+        Din by väntar på dig
       </h2>
-      <p className="font-light text-[14px] text-center mb-5" style={{ color: "#7A6A85" }}>
-        Sätt igång – välj ett första steg:
+      <p className="text-[13px] text-center mb-6 leading-relaxed" style={{ color: "#7A6A85", maxWidth: 260 }}>
+        Bjud in dina närmaste, dela ett ögonblick från din vardag, eller föreslå en träff.
       </p>
-      <div className="space-y-3">
-        {cards.map((c, i) => (
-          <button
-            key={i}
-            onClick={c.action}
-            className="w-full flex items-center gap-3 text-left"
-            style={{
-              backgroundColor: "#FFFFFF",
-              border: "1px solid #EDE8E0",
-              borderRadius: 8,
-              padding: "14px 16px",
-            }}
-          >
-            <div className="w-2 h-2 rounded-full shrink-0 mt-2" style={{ backgroundColor: c.bg }} />
-            <div>
-              <p className="font-medium text-[14px]" style={{ color: "#3C2A4D" }}>
-                {c.title}
-              </p>
-              <span className="text-[12px]" style={{ color: "#3C2A4D", marginTop: 4, display: "inline-block" }}>
-                {c.cta} →
-              </span>
-            </div>
-          </button>
-        ))}
+
+      <div className="w-full space-y-2.5">
+        <button
+          onClick={onOpenInvite}
+          className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
+          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
+        >
+          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: "#EDE8F4" }}>
+            <span className="text-base">💌</span>
+          </div>
+          <div className="flex-1">
+            <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>Bjud in din närmaste krets</p>
+            <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>De du faktiskt vill hålla nära</p>
+          </div>
+          <span className="text-[11px] font-medium shrink-0" style={{ color: "#7A5AA6" }}>Bjud in →</span>
+        </button>
+
+        <button
+          onClick={() => navigate("/profile")}
+          className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
+          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
+        >
+          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: "#FCF0F3" }}>
+            <span className="text-base">📸</span>
+          </div>
+          <div className="flex-1">
+            <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>Dela från din vardag</p>
+            <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>Berätta vad som händer hos dig</p>
+          </div>
+          <span className="text-[11px] font-medium shrink-0" style={{ color: "#7A5AA6" }}>Dela →</span>
+        </button>
+
+        <button
+          onClick={onOpenHangout}
+          className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
+          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
+        >
+          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+            style={{ backgroundColor: "#EAF2E8" }}>
+            <span className="text-base">☕</span>
+          </div>
+          <div className="flex-1">
+            <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>Föreslå en träff</p>
+            <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>Se när det passar att ses</p>
+          </div>
+          <span className="text-[11px] font-medium shrink-0" style={{ color: "#7A5AA6" }}>Föreslå →</span>
+        </button>
       </div>
     </div>
   );
