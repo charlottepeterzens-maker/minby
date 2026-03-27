@@ -536,6 +536,8 @@ const GroupChatPage = () => {
             const member = getMember(msg.user_id);
             const repliedMsg = msg.reply_to_id ? messages.find((m) => m.id === msg.reply_to_id) : null;
             const repliedMember = repliedMsg ? getMember(repliedMsg.user_id) : null;
+            const msgReactions = messageReactions.filter((r) => r.message_id === msg.id);
+            const showPicker = reactionPickerMsgId === msg.id;
             return (
               <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"} group`}>
                 {repliedMsg && (
@@ -548,35 +550,65 @@ const GroupChatPage = () => {
                 )}
                 <div className="flex items-center gap-1">
                   {isOwn && (
-                    <button
-                      onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-                      className="opacity-40 hover:opacity-100 active:opacity-100 transition-opacity p-1 rounded-full"
-                      style={{ color: "#9B8BA5" }}
-                    >
-                      <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
-                    </button>
+                    <>
+                      <button
+                        onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
+                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        style={{ color: "#9B8BA5" }}
+                      >
+                        <SmilePlus className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
+                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        style={{ color: "#9B8BA5" }}
+                      >
+                        <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
+                      </button>
+                    </>
                   )}
-                  <div className="px-3 py-2" style={{
-                    maxWidth: 200,
-                    borderRadius: isOwn ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
-                    backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
-                    color: isOwn ? "#FFFFFF" : "#3C2A4D",
-                    border: isOwn ? "none" : "1px solid #EDE8F4",
-                    fontSize: 13, lineHeight: "18px",
-                  }}>
+                  <div
+                    onDoubleClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
+                    className="px-3 py-2 select-none"
+                    style={{
+                      maxWidth: 200,
+                      borderRadius: isOwn ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
+                      backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
+                      color: isOwn ? "#FFFFFF" : "#3C2A4D",
+                      border: isOwn ? "none" : "1px solid #EDE8F4",
+                      fontSize: 13, lineHeight: "18px",
+                    }}
+                  >
                     {msg.content}
                   </div>
                   {!isOwn && (
-                    <button
-                      onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-                      className="opacity-40 hover:opacity-100 active:opacity-100 transition-opacity p-1 rounded-full"
-                      style={{ color: "#9B8BA5" }}
-                    >
-                      <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
-                    </button>
+                    <>
+                      <button
+                        onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
+                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        style={{ color: "#9B8BA5" }}
+                      >
+                        <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
+                      </button>
+                      <button
+                        onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
+                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        style={{ color: "#9B8BA5" }}
+                      >
+                        <SmilePlus className="w-3.5 h-3.5" />
+                      </button>
+                    </>
                   )}
                 </div>
-                <div className="flex items-center gap-1.5 mt-1 px-1">
+                <MessageReactions
+                  messageId={msg.id}
+                  isOwn={isOwn}
+                  reactions={msgReactions}
+                  onReactionsChange={fetchReactions}
+                  pickerOpen={showPicker}
+                  onPickerToggle={(open) => setReactionPickerMsgId(open ? msg.id : null)}
+                />
+                <div className="flex items-center gap-1.5 mt-0.5 px-1">
                   {!isOwn && <span className="text-[10px]" style={{ color: "#7A6A85" }}>{member?.display_name || "Anonym"}</span>}
                   <span className="text-[10px]" style={{ color: "#9B8BA5" }}>{formatTime(msg.created_at)}</span>
                 </div>
