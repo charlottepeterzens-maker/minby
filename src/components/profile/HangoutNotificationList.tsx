@@ -142,7 +142,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
         className="rounded-[12px] overflow-hidden"
         style={{
           backgroundColor: "#FFFFFF",
-          border: "1px solid #EDE8F4",
+          border: "none",
         }}
       >
         <div className="max-h-[200px] overflow-y-auto">

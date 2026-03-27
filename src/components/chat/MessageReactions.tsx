@@ -62,7 +62,7 @@ const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange, pick
               className="flex items-center gap-0.5 rounded-full px-1.5 py-0.5 transition-all"
               style={{
                 backgroundColor: data.userReacted ? "#EDE8F4" : "#F7F3EF",
-                border: data.userReacted ? "1px solid #C9B8D8" : "1px solid #EDE8E0",
+                border: data.userReacted ? "1px solid #C9B8D8" : "none",
               }}
             >
               <span style={{ fontSize: 11 }}>{emoji}</span>
@@ -89,7 +89,7 @@ const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange, pick
               className="absolute z-50 flex gap-1 rounded-full px-2 py-1.5 shadow-lg"
               style={{
                 backgroundColor: "#FFFFFF",
-                border: "1px solid #EDE8F4",
+                border: "none",
                 bottom: "100%",
                 marginBottom: 4,
                 [isOwn ? "right" : "left"]: 0,

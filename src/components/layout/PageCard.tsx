@@ -10,7 +10,7 @@ const PageCard = React.forwardRef<HTMLDivElement, PageCardProps>(
     <div
       ref={ref}
       className={cn(
-        "bg-white rounded-xl p-4 border border-[hsl(var(--border))] shadow-[0_1px_3px_0_hsl(0_0%_0%/0.04)]",
+        "bg-white rounded-xl p-4 shadow-[0_1px_4px_0_hsl(0_0%_0%/0.05)]",
         className
       )}
       {...props}

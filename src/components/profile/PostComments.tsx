@@ -147,7 +147,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
             gap: 8,
             marginBottom: 10,
             paddingTop: 10,
-            borderTop: "1px solid #EDE8E0",
+            borderTop: "1px solid #F0ECE7",
           }}
         >
           {comments.map((c) => (
@@ -236,7 +236,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
             flex: 1,
             height: 30,
             background: "#F7F3EF",
-            border: focused ? "1px solid #C9B8D8" : "1px solid #EDE8E0",
+            border: focused ? "1px solid #C9B8D8" : "none",
             borderRadius: 99,
             padding: "0 12px",
             fontSize: 11,

@@ -253,9 +253,9 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             <div className="absolute left-1 top-0 rounded-full"
               style={{ width: 36, height: 36, backgroundColor: "#EDE8F4" }} />
             <div className="absolute left-8 top-1 rounded-full z-10"
-              style={{ width: 36, height: 36, backgroundColor: "#EAF2E8", border: "2px solid #F7F3EF" }} />
+              style={{ width: 36, height: 36, backgroundColor: "#EAF2E8" }} />
             <div className="absolute left-[54px] top-0 rounded-full z-20"
-              style={{ width: 36, height: 36, backgroundColor: "#FCF0F3", border: "2px solid #F7F3EF" }} />
+              style={{ width: 36, height: 36, backgroundColor: "#FCF0F3" }} />
           </div>
           <p className="text-center font-medium" style={{ fontSize: 13, color: "#3C2A4D" }}>
             Vad vill du hitta på?
@@ -302,7 +302,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                       borderRadius: 8,
                       padding: 16,
                       backgroundColor: "#FFFFFF",
-                      border: "1px solid #EDE8F4",
+                      border: "none",
                     }}
                   >
                     <div className="flex flex-wrap gap-1 mb-1">
@@ -354,7 +354,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                     borderRadius: 8,
                     padding: 16,
                     backgroundColor: "#FFFFFF",
-                    border: isSelected ? "1.5px solid #3C2A4D" : "1px solid #EDE8F4",
+                    border: isSelected ? "1.5px solid #3C2A4D" : "none",
                   }}
                 >
                   <p

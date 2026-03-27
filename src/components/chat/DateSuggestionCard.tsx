@@ -34,7 +34,7 @@ const DateSuggestionCard = ({
       className="mx-4 mb-2 p-3 space-y-2"
       style={{
         backgroundColor: "#FFFFFF",
-        border: "1px solid #EDE8F4",
+        boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
         borderRadius: 12,
       }}
     >

@@ -13,7 +13,7 @@ const FeedGuidanceCard = () => {
       className="w-full text-left mb-4"
       style={{
         backgroundColor: "#FFFFFF",
-        border: "1px solid #EDE8F4",
+        boxShadow: "0 1px 4px 0 rgba(0,0,0,0.05)",
         borderRadius: 16,
         padding: "16px 18px",
       }}

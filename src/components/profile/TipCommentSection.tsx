@@ -175,7 +175,7 @@ const TipCommentSection = ({
             maxLength={300}
             style={{
               flex: 1,
-              border: "1px solid #EDE8F4",
+              border: "none",
               borderRadius: 8,
               padding: "8px 12px",
               fontSize: 12,

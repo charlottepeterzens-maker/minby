@@ -62,7 +62,7 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
   };
 
   return (
-    <div className="bg-card rounded-[14px] border border-border overflow-hidden">
+    <div className="bg-card rounded-[14px] overflow-hidden">
       <div className="m-3 rounded-[10px] bg-dusty-rose-bg p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
@@ -85,7 +85,7 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
             {isOwn && (
               <span
                 className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
-                style={{ backgroundColor: '#F7F3EF', border: '1px solid #DDD5CC', color: '#7A6A85' }}
+                style={{ backgroundColor: '#F7F3EF', color: '#7A6A85' }}
               >
                 Ditt inlägg
               </span>
@@ -105,10 +105,10 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
             whileTap={{ scale: 0.92 }}
             animate={hugSent ? { scale: [1, 1.12, 1] } : {}}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="inline-flex items-center gap-2 text-[13px] font-medium px-4 py-2 rounded-full border transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 text-[13px] font-medium px-4 py-2 rounded-full transition-colors disabled:opacity-50"
             style={{
               backgroundColor: hugSent ? "#EDE8F4" : "transparent",
-              borderColor: hugSent ? "#C9B8D8" : "#EDE8E0",
+              borderColor: "transparent",
               color: hugSent ? "#3C2A4D" : "#7A6A85",
             }}
           >

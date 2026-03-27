@@ -468,7 +468,7 @@ const GroupChatPage = () => {
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
                 <div className="absolute right-0 top-full mt-1 z-50 py-1.5 rounded-[12px] shadow-lg min-w-[180px]"
-                  style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}>
+                  style={{ backgroundColor: "#FFFFFF", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}>
                   <button onClick={() => { setMenuOpen(false); setAddMemberOpen(true); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
                     style={{ color: "#3C2A4D" }}>
@@ -483,7 +483,7 @@ const GroupChatPage = () => {
                       Bjud in till sällskapet
                     </button>
                   } />
-                  <div className="mx-3 my-1" style={{ borderTop: "1px solid #EDE8F4" }} />
+                  <div className="mx-3 my-1" style={{ borderTop: "1px solid #F0ECE7" }} />
                   <button onClick={() => { setMenuOpen(false); setLeaveConfirmOpen(true); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
                     style={{ color: "#A32D2D" }}>
@@ -575,7 +575,7 @@ const GroupChatPage = () => {
                       borderRadius: isOwn ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
                       backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
                       color: isOwn ? "#FFFFFF" : "#3C2A4D",
-                      border: isOwn ? "none" : "1px solid #EDE8F4",
+                      border: isOwn ? "none" : "none",
                       fontSize: 13, lineHeight: "18px",
                     }}
                   >
@@ -681,7 +681,7 @@ const GroupChatPage = () => {
             </button>
           </div>
         )}
-        <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "#FFFFFF", borderRadius: 20, border: "1px solid #EDE8F4" }}>
+        <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "#FFFFFF", borderRadius: 20 }}>
           <button onClick={() => { setActionSheetPrefill(null); setActionSheetOpen(true); }} className="shrink-0 flex items-center justify-center">
             <Plus className="w-5 h-5" style={{ color: "#3C2A4D" }} />
           </button>

@@ -76,7 +76,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
           className="p-2.5 rounded-[10px] flex items-center gap-2"
           style={{
             backgroundColor: "rgba(255,255,255,0.85)",
-            border: "1px solid #EDE8F4",
+            border: "none",
             boxShadow: "0 2px 12px -2px rgba(60,42,77,0.08)",
           }}
         >
@@ -108,7 +108,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
         className="rounded-[10px] overflow-hidden"
         style={{
           backgroundColor: "rgba(255,255,255,0.88)",
-          border: "1px solid rgba(237,232,244,0.7)",
+          border: "none",
           boxShadow: "0 2px 16px -4px rgba(60,42,77,0.10)",
         }}
       >

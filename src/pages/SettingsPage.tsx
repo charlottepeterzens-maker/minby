@@ -208,7 +208,7 @@ const SettingsPage = () => {
 
       <Container className="py-6 space-y-4">
         {/* Language */}
-        <Card className="rounded-[14px] border border-border">
+        <Card className="rounded-[14px]">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("language")}</CardTitle>
           </CardHeader>
@@ -226,7 +226,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Password */}
-        <Card className="rounded-[14px] border border-border">
+        <Card className="rounded-[14px]">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("changePassword")}</CardTitle>
           </CardHeader>
@@ -263,7 +263,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Notifications */}
-        <Card className="rounded-[14px] border border-border">
+        <Card className="rounded-[14px]">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">Notiser</CardTitle>
           </CardHeader>
@@ -315,7 +315,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Data & Privacy */}
-        <Card className="rounded-[14px] border border-border">
+        <Card className="rounded-[14px]">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("howWeUseData")}</CardTitle>
           </CardHeader>
@@ -332,7 +332,7 @@ const SettingsPage = () => {
 
         {/* Dev tools - only for charlotte */}
         {user?.email?.includes("charlotte.peterzens") && (
-          <Card className="rounded-[14px] border border-border">
+          <Card className="rounded-[14px]">
             <CardHeader className="pb-2">
               <CardTitle className="text-xs text-muted-foreground font-body font-medium">Utvecklarverktyg</CardTitle>
             </CardHeader>
@@ -346,7 +346,7 @@ const SettingsPage = () => {
         <Button
           variant="outline"
           onClick={handleLogout}
-          className="w-full rounded-[10px] border border-border text-muted-foreground hover:text-foreground hover:bg-muted"
+          className="w-full rounded-[10px] text-muted-foreground hover:text-foreground hover:bg-muted"
         >
           <LogOut className="w-4 h-4 mr-2" strokeWidth={1.5} /> {t("logOut")}
         </Button>
