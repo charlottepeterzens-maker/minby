@@ -237,23 +237,28 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
       />
 
       {entries.length === 0 && !isOwner ? (
-        <p className="text-sm text-muted-foreground text-center py-3">{t("noAvailability")}</p>
+        <div className="flex flex-col items-center py-5">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
+            style={{ backgroundColor: "#F0EAF6" }}>
+            <span className="text-lg">🌿</span>
+          </div>
+          <p className="text-[12px] text-center" style={{ color: "#9B8BA5" }}>
+            Inga förslag just nu
+          </p>
+        </div>
       ) : entries.length === 0 && isOwner ? (
-        <div className="flex flex-col items-center py-4">
-          {/* Three overlapping circles */}
-          <div className="flex items-center justify-center mb-3" style={{ height: 40 }}>
-            <div
-              className="rounded-full"
-              style={{ width: 32, height: 32, backgroundColor: "#EDE8F4", marginRight: -10, zIndex: 1 }}
-            />
-            <div
-              className="rounded-full"
-              style={{ width: 32, height: 32, backgroundColor: "#EAF2E8", marginRight: -10, zIndex: 2 }}
-            />
-            <div className="rounded-full" style={{ width: 32, height: 32, backgroundColor: "#FCF0F3", zIndex: 3 }} />
+        <div className="flex flex-col items-center py-5">
+          {/* Illustration: overlapping soft circles */}
+          <div className="relative mb-4" style={{ width: 100, height: 50 }}>
+            <div className="absolute left-1 top-0 rounded-full"
+              style={{ width: 36, height: 36, backgroundColor: "#EDE8F4" }} />
+            <div className="absolute left-8 top-1 rounded-full z-10"
+              style={{ width: 36, height: 36, backgroundColor: "#EAF2E8", border: "2px solid #F7F3EF" }} />
+            <div className="absolute left-[54px] top-0 rounded-full z-20"
+              style={{ width: 36, height: 36, backgroundColor: "#FCF0F3", border: "2px solid #F7F3EF" }} />
           </div>
           <p className="text-center font-medium" style={{ fontSize: 13, color: "#3C2A4D" }}>
-            Vad vill du hitta på den här veckan?
+            Vad vill du hitta på?
           </p>
           <p className="text-center mt-1" style={{ fontSize: 12, color: "#7A6A85", maxWidth: 200 }}>
             Dela ett datum eller en idé med din krets

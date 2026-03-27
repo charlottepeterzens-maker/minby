@@ -182,12 +182,27 @@ const GroupsPage = () => {
             />
 
             {groups.length === 0 && (
-              <div className="text-center py-12">
-                <p className="font-display text-base" style={{ color: "#7A6A85" }}>
-                  Inga sällskap ännu
-                </p>
-                <p className="text-[12px] mt-1" style={{ color: "#9B8BA5" }}>
-                  Skapa ett sällskap och bjud in dina vänner
+              <div className="flex flex-col items-center pt-8 pb-4">
+                {/* Illustration */}
+                <div className="relative mb-5" style={{ width: 100, height: 60 }}>
+                  <div className="absolute left-0 top-1 rounded-xl flex items-center justify-center"
+                    style={{ width: 44, height: 44, backgroundColor: "#EDE8F4" }}>
+                    <span className="text-lg">👯</span>
+                  </div>
+                  <div className="absolute left-7 top-0 rounded-xl flex items-center justify-center z-10"
+                    style={{ width: 44, height: 44, backgroundColor: "#FCF0F3", border: "2px solid #F7F3EF" }}>
+                    <span className="text-lg">💬</span>
+                  </div>
+                  <div className="absolute left-14 top-2 rounded-xl flex items-center justify-center z-20"
+                    style={{ width: 44, height: 44, backgroundColor: "#EAF2E8", border: "2px solid #F7F3EF" }}>
+                    <span className="text-lg">📅</span>
+                  </div>
+                </div>
+                <h3 className="font-fraunces text-[16px] font-medium mb-1" style={{ color: "#3C2A4D" }}>
+                  Skapa ditt första sällskap
+                </h3>
+                <p className="text-[12px] text-center leading-relaxed mb-1" style={{ color: "#7A6A85", maxWidth: 220 }}>
+                  Samla gänget, planera träffar och chatta – allt på ett ställe.
                 </p>
               </div>
             )}
