@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -182,29 +183,49 @@ const GroupsPage = () => {
             />
 
             {groups.length === 0 && (
-              <div className="flex flex-col items-center pt-8 pb-4">
-                {/* Illustration */}
+              <motion.div
+                className="flex flex-col items-center pt-8 pb-4"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              >
                 <div className="relative mb-5" style={{ width: 100, height: 60 }}>
-                  <div className="absolute left-0 top-1 rounded-xl flex items-center justify-center"
-                    style={{ width: 44, height: 44, backgroundColor: "#EDE8F4" }}>
-                    <span className="text-lg">👯</span>
-                  </div>
-                  <div className="absolute left-7 top-0 rounded-xl flex items-center justify-center z-10"
-                    style={{ width: 44, height: 44, backgroundColor: "#FCF0F3" }}>
-                    <span className="text-lg">💬</span>
-                  </div>
-                  <div className="absolute left-14 top-2 rounded-xl flex items-center justify-center z-20"
-                    style={{ width: 44, height: 44, backgroundColor: "#EAF2E8" }}>
-                    <span className="text-lg">📅</span>
-                  </div>
+                  {[
+                    { left: 0, top: 4, bg: "#EDE8F4", emoji: "👯", delay: 0.15 },
+                    { left: 28, top: 0, bg: "#FCF0F3", emoji: "💬", delay: 0.25 },
+                    { left: 56, top: 8, bg: "#EAF2E8", emoji: "📅", delay: 0.35 },
+                  ].map((c, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute rounded-xl flex items-center justify-center"
+                      style={{ left: c.left, top: c.top, width: 44, height: 44, backgroundColor: c.bg, zIndex: i }}
+                      initial={{ opacity: 0, scale: 0.6 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: c.delay, type: "spring", stiffness: 260, damping: 20 }}
+                    >
+                      <span className="text-lg">{c.emoji}</span>
+                    </motion.div>
+                  ))}
                 </div>
-                <h3 className="font-fraunces text-[16px] font-medium mb-1" style={{ color: "#3C2A4D" }}>
+                <motion.h3
+                  className="font-fraunces text-[16px] font-medium mb-1"
+                  style={{ color: "#3C2A4D" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                >
                   Skapa ditt första sällskap
-                </h3>
-                <p className="text-[12px] text-center leading-relaxed mb-1" style={{ color: "#7A6A85", maxWidth: 220 }}>
+                </motion.h3>
+                <motion.p
+                  className="text-[12px] text-center leading-relaxed mb-1"
+                  style={{ color: "#7A6A85", maxWidth: 220 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.4 }}
+                >
                   Samla gänget, planera träffar och chatta – allt på ett ställe.
-                </p>
-              </div>
+                </motion.p>
+              </motion.div>
             )}
           </div>
         )}

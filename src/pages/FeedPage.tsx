@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
@@ -374,82 +375,82 @@ const filteredItems = feedItems.filter((item) => {
 
 const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => void; onOpenInvite: () => void }) => {
   const navigate = useNavigate();
+  const items = [
+    { onClick: onOpenInvite, bg: "#EDE8F4", emoji: "💌", title: "Bjud in din närmaste krets", sub: "De du faktiskt vill hålla nära", cta: "Bjud in →", delay: 0.45 },
+    { onClick: () => navigate("/profile"), bg: "#FCF0F3", emoji: "📸", title: "Dela från din vardag", sub: "Berätta vad som händer hos dig", cta: "Dela →", delay: 0.55 },
+    { onClick: onOpenHangout, bg: "#EAF2E8", emoji: "☕", title: "Föreslå en träff", sub: "Se när det passar att ses", cta: "Föreslå →", delay: 0.65 },
+  ];
 
   return (
-    <div className="flex flex-col items-center pt-6 pb-4">
-      {/* Illustration: three overlapping circles with people silhouettes */}
+    <motion.div
+      className="flex flex-col items-center pt-6 pb-4"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="relative mb-6" style={{ width: 140, height: 80 }}>
-        <div className="absolute left-0 top-2 rounded-full flex items-center justify-center"
-          style={{ width: 56, height: 56, backgroundColor: "#EDE8F4" }}>
-          <span className="text-xl">🌸</span>
-        </div>
-        <div className="absolute left-10 top-0 rounded-full flex items-center justify-center z-10"
-          style={{ width: 56, height: 56, backgroundColor: "#FCF0F3" }}>
-          <span className="text-xl">🏡</span>
-        </div>
-        <div className="absolute left-20 top-3 rounded-full flex items-center justify-center z-20"
-          style={{ width: 56, height: 56, backgroundColor: "#EAF2E8" }}>
-          <span className="text-xl">☀️</span>
-        </div>
+        {[
+          { left: 0, top: 8, bg: "#EDE8F4", emoji: "🌸", delay: 0.15 },
+          { left: 40, top: 0, bg: "#FCF0F3", emoji: "🏡", delay: 0.25 },
+          { left: 80, top: 12, bg: "#EAF2E8", emoji: "☀️", delay: 0.35 },
+        ].map((c, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full flex items-center justify-center"
+            style={{ left: c.left, top: c.top, width: 56, height: 56, backgroundColor: c.bg, zIndex: i }}
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: c.delay, type: "spring", stiffness: 260, damping: 20 }}
+          >
+            <span className="text-xl">{c.emoji}</span>
+          </motion.div>
+        ))}
       </div>
 
-      <h2 className="font-fraunces text-[18px] font-medium text-center mb-1.5" style={{ color: "#3C2A4D" }}>
+      <motion.h2
+        className="font-fraunces text-[18px] font-medium text-center mb-1.5"
+        style={{ color: "#3C2A4D" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3, duration: 0.4 }}
+      >
         Din by väntar på dig
-      </h2>
-      <p className="text-[13px] text-center mb-6 leading-relaxed" style={{ color: "#7A6A85", maxWidth: 260 }}>
+      </motion.h2>
+      <motion.p
+        className="text-[13px] text-center mb-6 leading-relaxed"
+        style={{ color: "#7A6A85", maxWidth: 260 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4, duration: 0.4 }}
+      >
         Bjud in dina närmaste, dela ett ögonblick från din vardag, eller föreslå en träff.
-      </p>
+      </motion.p>
 
       <div className="w-full space-y-2.5">
-        <button
-          onClick={onOpenInvite}
-          className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
-          style={{ backgroundColor: "#FFFFFF" }}
-        >
-          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-            style={{ backgroundColor: "#EDE8F4" }}>
-            <span className="text-base">💌</span>
-          </div>
-          <div className="flex-1">
-            <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>Bjud in din närmaste krets</p>
-            <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>De du faktiskt vill hålla nära</p>
-          </div>
-          <span className="text-[11px] font-medium shrink-0" style={{ color: "#7A5AA6" }}>Bjud in →</span>
-        </button>
-
-        <button
-          onClick={() => navigate("/profile")}
-          className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
-          style={{ backgroundColor: "#FFFFFF" }}
-        >
-          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-            style={{ backgroundColor: "#FCF0F3" }}>
-            <span className="text-base">📸</span>
-          </div>
-          <div className="flex-1">
-            <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>Dela från din vardag</p>
-            <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>Berätta vad som händer hos dig</p>
-          </div>
-          <span className="text-[11px] font-medium shrink-0" style={{ color: "#7A5AA6" }}>Dela →</span>
-        </button>
-
-        <button
-          onClick={onOpenHangout}
-          className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
-          style={{ backgroundColor: "#FFFFFF" }}
-        >
-          <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-            style={{ backgroundColor: "#EAF2E8" }}>
-            <span className="text-base">☕</span>
-          </div>
-          <div className="flex-1">
-            <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>Föreslå en träff</p>
-            <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>Se när det passar att ses</p>
-          </div>
-          <span className="text-[11px] font-medium shrink-0" style={{ color: "#7A5AA6" }}>Föreslå →</span>
-        </button>
+        {items.map((item, i) => (
+          <motion.button
+            key={i}
+            onClick={item.onClick}
+            className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
+            style={{ backgroundColor: "#FFFFFF" }}
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: item.delay, duration: 0.35, ease: "easeOut" }}
+            whileTap={{ scale: 0.97 }}
+          >
+            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+              style={{ backgroundColor: item.bg }}>
+              <span className="text-base">{item.emoji}</span>
+            </div>
+            <div className="flex-1">
+              <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>{item.title}</p>
+              <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>{item.sub}</p>
+            </div>
+            <span className="text-[11px] font-medium shrink-0" style={{ color: "#7A5AA6" }}>{item.cta}</span>
+          </motion.button>
+        ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
