@@ -100,6 +100,10 @@ const FeedPage = () => {
     const profileMap = new Map<string, { display_name: string | null; avatar_url: string | null }>();
     profilesRes.data?.forEach((p) => profileMap.set(p.user_id, p));
 
+    // Build set of current user's hangout dates for matching
+    const myHangoutDates = new Set<string>();
+    myHangoutsRes.data?.forEach((h: any) => myHangoutDates.add(h.date));
+
     // Group posts by user
     const postsByUser = new Map<string, typeof postsRes.data>();
     postsRes.data?.forEach((p: any) => {
