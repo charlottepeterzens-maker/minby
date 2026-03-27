@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,28 +17,27 @@ interface Props {
   isOwn: boolean;
   reactions: Reaction[];
   onReactionsChange: () => void;
+  pickerOpen: boolean;
+  onPickerToggle: (open: boolean) => void;
 }
 
-const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange }: Props) => {
+const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange, pickerOpen, onPickerToggle }: Props) => {
   const { user } = useAuth();
-  const [pickerOpen, setPickerOpen] = useState(false);
 
-  // Group reactions by emoji
-  const grouped = reactions.reduce<Record<string, { count: number; userReacted: boolean; ids: string[] }>>((acc, r) => {
-    if (!acc[r.emoji]) acc[r.emoji] = { count: 0, userReacted: false, ids: [] };
+  const grouped = reactions.reduce<Record<string, { count: number; userReacted: boolean }>>((acc, r) => {
+    if (!acc[r.emoji]) acc[r.emoji] = { count: 0, userReacted: false };
     acc[r.emoji].count++;
-    acc[r.emoji].ids.push(r.id);
     if (r.user_id === user?.id) acc[r.emoji].userReacted = true;
     return acc;
   }, {});
 
   const handleReact = async (emoji: string) => {
     if (!user) return;
-    setPickerOpen(false);
+    onPickerToggle(false);
 
     const existing = reactions.find((r) => r.user_id === user.id && r.emoji === emoji);
     if (existing) {
-      await supabase.from("message_reactions").delete().eq("id", existing.id);
+      await supabase.from("message_reactions" as any).delete().eq("id", existing.id);
     } else {
       await (supabase as any).from("message_reactions").insert({
         message_id: messageId,
@@ -64,7 +63,6 @@ const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange }: Pr
               style={{
                 backgroundColor: data.userReacted ? "#EDE8F4" : "#F7F3EF",
                 border: data.userReacted ? "1px solid #C9B8D8" : "1px solid #EDE8E0",
-                fontSize: 12,
               }}
             >
               <span style={{ fontSize: 11 }}>{emoji}</span>
@@ -82,7 +80,7 @@ const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange }: Pr
       <AnimatePresence>
         {pickerOpen && (
           <>
-            <div className="fixed inset-0 z-40" onClick={() => setPickerOpen(false)} />
+            <div className="fixed inset-0 z-40" onClick={() => onPickerToggle(false)} />
             <motion.div
               initial={{ opacity: 0, scale: 0.8, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -122,9 +120,3 @@ const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange }: Pr
 };
 
 export default MessageReactions;
-
-// Hook to expose picker toggle
-export const useReactionPicker = () => {
-  const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
-  return { activeMessageId, setActiveMessageId };
-};
