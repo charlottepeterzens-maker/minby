@@ -125,6 +125,8 @@ const GroupChatPage = () => {
   const [addMemberOpen, setAddMemberOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
+  const [messageReactions, setMessageReactions] = useState<MessageReaction[]>([]);
+  const [reactionPickerMsgId, setReactionPickerMsgId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
