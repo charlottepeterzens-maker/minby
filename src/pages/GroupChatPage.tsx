@@ -239,6 +239,16 @@ const GroupChatPage = () => {
           const nr = payload.new as Rsvp;
           setRsvps((prev) => prev.some((r) => r.id === nr.id) ? prev : [...prev, nr]);
         })
+      .on("postgres_changes", { event: "*", schema: "public", table: "message_reactions" },
+        (payload) => {
+          if (payload.eventType === "INSERT") {
+            const nr = payload.new as MessageReaction;
+            setMessageReactions((prev) => prev.some((r) => r.id === nr.id) ? prev : [...prev, nr]);
+          } else if (payload.eventType === "DELETE") {
+            const old = payload.old as { id: string };
+            setMessageReactions((prev) => prev.filter((r) => r.id !== old.id));
+          }
+        })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [groupId]);
