@@ -568,7 +568,7 @@ const FriendsPage = () => {
         className="relative flex items-center gap-3 p-3 transition-colors hover:opacity-90"
         style={{
           backgroundColor: "#FFFFFF",
-          border: isClose ? "1.5px solid #C9B8D8" : "1px solid #EDE8E0",
+          border: isClose ? "1.5px solid #C9B8D8" : "none",
           borderRadius: 8,
         }}
       >
@@ -624,7 +624,7 @@ const FriendsPage = () => {
             className="absolute right-3 top-12 z-20 py-1"
             style={{
               backgroundColor: "#FFFFFF",
-              border: "1px solid #EDE8E0",
+              border: "none",
               borderRadius: 8,
               minWidth: 200,
               boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
@@ -690,7 +690,7 @@ const FriendsPage = () => {
         </Container>
 
         {/* Tabs */}
-        <Container className="flex gap-0" style={{ borderBottom: "1px solid #EDE8E0" }}>
+        <Container className="flex gap-0" style={{ borderBottom: "1px solid #F0ECE7" }}>
           <button
             onClick={() => setActiveTab("krets")}
             className="flex-1 pb-2.5 text-[13px] font-medium text-center transition-colors relative"
@@ -741,7 +741,7 @@ const FriendsPage = () => {
                   onChange={(e) => setPeopleSearch(e.target.value)}
                   placeholder="Sök på namn..."
                   className="w-full pl-10 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#9B8BA5] font-display"
-                  style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8, color: "#3C2A4D" }}
+                  style={{ backgroundColor: "#FFFFFF", border: "none", borderRadius: 8, color: "#3C2A4D" }}
                 />
               </div>
 
@@ -761,7 +761,7 @@ const FriendsPage = () => {
                       <div
                         key={r.user_id}
                         className="flex items-center gap-3 p-3"
-                        style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8 }}
+                        style={{ backgroundColor: "#FFFFFF", borderRadius: 8 }}
                       >
                         <div
                           className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
@@ -863,7 +863,7 @@ const FriendsPage = () => {
                         <div
                           key={r.id}
                           className="flex items-center gap-3 p-3"
-                          style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8 }}
+                          style={{ backgroundColor: "#FFFFFF", borderRadius: 8 }}
                         >
                           <button
                             onClick={() => navigate(`/profile/${r.from_user_id}`)}
@@ -962,7 +962,7 @@ const FriendsPage = () => {
                           className="w-full pl-9 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#9B8BA5]"
                           style={{
                             backgroundColor: "#FFFFFF",
-                            border: "1px solid #EDE8E0",
+                            backgroundColor: "#FFFFFF",
                             borderRadius: 8,
                             color: "#3C2A4D",
                           }}
@@ -1012,7 +1012,7 @@ const FriendsPage = () => {
                     key={g.id}
                     onClick={() => navigate(`/groups/${g.id}`)}
                     className="w-full flex items-center gap-3 p-3 text-left transition-colors hover:opacity-90"
-                    style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8E0", borderRadius: 8 }}
+                    style={{ backgroundColor: "#FFFFFF", borderRadius: 8 }}
                   >
                     <div
                       className="shrink-0 flex items-center justify-center"
