@@ -208,7 +208,7 @@ const FeedPage = () => {
       items.push({
         type: "hangout",
         created_at: h.created_at,
-        data: h,
+        data: { ...h, isMatch: myHangoutDates.has(h.date) },
       });
     });
 
