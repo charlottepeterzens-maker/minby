@@ -124,6 +124,19 @@ const UnifiedHangoutCard = ({
         </p>
       )}
 
+      {/* Match indicator */}
+      {hangout.isMatch && !isOwn && (
+        <div
+          className="flex items-center gap-1.5 rounded-full px-2.5 py-1 mb-2 w-fit"
+          style={{ backgroundColor: "#F0EAF6" }}
+        >
+          <Sparkles className="w-3 h-3" style={{ color: "#7A5AA6" }} />
+          <span className="text-[11px] font-medium" style={{ color: "#7A5AA6" }}>
+            Du är också ledig!
+          </span>
+        </div>
+      )}
+
       {/* Main text */}
       <p
         className="text-[14px] leading-relaxed line-clamp-2"
