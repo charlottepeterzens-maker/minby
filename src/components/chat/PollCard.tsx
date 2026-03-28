@@ -53,7 +53,7 @@ const PollCard = ({
           className="text-[13px] font-medium leading-snug"
           style={{ color: "#3C2A4D" }}
         >
-          📊 {question}
+          {question}
         </p>
 
         {/* Options */}

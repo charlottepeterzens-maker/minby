@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { UserPlus, PenLine, CalendarDays } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
@@ -376,9 +377,9 @@ const filteredItems = feedItems.filter((item) => {
 const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => void; onOpenInvite: () => void }) => {
   const navigate = useNavigate();
   const items = [
-    { onClick: onOpenInvite, bg: "#EDE8F4", emoji: "💌", title: "Bjud in din närmaste krets", sub: "De du faktiskt vill hålla nära", cta: "Bjud in →", delay: 0.45 },
-    { onClick: () => navigate("/profile"), bg: "#FCF0F3", emoji: "📸", title: "Dela från din vardag", sub: "Berätta vad som händer hos dig", cta: "Dela →", delay: 0.55 },
-    { onClick: onOpenHangout, bg: "#EAF2E8", emoji: "☕", title: "Föreslå en träff", sub: "Se när det passar att ses", cta: "Föreslå →", delay: 0.65 },
+    { onClick: onOpenInvite, bg: "#EDE8F4", icon: UserPlus, title: "Bjud in din närmaste krets", sub: "De du faktiskt vill hålla nära", cta: "Bjud in →", delay: 0.45 },
+    { onClick: () => navigate("/profile"), bg: "#FCF0F3", icon: PenLine, title: "Dela från din vardag", sub: "Berätta vad som händer hos dig", cta: "Dela →", delay: 0.55 },
+    { onClick: onOpenHangout, bg: "#EAF2E8", icon: CalendarDays, title: "Föreslå en träff", sub: "Se när det passar att ses", cta: "Föreslå →", delay: 0.65 },
   ];
 
   return (
@@ -390,9 +391,9 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
     >
       <div className="relative mb-6" style={{ width: 140, height: 80 }}>
         {[
-          { left: 0, top: 8, bg: "#EDE8F4", emoji: "🌸", delay: 0.15 },
-          { left: 40, top: 0, bg: "#FCF0F3", emoji: "🏡", delay: 0.25 },
-          { left: 80, top: 12, bg: "#EAF2E8", emoji: "☀️", delay: 0.35 },
+          { left: 0, top: 8, bg: "#EDE8F4", delay: 0.15 },
+          { left: 40, top: 0, bg: "#FCF0F3", delay: 0.25 },
+          { left: 80, top: 12, bg: "#EAF2E8", delay: 0.35 },
         ].map((c, i) => (
           <motion.div
             key={i}
@@ -402,7 +403,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: c.delay, type: "spring", stiffness: 260, damping: 20 }}
           >
-            <span className="text-xl">{c.emoji}</span>
+            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: "rgba(60,42,77,0.1)" }} />
           </motion.div>
         ))}
       </div>
@@ -440,7 +441,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
           >
             <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
               style={{ backgroundColor: item.bg }}>
-              <span className="text-base">{item.emoji}</span>
+              <item.icon className="w-5 h-5" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
             </div>
             <div className="flex-1">
               <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>{item.title}</p>

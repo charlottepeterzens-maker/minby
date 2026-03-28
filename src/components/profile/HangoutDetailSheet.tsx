@@ -207,7 +207,7 @@ const HangoutDetailSheet = ({
       subscribePush();
     }
 
-    toast({ title: status === "yes" ? "Du är med! 💛" : "Kanske – vi ser!" });
+    toast({ title: status === "yes" ? "Du är med!" : "Kanske – vi ser!" });
     await fetchDetails();
   };
 
@@ -360,7 +360,7 @@ const HangoutDetailSheet = ({
                   className="w-full py-2.5 text-[14px] font-medium text-white disabled:opacity-60 transition-colors"
                   style={{ backgroundColor: "#3C2A4D", borderRadius: 99 }}
                 >
-                  {isSelfTagged ? "Du är med! 💛" : "Jag kan"}
+                  {isSelfTagged ? "Du är med!" : "Jag kan"}
                 </button>
 
                 {/* Secondary actions row */}
