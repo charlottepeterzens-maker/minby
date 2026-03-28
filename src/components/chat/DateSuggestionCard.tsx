@@ -35,7 +35,7 @@ const DateSuggestionCard = ({
       style={{
         backgroundColor: "hsl(var(--color-surface-card))",
         boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
-        borderRadius: 12,
+        borderRadius: 8,
       }}
     >
       <p className="text-[12px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>

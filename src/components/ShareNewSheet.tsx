@@ -277,7 +277,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
             <div>
               <Label className="text-sm font-medium text-muted-foreground">{t("section")}</Label>
               <Select value={selectedSection} onValueChange={setSelectedSection}>
-                <SelectTrigger className="mt-1.5 rounded-xl">
+                <SelectTrigger className="mt-1.5 rounded-lg">
                   <SelectValue placeholder={t("chooseSection")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -293,12 +293,12 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder={t("shareUpdatePlaceholder")}
-                className="mt-1.5 rounded-xl bg-muted/50 min-h-[100px]"
+                className="mt-1.5 rounded-lg bg-muted/50 min-h-[100px]"
               />
             </div>
             <div className="flex gap-2 pt-2">
-              <Button variant="outline" onClick={() => setShareType(null)} className="rounded-xl flex-1">{t("back")}</Button>
-              <Button onClick={handlePostLifeUpdate} disabled={!selectedSection || !content || loading} className="rounded-xl flex-1">
+              <Button variant="outline" onClick={() => setShareType(null)} className="rounded-lg flex-1">{t("back")}</Button>
+              <Button onClick={handlePostLifeUpdate} disabled={!selectedSection || !content || loading} className="rounded-lg flex-1">
                 {t("share")}
               </Button>
             </div>
@@ -312,7 +312,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-full justify-start text-left font-normal rounded-xl",
+                      "w-full justify-start text-left font-normal rounded-lg",
                       !selectedDate && "text-muted-foreground"
                     )}
                   >
@@ -359,13 +359,13 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                 value={customNote}
                 onChange={(e) => setCustomNote(e.target.value)}
                 placeholder={t("customNote")}
-                className="text-sm rounded-xl"
+                className="text-sm rounded-lg"
                 maxLength={100}
               />
 
               <Button
                 size="sm"
-                className="w-full rounded-xl"
+                className="w-full rounded-lg"
                 disabled={!selectedDate || loading}
                 onClick={handleSaveAvailability}
               >
@@ -418,7 +418,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
             )}
 
             <div className="pt-2">
-              <Button variant="outline" onClick={() => setShareType(null)} className="rounded-xl w-full">{t("back")}</Button>
+              <Button variant="outline" onClick={() => setShareType(null)} className="rounded-lg w-full">{t("back")}</Button>
             </div>
           </div>
         ) : (
@@ -426,7 +426,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
             <div>
               <Label className="text-sm font-medium text-muted-foreground">{t("group")}</Label>
               <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-                <SelectTrigger className="mt-1.5 rounded-xl">
+                <SelectTrigger className="mt-1.5 rounded-lg">
                   <SelectValue placeholder={t("chooseGroup")} />
                 </SelectTrigger>
                 <SelectContent>
@@ -438,15 +438,15 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
             </div>
             <div>
               <Label className="text-sm font-medium text-muted-foreground">{t("whatsThePlan")}</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Cinema night, brunch..." className="mt-1.5 rounded-xl bg-muted/50" />
+              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Cinema night, brunch..." className="mt-1.5 rounded-lg bg-muted/50" />
             </div>
             <div>
               <Label className="text-sm font-medium text-muted-foreground">{t("when")}</Label>
-              <Input value={dateText} onChange={(e) => setDateText(e.target.value)} placeholder="Saturday, next week..." className="mt-1.5 rounded-xl bg-muted/50" />
+              <Input value={dateText} onChange={(e) => setDateText(e.target.value)} placeholder="Saturday, next week..." className="mt-1.5 rounded-lg bg-muted/50" />
             </div>
             <div>
               <Label className="text-sm font-medium text-muted-foreground">{t("whereOptional")}</Label>
-              <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="My place, the park..." className="mt-1.5 rounded-xl bg-muted/50" />
+              <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="My place, the park..." className="mt-1.5 rounded-lg bg-muted/50" />
             </div>
             <div>
               <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t("vibe")}</Label>
@@ -465,8 +465,8 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
               </div>
             </div>
             <div className="flex gap-2 pt-2">
-              <Button variant="outline" onClick={() => setShareType(null)} className="rounded-xl flex-1">{t("back")}</Button>
-              <Button onClick={handleCreateMeeting} disabled={!selectedGroup || !title || !dateText || loading} className="rounded-xl flex-1">
+              <Button variant="outline" onClick={() => setShareType(null)} className="rounded-lg flex-1">{t("back")}</Button>
+              <Button onClick={handleCreateMeeting} disabled={!selectedGroup || !title || !dateText || loading} className="rounded-lg flex-1">
                 {t("suggest")}
               </Button>
             </div>

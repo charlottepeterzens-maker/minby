@@ -89,7 +89,7 @@ const UnifiedHangoutCard = ({
 
   return (
     <div
-      className="rounded-xl p-4"
+      className="rounded-lg p-4"
       style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
     >
       {/* Header: avatar + name + subtitle */}
@@ -275,7 +275,7 @@ const GroupedActivityCard = ({
 
   return (
     <div
-      className="rounded-xl p-4"
+      className="rounded-lg p-4"
       style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
     >
       <div className="flex items-center gap-2.5 mb-3">

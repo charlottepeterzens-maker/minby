@@ -45,7 +45,7 @@ const NotificationList = ({ notifications, onClick, onMarkAllRead }: Props) => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
-        className="mb-4 rounded-xl p-3"
+        className="mb-4 rounded-lg p-3"
         style={{
           backgroundColor: "hsl(var(--color-surface-card))",
           border: "1px solid #EDE8F4",

@@ -36,7 +36,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             style={{
               backgroundColor: "hsl(var(--color-surface-card))",
                border: "none",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 24,
             }}
           >
@@ -54,7 +54,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               style={{
                 backgroundColor: "hsl(var(--color-text-primary))",
                 color: "#fff",
-                borderRadius: 12,
+                borderRadius: 8,
                 height: 44,
                 border: "none",
               }}
@@ -83,7 +83,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             style={{
               backgroundColor: "hsl(var(--color-surface-card))",
                border: "none",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 24,
             }}
           >
@@ -139,7 +139,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               style={{
                 backgroundColor: "hsl(var(--color-text-primary))",
                 color: "#fff",
-                borderRadius: 12,
+                borderRadius: 8,
                 height: 44,
                 border: "none",
                 opacity: intent ? 1 : 0.5,
@@ -159,7 +159,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             style={{
               backgroundColor: "hsl(var(--color-surface-card))",
               border: "none",
-              borderRadius: 12,
+              borderRadius: 8,
               padding: 24,
               textAlign: "center",
             }}
@@ -174,7 +174,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               style={{
                 backgroundColor: "hsl(var(--color-text-primary))",
                 color: "#fff",
-                borderRadius: 12,
+                borderRadius: 8,
                 height: 44,
                 border: "none",
               }}

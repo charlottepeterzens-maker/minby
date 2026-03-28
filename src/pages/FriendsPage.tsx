@@ -793,7 +793,7 @@ const FriendsPage = () => {
                             onClick={() => handleSendFriendRequest(r.user_id)}
                             disabled={sendingTo === r.user_id}
                             className="shrink-0 px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                            style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 12 }}
+                            style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
                           >
                             Lägg till i min krets
                           </button>
@@ -828,7 +828,7 @@ const FriendsPage = () => {
                 <button
                   onClick={() => fetchData()}
                   className="px-4 py-1.5 text-[12px] font-medium"
-                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 12 }}
+                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
                 >
                   Försök igen
                 </button>
@@ -893,7 +893,7 @@ const FriendsPage = () => {
                               onClick={() => handleAccept(r.id, r.from_user_id)}
                               disabled={respondingId === r.id}
                               className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                              style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF", borderRadius: 12 }}
+                              style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF", borderRadius: 8 }}
                             >
                               Ja, gärna
                             </button>
@@ -901,7 +901,7 @@ const FriendsPage = () => {
                               onClick={() => handleDecline(r.id)}
                               disabled={respondingId === r.id}
                               className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                              style={{ backgroundColor: "hsl(var(--color-surface))", color: "hsl(var(--color-accent-red))", borderRadius: 12 }}
+                              style={{ backgroundColor: "hsl(var(--color-surface))", color: "hsl(var(--color-accent-red))", borderRadius: 8 }}
                             >
                               Inte nu
                             </button>

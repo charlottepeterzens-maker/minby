@@ -35,7 +35,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
     <div
       style={{
         backgroundColor: "hsl(var(--color-surface-card))",
-        borderRadius: 12,
+        borderRadius: 8,
         border: "none",
         padding: 16,
       }}

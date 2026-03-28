@@ -345,7 +345,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       style={{
                         width: 28,
                         height: 28,
-                        borderRadius: 12,
+                        borderRadius: 8,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -364,7 +364,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       style={{
                         width: 28,
                         height: 28,
-                        borderRadius: 12,
+                        borderRadius: 8,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",

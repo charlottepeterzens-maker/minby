@@ -433,7 +433,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
           <motion.button
             key={i}
             onClick={item.onClick}
-            className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
+            className="w-full flex items-center gap-3.5 rounded-lg p-4 text-left transition-all hover:shadow-sm"
             style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}

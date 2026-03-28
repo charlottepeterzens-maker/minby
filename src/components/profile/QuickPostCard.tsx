@@ -226,7 +226,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                     style={{
                       width: 26,
                       height: 26,
-                      borderRadius: 12,
+                      borderRadius: 8,
                       background: photoLayout === "large" ? "#3C2A4D" : "#fff",
                       border: "1px solid #3C2A4D",
                     }}
@@ -240,7 +240,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                     style={{
                       width: 26,
                       height: 26,
-                      borderRadius: 12,
+                      borderRadius: 8,
                       background: photoLayout === "small" ? "#3C2A4D" : "#fff",
                       border: "1px solid #3C2A4D",
                     }}

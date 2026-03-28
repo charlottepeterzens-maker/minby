@@ -99,7 +99,7 @@ const NotificationsPage = () => {
         {loading ? (
           <div className="space-y-3">
             {[1,2,3].map(i => (
-              <div key={i} className="bg-muted rounded-xl h-16 animate-pulse" />
+              <div key={i} className="bg-muted rounded-lg h-16 animate-pulse" />
             ))}
           </div>
         ) : notifications.length === 0 ? (
@@ -113,7 +113,7 @@ const NotificationsPage = () => {
               <div
                 key={n.id}
                 onClick={() => markRead(n.id)}
-                className={`w-full text-left p-4 rounded-xl transition-colors duration-150 cursor-pointer ${
+                className={`w-full text-left p-4 rounded-lg transition-colors duration-150 cursor-pointer ${
                   n.read ? "bg-card" : "bg-lavender-bg"
                 }`}
               >
@@ -130,7 +130,7 @@ const NotificationsPage = () => {
                   {n.type === "friend_request" && !n.read && n.from_user_id && (
                     <Button
                       size="sm"
-                      className="text-xs h-7 gap-1 shrink-0 rounded-xl bg-salvia-bg text-accent-foreground border border-accent hover:bg-accent"
+                      className="text-xs h-7 gap-1 shrink-0 rounded-lg bg-salvia-bg text-accent-foreground border border-accent hover:bg-accent"
                       variant="outline"
                       onClick={(e) => { e.stopPropagation(); acceptFriendRequest(n); }}
                     >

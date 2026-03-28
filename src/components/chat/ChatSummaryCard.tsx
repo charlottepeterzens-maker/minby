@@ -73,7 +73,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
     return (
       <div className={stickyClass} style={stickyStyle}>
         <div
-          className="p-2.5 rounded-xl flex items-center gap-2"
+          className="p-2.5 rounded-lg flex items-center gap-2"
           style={{
             backgroundColor: "rgba(255,255,255,0.85)",
             border: "none",
@@ -105,7 +105,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
       <motion.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl overflow-hidden"
+        className="rounded-lg overflow-hidden"
         style={{
           backgroundColor: "rgba(255,255,255,0.88)",
           border: "none",

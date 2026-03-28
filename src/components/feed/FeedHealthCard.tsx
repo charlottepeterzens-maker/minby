@@ -62,8 +62,8 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
   };
 
   return (
-    <div className="bg-card rounded-xl overflow-hidden">
-      <div className="m-3 rounded-xl bg-dusty-rose-bg p-4">
+    <div className="bg-card rounded-lg overflow-hidden">
+      <div className="m-3 rounded-lg bg-dusty-rose-bg p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
             <FeedAvatar

@@ -67,7 +67,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mx-4 mb-2 p-3 rounded-xl space-y-2.5"
+      className="mx-4 mb-2 p-3 rounded-lg space-y-2.5"
       style={{ backgroundColor: "hsl(var(--color-surface-card))", border: "1px solid #EDE8F4" }}
     >
       <div className="flex items-start justify-between">
