@@ -371,7 +371,7 @@ const filteredItems = feedItems.filter((item) => {
       />
 
       <BottomNav />
-    </div>
+    </PageTransition>
   );
 };
 
