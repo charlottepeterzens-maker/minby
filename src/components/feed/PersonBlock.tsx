@@ -107,7 +107,7 @@ const PostImage = ({ imageUrl }: { imageUrl: string }) => {
   if (!signedUrl) return null;
   return (
     <div className="relative w-full rounded-lg overflow-hidden" style={{ maxHeight: 120 }}>
-      <img src={signedUrl} alt="" className="w-full h-full object-cover" style={{ maxHeight: 120 }} />
+      <img src={signedUrl} alt="Profilbild" className="w-full h-full object-cover" style={{ maxHeight: 120 }} />
       <div className="absolute inset-0" style={{ background: "linear-gradient(transparent 40%, rgba(0,0,0,0.4))" }} />
     </div>
   );

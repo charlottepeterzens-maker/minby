@@ -485,7 +485,7 @@ const SignedImg = ({
   const Tag = onClick ? "button" : "div";
   return (
     <Tag onClick={onClick} className={`block ${className || ""}`} style={style}>
-      <img src={url} alt="" className="w-full h-full object-cover" style={{ borderRadius: "inherit" }} />
+      <img src={url} alt="Profilbild" className="w-full h-full object-cover" style={{ borderRadius: "inherit" }} />
     </Tag>
   );
 };

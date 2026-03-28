@@ -581,7 +581,7 @@ const FriendsPage = () => {
             style={{ backgroundColor: "#EDE8F4" }}
           >
             {resolveAvatarUrl(f.avatar_url) ? (
-              <img src={resolveAvatarUrl(f.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
+              <img src={resolveAvatarUrl(f.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
             ) : (
               <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
                 {f.initial}
@@ -769,7 +769,7 @@ const FriendsPage = () => {
                           style={{ backgroundColor: "#EDE8F4" }}
                         >
                           {resolveAvatarUrl(r.avatar_url) ? (
-                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
+                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
                           ) : (
                             <span className="text-[12px] font-display font-medium" style={{ color: "#3C2A4D" }}>
                               {r.initial}
@@ -872,7 +872,7 @@ const FriendsPage = () => {
                             style={{ backgroundColor: "#EDE8F4" }}
                           >
                             {resolveAvatarUrl(r.avatar_url) ? (
-                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
+                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
                             ) : (
                               <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
                                 {r.initial}
