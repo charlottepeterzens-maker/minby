@@ -285,7 +285,7 @@ const filteredItems = feedItems.filter((item) => {
   ];
 
   return (
-    <div className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+    <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       <nav className="sticky top-0 z-50" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="pt-5 pb-2">
           <h1 className="font-fraunces text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
