@@ -115,7 +115,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
         >
           {/* Background: image or color */}
           {hasImage ? (
-            <img src={signedUrl!} alt={section.name} className="absolute inset-0 w-full h-full object-cover" />
+            <img src={signedUrl!} alt={section.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
           ) : (
             <div className="absolute inset-0" style={{ backgroundColor: bgColor }} />
           )}

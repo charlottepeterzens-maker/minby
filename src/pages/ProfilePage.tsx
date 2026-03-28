@@ -318,7 +318,7 @@ const ProfilePage = () => {
               onClick={isOwnProfile ? () => fileInputRef.current?.click() : undefined}
             >
               {resolveAvatarUrl(profile?.avatar_url ?? null) ? (
-                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt={`Profilbild för ${profile?.display_name || 'användare'}`} className="w-full h-full object-cover" />
+                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt={`Profilbild för ${profile?.display_name || 'användare'}`} loading="lazy" className="w-full h-full object-cover" />
               ) : (
                 <span className="text-xl font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                   {initial}

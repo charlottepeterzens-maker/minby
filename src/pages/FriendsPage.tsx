@@ -582,7 +582,7 @@ const FriendsPage = () => {
             style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
           >
             {resolveAvatarUrl(f.avatar_url) ? (
-              <img src={resolveAvatarUrl(f.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
+              <img src={resolveAvatarUrl(f.avatar_url)!} alt="Profilbild" loading="lazy" className="w-full h-full rounded-full object-cover" />
             ) : (
               <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                 {f.initial}
@@ -770,7 +770,7 @@ const FriendsPage = () => {
                           style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                         >
                           {resolveAvatarUrl(r.avatar_url) ? (
-                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
+                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" loading="lazy" className="w-full h-full rounded-full object-cover" />
                           ) : (
                             <span className="text-[12px] font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                               {r.initial}
@@ -873,7 +873,7 @@ const FriendsPage = () => {
                             style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                           >
                             {resolveAvatarUrl(r.avatar_url) ? (
-                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
+                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" loading="lazy" className="w-full h-full rounded-full object-cover" />
                             ) : (
                               <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                                 {r.initial}

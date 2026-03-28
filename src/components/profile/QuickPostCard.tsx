@@ -101,7 +101,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
               style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
             >
               {resolveAvatarUrl(profile?.avatar_url ?? null) ? (
-                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="Profilbild" className="w-full h-full object-cover" />
+                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="Profilbild" loading="lazy" className="w-full h-full object-cover" />
               ) : (
                 <span className="text-[10px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>{initial}</span>
               )}

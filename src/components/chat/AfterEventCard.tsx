@@ -86,7 +86,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
 
       {imagePreview && (
         <div className="relative">
-          <img src={imagePreview} alt="" className="w-full h-24 object-cover rounded-[8px]" />
+          <img src={imagePreview} alt="" loading="lazy" className="w-full h-24 object-cover rounded-[8px]" />
           <button
             onClick={() => { setImageFile(null); setImagePreview(null); }}
             className="absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center"
