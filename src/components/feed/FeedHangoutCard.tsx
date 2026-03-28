@@ -108,26 +108,63 @@ const UnifiedHangoutCard = ({
   const mainText = noteText || activityText;
   const secondaryText = textsAreSimilar ? null : (noteText ? activityText : null);
 
+  const typeBg = getTypeBg(entryType);
+
+  // Parse date parts for Georgia serif display
+  const dateObj = hangout.date ? new Date(hangout.date + "T00:00:00") : null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const isToday = dateObj && dateObj.getTime() === today.getTime();
+  const isTomorrow = dateObj && dateObj.getTime() === tomorrow.getTime();
+
   return (
     <div
-      className="rounded-lg p-4"
-      style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
+      className="rounded-lg"
+      style={{ backgroundColor: typeBg, padding: 14, overflow: "hidden" }}
     >
-      {/* 1. DATE — largest, most prominent */}
-      {hangout.date && (
-        <p
-          className="font-fraunces text-[17px] font-medium leading-tight"
-          style={{ color: "hsl(var(--color-text-primary))" }}
-        >
-          {formatDatePrimary(hangout.date)}
-        </p>
+      {/* 1. TYPE LABEL */}
+      <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5", marginBottom: 4 }}>
+        {getTypeLabel(entryType)}
+      </p>
+
+      {/* 2. DATE — Georgia serif */}
+      {dateObj && (
+        <>
+          <p style={{ fontSize: 11, fontWeight: 300, color: "#9A8FA3", marginBottom: 2 }}>
+            {isToday ? "idag" : isTomorrow ? "imorgon" : format(dateObj, "EEEE", { locale: sv })}
+          </p>
+          {!isToday && !isTomorrow && (
+            <div className="flex items-baseline gap-1.5" style={{ marginBottom: 6 }}>
+              <span style={{ fontFamily: "Georgia, serif", fontSize: 28, color: "hsl(var(--color-text-primary))", lineHeight: 1 }}>
+                {format(dateObj, "d")}
+              </span>
+              <span style={{ fontSize: 13, color: "hsl(var(--color-text-primary))" }}>
+                {format(dateObj, "MMMM", { locale: sv })}
+              </span>
+            </div>
+          )}
+          {(isToday || isTomorrow) && (
+            <p style={{ fontFamily: "Georgia, serif", fontSize: 22, color: "hsl(var(--color-text-primary))", lineHeight: 1, marginBottom: 6 }}>
+              {isToday ? "Idag" : "Imorgon"}
+            </p>
+          )}
+        </>
       )}
 
-      {/* 2. ACTIVITY / main text */}
+      {/* 3. ACTIVITY / main text */}
       {mainText && (
         <p
-          className="text-[14px] leading-relaxed mt-1.5 line-clamp-2"
-          style={{ color: "hsl(var(--color-text-primary))", lineHeight: 1.5 }}
+          style={{
+            fontSize: 13,
+            lineHeight: 1.45,
+            color: "hsl(var(--color-text-primary))",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical" as any,
+            overflow: "hidden",
+          }}
         >
           {mainText}
         </p>
@@ -136,8 +173,8 @@ const UnifiedHangoutCard = ({
       {/* Match indicator */}
       {hangout.isMatch && !isOwn && (
         <div
-          className="flex items-center gap-1.5 rounded-full px-2.5 py-1 mt-2.5 w-fit"
-          style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+          className="flex items-center gap-1.5 rounded-full px-2.5 py-1 mt-2 w-fit"
+          style={{ backgroundColor: "rgba(255,255,255,0.6)" }}
         >
           <Sparkles className="w-3 h-3" style={{ color: "#7A5AA6" }} />
           <span className="text-[11px] font-medium" style={{ color: "#7A5AA6" }}>
@@ -146,7 +183,7 @@ const UnifiedHangoutCard = ({
         </div>
       )}
 
-      {/* 3. SENDER — smaller, below content */}
+      {/* 4. SENDER */}
       <div className="flex items-center gap-2 mt-3">
         <FeedAvatar
           avatarUrl={(profile as any).avatar_url || null}
@@ -162,31 +199,25 @@ const UnifiedHangoutCard = ({
         >
           {profile.display_name || "Någon"}
         </button>
-        {/* 4. TYPE — least prominent */}
-        <span
-          className="text-[11px] leading-tight"
-          style={{ color: "hsl(var(--color-text-faint))" }}
-        >
-          · {getTypeLabel(entryType)}
-        </span>
       </div>
 
       {/* CTA buttons */}
       {!isOwn && (
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-2 mt-3">
           <button
             onClick={() => setDetailOpen(true)}
-            className="text-[13px] font-medium py-2 px-5 rounded-full transition-colors"
-            style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF" }}
+            className="flex-1 text-[13px] font-medium py-2 rounded-lg transition-colors"
+            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
           >
             Jag kan
           </button>
           <button
             onClick={() => setDetailOpen(true)}
-            className="text-[13px] font-medium py-2 px-5 rounded-full transition-colors"
+            className="flex-1 text-[13px] font-medium py-2 rounded-lg transition-colors"
             style={{
               backgroundColor: "transparent",
-              color: "hsl(var(--color-text-primary))",
+              border: "1px solid #3C2A4D",
+              color: "#3C2A4D",
             }}
           >
             Kanske
