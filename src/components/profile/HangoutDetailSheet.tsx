@@ -51,9 +51,17 @@ const ACTIVITY_MAP: Record<string, string> = {
 };
 
 const TYPE_LABEL: Record<string, string> = {
-  open: "ledig",
-  confirmed: "häng med",
-  activity: "sugen på",
+  open: "LEDIG",
+  available: "LEDIG",
+  confirmed: "HÄNG MED",
+  activity: "SUGEN PÅ",
+};
+
+const TYPE_LABEL_COLOR: Record<string, string> = {
+  open: "#6B5A3E",
+  available: "#6B5A3E",
+  confirmed: "#5C4A7A",
+  activity: "#2A6645",
 };
 
 interface Props {
@@ -142,7 +150,9 @@ const HangoutDetailSheet = ({
   const weekday = format(dateObj, "EEEE", { locale: sv });
   const dayNum = format(dateObj, "d");
   const month = format(dateObj, "MMMM", { locale: sv });
-  const typeLabel = TYPE_LABEL[entry.entry_type] || "ledig";
+  const entryType = entry.entry_type || "available";
+  const typeLabel = TYPE_LABEL[entryType] || "LEDIG";
+  const typeLabelColor = TYPE_LABEL_COLOR[entryType] || "#6B5A3E";
   const activityName = entry.activities.length > 0 ? entry.activities.map(a => ACTIVITY_MAP[a] || a).join(", ") : null;
   const description = entry.custom_note || "";
   const ownerName = ownerProfile?.display_name || "Någon";
@@ -152,7 +162,6 @@ const HangoutDetailSheet = ({
     : entry.entry_type === "activity" ? [entry] : [];
   const activityGroupName = activityName || entry.custom_note || "";
 
-  // Dedup: don't show activity label if custom_note already contains it
   const textsAreSimilar = activityName && description &&
     (description.toLowerCase().includes(activityName.toLowerCase()) ||
      activityName.toLowerCase().includes(description.toLowerCase()));
@@ -283,43 +292,49 @@ const HangoutDetailSheet = ({
               className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-muted/50 transition-colors"
               aria-label="Stäng"
             >
-              <X className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
+              <X className="w-4 h-4" style={{ color: "#7A6A85" }} />
             </button>
           </div>
 
           <div className="px-5 pb-8 space-y-5 overflow-y-auto">
             {/* ── HEADER ── */}
             <div className="space-y-1">
-              {/* Etikett */}
-              <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5" }}>
+              {/* Type label — UPPERCASE */}
+              <p style={{
+                fontSize: 9,
+                fontWeight: 500,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: typeLabelColor,
+              }}>
                 {typeLabel}
               </p>
 
-              {/* Veckodag */}
+              {/* Veckodag — sentence case */}
               <p style={{ fontSize: 13, fontWeight: 300, color: "#7A6A85" }}>
                 {weekday}
               </p>
 
               {/* Datum: siffra + månad */}
               <div className="flex items-baseline gap-2">
-                <span style={{ fontFamily: "Georgia, serif", fontSize: 36, color: "hsl(var(--color-text-primary))", lineHeight: 1 }}>
+                <span style={{ fontFamily: "Georgia, serif", fontSize: 36, color: "#3C2A4D", lineHeight: 1 }}>
                   {dayNum}
                 </span>
-                <span style={{ fontSize: 16, color: "hsl(var(--color-text-primary))" }}>
+                <span style={{ fontSize: 16, fontWeight: 300, color: "#3C2A4D" }}>
                   {month}
                 </span>
               </div>
 
               {/* Activity name (if not similar to description) */}
               {!textsAreSimilar && activityName && (
-                <p style={{ fontSize: 14, fontWeight: 500, color: "hsl(var(--color-text-primary))", marginTop: 4 }}>
+                <p style={{ fontSize: 14, fontWeight: 500, color: "#3C2A4D", marginTop: 4 }}>
                   {activityName}
                 </p>
               )}
 
-              {/* Fritext – full text */}
+              {/* Fritext – full text, no truncation */}
               {description && (
-                <p style={{ fontSize: 15, lineHeight: 1.6, color: "hsl(var(--color-text-primary))", marginTop: 8 }}>
+                <p style={{ fontSize: 15, lineHeight: 1.6, color: "#3C2A4D", marginTop: 8 }}>
                   {description}
                 </p>
               )}
@@ -342,7 +357,7 @@ const HangoutDetailSheet = ({
                     <span
                       key={ae.id}
                       className="inline-flex items-center gap-1 text-[11px]"
-                      style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8, padding: "4px 10px", color: "hsl(var(--color-text-primary))" }}
+                      style={{ backgroundColor: "#F7F3EF", borderRadius: 8, padding: "4px 10px", color: "#3C2A4D" }}
                     >
                       {label}
                       {isOwner && (
@@ -357,7 +372,7 @@ const HangoutDetailSheet = ({
                   <button
                     onClick={() => { onOpenChange(false); onAddActivityDate(activityGroupName); }}
                     className="inline-flex items-center gap-1 text-[11px]"
-                    style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8, padding: "4px 10px", color: "hsl(var(--color-text-secondary))" }}
+                    style={{ backgroundColor: "#F7F3EF", borderRadius: 8, padding: "4px 10px", color: "#7A6A85" }}
                   >
                     <Plus className="w-3 h-3" /> Lägg till
                   </button>
@@ -380,11 +395,11 @@ const HangoutDetailSheet = ({
                       {resolveAvatarUrl(tf.profile?.avatar_url ?? null) && (
                         <AvatarImage src={resolveAvatarUrl(tf.profile?.avatar_url ?? null)!} alt={tf.profile?.display_name || ""} className="object-cover" />
                       )}
-                      <AvatarFallback style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }} className="text-[8px] font-medium">
+                      <AvatarFallback style={{ backgroundColor: "#F7F3EF", color: "#3C2A4D" }} className="text-[8px] font-medium">
                         {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-[12px] flex-1" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                    <span className="text-[12px] flex-1" style={{ color: "#7A6A85" }}>
                       {tf.profile?.display_name || "Okänd"} kan
                     </span>
                     {isOwner && (
@@ -415,15 +430,15 @@ const HangoutDetailSheet = ({
                         {resolveAvatarUrl(c.profile?.avatar_url ?? null) && (
                           <AvatarImage src={resolveAvatarUrl(c.profile?.avatar_url ?? null)!} alt={c.profile?.display_name || ""} className="object-cover" />
                         )}
-                        <AvatarFallback style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }} className="text-[8px]">
+                        <AvatarFallback style={{ backgroundColor: "#F7F3EF", color: "#3C2A4D" }} className="text-[8px]">
                           {(c.profile?.display_name || "?").charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <span className="text-[11px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                        <span className="text-[11px] font-medium" style={{ color: "#3C2A4D" }}>
                           {c.user_id === user?.id ? "Du" : (c.profile?.display_name || "Någon")}
                         </span>
-                        <p className="text-[12px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{c.content}</p>
+                        <p className="text-[12px]" style={{ color: "#7A6A85" }}>{c.content}</p>
                       </div>
                       {(c.user_id === user?.id || isOwner) && (
                         <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-destructive" aria-label="Ta bort kommentar">
@@ -439,7 +454,7 @@ const HangoutDetailSheet = ({
               <div className="flex gap-1.5 items-center">
                 {user && (
                   <Avatar className="w-6 h-6 shrink-0">
-                    <AvatarFallback style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }} className="text-[9px]">
+                    <AvatarFallback style={{ backgroundColor: "#F7F3EF", color: "#3C2A4D" }} className="text-[9px]">
                       {user.email?.charAt(0).toUpperCase() || "?"}
                     </AvatarFallback>
                   </Avatar>
@@ -447,7 +462,7 @@ const HangoutDetailSheet = ({
                 <Input
                   value={commentText}
                   onChange={e => setCommentText(e.target.value)}
-                  placeholder="Skriv något till alla..."
+                  placeholder="Skriv något till alla…"
                   className="h-9 text-[13px] flex-1 bg-white border-border/30 rounded-lg px-4"
                   onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleAddComment()}
                 />
@@ -455,7 +470,7 @@ const HangoutDetailSheet = ({
                   disabled={sending || !commentText.trim()}
                   onClick={handleAddComment}
                   className="w-9 h-9 rounded-lg flex items-center justify-center disabled:opacity-40 transition-colors shrink-0"
-                  style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
+                  style={{ backgroundColor: "#3C2A4D" }}
                   aria-label="Skicka kommentar"
                 >
                   <Send className="w-3.5 h-3.5 text-white" />
@@ -477,7 +492,7 @@ const HangoutDetailSheet = ({
                 <button
                   onClick={() => handleRSVP("maybe")}
                   className="flex-1 py-2.5 text-[14px] font-medium transition-colors"
-                  style={{ color: "hsl(var(--color-text-primary))", backgroundColor: "transparent", border: "1px solid #C9B8D8", borderRadius: 8 }}
+                  style={{ color: "#3C2A4D", backgroundColor: "#F7F3EF", border: "1px solid #EDE8E0", borderRadius: 8 }}
                 >
                   Kanske
                 </button>
@@ -487,14 +502,14 @@ const HangoutDetailSheet = ({
             {/* ── CREATE GROUP SUGGESTION ── */}
             {canCreateGroup && (
               <div className="space-y-2 pt-1">
-                <p className="text-[12px] text-center" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                <p className="text-[12px] text-center" style={{ color: "#7A6A85" }}>
                   Ni verkar bli några – vill ni ta det vidare?
                 </p>
                 <button
                   onClick={handleCreateGroup}
                   disabled={creatingGroup}
                   className="w-full flex items-center justify-center gap-2 py-2.5 text-[13px] font-medium transition-colors disabled:opacity-60"
-                  style={{ color: "hsl(var(--color-text-primary))", backgroundColor: "hsl(var(--color-surface-card))", border: "1px solid #EDE8F4", borderRadius: 8 }}
+                  style={{ color: "#3C2A4D", backgroundColor: "#F7F3EF", border: "1px solid #EDE8E0", borderRadius: 8 }}
                 >
                   <Users className="w-3.5 h-3.5" />
                   Starta sällskap att chatta i

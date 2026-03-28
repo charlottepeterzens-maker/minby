@@ -37,16 +37,25 @@ interface Props {
   onOpenedEntry?: () => void;
 }
 
-const TYPE_COLORS: Record<string, { bg: string }> = {
-  open: { bg: "#F5F0E8" },
-  confirmed: { bg: "#EDE8F4" },
-  activity: { bg: "#E8F2EC" },
+const TYPE_COLORS: Record<string, string> = {
+  open: "#F5F0E8",
+  available: "#F5F0E8",
+  confirmed: "#EDE8F4",
+  activity: "#E8F2EC",
 };
 
 const TYPE_LABEL: Record<string, string> = {
-  open: "ledig",
-  confirmed: "häng med",
-  activity: "sugen på",
+  open: "LEDIG",
+  available: "LEDIG",
+  confirmed: "HÄNG MED",
+  activity: "SUGEN PÅ",
+};
+
+const TYPE_LABEL_COLOR: Record<string, string> = {
+  open: "#6B5A3E",
+  available: "#6B5A3E",
+  confirmed: "#5C4A7A",
+  activity: "#2A6645",
 };
 
 const getActivityLabel = (key: string) => ACTIVITY_MAP[key] || key;
@@ -126,12 +135,11 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const handleScroll = () => {
     if (!scrollRef.current) return;
     const el = scrollRef.current;
-    const cardWidth = 156; // 148 + 8 gap
+    const cardWidth = 156;
     const idx = Math.round(el.scrollLeft / cardWidth);
     setCurrentIndex(idx);
   };
 
-  // --- Build carousel items ---
   interface GroupedActivity {
     id: string;
     entry_type: "activity";
@@ -181,14 +189,15 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
     setShowAdd(true);
   };
 
-  // --- Render helpers ---
   const renderDateCard = (item: AvailabilityEntry) => {
     const dateObj = new Date(item.date + "T00:00:00");
     const weekday = format(dateObj, "EEEE", { locale: sv });
     const dayNum = format(dateObj, "d");
     const month = format(dateObj, "MMMM", { locale: sv });
-    const typeLabel = TYPE_LABEL[item.entry_type] || "ledig";
-    const colors = TYPE_COLORS[item.entry_type] || TYPE_COLORS.open;
+    const entryType = item.entry_type || "available";
+    const typeLabel = TYPE_LABEL[entryType] || "LEDIG";
+    const typeLabelColor = TYPE_LABEL_COLOR[entryType] || "#6B5A3E";
+    const typeBg = TYPE_COLORS[entryType] || TYPE_COLORS.open;
 
     const activityNameLabel = item.activities.length > 0
       ? item.activities.map((a) => ACTIVITY_MAP[a] || a).join(", ")
@@ -210,28 +219,40 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
           height: 160,
           borderRadius: 8,
           padding: 14,
-          backgroundColor: colors.bg,
+          backgroundColor: typeBg,
           border: "none",
           overflow: "hidden",
         }}
       >
-        {/* Etikett */}
-        <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5", marginBottom: 4 }}>
-          {typeLabel}
-        </p>
-
-        {/* Veckodag */}
-        <p style={{ fontSize: 11, fontWeight: 300, color: "#9A8FA3", marginBottom: 2 }}>
-          {weekday}
-        </p>
-
-        {/* Datum: siffra + månad */}
-        <div className="flex items-baseline gap-1.5" style={{ marginBottom: 6 }}>
-          <span style={{ fontFamily: "Georgia, serif", fontSize: 28, color: "hsl(var(--color-text-primary))", lineHeight: 1 }}>
-            {dayNum}
-          </span>
-          <span style={{ fontSize: 13, color: "hsl(var(--color-text-primary))" }}>
-            {month}
+        {/* Top row: date block left, type label right */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 4, marginBottom: 8 }}>
+          <div>
+            {/* Veckodag */}
+            <p style={{ fontSize: 11, fontWeight: 300, color: "#9A8FA3", marginBottom: 2 }}>
+              {weekday}
+            </p>
+            {/* Siffra + månad */}
+            <div className="flex items-baseline gap-1.5">
+              <span style={{ fontFamily: "Georgia, serif", fontSize: 28, color: "#3C2A4D", lineHeight: 1 }}>
+                {dayNum}
+              </span>
+              <span style={{ fontSize: 13, fontWeight: 300, color: "#3C2A4D" }}>
+                {month}
+              </span>
+            </div>
+          </div>
+          {/* Type label */}
+          <span style={{
+            fontSize: 9,
+            fontWeight: 500,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            textAlign: "right",
+            whiteSpace: "nowrap",
+            paddingTop: 3,
+            color: typeLabelColor,
+          }}>
+            {typeLabel}
           </span>
         </div>
 
@@ -241,10 +262,10 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             style={{
               fontSize: 13,
               lineHeight: 1.45,
-              color: "hsl(var(--color-text-primary))",
+              color: "#3C2A4D",
               display: "-webkit-box",
               WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
+              WebkitBoxOrient: "vertical" as any,
               overflow: "hidden",
               marginTop: "auto",
             }}
@@ -270,37 +291,46 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
           height: 160,
           borderRadius: 8,
           padding: 14,
-          backgroundColor: TYPE_COLORS.activity.bg,
+          backgroundColor: TYPE_COLORS.activity,
           border: "none",
           overflow: "hidden",
         }}
       >
-        {/* Etikett */}
-        <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5", marginBottom: 8 }}>
-          sugen på
-        </p>
-
-        {/* Aktivitetstext */}
-        <p
-          style={{
-            fontFamily: "Georgia, serif",
-            fontSize: 14,
+        {/* Top row: activity text left, type label right */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 4, marginBottom: 8 }}>
+          <p
+            style={{
+              fontFamily: "Georgia, serif",
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#3C2A4D",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical" as any,
+              overflow: "hidden",
+              flex: 1,
+            }}
+          >
+            {item.activityName}
+          </p>
+          <span style={{
+            fontSize: 9,
             fontWeight: 500,
-            color: "hsl(var(--color-text-primary))",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            marginBottom: "auto",
-          }}
-        >
-          {item.activityName}
-        </p>
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            textAlign: "right",
+            whiteSpace: "nowrap",
+            paddingTop: 3,
+            color: "#2A6645",
+          }}>
+            SUGEN PÅ
+          </span>
+        </div>
 
-        {/* Datum-förslag */}
+        {/* Datum-förslag chips at bottom */}
         {item.dates.length > 0 && (
-          <div style={{ marginTop: 8 }}>
-            <p style={{ fontSize: 10, color: "#B0A8B5", marginBottom: 4 }}>
+          <div style={{ marginTop: "auto" }}>
+            <p style={{ fontSize: 10, color: "#4A7A5E", marginBottom: 4 }}>
               förslag på datum
             </p>
             <div className="flex flex-wrap gap-1">
@@ -313,9 +343,9 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                     style={{
                       backgroundColor: "rgba(255,255,255,0.6)",
                       borderRadius: 99,
-                      padding: "2px 8px",
+                      padding: "2px 7px",
                       fontSize: 10,
-                      color: "hsl(var(--color-text-primary))",
+                      color: "#3C2A4D",
                     }}
                   >
                     {label}
@@ -424,13 +454,13 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            Dela ett datum eller en idé med din krets
+            Dela ett datum eller en aktivitet med din krets
           </motion.p>
           <motion.button
             onClick={() => setShowAdd(true)}
             className="mt-3 text-white font-medium"
             style={{
-              backgroundColor: "hsl(var(--color-text-primary))",
+              backgroundColor: "#3C2A4D",
               borderRadius: 8,
               padding: "8px 20px",
               fontSize: 13,
@@ -445,7 +475,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         </motion.div>
       ) : (
         <>
-          {/* Carousel */}
           <div
             ref={scrollRef}
             onScroll={handleScroll}
@@ -458,7 +487,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             {isOwner && renderAddButton()}
           </div>
 
-          {/* Pagination dots */}
           {totalCards > 1 && (
             <div className="flex justify-center gap-1 mt-2">
               {Array.from({ length: totalCards }).map((_, i) => (
