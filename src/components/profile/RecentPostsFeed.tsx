@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
+import LazyImage from "@/components/LazyImage";
 import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
 import ConfirmSheet from "@/components/ConfirmSheet";
@@ -485,7 +486,7 @@ const SignedImg = ({
   const Tag = onClick ? "button" : "div";
   return (
     <Tag onClick={onClick} className={`block ${className || ""}`} style={style}>
-      <img src={url} alt="Profilbild" className="w-full h-full object-cover" style={{ borderRadius: "inherit" }} />
+      <LazyImage src={url} alt="Inläggsbild" className="w-full h-full" style={{ borderRadius: "inherit" }} />
     </Tag>
   );
 };
