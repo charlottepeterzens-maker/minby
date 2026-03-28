@@ -105,7 +105,7 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
               key={p.name}
               onClick={() => handlePreset(p)}
               style={{
-                borderRadius: 20,
+                borderRadius: 12,
                 fontSize: 13,
                 padding: "6px 14px",
                 border: "1px solid #EDE8F4",

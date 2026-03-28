@@ -303,7 +303,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             className="mt-3 text-white font-medium"
             style={{
               backgroundColor: "hsl(var(--color-text-primary))",
-              borderRadius: 20,
+              borderRadius: 12,
               padding: "8px 20px",
               fontSize: 13,
             }}

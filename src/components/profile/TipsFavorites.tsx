@@ -270,8 +270,8 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
         </div>
       )}
       {previewImage && !customImage && (
-        <div className="flex items-center gap-3 rounded-[12px] border border-border p-2">
-          <img src={previewImage} alt="" loading="lazy" className="w-14 h-14 rounded-[8px] object-cover" />
+        <div className="flex items-center gap-3 rounded-xl border border-border p-2">
+          <img src={previewImage} alt="" loading="lazy" className="w-14 h-14 rounded-lg object-cover" />
           <p className="text-[11px] text-muted-foreground flex-1">Bild hittad från länken</p>
           <button onClick={() => setPreviewImage(null)} className="text-muted-foreground hover:text-foreground">
             <X className="w-3.5 h-3.5" />
@@ -341,7 +341,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
         isOwner ? (
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
-              <button className="w-full flex items-center gap-3 rounded-[16px] border border-dashed border-border p-4 text-left text-muted-foreground hover:text-foreground transition-colors">
+              <button className="w-full flex items-center gap-3 rounded-xl border border-dashed border-border p-4 text-left text-muted-foreground hover:text-foreground transition-colors">
                 <div className="shrink-0 flex items-center justify-center rounded-full w-9 h-9 border border-dashed border-current">
                   <Plus className="w-4 h-4" />
                 </div>
@@ -480,7 +480,7 @@ const TipCard = ({
           alignItems: "flex-start",
           gap: 10,
           background: "#fff",
-          borderRadius: 10,
+          borderRadius: 12,
           border: "none",
           padding: "10px",
         }}
@@ -597,7 +597,7 @@ const TipCard = ({
           </div>
           <span
             style={{
-              borderRadius: 20,
+              borderRadius: 12,
               fontSize: 9,
               padding: "2px 7px",
               background: cat.bg,
@@ -625,7 +625,7 @@ const TipCard = ({
           <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
             <span
               style={{
-                borderRadius: 20,
+                borderRadius: 12,
                 fontSize: 10,
                 padding: "3px 10px",
                 background: cat.bg,
@@ -676,7 +676,7 @@ const TipCard = ({
                     flex: 1,
                     background: "hsl(var(--color-surface-raised))",
                     color: "hsl(var(--color-text-primary))",
-                    borderRadius: 10,
+                    borderRadius: 12,
                     padding: "9px",
                     fontSize: 12,
                     fontWeight: 500,
@@ -694,7 +694,7 @@ const TipCard = ({
                   style={{
                     background: "hsl(var(--color-surface))",
                     color: "hsl(var(--color-accent-red))",
-                    borderRadius: 10,
+                    borderRadius: 12,
                     padding: "9px 14px",
                     fontSize: 12,
                     border: "none",

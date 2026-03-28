@@ -139,7 +139,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
       </div>
 
       <div
-        className="rounded-[12px] overflow-hidden"
+        className="rounded-xl overflow-hidden"
         style={{
           backgroundColor: "hsl(var(--color-surface-card))",
           border: "none",

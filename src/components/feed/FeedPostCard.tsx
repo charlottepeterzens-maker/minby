@@ -35,7 +35,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
     <div
       style={{
         backgroundColor: "hsl(var(--color-surface-card))",
-        borderRadius: 6,
+        borderRadius: 12,
         border: "none",
         padding: 16,
       }}
@@ -66,7 +66,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
         <img
           src={signedUrl}
           alt=""
-          style={{ width: "100%", marginBottom: 10, maxHeight: 280, objectFit: "cover", borderRadius: 4 }}
+          style={{ width: "100%", marginBottom: 10, maxHeight: 280, objectFit: "cover", borderRadius: 8 }}
         />
       )}
 
@@ -76,7 +76,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
           <img
             src={signedUrl}
             alt=""
-            style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 4, flexShrink: 0 }}
+            style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 8, flexShrink: 0 }}
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             {post.content && (

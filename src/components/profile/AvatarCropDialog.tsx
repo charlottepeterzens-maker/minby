@@ -133,7 +133,7 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className="max-w-[340px] p-0 gap-0 border-0 overflow-hidden"
-        style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: 20 }}
+        style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: 12 }}
       >
         <div className="p-5 space-y-4">
           <p className="text-[14px] font-medium text-center" style={{ color: "hsl(var(--color-text-primary))" }}>

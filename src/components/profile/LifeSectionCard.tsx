@@ -345,7 +345,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       style={{
                         width: 28,
                         height: 28,
-                        borderRadius: 6,
+                        borderRadius: 12,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -364,7 +364,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       style={{
                         width: 28,
                         height: 28,
-                        borderRadius: 6,
+                        borderRadius: 12,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -482,7 +482,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     imageRef={post.image_url}
                     onClick={() => setExpandedImage(post.image_url)}
                     className="shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-                    imgClassName="w-16 h-16 object-cover rounded-[6px]"
+                    imgClassName="w-16 h-16 object-cover rounded-lg"
                   />
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>

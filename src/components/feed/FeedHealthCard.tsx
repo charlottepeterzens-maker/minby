@@ -62,8 +62,8 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
   };
 
   return (
-    <div className="bg-card rounded-[14px] overflow-hidden">
-      <div className="m-3 rounded-[10px] bg-dusty-rose-bg p-4">
+    <div className="bg-card rounded-xl overflow-hidden">
+      <div className="m-3 rounded-xl bg-dusty-rose-bg p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2.5">
             <FeedAvatar
@@ -84,13 +84,13 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
           <div className="flex items-center gap-1.5">
             {isOwn && (
               <span
-                className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px]"
+                className="text-[11px] font-medium px-2.5 py-0.5 rounded-full"
                 style={{ backgroundColor: '#F7F3EF', color: '#655675' }}
               >
                 Ditt inlägg
               </span>
             )}
-            <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-[20px] bg-dusty-rose text-foreground">
+            <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-dusty-rose text-foreground">
               PMS
             </span>
           </div>

@@ -67,7 +67,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mx-4 mb-2 p-3 rounded-[12px] space-y-2.5"
+      className="mx-4 mb-2 p-3 rounded-xl space-y-2.5"
       style={{ backgroundColor: "hsl(var(--color-surface-card))", border: "1px solid #EDE8F4" }}
     >
       <div className="flex items-start justify-between">
@@ -86,7 +86,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
 
       {imagePreview && (
         <div className="relative">
-          <img src={imagePreview} alt="" loading="lazy" className="w-full h-24 object-cover rounded-[8px]" />
+          <img src={imagePreview} alt="" loading="lazy" className="w-full h-24 object-cover rounded-lg" />
           <button
             onClick={() => { setImageFile(null); setImagePreview(null); }}
             className="absolute top-1 right-1 w-5 h-5 rounded-full flex items-center justify-center"
@@ -98,7 +98,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
       )}
 
       <div className="flex items-center gap-2">
-        <label className="shrink-0 w-8 h-8 rounded-[8px] flex items-center justify-center cursor-pointer" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
+        <label className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
           <Camera className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
           <input type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
         </label>
@@ -106,13 +106,13 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="Skriv en rad..."
-          className="flex-1 px-3 py-2 text-[12px] rounded-[8px] border outline-none"
+          className="flex-1 px-3 py-2 text-[12px] rounded-lg border outline-none"
           style={{ backgroundColor: "hsl(var(--color-surface))", borderColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
         />
         <button
           onClick={handleSave}
           disabled={saving || (!note.trim() && !imageFile)}
-          className="shrink-0 px-3 py-2 text-[11px] font-medium rounded-[8px] disabled:opacity-40 transition-opacity"
+          className="shrink-0 px-3 py-2 text-[11px] font-medium rounded-lg disabled:opacity-40 transition-opacity"
           style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF" }}
         >
           Spara

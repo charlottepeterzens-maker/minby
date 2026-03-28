@@ -72,7 +72,7 @@ const ReconnectNudge = ({ friendIds, profiles }: ReconnectNudgeProps) => {
       <div className="flex gap-2 mt-3">
         <button
           onClick={() => navigate(`/profile/${nudgeFriend.userId}`)}
-          className="px-4 py-1.5 rounded-[20px] text-[12px] font-medium"
+          className="px-4 py-1.5 rounded-full text-[12px] font-medium"
           style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#F7F3EF" }}
         >
           Säg hej
@@ -81,7 +81,7 @@ const ReconnectNudge = ({ friendIds, profiles }: ReconnectNudgeProps) => {
           onClick={() => {
             navigate(`/profile/${nudgeFriend.userId}`);
           }}
-          className="px-4 py-1.5 rounded-[20px] text-[12px] font-medium"
+          className="px-4 py-1.5 rounded-full text-[12px] font-medium"
           style={{ backgroundColor: "hsl(var(--color-surface-card))", color: "hsl(var(--color-text-primary))", border: "1px solid #EDE8F4" }}
         >
           Ska ni ses?

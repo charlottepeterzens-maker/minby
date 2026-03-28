@@ -206,7 +206,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
               className="w-full py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
               style={{
                 backgroundColor: "hsl(var(--color-text-primary))",
-                borderRadius: 10
+                borderRadius: 12
               }}>
               
                 Nästa
@@ -227,7 +227,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                     key={f.user_id}
                     type="button"
                     onClick={() => toggleFriend(f.user_id)}
-                    className="w-full flex items-center gap-3 rounded-[10px] p-2.5 text-left transition-colors"
+                    className="w-full flex items-center gap-3 rounded-xl p-2.5 text-left transition-colors"
                     style={{
                       backgroundColor: selected ? "#EAF2E8" : "#FFFFFF",
                       border: `1px solid ${selected ? "#B5CCBF" : "#EDE8F4"}`
@@ -254,7 +254,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
               <div className="flex gap-2">
                 <button
                 onClick={() => setStep(1)}
-                className="flex-1 py-2.5 text-sm font-medium rounded-[10px]"
+                className="flex-1 py-2.5 text-sm font-medium rounded-xl"
                 style={{
                   border: "1px solid #EDE8F4",
                   color: "hsl(var(--color-text-primary))",
@@ -269,7 +269,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 className="flex-1 py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
                 style={{
                   backgroundColor: "hsl(var(--color-text-primary))",
-                  borderRadius: 10
+                  borderRadius: 12
                 }}>
                 
                   {selectedFriends.length > 0 ?

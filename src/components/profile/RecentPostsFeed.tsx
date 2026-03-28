@@ -305,7 +305,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
                       onClick={() => setEditPhotoLayout("large")}
                       className="flex items-center justify-center"
                       style={{
-                        width: 26, height: 26, borderRadius: 6,
+                        width: 26, height: 26, borderRadius: 12,
                         background: editPhotoLayout === "large" ? "#3C2A4D" : "#fff",
                         border: "1px solid #3C2A4D",
                       }}
@@ -318,7 +318,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
                       onClick={() => setEditPhotoLayout("small")}
                       className="flex items-center justify-center"
                       style={{
-                        width: 26, height: 26, borderRadius: 6,
+                        width: 26, height: 26, borderRadius: 12,
                         background: editPhotoLayout === "small" ? "#3C2A4D" : "#fff",
                         border: "1px solid #3C2A4D",
                       }}

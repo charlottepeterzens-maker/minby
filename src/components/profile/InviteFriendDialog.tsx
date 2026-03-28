@@ -89,7 +89,7 @@ const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
           <div
             style={{
               background: "hsl(var(--color-surface-raised))",
-              borderRadius: 10,
+              borderRadius: 12,
               padding: "10px 14px",
               fontSize: 12,
               color: "hsl(var(--color-text-primary))",
@@ -111,7 +111,7 @@ const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
                 gap: 6,
                 background: "hsl(var(--color-surface-raised))",
                 color: "hsl(var(--color-text-primary))",
-                borderRadius: 10,
+                borderRadius: 12,
                 padding: "10px",
                 fontSize: 13,
                 fontWeight: 500,
@@ -132,7 +132,7 @@ const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
                 gap: 6,
                 background: "#3C2A4D",
                 color: "#F7F3EF",
-                borderRadius: 10,
+                borderRadius: 12,
                 padding: "10px",
                 fontSize: 13,
                 fontWeight: 500,

@@ -467,7 +467,7 @@ const GroupChatPage = () => {
             {menuOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-                <div className="absolute right-0 top-full mt-1 z-50 py-1.5 rounded-[12px] shadow-lg min-w-[180px]"
+                <div className="absolute right-0 top-full mt-1 z-50 py-1.5 rounded-xl shadow-lg min-w-[180px]"
                   style={{ backgroundColor: "hsl(var(--color-surface-card))", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}>
                   <button onClick={() => { setMenuOpen(false); setAddMemberOpen(true); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
@@ -681,7 +681,7 @@ const GroupChatPage = () => {
             </button>
           </div>
         )}
-        <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 20 }}>
+        <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 12 }}>
           <button onClick={() => { setActionSheetPrefill(null); setActionSheetOpen(true); }} className="shrink-0 flex items-center justify-center">
             <Plus className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
           </button>

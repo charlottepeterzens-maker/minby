@@ -14,7 +14,7 @@ const FeedGuidanceCard = () => {
       style={{
         backgroundColor: "hsl(var(--color-surface-card))",
         boxShadow: "0 1px 4px 0 rgba(0,0,0,0.05)",
-        borderRadius: 16,
+        borderRadius: 12,
         padding: "16px 18px",
       }}
     >

@@ -70,7 +70,7 @@ const SeedTestUsersButton = () => {
   };
 
   return (
-    <Button onClick={handleSeed} disabled={seeding} size="sm" className="w-full rounded-[10px] font-medium text-sm">
+    <Button onClick={handleSeed} disabled={seeding} size="sm" className="w-full rounded-xl font-medium text-sm">
       {seeding ? (
         <>
           <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Skapar...
@@ -210,7 +210,7 @@ const SettingsPage = () => {
 
       <Container className="py-6 space-y-4">
         {/* Dark mode */}
-        <Card className="rounded-[14px]">
+        <Card className="rounded-xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">{lang === "sv" ? "Utseende" : "Appearance"}</CardTitle>
           </CardHeader>
@@ -242,13 +242,13 @@ const SettingsPage = () => {
         </Card>
 
         {/* Language */}
-        <Card className="rounded-[14px]">
+        <Card className="rounded-xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("language")}</CardTitle>
           </CardHeader>
           <CardContent>
             <Select value={lang} onValueChange={(v) => setLang(v as "en" | "sv")}>
-              <SelectTrigger className="w-full rounded-[10px]">
+              <SelectTrigger className="w-full rounded-xl">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -260,7 +260,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Password */}
-        <Card className="rounded-[14px]">
+        <Card className="rounded-xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("changePassword")}</CardTitle>
           </CardHeader>
@@ -272,7 +272,7 @@ const SettingsPage = () => {
                 placeholder="••••••••"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="mt-1 rounded-[10px] border"
+                className="mt-1 rounded-xl border"
               />
             </div>
             <div>
@@ -282,14 +282,14 @@ const SettingsPage = () => {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="mt-1 rounded-[10px] border"
+                className="mt-1 rounded-xl border"
               />
             </div>
             <Button
               onClick={handleChangePassword}
               disabled={changingPassword}
               size="sm"
-              className="w-full rounded-[10px] font-medium text-sm"
+              className="w-full rounded-xl font-medium text-sm"
             >
               {changingPassword ? t("updating") : t("updatePassword")}
             </Button>
@@ -297,7 +297,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Notifications */}
-        <Card className="rounded-[14px]">
+        <Card className="rounded-xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">Notiser</CardTitle>
           </CardHeader>
@@ -331,7 +331,7 @@ const SettingsPage = () => {
                     value={notifSettings.daily_digest_time}
                     onValueChange={(v) => updateNotifSetting("daily_digest_time", v)}
                   >
-                    <SelectTrigger className="w-full mt-1 rounded-[10px]">
+                    <SelectTrigger className="w-full mt-1 rounded-xl">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -349,7 +349,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Data & Privacy */}
-        <Card className="rounded-[14px]">
+        <Card className="rounded-xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("howWeUseData")}</CardTitle>
           </CardHeader>
@@ -366,7 +366,7 @@ const SettingsPage = () => {
 
         {/* Dev tools - only for charlotte */}
         {user?.email?.includes("charlotte.peterzens") && (
-          <Card className="rounded-[14px]">
+          <Card className="rounded-xl">
             <CardHeader className="pb-2">
               <CardTitle className="text-xs text-muted-foreground font-body font-medium">Utvecklarverktyg</CardTitle>
             </CardHeader>
@@ -380,7 +380,7 @@ const SettingsPage = () => {
         <Button
           variant="outline"
           onClick={handleLogout}
-          className="w-full rounded-[10px] text-muted-foreground hover:text-foreground hover:bg-muted"
+          className="w-full rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted"
         >
           <LogOut className="w-4 h-4 mr-2" strokeWidth={1.5} /> {t("logOut")}
         </Button>
