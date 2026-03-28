@@ -52,12 +52,26 @@ function formatDateChip(dateStr: string): string {
   return `${format(d, "d", { locale: sv })} ${format(d, "MMM", { locale: sv }).replace(".", "")}`;
 }
 
+const TYPE_COLORS: Record<string, string> = {
+  open: "#F5F0E8",
+  available: "#F5F0E8",
+  confirmed: "#EDE8F4",
+  activity: "#E8F2EC",
+};
+
+const TYPE_LABEL: Record<string, string> = {
+  open: "ledig",
+  available: "ledig",
+  confirmed: "häng med",
+  activity: "sugen på",
+};
+
 function getTypeLabel(entryType: string): string {
-  switch (entryType) {
-    case "confirmed": return "Bekräftad träff";
-    case "activity": return "Sugen på";
-    default: return "Ledig";
-  }
+  return TYPE_LABEL[entryType] || "ledig";
+}
+
+function getTypeBg(entryType: string): string {
+  return TYPE_COLORS[entryType] || "#F5F0E8";
 }
 
 /** Unified card — hierarchy: Date → Activity → Sender → Type */
@@ -94,26 +108,63 @@ const UnifiedHangoutCard = ({
   const mainText = noteText || activityText;
   const secondaryText = textsAreSimilar ? null : (noteText ? activityText : null);
 
+  const typeBg = getTypeBg(entryType);
+
+  // Parse date parts for Georgia serif display
+  const dateObj = hangout.date ? new Date(hangout.date + "T00:00:00") : null;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const isToday = dateObj && dateObj.getTime() === today.getTime();
+  const isTomorrow = dateObj && dateObj.getTime() === tomorrow.getTime();
+
   return (
     <div
-      className="rounded-lg p-4"
-      style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
+      className="rounded-lg"
+      style={{ backgroundColor: typeBg, padding: 14, overflow: "hidden" }}
     >
-      {/* 1. DATE — largest, most prominent */}
-      {hangout.date && (
-        <p
-          className="font-fraunces text-[17px] font-medium leading-tight"
-          style={{ color: "hsl(var(--color-text-primary))" }}
-        >
-          {formatDatePrimary(hangout.date)}
-        </p>
+      {/* 1. TYPE LABEL */}
+      <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5", marginBottom: 4 }}>
+        {getTypeLabel(entryType)}
+      </p>
+
+      {/* 2. DATE — Georgia serif */}
+      {dateObj && (
+        <>
+          <p style={{ fontSize: 11, fontWeight: 300, color: "#9A8FA3", marginBottom: 2 }}>
+            {isToday ? "idag" : isTomorrow ? "imorgon" : format(dateObj, "EEEE", { locale: sv })}
+          </p>
+          {!isToday && !isTomorrow && (
+            <div className="flex items-baseline gap-1.5" style={{ marginBottom: 6 }}>
+              <span style={{ fontFamily: "Georgia, serif", fontSize: 28, color: "hsl(var(--color-text-primary))", lineHeight: 1 }}>
+                {format(dateObj, "d")}
+              </span>
+              <span style={{ fontSize: 13, color: "hsl(var(--color-text-primary))" }}>
+                {format(dateObj, "MMMM", { locale: sv })}
+              </span>
+            </div>
+          )}
+          {(isToday || isTomorrow) && (
+            <p style={{ fontFamily: "Georgia, serif", fontSize: 22, color: "hsl(var(--color-text-primary))", lineHeight: 1, marginBottom: 6 }}>
+              {isToday ? "Idag" : "Imorgon"}
+            </p>
+          )}
+        </>
       )}
 
-      {/* 2. ACTIVITY / main text */}
+      {/* 3. ACTIVITY / main text */}
       {mainText && (
         <p
-          className="text-[14px] leading-relaxed mt-1.5 line-clamp-2"
-          style={{ color: "hsl(var(--color-text-primary))", lineHeight: 1.5 }}
+          style={{
+            fontSize: 13,
+            lineHeight: 1.45,
+            color: "hsl(var(--color-text-primary))",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical" as any,
+            overflow: "hidden",
+          }}
         >
           {mainText}
         </p>
@@ -122,8 +173,8 @@ const UnifiedHangoutCard = ({
       {/* Match indicator */}
       {hangout.isMatch && !isOwn && (
         <div
-          className="flex items-center gap-1.5 rounded-full px-2.5 py-1 mt-2.5 w-fit"
-          style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+          className="flex items-center gap-1.5 rounded-full px-2.5 py-1 mt-2 w-fit"
+          style={{ backgroundColor: "rgba(255,255,255,0.6)" }}
         >
           <Sparkles className="w-3 h-3" style={{ color: "#7A5AA6" }} />
           <span className="text-[11px] font-medium" style={{ color: "#7A5AA6" }}>
@@ -132,7 +183,7 @@ const UnifiedHangoutCard = ({
         </div>
       )}
 
-      {/* 3. SENDER — smaller, below content */}
+      {/* 4. SENDER */}
       <div className="flex items-center gap-2 mt-3">
         <FeedAvatar
           avatarUrl={(profile as any).avatar_url || null}
@@ -148,31 +199,25 @@ const UnifiedHangoutCard = ({
         >
           {profile.display_name || "Någon"}
         </button>
-        {/* 4. TYPE — least prominent */}
-        <span
-          className="text-[11px] leading-tight"
-          style={{ color: "hsl(var(--color-text-faint))" }}
-        >
-          · {getTypeLabel(entryType)}
-        </span>
       </div>
 
       {/* CTA buttons */}
       {!isOwn && (
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-2 mt-3">
           <button
             onClick={() => setDetailOpen(true)}
-            className="text-[13px] font-medium py-2 px-5 rounded-full transition-colors"
-            style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF" }}
+            className="flex-1 text-[13px] font-medium py-2 rounded-lg transition-colors"
+            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
           >
             Jag kan
           </button>
           <button
             onClick={() => setDetailOpen(true)}
-            className="text-[13px] font-medium py-2 px-5 rounded-full transition-colors"
+            className="flex-1 text-[13px] font-medium py-2 rounded-lg transition-colors"
             style={{
               backgroundColor: "transparent",
-              color: "hsl(var(--color-text-primary))",
+              border: "1px solid #3C2A4D",
+              color: "#3C2A4D",
             }}
           >
             Kanske
@@ -281,67 +326,74 @@ const GroupedActivityCard = ({
 
   return (
     <div
-      className="rounded-lg p-4"
-      style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
+      className="rounded-lg"
+      style={{ backgroundColor: TYPE_COLORS.activity, padding: 14, overflow: "hidden" }}
     >
-      {/* 1. ACTIVITY — primary for grouped cards */}
+      {/* 1. TYPE LABEL */}
+      <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5", marginBottom: 8 }}>
+        sugen på
+      </p>
+
+      {/* 2. ACTIVITY — Georgia serif */}
       <p
-        className="font-fraunces text-[17px] font-medium leading-tight"
-        style={{ color: "hsl(var(--color-text-primary))" }}
+        style={{
+          fontFamily: "Georgia, serif",
+          fontSize: 14,
+          fontWeight: 500,
+          color: "hsl(var(--color-text-primary))",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical" as any,
+          overflow: "hidden",
+          marginBottom: 8,
+        }}
       >
         {activityName}
       </p>
 
-      {/* 2. DATE CHIPS */}
-      <div className="flex gap-1.5 flex-wrap mt-2.5">
-        {dates.map((dateStr) => {
-          const isSelected = selectedDate === dateStr;
-          const count = rsvpCounts[dateStr] || 0;
-          return (
-            <button
-              key={dateStr}
-              onClick={() => handleDateClick(dateStr)}
-              disabled={isOwn || saving}
-              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all shrink-0"
-              style={{
-                backgroundColor: isSelected ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-raised))",
-              }}
-            >
-              <span
-                className="text-[12px] font-medium"
-                style={{ color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-primary))" }}
+      {/* 3. DATE CHIPS */}
+      <div style={{ marginBottom: 4 }}>
+        <p style={{ fontSize: 10, color: "#B0A8B5", marginBottom: 4 }}>
+          förslag på datum
+        </p>
+        <div className="flex gap-1.5 flex-wrap">
+          {dates.map((dateStr) => {
+            const isSelected = selectedDate === dateStr;
+            const count = rsvpCounts[dateStr] || 0;
+            return (
+              <button
+                key={dateStr}
+                onClick={() => handleDateClick(dateStr)}
+                disabled={isOwn || saving}
+                className="flex items-center gap-1 rounded-full transition-all shrink-0"
+                style={{
+                  backgroundColor: isSelected ? "#3C2A4D" : "rgba(255,255,255,0.6)",
+                  padding: "2px 8px",
+                  fontSize: 10,
+                }}
               >
-                {formatDateChip(dateStr)}
-              </span>
-              {count > 0 && (
-                <span
-                  className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
-                  style={{
-                    backgroundColor: isSelected
-                      ? "rgba(255,255,255,0.2)"
-                      : "hsl(var(--color-border-subtle))",
-                    color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-secondary))",
-                  }}
-                >
-                  {count}
+                <span style={{ color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-primary))" }}>
+                  {formatDateChip(dateStr)}
                 </span>
-              )}
-            </button>
-          );
-        })}
+                {count > 0 && (
+                  <span
+                    className="font-medium px-1 rounded-full"
+                    style={{
+                      fontSize: 9,
+                      backgroundColor: isSelected ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.06)",
+                      color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-secondary))",
+                    }}
+                  >
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Custom note */}
-      {hangout.custom_note && (
-        <p
-          className="text-[13px] mt-2.5 line-clamp-2"
-          style={{ color: "hsl(var(--color-text-secondary))", lineHeight: 1.5 }}
-        >
-          {hangout.custom_note}
-        </p>
-      )}
-
-      {/* 3. SENDER */}
+      {/* 4. SENDER */}
       <div className="flex items-center gap-2 mt-3">
         <FeedAvatar
           avatarUrl={(profile as any).avatar_url || null}
@@ -357,13 +409,6 @@ const GroupedActivityCard = ({
         >
           {profile.display_name || "Någon"}
         </button>
-        {/* 4. TYPE */}
-        <span
-          className="text-[11px] leading-tight"
-          style={{ color: "hsl(var(--color-text-faint))" }}
-        >
-          · Sugen på
-        </span>
       </div>
     </div>
   );
