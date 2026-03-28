@@ -64,14 +64,14 @@ const DateSuggestionCard = ({
       <div className="flex items-center gap-2 pt-0.5">
         <button
           onClick={onAdd}
-          className="px-4 py-1.5 text-[12px] font-medium rounded-[8px]"
+          className="px-4 py-1.5 text-[12px] font-medium rounded-lg"
           style={{ backgroundColor: "hsl(var(--color-surface-sage))", color: "hsl(var(--color-accent-sage-text))" }}
         >
           Lägg till
         </button>
         <button
           onClick={onDismiss}
-          className="px-4 py-1.5 text-[12px] font-medium rounded-[8px]"
+          className="px-4 py-1.5 text-[12px] font-medium rounded-lg"
           style={{ backgroundColor: "#F0ECE7", color: "hsl(var(--color-text-secondary))" }}
         >
           Hoppa över

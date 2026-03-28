@@ -79,7 +79,7 @@ const PlanTimelineCard = ({
       >
         {/* Header */}
         <div className="flex items-start gap-2">
-          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: "hsl(var(--color-surface-sage))" }}>
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: "hsl(var(--color-surface-sage))" }}>
             <CalendarDays className="w-4 h-4" style={{ color: "hsl(var(--color-accent-sage-text))" }} />
           </div>
           <div className="flex-1 min-w-0">
@@ -129,7 +129,7 @@ const PlanTimelineCard = ({
                 key={qr.status}
                 onClick={() => onRsvp(planId, qr.status)}
                 disabled={!!userRsvp}
-                className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-[8px] text-[11px] font-medium transition-all disabled:cursor-default"
+                className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[11px] font-medium transition-all disabled:cursor-default"
                 style={{
                   backgroundColor: isActive ? qr.bg : (userRsvp ? "#F7F3EF" : qr.bg),
                   color: isActive ? qr.color : (userRsvp ? "#6B5C78" : qr.color),

@@ -28,14 +28,14 @@ const ConfirmSheet = ({ open, onOpenChange, title, description, confirmLabel = "
         <div className="flex gap-2">
           <button
             onClick={() => onOpenChange(false)}
-            className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px]"
+            className="flex-1 py-2.5 text-[13px] font-medium rounded-xl"
             style={{ color: "hsl(var(--color-text-primary))", backgroundColor: "#F0ECE7" }}
           >
             Avbryt
           </button>
           <button
             onClick={() => { onConfirm(); onOpenChange(false); }}
-            className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px] text-white"
+            className="flex-1 py-2.5 text-[13px] font-medium rounded-xl text-white"
             style={confirmStyle || { backgroundColor: "hsl(var(--color-text-primary))" }}
           >
             {confirmLabel}

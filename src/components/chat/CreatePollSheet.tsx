@@ -70,7 +70,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               placeholder="Vad vill du fråga?"
-              className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none"
+              className="w-full px-3 py-2.5 text-[13px] rounded-xl border outline-none"
               style={{
                 backgroundColor: "hsl(var(--color-surface-card))",
                 borderColor: "hsl(var(--color-surface-raised))",
@@ -90,7 +90,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
                   value={opt}
                   onChange={(e) => updateOption(i, e.target.value)}
                   placeholder={`Alternativ ${i + 1}`}
-                  className="flex-1 px-3 py-2.5 text-[13px] rounded-[10px] border outline-none"
+                  className="flex-1 px-3 py-2.5 text-[13px] rounded-xl border outline-none"
                   style={{
                     backgroundColor: "hsl(var(--color-surface-card))",
                     borderColor: "hsl(var(--color-surface-raised))",
@@ -127,7 +127,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
             className="w-full py-2.5 text-[13px] font-medium text-white disabled:opacity-40 transition-opacity"
             style={{
               backgroundColor: "hsl(var(--color-text-primary))",
-              borderRadius: 10,
+              borderRadius: 12,
             }}
           >
             Skicka omröstning

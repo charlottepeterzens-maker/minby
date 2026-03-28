@@ -307,7 +307,7 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
             <div
               style={{
                 background: "hsl(var(--color-surface-raised))",
-                borderRadius: 10,
+                borderRadius: 12,
                 padding: "10px 14px",
                 fontSize: 12,
                 color: "hsl(var(--color-text-primary))",
@@ -325,7 +325,7 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
                   flex: 1,
                   background: "#3C2A4D",
                   color: "#F7F3EF",
-                  borderRadius: 10,
+                  borderRadius: 12,
                   padding: 10,
                   fontSize: 13,
                   fontWeight: 500,
@@ -341,7 +341,7 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
                   flex: 1,
                   background: "hsl(var(--color-surface-raised))",
                   color: "hsl(var(--color-text-primary))",
-                  borderRadius: 10,
+                  borderRadius: 12,
                   padding: 10,
                   fontSize: 13,
                   fontWeight: 500,

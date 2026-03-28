@@ -254,7 +254,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
               <button
                 key={opt.value}
                 onClick={() => selectType(opt.value)}
-                className="w-full text-left p-4 rounded-[12px] bg-white transition-all"
+                className="w-full text-left p-4 rounded-xl bg-white transition-all"
                 style={{
                   border: '1px solid #EDE8F4',
                 }}
@@ -269,7 +269,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
           <div className="space-y-5">
             {/* Selected type indicator */}
             <div
-              className="w-full text-left p-3 rounded-[12px] bg-white"
+              className="w-full text-left p-3 rounded-xl bg-white"
               style={{ border: '2px solid #3C2A4D' }}
             >
               <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>
@@ -305,7 +305,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     value={note}
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
                     placeholder="Berätta lite mer..."
-                    className="w-full text-[13px] rounded-[10px] bg-white px-3 py-2.5 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+                    className="w-full text-[13px] rounded-xl bg-white px-3 py-2.5 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
                     style={{ border: '1px solid #EDE8F4' }}
                     maxLength={150}
                     rows={2}
@@ -368,7 +368,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       style={{ borderColor: '#EDE8F4' }}
                     />
                     {friendResults.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 z-20 bg-white rounded-[10px] shadow-lg mt-1 py-1" style={{ border: '1px solid #EDE8F4' }}>
+                      <div className="absolute top-full left-0 right-0 z-20 bg-white rounded-xl shadow-lg mt-1 py-1" style={{ border: '1px solid #EDE8F4' }}>
                         {friendResults.map((fr) => (
                           <button
                             key={fr.user_id}
@@ -406,7 +406,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     value={note}
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
                     placeholder="Berätta lite mer..."
-                    className="w-full text-[13px] rounded-[10px] bg-white px-3 py-2.5 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
+                    className="w-full text-[13px] rounded-xl bg-white px-3 py-2.5 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
                     style={{ border: '1px solid #EDE8F4' }}
                     maxLength={150}
                     rows={2}
@@ -420,7 +420,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     {activityDates.map((d, i) => (
                       <span
                         key={i}
-                        className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-[10px] bg-white"
+                        className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-xl bg-white"
                         style={{ border: '1px solid #EDE8F4', color: '#3C2A4D' }}
                       >
                         {formatDateChip(d)}
@@ -468,7 +468,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       key={opt.value}
                       onClick={() => setVisibility(opt.value)}
                       className={cn(
-                        "flex-1 py-2 text-[11px] font-medium rounded-[10px] transition-all",
+                        "flex-1 py-2 text-[11px] font-medium rounded-xl transition-all",
                         visibility === opt.value
                           ? "text-white"
                           : "bg-white text-foreground"
@@ -489,7 +489,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
             <button
               onClick={handleSubmit}
               disabled={!canSubmit() || saving}
-              className="w-full py-3 text-[14px] font-medium rounded-[10px] text-white transition-all disabled:opacity-50"
+              className="w-full py-3 text-[14px] font-medium rounded-xl text-white transition-all disabled:opacity-50"
               style={{ backgroundColor: '#3C2A4D' }}
             >
               {saving ? "Sparar..." : "Dela"}

@@ -73,7 +73,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
     return (
       <div className={stickyClass} style={stickyStyle}>
         <div
-          className="p-2.5 rounded-[10px] flex items-center gap-2"
+          className="p-2.5 rounded-xl flex items-center gap-2"
           style={{
             backgroundColor: "rgba(255,255,255,0.85)",
             border: "none",
@@ -105,7 +105,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
       <motion.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-[10px] overflow-hidden"
+        className="rounded-xl overflow-hidden"
         style={{
           backgroundColor: "rgba(255,255,255,0.88)",
           border: "none",
@@ -181,7 +181,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
                 {summary.planSuggestion && onCreatePlan && (
                   <button
                     onClick={() => onCreatePlan(summary.planSuggestion!)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[11px] font-medium transition-opacity hover:opacity-80"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium transition-opacity hover:opacity-80"
                     style={{ backgroundColor: "hsl(var(--color-surface-sage))", color: "hsl(var(--color-accent-sage-text))" }}
                   >
                     Gör detta till en plan

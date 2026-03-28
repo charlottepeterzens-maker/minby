@@ -89,7 +89,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
             <button
               key={t}
               onClick={() => setTab(t)}
-              className="flex-1 py-2 rounded-[20px] text-[13px] font-medium transition-colors"
+              className="flex-1 py-2 rounded-full text-[13px] font-medium transition-colors"
               style={{
                 backgroundColor: tab === t ? "#3C2A4D" : "#FFFFFF",
                 color: tab === t ? "#FFFFFF" : "#3C2A4D",
@@ -105,7 +105,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
           {tab === "my" ? (
             <div className="flex flex-col items-center py-6">
               <div
-                className="p-5 rounded-[16px]"
+                className="p-5 rounded-xl"
                 style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
               >
                 <QRCodeSVG
@@ -124,7 +124,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
             <div className="flex flex-col items-center">
               <div
                 id={scannerContainerId}
-                className="w-full max-w-[280px] rounded-[12px] overflow-hidden"
+                className="w-full max-w-[280px] rounded-xl overflow-hidden"
                 style={{ minHeight: 280 }}
               />
               <p className="text-[12px] mt-4 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>

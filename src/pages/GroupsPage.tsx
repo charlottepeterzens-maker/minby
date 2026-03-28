@@ -127,7 +127,7 @@ const GroupsPage = () => {
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-[16px] h-[72px] animate-pulse" style={{ backgroundColor: "hsl(var(--muted))" }} />
+              <div key={i} className="rounded-xl h-[72px] animate-pulse" style={{ backgroundColor: "hsl(var(--muted))" }} />
             ))}
           </div>
         ) : (
@@ -136,11 +136,11 @@ const GroupsPage = () => {
               <button
                 key={g.id}
                 onClick={() => navigate(`/groups/${g.id}`)}
-                className="w-full flex items-center gap-3 rounded-[16px] p-3 text-left transition-colors hover:opacity-90"
+                className="w-full flex items-center gap-3 rounded-xl p-3 text-left transition-colors hover:opacity-90"
                 style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
               >
                 <div className="shrink-0 flex items-center justify-center"
-                  style={{ width: 42, height: 42, borderRadius: 10, backgroundColor: "hsl(var(--color-surface))" }}>
+                  style={{ width: 42, height: 42, borderRadius: 12, backgroundColor: "hsl(var(--color-surface))" }}>
                   <span className="text-lg">{g.emoji}</span>
                 </div>
                 <div className="flex-1 min-w-0">
@@ -170,10 +170,10 @@ const GroupsPage = () => {
               onGroupCreated={fetchGroups}
               trigger={
                 <button
-                  className="w-full flex items-center gap-3 rounded-[16px] p-3 text-left transition-colors hover:opacity-80 outline-none focus:outline-none"
+                  className="w-full flex items-center gap-3 rounded-xl p-3 text-left transition-colors hover:opacity-80 outline-none focus:outline-none"
                   style={{ border: "1.5px dashed hsl(var(--color-surface-raised))" }}>
                   <div className="shrink-0 flex items-center justify-center"
-                    style={{ width: 42, height: 42, borderRadius: 10, border: "0.5px dashed hsl(var(--color-surface-raised))" }}>
+                    style={{ width: 42, height: 42, borderRadius: 12, border: "0.5px dashed hsl(var(--color-surface-raised))" }}>
                     <Plus className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
                   </div>
                   <span className="text-[12px] font-medium" style={{ color: "hsl(var(--color-text-secondary))" }}>

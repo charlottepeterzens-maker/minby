@@ -55,7 +55,7 @@ const PushPermissionDialog = () => {
   return (
     <Dialog open={show} onOpenChange={(open) => !open && handleLater()}>
       <DialogContent
-        className="max-w-[320px] rounded-[20px] p-6 border-0"
+        className="max-w-[320px] rounded-full p-6 border-0"
         style={{ backgroundColor: "hsl(var(--color-surface))" }}
       >
         <div className="flex flex-col items-center text-center gap-4">
@@ -76,14 +76,14 @@ const PushPermissionDialog = () => {
           <div className="flex flex-col gap-2 w-full mt-2">
             <button
               onClick={handleActivate}
-              className="w-full py-3 rounded-[12px] text-[14px] font-medium text-white transition-colors"
+              className="w-full py-3 rounded-xl text-[14px] font-medium text-white transition-colors"
               style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
             >
               Håll mig uppdaterad
             </button>
             <button
               onClick={handleLater}
-              className="w-full py-2.5 rounded-[12px] text-[13px] font-medium transition-colors"
+              className="w-full py-2.5 rounded-xl text-[13px] font-medium transition-colors"
               style={{ color: "hsl(var(--color-text-secondary))" }}
             >
               Senare

@@ -78,9 +78,9 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
           {mode === "choose" && (
             <div className="space-y-2">
               <button onClick={() => setMode("plan")}
-                className="w-full flex items-center gap-3 p-3.5 rounded-[12px] text-left transition-colors hover:opacity-90"
+                className="w-full flex items-center gap-3 p-3.5 rounded-xl text-left transition-colors hover:opacity-90"
                 style={{ backgroundColor: "hsl(var(--color-surface-card))" }}>
-                <div className="w-9 h-9 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: "hsl(var(--color-surface-sage))" }}>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: "hsl(var(--color-surface-sage))" }}>
                   <CalendarPlus className="w-4 h-4" style={{ color: "hsl(var(--color-accent-sage-text))" }} />
                 </div>
                 <div>
@@ -89,9 +89,9 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
                 </div>
               </button>
               <button onClick={() => setMode("poll")}
-                className="w-full flex items-center gap-3 p-3.5 rounded-[12px] text-left transition-colors hover:opacity-90"
+                className="w-full flex items-center gap-3 p-3.5 rounded-xl text-left transition-colors hover:opacity-90"
                 style={{ backgroundColor: "hsl(var(--color-surface-card))" }}>
-                <div className="w-9 h-9 rounded-[10px] flex items-center justify-center" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
                   <BarChart3 className="w-4 h-4" style={{ color: "hsl(var(--color-text-primary))" }} />
                 </div>
                 <div>
@@ -107,14 +107,14 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
               <div>
                 <label className="text-[11px] font-medium mb-1 block" style={{ color: "hsl(var(--color-text-secondary))" }}>Fråga</label>
                 <input value={question} onChange={(e) => setQuestion(e.target.value)}
-                  placeholder="Vad vill du fråga?" className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none" style={inputStyle} />
+                  placeholder="Vad vill du fråga?" className="w-full px-3 py-2.5 text-[13px] rounded-xl border outline-none" style={inputStyle} />
               </div>
               <div className="space-y-2">
                 <label className="text-[11px] font-medium block" style={{ color: "hsl(var(--color-text-secondary))" }}>Svarsalternativ</label>
                 {options.map((opt, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <input value={opt} onChange={(e) => updateOption(i, e.target.value)}
-                      placeholder={`Alternativ ${i + 1}`} className="flex-1 px-3 py-2.5 text-[13px] rounded-[10px] border outline-none" style={inputStyle} />
+                      placeholder={`Alternativ ${i + 1}`} className="flex-1 px-3 py-2.5 text-[13px] rounded-xl border outline-none" style={inputStyle} />
                     {options.length > 2 && (
                       <button onClick={() => removeOption(i)} className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
                         <X className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-secondary))" }} />
@@ -130,7 +130,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
               </div>
               <button onClick={handleSubmitPoll} disabled={!canSubmitPoll || sending}
                 className="w-full py-2.5 text-[13px] font-medium text-white disabled:opacity-40 transition-opacity"
-                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 10 }}>
+                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 12 }}>
                 Skicka omröstning
               </button>
             </div>
@@ -141,30 +141,30 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
               <div>
                 <label className="text-[11px] font-medium mb-1 block" style={{ color: "hsl(var(--color-text-secondary))" }}>Vad ska ni göra?</label>
                 <input value={planTitle} onChange={(e) => setPlanTitle(e.target.value)}
-                  placeholder="T.ex. Middag, Fika, Vandring..." className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none" style={inputStyle} />
+                  placeholder="T.ex. Middag, Fika, Vandring..." className="w-full px-3 py-2.5 text-[13px] rounded-xl border outline-none" style={inputStyle} />
               </div>
               <div>
                 <label className="text-[11px] font-medium mb-1 block" style={{ color: "hsl(var(--color-text-secondary))" }}>När?</label>
                 <input value={planDate} onChange={(e) => setPlanDate(e.target.value)}
-                  placeholder="T.ex. Torsdag kväll, Nästa helg..." className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none" style={inputStyle} />
+                  placeholder="T.ex. Torsdag kväll, Nästa helg..." className="w-full px-3 py-2.5 text-[13px] rounded-xl border outline-none" style={inputStyle} />
               </div>
               <div>
                 <label className="text-[11px] font-medium mb-1 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
                   <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> Var? <span className="font-normal">(valfritt)</span></span>
                 </label>
                 <input value={planLocation} onChange={(e) => setPlanLocation(e.target.value)}
-                  placeholder="T.ex. Hemma hos mig, Café..." className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none" style={inputStyle} />
+                  placeholder="T.ex. Hemma hos mig, Café..." className="w-full px-3 py-2.5 text-[13px] rounded-xl border outline-none" style={inputStyle} />
               </div>
               <button onClick={handleSubmitPlan} disabled={!canSubmitPlan || sending}
                 className="w-full py-2.5 text-[13px] font-medium text-white disabled:opacity-40 transition-opacity"
-                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 10 }}>
+                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 12 }}>
                 Föreslå plan
               </button>
             </div>
           )}
 
           {mode !== "choose" && (
-            <button onClick={() => setMode("choose")} className="w-full mt-2 py-2 text-[12px] font-medium rounded-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
+            <button onClick={() => setMode("choose")} className="w-full mt-2 py-2 text-[12px] font-medium rounded-xl" style={{ color: "hsl(var(--color-text-secondary))" }}>
               ← Tillbaka
             </button>
           )}
