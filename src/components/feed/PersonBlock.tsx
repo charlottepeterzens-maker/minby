@@ -241,7 +241,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                 {person.recentPosts.slice(0, 3).map((post, idx) => (
                   <div key={post.id}>
                     {idx > 0 && (
-                      <div className="my-2.5" style={{ borderTop: "1px solid #EDE8E0" }} />
+                      <div className="my-2.5" style={{ borderTop: "1px solid hsl(var(--color-border-subtle))" }} />
                     )}
                     {post.image_url && <PostImage imageUrl={post.image_url} />}
                     {post.content && (
@@ -307,7 +307,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
 
       {/* Hangout inline card */}
       {person.activeHangout && (
-        <div style={{ borderTop: "1px solid #F7F3EF", padding: "10px 14px" }}>
+        <div style={{ borderTop: "1px solid hsl(var(--color-border-subtle))", padding: "10px 14px" }}>
           <div className="flex items-center gap-1.5 mb-1">
             <Calendar size={11} style={{ color: "hsl(var(--color-text-secondary))" }} />
             <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
@@ -342,7 +342,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
       {person.latestTip && !person.activeHangout && (
         <div
           className="flex items-center gap-1"
-          style={{ borderTop: "1px solid #F7F3EF", padding: "8px 14px", fontSize: 10, color: "hsl(var(--color-text-secondary))" }}
+          style={{ borderTop: "1px solid hsl(var(--color-border-subtle))", padding: "8px 14px", fontSize: 10, color: "hsl(var(--color-text-secondary))" }}
         >
           <Heart size={10} />
           {person.latestTip.title.slice(0, 30)}

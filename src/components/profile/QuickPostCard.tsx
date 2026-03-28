@@ -283,7 +283,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                         padding: "4px 10px",
                         borderRadius: 99,
                         background: "transparent",
-                        border: "1px dashed #C9B8D8",
+                        border: "1px dashed hsl(var(--color-border-lavender))",
                         color: "hsl(var(--color-text-secondary))",
                         cursor: "pointer",
                       }}

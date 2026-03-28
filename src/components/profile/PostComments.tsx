@@ -147,7 +147,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
             gap: 8,
             marginBottom: 10,
             paddingTop: 10,
-            borderTop: "1px solid #F0ECE7",
+            borderTop: "1px solid hsl(var(--color-border-subtle))",
           }}
         >
           {comments.map((c) => (

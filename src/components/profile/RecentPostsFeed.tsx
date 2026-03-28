@@ -285,7 +285,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
                       fontSize: 11,
                       padding: "4px 10px",
                       borderRadius: 99,
-                      border: "1px solid #EDE8E0",
+                      border: "1px solid hsl(var(--color-border-subtle))",
                       background: "#F7F3EF",
                       color: "hsl(var(--color-text-secondary))",
                       cursor: "pointer",
@@ -382,7 +382,7 @@ const PostCard = ({
     <div
       style={{
         background: "#FFFFFF",
-        border: "1px solid #EDE8E0",
+        border: "1px solid hsl(var(--color-border-subtle))",
         borderRadius: 8,
         overflow: "hidden",
         position: "relative",
@@ -397,12 +397,12 @@ const PostCard = ({
           <DropdownMenuTrigger asChild>
             <button
               className="w-7 h-7 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(247,243,239,0.9)", border: "1px solid #EDE8E0" }}
+              style={{ background: "rgba(247,243,239,0.9)", border: "1px solid hsl(var(--color-border-subtle))" }}
             >
               <MoreHorizontal className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-[150px]" style={{ borderRadius: 8, border: "1px solid #EDE8E0" }}>
+          <DropdownMenuContent align="end" className="min-w-[150px]" style={{ borderRadius: 8, border: "1px solid hsl(var(--color-border-subtle))" }}>
             <DropdownMenuItem onClick={onEdit} className="text-xs gap-2 cursor-pointer">
               <Pencil className="w-3.5 h-3.5" /> Redigera inlägg
             </DropdownMenuItem>

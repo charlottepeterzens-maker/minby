@@ -483,7 +483,7 @@ const GroupChatPage = () => {
                       Bjud in till sällskapet
                     </button>
                   } />
-                  <div className="mx-3 my-1" style={{ borderTop: "1px solid #F0ECE7" }} />
+                  <div className="mx-3 my-1" style={{ borderTop: "1px solid hsl(var(--color-border-subtle))" }} />
                   <button onClick={() => { setMenuOpen(false); setLeaveConfirmOpen(true); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
                     style={{ color: "hsl(var(--color-accent-red))" }}>

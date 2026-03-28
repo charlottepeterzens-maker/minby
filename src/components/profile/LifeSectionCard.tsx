@@ -249,7 +249,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     fontWeight: 500,
                     color: "hsl(var(--color-text-secondary))",
                     background: "#F7F3EF",
-                    border: "1px solid #EDE8E0",
+                    border: "1px solid hsl(var(--color-border-subtle))",
                     borderRadius: 99,
                     padding: "4px 10px",
                     cursor: "pointer",
@@ -290,7 +290,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
             <div
               style={{
                 background: "#fff",
-                border: "1px solid #EDE8E0",
+                border: "1px solid hsl(var(--color-border-subtle))",
                 borderRadius: 8,
                 padding: 12,
                 display: "flex",
@@ -306,7 +306,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   fontSize: 13,
                   minHeight: 60,
                   background: "#F7F3EF",
-                  border: "1px solid #EDE8E0",
+                  border: "1px solid hsl(var(--color-border-subtle))",
                   borderRadius: 8,
                   resize: "none",
                 }}
@@ -327,7 +327,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       fontSize: 11,
                       padding: "4px 10px",
                       borderRadius: 99,
-                      border: "1px solid #EDE8E0",
+                      border: "1px solid hsl(var(--color-border-subtle))",
                       background: imageFile ? "#EDE8F4" : "#F7F3EF",
                       color: imageFile ? "#3C2A4D" : "#655675",
                       cursor: "pointer",
@@ -383,7 +383,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
                   placeholder="Klistra in en lank..."
-                  style={{ flex: 1, height: 28, fontSize: 11, background: "#F7F3EF", border: "1px solid #EDE8E0" }}
+                  style={{ flex: 1, height: 28, fontSize: 11, background: "#F7F3EF", border: "1px solid hsl(var(--color-border-subtle))" }}
                 />
                 <button
                   onClick={handlePost}
@@ -420,7 +420,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               key={post.id}
               style={{
                 background: "#fff",
-                border: "1px solid #EDE8E0",
+                border: "1px solid hsl(var(--color-border-subtle))",
                 borderRadius: 8,
                 overflow: "hidden",
                 position: "relative",
@@ -436,7 +436,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                           height: 28,
                           borderRadius: "50%",
                           background: "rgba(247,243,239,0.9)",
-                          border: "1px solid #EDE8E0",
+                          border: "1px solid hsl(var(--color-border-subtle))",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -448,7 +448,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="end"
-                      style={{ minWidth: 150, borderRadius: 8, border: "1px solid #EDE8E0" }}
+                      style={{ minWidth: 150, borderRadius: 8, border: "1px solid hsl(var(--color-border-subtle))" }}
                     >
                       <DropdownMenuItem
                         onClick={() => handleEditPost(post)}
@@ -568,7 +568,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 minHeight: 100,
                 fontSize: 13,
                 background: "#fff",
-                border: "1px solid #EDE8E0",
+                border: "1px solid hsl(var(--color-border-subtle))",
                 borderRadius: 8,
                 resize: "none",
               }}

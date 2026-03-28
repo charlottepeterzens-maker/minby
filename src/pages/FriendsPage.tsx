@@ -593,7 +593,7 @@ const FriendsPage = () => {
               <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
                 {f.display_name}
               </p>
-              {isClose && <Heart className="w-3 h-3 shrink-0" style={{ color: "hsl(var(--color-border-lavender))" }} fill="#C9B8D8" />}
+              {isClose && <Heart className="w-3 h-3 shrink-0" style={{ color: "hsl(var(--color-border-lavender))" }} fill="hsl(var(--color-border-lavender))" />}
             </div>
             {isMuted && (
               <p className="text-[10px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>
@@ -691,7 +691,7 @@ const FriendsPage = () => {
         </Container>
 
         {/* Tabs */}
-        <Container className="flex gap-0" style={{ borderBottom: "1px solid #F0ECE7" }}>
+        <Container className="flex gap-0" style={{ borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
           <button
             onClick={() => setActiveTab("krets")}
             className="flex-1 pb-2.5 text-[13px] font-medium text-center transition-colors relative"
@@ -923,7 +923,7 @@ const FriendsPage = () => {
                     {closeFriends.length === 0 ? (
                       <div
                         className="py-5 px-4 text-center"
-                        style={{ backgroundColor: "#F5F0FA", border: "1px dashed #C9B8D8", borderRadius: 8 }}
+                        style={{ backgroundColor: "#F5F0FA", border: "1px dashed hsl(var(--color-border-lavender))", borderRadius: 8 }}
                       >
                         <Heart className="w-5 h-5 mx-auto mb-2" style={{ color: "hsl(var(--color-border-lavender))" }} />
                         <p className="text-[12px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
