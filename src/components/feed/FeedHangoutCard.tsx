@@ -82,9 +82,17 @@ const UnifiedHangoutCard = ({
       }
     : null;
 
-  const mainText =
-    hangout.custom_note ||
-    (hangout.activities.length > 0 ? hangout.activities[0] : null);
+  // Avoid duplication: if custom_note already contains the activity text, only show note
+  const activityText = hangout.activities.length > 0 ? hangout.activities[0] : null;
+  const noteText = hangout.custom_note || null;
+
+  const textsAreSimilar =
+    noteText && activityText &&
+    (noteText.toLowerCase().includes(activityText.toLowerCase()) ||
+     activityText.toLowerCase().includes(noteText.toLowerCase()));
+
+  const mainText = noteText || activityText;
+  const secondaryText = textsAreSimilar ? null : (noteText ? activityText : null);
 
   return (
     <div
