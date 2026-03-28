@@ -36,7 +36,7 @@ const CloseCircleSuggestion = ({ friendUserId, friendName, onDismiss }: CloseCir
     <div
       className="mb-4 relative flex items-center gap-3"
       style={{
-        backgroundColor: "#F5F0FA",
+        backgroundColor: "hsl(var(--color-surface-raised))",
         borderRadius: 12,
         padding: "12px 14px",
       }}

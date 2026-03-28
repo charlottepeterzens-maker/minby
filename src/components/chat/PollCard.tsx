@@ -79,7 +79,7 @@ const PollCard = ({
                 <div
                   className="absolute inset-0 transition-all duration-500"
                   style={{
-                    backgroundColor: "#C9B8D8",
+                    backgroundColor: "hsl(var(--color-border-lavender))",
                     opacity: 0.3,
                     width: `${pct}%`,
                   }}

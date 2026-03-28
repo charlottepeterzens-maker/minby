@@ -127,7 +127,7 @@ const GroupsPage = () => {
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-[16px] h-[72px] animate-pulse" style={{ backgroundColor: "#E8E2DB" }} />
+              <div key={i} className="rounded-[16px] h-[72px] animate-pulse" style={{ backgroundColor: "hsl(var(--muted))" }} />
             ))}
           </div>
         ) : (

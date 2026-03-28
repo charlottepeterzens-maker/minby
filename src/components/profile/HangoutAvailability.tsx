@@ -246,12 +246,12 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         >
           <motion.div
             className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
-            style={{ backgroundColor: "#F0EAF6" }}
+            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
             initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 20 }}
            >
-            <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "#C9B8D8", opacity: 0.5 }} />
+            <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "hsl(var(--color-border-lavender))", opacity: 0.5 }} />
           </motion.div>
           <p className="text-[12px] text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
             Inga förslag just nu

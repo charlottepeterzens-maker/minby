@@ -158,7 +158,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
               {/* Unread dot */}
               <div
                 className="w-1.5 h-1.5 rounded-full shrink-0"
-                style={{ backgroundColor: "#C9B8D8" }}
+                style={{ backgroundColor: "hsl(var(--color-border-lavender))" }}
               />
 
               {/* Avatar */}

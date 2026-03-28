@@ -188,7 +188,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
         style={{ backgroundColor: "hsl(var(--color-surface))" }}
       >
         <div className="flex justify-center mb-4">
-          <div className="w-10 h-1 rounded-full" style={{ backgroundColor: "#C9B8D8" }} />
+          <div className="w-10 h-1 rounded-full" style={{ backgroundColor: "hsl(var(--color-border-lavender))" }} />
         </div>
         <SheetTitle className="sr-only">Vad känner du för?</SheetTitle>
 

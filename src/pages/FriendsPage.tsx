@@ -924,7 +924,7 @@ const FriendsPage = () => {
                     {closeFriends.length === 0 ? (
                       <div
                         className="py-5 px-4 text-center"
-                        style={{ backgroundColor: "#F5F0FA", border: "1px dashed hsl(var(--color-border-lavender))", borderRadius: 8 }}
+                        style={{ backgroundColor: "hsl(var(--color-surface-raised))", border: "1px dashed hsl(var(--color-border-lavender))", borderRadius: 8 }}
                       >
                         <Heart className="w-5 h-5 mx-auto mb-2" style={{ color: "hsl(var(--color-border-lavender))" }} />
                         <p className="text-[12px]" style={{ color: "hsl(var(--color-text-secondary))" }}>

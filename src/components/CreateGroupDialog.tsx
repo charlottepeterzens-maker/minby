@@ -235,7 +235,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                     
                         <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium"
-                      style={{ backgroundColor: "#C9B8D8", color: "hsl(var(--color-text-primary))" }}>
+                      style={{ backgroundColor: "hsl(var(--color-border-lavender))", color: "hsl(var(--color-text-primary))" }}>
                       
                           {f.initial}
                         </div>
