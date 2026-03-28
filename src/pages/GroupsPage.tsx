@@ -232,7 +232,7 @@ const GroupsPage = () => {
         )}
       </Container>
       <BottomNav />
-    </div>
+    </PageTransition>
   );
 };
 
