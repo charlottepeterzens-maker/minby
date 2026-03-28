@@ -131,7 +131,7 @@ const UnifiedHangoutCard = ({
           displayName={profile.display_name}
           initials={profile.initials}
           onClick={onProfileClick}
-          size={24}
+          size="w-6 h-6"
         />
         <button
           onClick={onProfileClick}
@@ -340,7 +340,7 @@ const GroupedActivityCard = ({
           displayName={profile.display_name}
           initials={profile.initials}
           onClick={onProfileClick}
-          size={24}
+          size="w-6 h-6"
         />
         <button
           onClick={onProfileClick}
