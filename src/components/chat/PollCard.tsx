@@ -43,7 +43,7 @@ const PollCard = ({
       <div
         className="p-3 space-y-2.5"
         style={{
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "hsl(var(--color-surface-card))",
           border: "1px solid #DDD5CC",
           borderRadius: 12,
         }}
@@ -51,7 +51,7 @@ const PollCard = ({
         {/* Question */}
         <p
           className="text-[13px] font-medium leading-snug"
-          style={{ color: "#3C2A4D" }}
+          style={{ color: "hsl(var(--color-text-primary))" }}
         >
           {question}
         </p>
@@ -79,7 +79,7 @@ const PollCard = ({
                 <div
                   className="absolute inset-0 transition-all duration-500"
                   style={{
-                    backgroundColor: "#C9B8D8",
+                    backgroundColor: "hsl(var(--color-border-lavender))",
                     opacity: 0.3,
                     width: `${pct}%`,
                   }}
@@ -88,7 +88,7 @@ const PollCard = ({
                   <span
                     className="text-[12px]"
                     style={{
-                      color: "#3C2A4D",
+                      color: "hsl(var(--color-text-primary))",
                       fontWeight: isSelected ? 600 : 400,
                     }}
                   >
@@ -97,7 +97,7 @@ const PollCard = ({
                   {userVote && (
                     <span
                       className="text-[10px] font-medium ml-2 shrink-0"
-                      style={{ color: "#655675" }}
+                      style={{ color: "hsl(var(--color-text-secondary))" }}
                     >
                       {count} ({pct}%)
                     </span>
@@ -110,10 +110,10 @@ const PollCard = ({
 
         {/* Footer */}
         <div className="flex items-center justify-between">
-          <span className="text-[10px]" style={{ color: "#655675" }}>
+          <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
             {creatorName}
           </span>
-          <span className="text-[10px]" style={{ color: "#6B5C78" }}>
+          <span className="text-[10px]" style={{ color: "hsl(var(--color-text-muted))" }}>
             {totalVotes} röst{totalVotes !== 1 ? "er" : ""} · {time}
           </span>
         </div>

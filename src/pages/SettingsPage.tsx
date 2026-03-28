@@ -281,7 +281,7 @@ const SettingsPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <Label className="text-sm">Morgonrapport</Label>
-                  <p className="text-[10px] mt-0.5" style={{ color: "#857A8F" }}>
+                  <p className="text-[10px] mt-0.5" style={{ color: "hsl(var(--color-text-faint))" }}>
                     Kommer snart
                   </p>
                 </div>
@@ -361,7 +361,7 @@ const SettingsPage = () => {
           <button
             onClick={() => setShowDeleteConfirm(true)}
             className="text-[12px] hover:underline"
-            style={{ color: "#A32D2D" }}
+            style={{ color: "hsl(var(--color-accent-red))" }}
           >
             Radera mitt konto
           </button>
@@ -373,7 +373,7 @@ const SettingsPage = () => {
           title="Radera konto"
           description="Detta raderar ditt konto och all din data permanent. Det går inte att ångra."
           confirmLabel="Radera konto"
-          confirmStyle={{ backgroundColor: "#A32D2D" }}
+          confirmStyle={{ backgroundColor: "hsl(var(--color-accent-red))" }}
           onConfirm={handleDeleteAccount}
         />
       </Container>

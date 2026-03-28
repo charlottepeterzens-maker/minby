@@ -60,7 +60,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
           onClick={fetchSummary}
           disabled={messages.length < 3}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-opacity disabled:opacity-30"
-          style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+          style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
         >
           <Sparkles className="w-3 h-3" />
           Sammanfatta
@@ -80,8 +80,8 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
             boxShadow: "0 2px 12px -2px rgba(60,42,77,0.08)",
           }}
         >
-          <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ color: "#655675" }} />
-          <span className="text-[11px]" style={{ color: "#655675" }}>Sammanfattar...</span>
+          <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ color: "hsl(var(--color-text-secondary))" }} />
+          <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>Sammanfattar...</span>
         </div>
       </div>
     );
@@ -90,7 +90,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
   if (error) {
     return (
       <div className={stickyClass} style={stickyStyle}>
-        <button onClick={fetchSummary} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium" style={{ backgroundColor: "#EDE8F4", color: "#655675" }}>
+        <button onClick={fetchSummary} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium" style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-secondary))" }}>
           <Sparkles className="w-3 h-3" />
           Försök igen
         </button>
@@ -118,14 +118,14 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
           className="w-full flex items-center justify-between px-3 py-2"
         >
           <div className="flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" style={{ color: "#655675" }} />
-            <span className="text-[11px] font-medium" style={{ color: "#3C2A4D" }}>
+            <Sparkles className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-secondary))" }} />
+            <span className="text-[11px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
               Sammanfattning
             </span>
             {newSinceLastSummary > 0 && (
               <span
                 className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
-                style={{ backgroundColor: "#EDE8F4", color: "#655675" }}
+                style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-secondary))" }}
               >
                 +{newSinceLastSummary} nya
               </span>
@@ -139,15 +139,15 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
                   fetchSummary();
                 }}
                 className="p-1 rounded-full hover:opacity-70 transition-opacity"
-                style={{ color: "#6B5C78" }}
+                style={{ color: "hsl(var(--color-text-muted))" }}
               >
                 <RefreshCw className="w-3 h-3" />
               </button>
             )}
             {expanded ? (
-              <ChevronUp className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
+              <ChevronUp className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
             ) : (
-              <ChevronDown className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
+              <ChevronDown className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
             )}
           </div>
         </button>
@@ -165,15 +165,15 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
               <div className="px-3 pb-3 space-y-2">
                 <ul className="space-y-1">
                   {summary.bullets.map((b, i) => (
-                    <li key={i} className="text-[12px] leading-relaxed flex gap-1.5" style={{ color: "#3C2A4D" }}>
-                      <span style={{ color: "#6B5C78" }}>•</span>
+                    <li key={i} className="text-[12px] leading-relaxed flex gap-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>
+                      <span style={{ color: "hsl(var(--color-text-muted))" }}>•</span>
                       <span>{b}</span>
                     </li>
                   ))}
                 </ul>
 
                 {summary.action && (
-                  <p className="text-[11px] italic" style={{ color: "#655675" }}>
+                  <p className="text-[11px] italic" style={{ color: "hsl(var(--color-text-secondary))" }}>
                     {summary.action}
                   </p>
                 )}
@@ -182,7 +182,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
                   <button
                     onClick={() => onCreatePlan(summary.planSuggestion!)}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[11px] font-medium transition-opacity hover:opacity-80"
-                    style={{ backgroundColor: "#EAF2E8", color: "#1F4A1A" }}
+                    style={{ backgroundColor: "hsl(var(--color-surface-sage))", color: "hsl(var(--color-accent-sage-text))" }}
                   >
                     Gör detta till en plan
                     <ArrowRight className="w-3 h-3" />
@@ -192,7 +192,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
                 <button
                   onClick={fetchSummary}
                   className="text-[10px] font-medium"
-                  style={{ color: "#6B5C78" }}
+                  style={{ color: "hsl(var(--color-text-muted))" }}
                 >
                   Uppdatera
                 </button>

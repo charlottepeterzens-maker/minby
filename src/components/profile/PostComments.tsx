@@ -132,7 +132,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
       {comments.length > 0 && !expanded && (
         <button
           onClick={() => setExpanded(true)}
-          style={{ fontSize: 11, color: "#655675", marginBottom: 8 }}
+          style={{ fontSize: 11, color: "hsl(var(--color-text-secondary))", marginBottom: 8 }}
           className="hover:underline"
         >
           {comments.length === 1 ? "1 svar" : `${comments.length} svar`}
@@ -147,7 +147,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
             gap: 8,
             marginBottom: 10,
             paddingTop: 10,
-            borderTop: "1px solid #F0ECE7",
+            borderTop: "1px solid hsl(var(--color-border-subtle))",
           }}
         >
           {comments.map((c) => (
@@ -157,7 +157,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
                   width: 24,
                   height: 24,
                   borderRadius: "50%",
-                  background: "#EDE8F4",
+                  background: "hsl(var(--color-surface-raised))",
                   flexShrink: 0,
                   display: "flex",
                   alignItems: "center",
@@ -168,15 +168,15 @@ const PostComments = ({ postId, isOwner }: Props) => {
                 {resolveAvatarUrl(c.avatar_url) ? (
                   <img src={resolveAvatarUrl(c.avatar_url)!} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
-                  <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{c.initials}</span>
+                  <span style={{ fontSize: 9, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}>{c.initials}</span>
                 )}
               </div>
-              <div style={{ flex: 1, background: "#F7F3EF", borderRadius: "0 8px 8px 8px", padding: "7px 10px" }}>
+              <div style={{ flex: 1, background: "hsl(var(--color-surface))", borderRadius: "0 8px 8px 8px", padding: "7px 10px" }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 2 }}>
-                  <span style={{ fontSize: 11, fontWeight: 500, color: "#2A1A3C" }}>
+                  <span style={{ fontSize: 11, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}>
                     {c.user_id === user?.id ? "Du" : c.display_name || "Någon"}
                   </span>
-                  <span style={{ fontSize: 10, color: "#857A8F" }}>{getTimeAgo(c.created_at)}</span>
+                  <span style={{ fontSize: 10, color: "hsl(var(--color-text-faint))" }}>{getTimeAgo(c.created_at)}</span>
                 </div>
                 <p style={{ fontSize: 12, color: "#5A4A6A", lineHeight: 1.5 }}>{c.content}</p>
               </div>
@@ -192,7 +192,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
                     opacity: 0.4,
                   }}
                 >
-                  <Trash2 style={{ width: 11, height: 11, color: "#A32D2D" }} />
+                  <Trash2 style={{ width: 11, height: 11, color: "hsl(var(--color-accent-red))" }} />
                 </button>
               )}
             </div>
@@ -206,7 +206,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
             width: 24,
             height: 24,
             borderRadius: "50%",
-            background: "#EDE8F4",
+            background: "hsl(var(--color-surface-raised))",
             flexShrink: 0,
             display: "flex",
             alignItems: "center",
@@ -217,7 +217,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
           {resolveAvatarUrl(myAvatarUrl) ? (
             <img src={resolveAvatarUrl(myAvatarUrl)!} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
-            <span style={{ fontSize: 9, fontWeight: 500, color: "#3C2A4D" }}>{myInitials}</span>
+            <span style={{ fontSize: 9, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}>{myInitials}</span>
           )}
         </div>
         <input
@@ -235,12 +235,12 @@ const PostComments = ({ postId, isOwner }: Props) => {
           style={{
             flex: 1,
             height: 30,
-            background: "#F7F3EF",
+            background: "hsl(var(--color-surface))",
             border: focused ? "1px solid #C9B8D8" : "none",
             borderRadius: 99,
             padding: "0 12px",
             fontSize: 11,
-            color: "#2A1A3C",
+            color: "hsl(var(--color-text-primary))",
             outline: "none",
             transition: "border 0.15s ease",
           }}

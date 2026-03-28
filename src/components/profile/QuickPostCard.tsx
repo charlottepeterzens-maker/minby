@@ -98,24 +98,24 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
           <div className="flex items-center gap-3">
             <div
               className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center overflow-hidden"
-              style={{ backgroundColor: "#EDE8F4" }}
+              style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
             >
               {resolveAvatarUrl(profile?.avatar_url ?? null) ? (
-                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="Profilbild" className="w-full h-full object-cover" />
+                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="Profilbild" loading="lazy" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-[10px] font-medium" style={{ color: "#3C2A4D" }}>{initial}</span>
+                <span className="text-[10px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>{initial}</span>
               )}
             </div>
             <button
               onClick={() => setComposing(true)}
               className="flex-1 text-left"
               style={{
-                background: "#F7F3EF",
+                background: "hsl(var(--color-surface))",
                 border: "none",
                 borderRadius: 99,
                 padding: "6px 14px",
                 fontSize: 11,
-                color: "#857A8F",
+                color: "hsl(var(--color-text-faint))",
               }}
             >
               Dela något med din krets...
@@ -139,8 +139,8 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                   padding: "4px 10px",
                   borderRadius: 99,
                    border: "none",
-                  background: "#F7F3EF",
-                  color: "#655675",
+                  background: "hsl(var(--color-surface))",
+                  color: "hsl(var(--color-text-secondary))",
                   cursor: "pointer",
                 }}
               >
@@ -156,9 +156,9 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                     fontSize: 11,
                     padding: "4px 10px",
                     borderRadius: 99,
-                    background: "#EDE8F4",
+                    background: "hsl(var(--color-surface-raised))",
                     border: "1px solid #C9B8D8",
-                    color: "#3C2A4D",
+                    color: "hsl(var(--color-text-primary))",
                     cursor: "pointer",
                   }}
                 >
@@ -253,7 +253,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
 
             {/* Section picker */}
             <div className="mt-3">
-              <p className="text-[10px] mb-1.5" style={{ color: "#857A8F" }}>
+              <p className="text-[10px] mb-1.5" style={{ color: "hsl(var(--color-text-faint))" }}>
                 Lägg till i en del av din vardag? (valfritt)
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -267,7 +267,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                       borderRadius: 99,
                       background: selectedSection === s.id ? "#EDE8F4" : "#F7F3EF",
                       border: selectedSection === s.id ? "1.5px solid #3C2A4D" : "none",
-                      color: "#3C2A4D",
+                      color: "hsl(var(--color-text-primary))",
                       cursor: "pointer",
                     }}
                   >
@@ -283,8 +283,8 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                         padding: "4px 10px",
                         borderRadius: 99,
                         background: "transparent",
-                        border: "1px dashed #C9B8D8",
-                        color: "#655675",
+                        border: "1px dashed hsl(var(--color-border-lavender))",
+                        color: "hsl(var(--color-text-secondary))",
                         cursor: "pointer",
                       }}
                     >
@@ -300,7 +300,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
               <button
                 onClick={reset}
                 className="text-[12px]"
-                style={{ color: "#857A8F", background: "none", border: "none", cursor: "pointer" }}
+                style={{ color: "hsl(var(--color-text-faint))", background: "none", border: "none", cursor: "pointer" }}
               >
                 Avbryt
               </button>

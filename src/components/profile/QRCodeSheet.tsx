@@ -78,7 +78,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="rounded-t-[20px] max-h-[85vh]">
         <DrawerHeader>
-          <DrawerTitle className="font-display text-base font-medium" style={{ color: "#3C2A4D" }}>
+          <DrawerTitle className="font-display text-base font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
             QR-kod
           </DrawerTitle>
         </DrawerHeader>
@@ -106,7 +106,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
             <div className="flex flex-col items-center py-6">
               <div
                 className="p-5 rounded-[16px]"
-                style={{ backgroundColor: "#FFFFFF" }}
+                style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
               >
                 <QRCodeSVG
                   value={inviteUrl}
@@ -116,7 +116,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
                   level="M"
                 />
               </div>
-              <p className="text-[12px] mt-4 text-center" style={{ color: "#6B5C78" }}>
+              <p className="text-[12px] mt-4 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
                 Låt någon skanna din kod för att kopplas ihop
               </p>
             </div>
@@ -127,7 +127,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
                 className="w-full max-w-[280px] rounded-[12px] overflow-hidden"
                 style={{ minHeight: 280 }}
               />
-              <p className="text-[12px] mt-4 text-center" style={{ color: "#6B5C78" }}>
+              <p className="text-[12px] mt-4 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
                 Rikta kameran mot en Minby QR-kod
               </p>
             </div>

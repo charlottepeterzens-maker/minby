@@ -54,18 +54,18 @@ const OnboardingFlow = ({ onComplete }: Props) => {
   );
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6" style={{ backgroundColor: "#F7F3EF" }}>
+    <div className="min-h-screen flex flex-col items-center justify-center px-6" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       <div className="w-full max-w-sm">
         {dots}
 
         <AnimatePresence mode="wait">
           {step === 0 && (
             <StepCard key="s0">
-              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "#3C2A4D" }}>
+              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
                 Du har sagt "vi måste ses" och menat det. Ändå gick månaderna.
               </h1>
 
-              <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "#655675" }}>
+              <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "hsl(var(--color-text-secondary))" }}>
                 Vi vet vad som händer i varandras liv, men stannar sällan upp. Vi vet – men vi är inte riktigt där.
               </p>
 
@@ -75,11 +75,11 @@ const OnboardingFlow = ({ onComplete }: Props) => {
 
           {step === 1 && (
             <StepCard key="s1">
-              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "#3C2A4D" }}>
+              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
                 Minby är något annat.
               </h1>
 
-              <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "#655675" }}>
+              <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "hsl(var(--color-text-secondary))" }}>
                 En liten, sluten plats – bara för de du faktiskt håller av. Inget brus. Bara din närmaste krets.
               </p>
 
@@ -89,11 +89,11 @@ const OnboardingFlow = ({ onComplete }: Props) => {
 
           {step === 2 && (
             <StepCard key="s2">
-              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "#3C2A4D" }}>
+              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
                 Två enkla saker.
               </h1>
 
-              <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "#655675" }}>
+              <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "hsl(var(--color-text-secondary))" }}>
                 Dela det som faktiskt händer. Och när du vill ses – säg till.
               </p>
 
@@ -103,7 +103,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
 
           {step === 3 && (
             <StepCard key="s3">
-              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "#3C2A4D" }}>
+              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
                 Hur känns det just nu?
               </h1>
 
@@ -156,11 +156,11 @@ const OnboardingFlow = ({ onComplete }: Props) => {
 
           {step === 4 && (
             <StepCard key="s4">
-              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "#3C2A4D" }}>
+              <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
                 {intent === "meet" ? "Vem hade du velat ses med?" : "Vem vill du ha i din by?"}
               </h1>
 
-              <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "#655675" }}>
+              <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "hsl(var(--color-text-secondary))" }}>
                 {intent === "meet"
                   ? "Tänk på någon du skulle vilja träffa snart. Bjud in – det tar en minut."
                   : "Bjud in en person du faktiskt vill hålla kontakten med. Det är där allt börjar."}
@@ -171,7 +171,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                   onClick={() => setShowInvite(true)}
                   className="w-full text-left"
                   style={{
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: "hsl(var(--color-surface-card))",
                      border: "none",
                     borderRadius: 8,
                     padding: "14px 16px",
@@ -184,7 +184,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                   onClick={() => setShowQR(true)}
                   className="w-full text-left"
                   style={{
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: "hsl(var(--color-surface-card))",
                     border: "none",
                     borderRadius: 8,
                     padding: "14px 16px",
@@ -231,7 +231,7 @@ const OnboardingButton = ({
     disabled={disabled}
     className="w-full text-[14px] font-medium"
     style={{
-      backgroundColor: "#3C2A4D",
+      backgroundColor: "hsl(var(--color-text-primary))",
       color: "#fff",
       borderRadius: 99,
       height: 52,
@@ -296,7 +296,7 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
       <SheetContent
         side="bottom"
         className="rounded-t-[20px] z-[70]"
-        style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}
+        style={{ backgroundColor: "hsl(var(--color-surface))", padding: "24px 16px" }}
       >
         <SheetHeader>
           <SheetTitle className="font-display text-base font-medium text-left">Bjud in någon</SheetTitle>
@@ -306,11 +306,11 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
           <>
             <div
               style={{
-                background: "#EDE8F4",
+                background: "hsl(var(--color-surface-raised))",
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 12,
-                color: "#3C2A4D",
+                color: "hsl(var(--color-text-primary))",
                 wordBreak: "break-all",
                 marginBottom: 16,
               }}
@@ -339,8 +339,8 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
                 onClick={handleCopy}
                 style={{
                   flex: 1,
-                  background: "#EDE8F4",
-                  color: "#3C2A4D",
+                  background: "hsl(var(--color-surface-raised))",
+                  color: "hsl(var(--color-text-primary))",
                   borderRadius: 10,
                   padding: 10,
                   fontSize: 13,
@@ -353,7 +353,7 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
             </div>
           </>
         ) : (
-          <p className="text-center text-sm" style={{ color: "#857A8F" }}>
+          <p className="text-center text-sm" style={{ color: "hsl(var(--color-text-faint))" }}>
             Skapar länk…
           </p>
         )}

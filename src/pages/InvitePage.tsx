@@ -145,9 +145,9 @@ const InvitePage = () => {
   return (
     <div
       className="min-h-screen flex items-center justify-center"
-      style={{ backgroundColor: "#F7F3EF" }}
+      style={{ backgroundColor: "hsl(var(--color-surface))" }}
     >
-      <p className="text-[13px]" style={{ color: "#6B5C78" }}>
+      <p className="text-[13px]" style={{ color: "hsl(var(--color-text-muted))" }}>
         Bearbetar inbjudan...
       </p>
     </div>

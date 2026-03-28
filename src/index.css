@@ -50,6 +50,23 @@
     --lavender: 270 25% 78%;
     --lavender-bg: 270 20% 94%;
 
+    /* Branded colors (dark-mode-aware) */
+    --color-surface: 30 33% 95%;           /* #F7F3EF */
+    --color-surface-card: 0 0% 100%;       /* #FFFFFF */
+    --color-surface-raised: 270 20% 94%;   /* #EDE8F4 */
+    --color-surface-rose: 340 30% 97%;     /* #FCF0F3 */
+    --color-surface-sage: 145 20% 93%;     /* #EAF2E8 */
+    --color-text-primary: 270 30% 23%;     /* #3C2A4D */
+    --color-text-secondary: 270 14% 38%;   /* #655675 */
+    --color-text-muted: 270 12% 45%;       /* #6B5C78 */
+    --color-text-faint: 270 10% 52%;       /* #857A8F */
+    --color-border-subtle: 30 15% 89%;     /* #EDE8E0 */
+    --color-border-lavender: 270 25% 78%;  /* #C9B8D8 */
+    --color-accent-red: 0 55% 49%;         /* #A32D2D */
+    --color-accent-terra: 10 55% 50%;      /* #C9503A */
+    --color-accent-sage-text: 140 42% 20%; /* #1F4A1A */
+    --color-badge: 330 40% 35%;            /* #993556 */
+
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 270 30% 23%;
     --sidebar-primary: 270 30% 23%;
@@ -98,6 +115,23 @@
     --salvia-bg: 145 10% 15%;
     --lavender: 270 20% 35%;
     --lavender-bg: 270 15% 15%;
+
+    /* Branded colors — dark variants */
+    --color-surface: 270 15% 10%;
+    --color-surface-card: 270 15% 14%;
+    --color-surface-raised: 270 12% 20%;
+    --color-surface-rose: 340 15% 15%;
+    --color-surface-sage: 145 10% 15%;
+    --color-text-primary: 270 25% 85%;
+    --color-text-secondary: 270 10% 65%;
+    --color-text-muted: 270 10% 58%;
+    --color-text-faint: 270 8% 50%;
+    --color-border-subtle: 270 10% 20%;
+    --color-border-lavender: 270 20% 40%;
+    --color-accent-red: 0 50% 55%;
+    --color-accent-terra: 10 50% 55%;
+    --color-accent-sage-text: 140 30% 65%;
+    --color-badge: 330 35% 45%;
 
     --sidebar-background: 270 15% 12%;
     --sidebar-foreground: 30 15% 90%;

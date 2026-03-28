@@ -314,13 +314,13 @@ const ProfilePage = () => {
             <motion.div
               whileTap={isOwnProfile ? { scale: 0.92 } : undefined}
               className="w-16 h-16 rounded-full flex items-center justify-center overflow-hidden"
-              style={{ backgroundColor: "#EDE8F4" }}
+              style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
               onClick={isOwnProfile ? () => fileInputRef.current?.click() : undefined}
             >
               {resolveAvatarUrl(profile?.avatar_url ?? null) ? (
-                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt={`Profilbild för ${profile?.display_name || 'användare'}`} className="w-full h-full object-cover" />
+                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt={`Profilbild för ${profile?.display_name || 'användare'}`} loading="lazy" className="w-full h-full object-cover" />
               ) : (
-                <span className="text-xl font-display font-medium" style={{ color: "#3C2A4D" }}>
+                <span className="text-xl font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                   {initial}
                 </span>
               )}
@@ -379,7 +379,7 @@ const ProfilePage = () => {
                   <button
                     onClick={() => setEditingBio(true)}
                     className="group flex items-start gap-1.5 text-[13px] hover:text-foreground transition-colors w-full text-left"
-                    style={{ color: "#655675", wordBreak: "break-word" }}
+                    style={{ color: "hsl(var(--color-text-secondary))", wordBreak: "break-word" }}
                   >
                     {profile?.bio ? (
                       <span>{profile.bio}</span>
@@ -391,7 +391,7 @@ const ProfilePage = () => {
                 )}
               </div>
             ) : profile?.bio ? (
-              <p className="mt-1.5 text-[13px]" style={{ color: "#655675" }}>
+              <p className="mt-1.5 text-[13px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
                 {profile.bio}
               </p>
             ) : null}
@@ -448,7 +448,7 @@ const ProfilePage = () => {
         {/* ===== (5+6) MIN VARDAG ===== */}
         <div className="mb-8">
           {/* Section label */}
-          <h2 className="font-fraunces font-normal text-[16px] mb-4" style={{ color: "#2A1A3C" }}>
+          <h2 className="font-fraunces font-normal text-[16px] mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
             Min vardag
           </h2>
 
@@ -481,7 +481,7 @@ const ProfilePage = () => {
             className="w-full text-center mt-3"
             style={{
               fontSize: 11,
-              color: "#655675",
+              color: "hsl(var(--color-text-secondary))",
               background: "none",
               border: "none",
               cursor: "pointer",
@@ -493,7 +493,7 @@ const ProfilePage = () => {
 
           {/* Delar av min vardag */}
           <div className="flex items-center justify-between mt-6 mb-3">
-            <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "#857A8F" }}>
+            <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "hsl(var(--color-text-faint))" }}>
               Delar av min vardag
             </span>
             {isOwnProfile && (
@@ -502,9 +502,9 @@ const ProfilePage = () => {
                 trigger={
                   <button
                     className="w-6 h-6 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: "#EDE8F4" }}
+                    style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                   >
-                    <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
+                    <Plus className="w-3 h-3" style={{ color: "hsl(var(--color-text-primary))" }} />
                   </button>
                 }
               />
@@ -515,7 +515,7 @@ const ProfilePage = () => {
           {loading ? (
             <div className="text-center py-4 text-muted-foreground text-xs">{t("loading")}</div>
           ) : sections.length === 0 ? (
-            <p className="text-[11px] text-center py-4" style={{ color: "#857A8F" }}>
+            <p className="text-[11px] text-center py-4" style={{ color: "hsl(var(--color-text-faint))" }}>
               {isOwnProfile ? "Lägg till en del av din vardag" : t("nothingSharedYet")}
             </p>
           ) : (

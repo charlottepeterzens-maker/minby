@@ -192,7 +192,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
       </div>
 
       {totalCount > 0 && !readOnly && (
-        <p style={{ fontSize: 10, color: "#857A8F", marginTop: 4 }}>
+        <p style={{ fontSize: 10, color: "hsl(var(--color-text-faint))", marginTop: 4 }}>
           {totalCount === 1 ? "Någon reagerade" : `${totalCount} personer har reagerat`}
         </p>
       )}
@@ -207,7 +207,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
             className="absolute left-0 bg-card border rounded-xl z-30 shadow-sm"
             style={{
               top: "calc(100% + 6px)",
-              borderColor: "#EDE8F4",
+              borderColor: "hsl(var(--color-surface-raised))",
               padding: "10px 14px",
               minWidth: 140,
             }}
@@ -222,16 +222,16 @@ const PostReactions = ({ postId, readOnly }: Props) => {
               <button
                 onClick={() => setDetailKey(null)}
                 className="text-[10px] bg-transparent border-none cursor-pointer"
-                style={{ color: "#857A8F" }}
+                style={{ color: "hsl(var(--color-text-faint))" }}
               >
                 ✕
               </button>
             </div>
             {detailNames.length === 0 ? (
-              <p style={{ fontSize: 11, color: "#6B5C78" }}>Ingen ännu</p>
+              <p style={{ fontSize: 11, color: "hsl(var(--color-text-muted))" }}>Ingen ännu</p>
             ) : (
               detailNames.map((name, i) => (
-                <p key={i} style={{ fontSize: 12, fontWeight: 500, color: "#3C2A4D", marginBottom: 2 }}>
+                <p key={i} style={{ fontSize: 12, fontWeight: 500, color: "hsl(var(--color-text-primary))", marginBottom: 2 }}>
                   {name}
                 </p>
               ))

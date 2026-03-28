@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import PageTransition from "@/components/PageTransition";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
@@ -567,7 +568,7 @@ const FriendsPage = () => {
         key={f.user_id}
         className="relative flex items-center gap-3 p-3 transition-colors hover:opacity-90"
         style={{
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "hsl(var(--color-surface-card))",
           border: isClose ? "1.5px solid #C9B8D8" : "none",
           borderRadius: 8,
         }}
@@ -578,30 +579,30 @@ const FriendsPage = () => {
         >
           <div
             className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-            style={{ backgroundColor: "#EDE8F4" }}
+            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
           >
             {resolveAvatarUrl(f.avatar_url) ? (
-              <img src={resolveAvatarUrl(f.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
+              <img src={resolveAvatarUrl(f.avatar_url)!} alt="Profilbild" loading="lazy" className="w-full h-full rounded-full object-cover" />
             ) : (
-              <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
+              <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                 {f.initial}
               </span>
             )}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
-              <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
+              <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
                 {f.display_name}
               </p>
-              {isClose && <Heart className="w-3 h-3 shrink-0" style={{ color: "#C9B8D8" }} fill="#C9B8D8" />}
+              {isClose && <Heart className="w-3 h-3 shrink-0" style={{ color: "hsl(var(--color-border-lavender))" }} fill="hsl(var(--color-border-lavender))" />}
             </div>
             {isMuted && (
-              <p className="text-[10px] mt-0.5" style={{ color: "#6B5C78" }}>
+              <p className="text-[10px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>
                 Mutad
               </p>
             )}
             {!isMuted && statusText && (
-              <p className="text-[11px] truncate mt-0.5" style={{ color: "#6B5C78" }}>
+              <p className="text-[11px] truncate mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>
                 {statusText}
               </p>
             )}
@@ -616,14 +617,14 @@ const FriendsPage = () => {
           }}
           className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full"
         >
-          <MoreHorizontal className="w-4 h-4" style={{ color: "#6B5C78" }} />
+          <MoreHorizontal className="w-4 h-4" style={{ color: "hsl(var(--color-text-muted))" }} />
         </button>
 
         {menuOpenFor === f.user_id && (
           <div
             className="absolute right-3 top-12 z-20 py-1"
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "hsl(var(--color-surface-card))",
               border: "none",
               borderRadius: 8,
               minWidth: 200,
@@ -636,7 +637,7 @@ const FriendsPage = () => {
                 handleToggleClose(f.user_id, f.tier);
               }}
               className="w-full text-left px-4 py-2.5 text-[13px] flex items-center gap-2"
-              style={{ color: "#3C2A4D" }}
+              style={{ color: "hsl(var(--color-text-primary))" }}
             >
               <Heart
                 className="w-3.5 h-3.5"
@@ -651,7 +652,7 @@ const FriendsPage = () => {
                 handleToggleMute(f.user_id);
               }}
               className="w-full text-left px-4 py-2.5 text-[13px]"
-              style={{ color: "#3C2A4D" }}
+              style={{ color: "hsl(var(--color-text-primary))" }}
             >
               {isMuted ? `Sluta muta ${f.display_name}` : `Muta ${f.display_name}`}
             </button>
@@ -662,7 +663,7 @@ const FriendsPage = () => {
                 setRemoveConfirm({ userId: f.user_id, name: f.display_name });
               }}
               className="w-full text-left px-4 py-2.5 text-[13px]"
-              style={{ color: "#A32D2D" }}
+              style={{ color: "hsl(var(--color-accent-red))" }}
             >
               Ta bort från kretsen
             </button>
@@ -673,25 +674,25 @@ const FriendsPage = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
+    <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       {/* Header */}
-      <nav className="sticky top-0 z-50" style={{ backgroundColor: "#F7F3EF" }}>
+      <nav className="sticky top-0 z-50" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="py-4 flex items-center justify-between">
-          <span className="font-display text-[20px] font-medium" style={{ color: "#3C2A4D" }}>
+          <span className="font-display text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
             Min krets
           </span>
           <button
             onClick={() => setQrOpen(true)}
             aria-label="Visa QR-kod"
             className="w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "#EDE8F4" }}
+            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
           >
-            <QrCode className="w-4.5 h-4.5" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
+            <QrCode className="w-4.5 h-4.5" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />
           </button>
         </Container>
 
         {/* Tabs */}
-        <Container className="flex gap-0" style={{ borderBottom: "1px solid #F0ECE7" }}>
+        <Container className="flex gap-0" style={{ borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
           <button
             onClick={() => setActiveTab("krets")}
             className="flex-1 pb-2.5 text-[13px] font-medium text-center transition-colors relative"
@@ -701,7 +702,7 @@ const FriendsPage = () => {
             {activeTab === "krets" && (
               <div
                 className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full"
-                style={{ backgroundColor: "#3C2A4D" }}
+                style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
               />
             )}
           </button>
@@ -713,13 +714,13 @@ const FriendsPage = () => {
             <span className="inline-flex items-center gap-1.5">
               Sällskap
               {hasUnreadGroups && (
-                <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "#C9503A" }} />
+                <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "hsl(var(--color-accent-terra))" }} />
               )}
             </span>
             {activeTab === "sallskap" && (
               <div
                 className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full"
-                style={{ backgroundColor: "#3C2A4D" }}
+                style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
               />
             )}
           </button>
@@ -734,7 +735,7 @@ const FriendsPage = () => {
               <div className="relative">
                 <Search
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
-                  style={{ color: "#6B5C78" }}
+                  style={{ color: "hsl(var(--color-text-muted))" }}
                   strokeWidth={1.5}
                 />
                 <input
@@ -742,7 +743,7 @@ const FriendsPage = () => {
                   onChange={(e) => setPeopleSearch(e.target.value)}
                   placeholder="Sök på namn..."
                   className="w-full pl-10 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#6B5C78] font-display"
-                  style={{ backgroundColor: "#FFFFFF", border: "none", borderRadius: 8, color: "#3C2A4D" }}
+                  style={{ backgroundColor: "hsl(var(--color-surface-card))", border: "none", borderRadius: 8, color: "hsl(var(--color-text-primary))" }}
                 />
               </div>
 
@@ -750,11 +751,11 @@ const FriendsPage = () => {
               {peopleSearch.trim().length >= 2 && (
                 <div className="mt-2 space-y-1.5">
                   {searching ? (
-                    <p className="text-[12px] py-3 text-center" style={{ color: "#6B5C78" }}>
+                    <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
                       Söker...
                     </p>
                   ) : searchResults.length === 0 ? (
-                    <p className="text-[12px] py-3 text-center" style={{ color: "#6B5C78" }}>
+                    <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
                       Inga resultat
                     </p>
                   ) : (
@@ -762,29 +763,29 @@ const FriendsPage = () => {
                       <div
                         key={r.user_id}
                         className="flex items-center gap-3 p-3"
-                        style={{ backgroundColor: "#FFFFFF", borderRadius: 8 }}
+                        style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
                       >
                         <div
                           className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-                          style={{ backgroundColor: "#EDE8F4" }}
+                          style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                         >
                           {resolveAvatarUrl(r.avatar_url) ? (
-                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
+                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" loading="lazy" className="w-full h-full rounded-full object-cover" />
                           ) : (
-                            <span className="text-[12px] font-display font-medium" style={{ color: "#3C2A4D" }}>
+                            <span className="text-[12px] font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                               {r.initial}
                             </span>
                           )}
                         </div>
-                        <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
+                        <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
                           {r.display_name}
                         </p>
                         {r.status === "friend" ? (
-                          <span className="text-[11px]" style={{ color: "#6B5C78" }}>
+                          <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>
                             I din krets
                           </span>
                         ) : r.status === "sent" ? (
-                          <span className="text-[11px]" style={{ color: "#6B5C78" }}>
+                          <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>
                             Skickat
                           </span>
                         ) : (
@@ -792,7 +793,7 @@ const FriendsPage = () => {
                             onClick={() => handleSendFriendRequest(r.user_id)}
                             disabled={sendingTo === r.user_id}
                             className="shrink-0 px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                            style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderRadius: 20 }}
+                            style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 20 }}
                           >
                             Lägg till i min krets
                           </button>
@@ -811,23 +812,23 @@ const FriendsPage = () => {
                     <div
                       key={i}
                       className="h-[64px] animate-pulse"
-                      style={{ backgroundColor: "#EDE8F4", borderRadius: 8 }}
+                      style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8 }}
                     />
                   ))}
                 </div>
-                <p className="text-[12px] mt-4" style={{ color: "#6B5C78" }}>
+                <p className="text-[12px] mt-4" style={{ color: "hsl(var(--color-text-muted))" }}>
                   Laddar din krets…
                 </p>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-                <p className="font-display text-[14px] font-medium mb-2" style={{ color: "#3C2A4D" }}>
+                <p className="font-display text-[14px] font-medium mb-2" style={{ color: "hsl(var(--color-text-primary))" }}>
                   Vi kunde inte hämta din krets
                 </p>
                 <button
                   onClick={() => fetchData()}
                   className="px-4 py-1.5 text-[12px] font-medium"
-                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderRadius: 20 }}
+                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 20 }}
                 >
                   Försök igen
                 </button>
@@ -836,14 +837,14 @@ const FriendsPage = () => {
               <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
                 <div
                   className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
-                  style={{ backgroundColor: "#EDE8F4" }}
+                  style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                 >
-                  <Users className="w-7 h-7" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
+                  <Users className="w-7 h-7" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />
                 </div>
-                <p className="font-display text-[16px] font-medium mb-1.5" style={{ color: "#3C2A4D" }}>
+                <p className="font-display text-[16px] font-medium mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>
                   Din krets väntar – bjud in dina närmaste
                 </p>
-                <p className="text-[13px] mb-6" style={{ color: "#6B5C78" }}>
+                <p className="text-[13px] mb-6" style={{ color: "hsl(var(--color-text-muted))" }}>
                   Sök på namn eller skanna en QR-kod för att kopplas ihop
                 </p>
                 <InviteFriendDialog />
@@ -855,7 +856,7 @@ const FriendsPage = () => {
                   <div>
                     <p
                       className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
-                      style={{ color: "#6B5C78" }}
+                      style={{ color: "hsl(var(--color-text-muted))" }}
                     >
                       Vill vara med ({pendingRequests.length})
                     </p>
@@ -864,26 +865,26 @@ const FriendsPage = () => {
                         <div
                           key={r.id}
                           className="flex items-center gap-3 p-3"
-                          style={{ backgroundColor: "#FFFFFF", borderRadius: 8 }}
+                          style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
                         >
                           <button
                             onClick={() => navigate(`/profile/${r.from_user_id}`)}
                             className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-                            style={{ backgroundColor: "#EDE8F4" }}
+                            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                           >
                             {resolveAvatarUrl(r.avatar_url) ? (
-                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
+                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" loading="lazy" className="w-full h-full rounded-full object-cover" />
                             ) : (
-                              <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
+                              <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                                 {r.initial}
                               </span>
                             )}
                           </button>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
+                            <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
                               {r.display_name}
                             </p>
-                            <p className="text-[11px] mt-0.5" style={{ color: "#6B5C78" }}>
+                            <p className="text-[11px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>
                               Vill vara med i din vardag
                             </p>
                           </div>
@@ -892,7 +893,7 @@ const FriendsPage = () => {
                               onClick={() => handleAccept(r.id, r.from_user_id)}
                               disabled={respondingId === r.id}
                               className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                              style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 20 }}
+                              style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF", borderRadius: 20 }}
                             >
                               Ja, gärna
                             </button>
@@ -900,7 +901,7 @@ const FriendsPage = () => {
                               onClick={() => handleDecline(r.id)}
                               disabled={respondingId === r.id}
                               className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                              style={{ backgroundColor: "#F7F3EF", color: "#A32D2D", borderRadius: 20 }}
+                              style={{ backgroundColor: "hsl(var(--color-surface))", color: "hsl(var(--color-accent-red))", borderRadius: 20 }}
                             >
                               Inte nu
                             </button>
@@ -916,20 +917,20 @@ const FriendsPage = () => {
                   <div>
                     <p
                       className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
-                      style={{ color: "#6B5C78" }}
+                      style={{ color: "hsl(var(--color-text-muted))" }}
                     >
                       Din närmaste krets
                     </p>
                     {closeFriends.length === 0 ? (
                       <div
                         className="py-5 px-4 text-center"
-                        style={{ backgroundColor: "#F5F0FA", border: "1px dashed #C9B8D8", borderRadius: 8 }}
+                        style={{ backgroundColor: "hsl(var(--color-surface-raised))", border: "1px dashed hsl(var(--color-border-lavender))", borderRadius: 8 }}
                       >
-                        <Heart className="w-5 h-5 mx-auto mb-2" style={{ color: "#C9B8D8" }} />
-                        <p className="text-[12px]" style={{ color: "#655675" }}>
+                        <Heart className="w-5 h-5 mx-auto mb-2" style={{ color: "hsl(var(--color-border-lavender))" }} />
+                        <p className="text-[12px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
                           Lägg till några du vill ha lite extra nära
                         </p>
-                        <p className="text-[11px] mt-1" style={{ color: "#6B5C78" }}>
+                        <p className="text-[11px] mt-1" style={{ color: "hsl(var(--color-text-muted))" }}>
                           Tryck ••• bredvid en person för att lägga till
                         </p>
                       </div>
@@ -944,7 +945,7 @@ const FriendsPage = () => {
                   <div>
                     <p
                       className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
-                      style={{ color: "#6B5C78" }}
+                      style={{ color: "hsl(var(--color-text-muted))" }}
                     >
                       Din krets ({friends.length})
                     </p>
@@ -953,7 +954,7 @@ const FriendsPage = () => {
                       <div className="relative mb-3">
                         <Search
                           className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
-                          style={{ color: "#6B5C78" }}
+                          style={{ color: "hsl(var(--color-text-muted))" }}
                           strokeWidth={1.5}
                         />
                         <input
@@ -962,9 +963,9 @@ const FriendsPage = () => {
                           placeholder="Sök i din krets..."
                           className="w-full pl-9 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#6B5C78]"
                           style={{
-                            backgroundColor: "#FFFFFF",
+                            backgroundColor: "hsl(var(--color-surface-card))",
                             borderRadius: 8,
-                            color: "#3C2A4D",
+                            color: "hsl(var(--color-text-primary))",
                           }}
                         />
                       </div>
@@ -972,7 +973,7 @@ const FriendsPage = () => {
 
                     <div className="space-y-2">
                       {otherFriends.length === 0 && friendSearch ? (
-                        <p className="text-center py-8 text-[13px]" style={{ color: "#6B5C78" }}>
+                        <p className="text-center py-8 text-[13px]" style={{ color: "hsl(var(--color-text-muted))" }}>
                           Inga resultat i din krets
                         </p>
                       ) : (
@@ -1001,7 +1002,7 @@ const FriendsPage = () => {
                   <div
                     key={i}
                     className="h-[72px] animate-pulse"
-                    style={{ backgroundColor: "#EDE8F4", borderRadius: 8 }}
+                    style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8 }}
                   />
                 ))}
               </div>
@@ -1012,28 +1013,28 @@ const FriendsPage = () => {
                     key={g.id}
                     onClick={() => navigate(`/groups/${g.id}`)}
                     className="w-full flex items-center gap-3 p-3 text-left transition-colors hover:opacity-90"
-                    style={{ backgroundColor: "#FFFFFF", borderRadius: 8 }}
+                    style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
                   >
                     <div
                       className="shrink-0 flex items-center justify-center"
-                      style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: "#F7F3EF" }}
+                      style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: "hsl(var(--color-surface))" }}
                     >
                       <span className="text-lg">{g.emoji}</span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
+                      <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
                         {g.name}
                       </p>
-                      <p className="text-[11px] truncate italic" style={{ color: "#655675" }}>
+                      <p className="text-[11px] truncate italic" style={{ color: "hsl(var(--color-text-secondary))" }}>
                         {g.last_message || "Inga meddelanden än"}
                       </p>
                     </div>
                     <div className="shrink-0 flex flex-col items-end gap-1">
-                      <span className="text-[10px]" style={{ color: "#655675" }}>
+                      <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
                         {g.last_message_at ? formatTime(g.last_message_at) : "–"}
                       </span>
                       {g.has_unread && (
-                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#C9503A" }} />
+                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--color-accent-terra))" }} />
                       )}
                     </div>
                   </button>
@@ -1051,9 +1052,9 @@ const FriendsPage = () => {
                         className="shrink-0 flex items-center justify-center"
                         style={{ width: 42, height: 42, borderRadius: 8, border: "1px dashed #EDE8E0" }}
                       >
-                        <Plus className="w-4 h-4" style={{ color: "#655675" }} />
+                        <Plus className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
                       </div>
-                      <span className="text-[12px] font-medium" style={{ color: "#655675" }}>
+                      <span className="text-[12px] font-medium" style={{ color: "hsl(var(--color-text-secondary))" }}>
                         Skapa ett nytt sällskap
                       </span>
                     </button>
@@ -1062,10 +1063,10 @@ const FriendsPage = () => {
 
                 {groups.length === 0 && (
                   <div className="text-center py-12">
-                    <p className="font-display text-base" style={{ color: "#655675" }}>
+                    <p className="font-display text-base" style={{ color: "hsl(var(--color-text-secondary))" }}>
                       Inga sällskap ännu
                     </p>
-                    <p className="text-[12px] mt-1" style={{ color: "#6B5C78" }}>
+                    <p className="text-[12px] mt-1" style={{ color: "hsl(var(--color-text-muted))" }}>
                       Skapa ett sällskap för att chatta med din krets
                     </p>
                   </div>
@@ -1088,13 +1089,13 @@ const FriendsPage = () => {
         title="Ta bort från kretsen"
         description={`Vill du ta bort ${removeConfirm?.name || ""} från din krets? Ni delar inte längre era vardagar.`}
         confirmLabel="Ta bort"
-        confirmStyle={{ backgroundColor: "#A32D2D" }}
+        confirmStyle={{ backgroundColor: "hsl(var(--color-accent-red))" }}
         onConfirm={() => {
           if (removeConfirm) handleRemoveFriend(removeConfirm.userId);
           setRemoveConfirm(null);
         }}
       />
-    </div>
+    </PageTransition>
   );
 };
 

@@ -428,15 +428,15 @@ const GroupChatPage = () => {
   ].sort((a, b) => new Date(a.data.created_at).getTime() - new Date(b.data.created_at).getTime()), [messages, polls, plans]);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F7F3EF" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 px-4 py-3" style={{ backgroundColor: "#3C2A4D" }}>
+      <header className="sticky top-0 z-50 px-4 py-3" style={{ backgroundColor: "hsl(var(--color-text-primary))" }}>
         <div className="flex items-center gap-3">
           <button onClick={() => navigate("/groups")} className="shrink-0 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Tillbaka till sällskap">
-            <ChevronLeft className="w-5 h-5" style={{ color: "#C9B8D8" }} />
+            <ChevronLeft className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
           </button>
           <div className="flex-1 text-center min-w-0">
-            <p className="text-[13px] font-medium truncate" style={{ color: "#C9B8D8" }}>{groupName}</p>
+            <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-border-lavender))" }}>{groupName}</p>
             {latestPlanStatus && (
               <GroupStatusLine
                 memberCount={members.length}
@@ -449,45 +449,45 @@ const GroupChatPage = () => {
           <div className="shrink-0 flex items-center -space-x-2">
             {members.slice(0, 4).map((m) => (
               <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
-                style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D", borderColor: "#3C2A4D" }}>
+                style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderColor: "hsl(var(--color-text-primary))" }}>
                 {m.initial}
               </div>
             ))}
             {members.length > 4 && (
               <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
-                style={{ backgroundColor: "#655675", color: "#F7F3EF", borderColor: "#3C2A4D" }}>
+                style={{ backgroundColor: "#655675", color: "#F7F3EF", borderColor: "hsl(var(--color-text-primary))" }}>
                 +{members.length - 4}
               </div>
             )}
           </div>
           <div className="shrink-0 relative">
             <button onClick={() => setMenuOpen((v) => !v)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Gruppinställningar">
-              <EllipsisVertical className="w-5 h-5" style={{ color: "#C9B8D8" }} />
+              <EllipsisVertical className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
             </button>
             {menuOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
                 <div className="absolute right-0 top-full mt-1 z-50 py-1.5 rounded-[12px] shadow-lg min-w-[180px]"
-                  style={{ backgroundColor: "#FFFFFF", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}>
+                  style={{ backgroundColor: "hsl(var(--color-surface-card))", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}>
                   <button onClick={() => { setMenuOpen(false); setAddMemberOpen(true); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
-                    style={{ color: "#3C2A4D" }}>
-                    <UserPlus className="w-4 h-4" style={{ color: "#655675" }} />
+                    style={{ color: "hsl(var(--color-text-primary))" }}>
+                    <UserPlus className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
                     Lägg till vän
                   </button>
                   <InviteFriendDialog trigger={
                     <button onClick={() => setMenuOpen(false)}
                       className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
-                      style={{ color: "#3C2A4D" }}>
-                      <ArrowUpFromLine className="w-4 h-4" style={{ color: "#655675" }} />
+                      style={{ color: "hsl(var(--color-text-primary))" }}>
+                      <ArrowUpFromLine className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
                       Bjud in till sällskapet
                     </button>
                   } />
-                  <div className="mx-3 my-1" style={{ borderTop: "1px solid #F0ECE7" }} />
+                  <div className="mx-3 my-1" style={{ borderTop: "1px solid hsl(var(--color-border-subtle))" }} />
                   <button onClick={() => { setMenuOpen(false); setLeaveConfirmOpen(true); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
-                    style={{ color: "#A32D2D" }}>
-                    <LogOut className="w-4 h-4" style={{ color: "#A32D2D" }} />
+                    style={{ color: "hsl(var(--color-accent-red))" }}>
+                    <LogOut className="w-4 h-4" style={{ color: "hsl(var(--color-accent-red))" }} />
                     Lämna grupp
                   </button>
                 </div>
@@ -525,7 +525,7 @@ const GroupChatPage = () => {
         )}
         {timeline.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-[13px]" style={{ color: "#655675" }}>Inga meddelanden ännu. Skriv det första!</p>
+            <p className="text-[13px]" style={{ color: "hsl(var(--color-text-secondary))" }}>Inga meddelanden ännu. Skriv det första!</p>
           </div>
         )}
 
@@ -542,8 +542,8 @@ const GroupChatPage = () => {
               <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"} group`}>
                 {repliedMsg && (
                   <div className="flex items-center gap-1 px-2 mb-0.5" style={{ maxWidth: 200 }}>
-                    <Reply className="w-3 h-3 shrink-0" style={{ color: "#6B5C78", transform: "scaleX(-1)" }} />
-                    <span className="text-[10px] truncate" style={{ color: "#6B5C78" }}>
+                    <Reply className="w-3 h-3 shrink-0" style={{ color: "hsl(var(--color-text-muted))", transform: "scaleX(-1)" }} />
+                    <span className="text-[10px] truncate" style={{ color: "hsl(var(--color-text-muted))" }}>
                       {repliedMember?.display_name || "Anonym"}: {repliedMsg.content}
                     </span>
                   </div>
@@ -554,14 +554,14 @@ const GroupChatPage = () => {
                       <button
                         onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
                         className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
-                        style={{ color: "#6B5C78" }}
+                        style={{ color: "hsl(var(--color-text-muted))" }}
                       >
                         <SmilePlus className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
                         className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
-                        style={{ color: "#6B5C78" }}
+                        style={{ color: "hsl(var(--color-text-muted))" }}
                       >
                         <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
                       </button>
@@ -586,14 +586,14 @@ const GroupChatPage = () => {
                       <button
                         onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
                         className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
-                        style={{ color: "#6B5C78" }}
+                        style={{ color: "hsl(var(--color-text-muted))" }}
                       >
                         <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
                       </button>
                       <button
                         onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
                         className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
-                        style={{ color: "#6B5C78" }}
+                        style={{ color: "hsl(var(--color-text-muted))" }}
                       >
                         <SmilePlus className="w-3.5 h-3.5" />
                       </button>
@@ -609,8 +609,8 @@ const GroupChatPage = () => {
                   onPickerToggle={(open) => setReactionPickerMsgId(open ? msg.id : null)}
                 />
                 <div className="flex items-center gap-1.5 mt-0.5 px-1">
-                  {!isOwn && <span className="text-[10px]" style={{ color: "#655675" }}>{member?.display_name || "Anonym"}</span>}
-                  <span className="text-[10px]" style={{ color: "#6B5C78" }}>{formatTime(msg.created_at)}</span>
+                  {!isOwn && <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{member?.display_name || "Anonym"}</span>}
+                  <span className="text-[10px]" style={{ color: "hsl(var(--color-text-muted))" }}>{formatTime(msg.created_at)}</span>
                 </div>
               </div>
             );
@@ -664,33 +664,33 @@ const GroupChatPage = () => {
       )}
 
       {/* Input field */}
-      <div className="sticky bottom-0 px-4 py-3 safe-area-bottom" style={{ backgroundColor: "#F7F3EF" }}>
+      <div className="sticky bottom-0 px-4 py-3 safe-area-bottom" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         {replyTo && (
-          <div className="flex items-center gap-2 px-4 py-1.5 mb-1 rounded-t-[12px]" style={{ backgroundColor: "#EDE8F4" }}>
-            <Reply className="w-3.5 h-3.5 shrink-0" style={{ color: "#655675", transform: "scaleX(-1)" }} />
+          <div className="flex items-center gap-2 px-4 py-1.5 mb-1 rounded-t-[12px]" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
+            <Reply className="w-3.5 h-3.5 shrink-0" style={{ color: "hsl(var(--color-text-secondary))", transform: "scaleX(-1)" }} />
             <div className="flex-1 min-w-0">
-              <span className="text-[10px] font-medium block" style={{ color: "#3C2A4D" }}>
+              <span className="text-[10px] font-medium block" style={{ color: "hsl(var(--color-text-primary))" }}>
                 {getMember(replyTo.user_id)?.display_name || "Anonym"}
               </span>
-              <span className="text-[11px] truncate block" style={{ color: "#655675" }}>
+              <span className="text-[11px] truncate block" style={{ color: "hsl(var(--color-text-secondary))" }}>
                 {replyTo.content}
               </span>
             </div>
             <button onClick={() => setReplyTo(null)} className="shrink-0 p-0.5">
-              <X className="w-3.5 h-3.5" style={{ color: "#655675" }} />
+              <X className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-secondary))" }} />
             </button>
           </div>
         )}
-        <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "#FFFFFF", borderRadius: 20 }}>
+        <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 20 }}>
           <button onClick={() => { setActionSheetPrefill(null); setActionSheetOpen(true); }} className="shrink-0 flex items-center justify-center">
-            <Plus className="w-5 h-5" style={{ color: "#3C2A4D" }} />
+            <Plus className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
           </button>
           <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder={replyTo ? "Svara..." : "Skriv något..."}
-            className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#6B5C78]" style={{ color: "#3C2A4D" }} />
+            className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#6B5C78]" style={{ color: "hsl(var(--color-text-primary))" }} />
           <button onClick={handleSend} disabled={!newMessage.trim() || sending}
             className="shrink-0 flex items-center justify-center rounded-full disabled:opacity-40 transition-opacity"
-            style={{ width: 32, height: 32, backgroundColor: "#3C2A4D" }}>
+            style={{ width: 32, height: 32, backgroundColor: "hsl(var(--color-text-primary))" }}>
             <SendHorizontal className="w-4 h-4" style={{ color: "#FFFFFF" }} />
           </button>
         </div>

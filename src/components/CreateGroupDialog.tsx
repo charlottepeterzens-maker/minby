@@ -148,10 +148,10 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
       </DrawerTrigger>
       <DrawerContent
         className="mx-auto max-w-lg border-0"
-        style={{ backgroundColor: "#F7F3EF", borderRadius: "20px 20px 0 0" }}>
+        style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: "20px 20px 0 0" }}>
         
         <DrawerHeader className="pb-0">
-          <DrawerTitle className="font-display text-xl text-center" style={{ color: "#3C2A4D" }}>
+          <DrawerTitle className="font-display text-xl text-center" style={{ color: "hsl(var(--color-text-primary))" }}>
             {step === 1 ? "Skapa grupp" : "Bjud in vänner"}
           </DrawerTitle>
         </DrawerHeader>
@@ -160,7 +160,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
           {step === 1 ?
           <div className="space-y-4 pt-4">
               <div>
-                <Label htmlFor="gname" className="text-sm" style={{ color: "#655675" }}>
+                <Label htmlFor="gname" className="text-sm" style={{ color: "hsl(var(--color-text-secondary))" }}>
                   Gruppnamn
                 </Label>
                 <Input
@@ -169,12 +169,12 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="mt-1.5 border-border/50"
-                style={{ backgroundColor: "#FFFFFF" }} />
+                style={{ backgroundColor: "hsl(var(--color-surface-card))" }} />
               
               </div>
 
               <div>
-                <Label className="text-sm" style={{ color: "#655675" }}>Välj syfte</Label>
+                <Label className="text-sm" style={{ color: "hsl(var(--color-text-secondary))" }}>Välj syfte</Label>
                 <div className="flex gap-2 mt-2">
                   {emojiPresets.map((preset) =>
                 <button
@@ -192,7 +192,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                   }}>
                   
                       
-                      <span className="text-[10px]" style={{ color: "#655675" }}>
+                      <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
                         {preset.label}
                       </span>
                     </button>
@@ -205,7 +205,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
               disabled={!name}
               className="w-full py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
               style={{
-                backgroundColor: "#3C2A4D",
+                backgroundColor: "hsl(var(--color-text-primary))",
                 borderRadius: 10
               }}>
               
@@ -215,7 +215,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
 
           <div className="space-y-4 pt-4">
               {friends.length === 0 ?
-            <p className="text-[13px] text-center py-6" style={{ color: "#655675" }}>
+            <p className="text-[13px] text-center py-6" style={{ color: "hsl(var(--color-text-secondary))" }}>
                   Du har inga vänner att bjuda in ännu.
                 </p> :
 
@@ -235,15 +235,15 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                     
                         <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium"
-                      style={{ backgroundColor: "#C9B8D8", color: "#3C2A4D" }}>
+                      style={{ backgroundColor: "hsl(var(--color-border-lavender))", color: "hsl(var(--color-text-primary))" }}>
                       
                           {f.initial}
                         </div>
-                        <span className="flex-1 text-[13px] font-medium" style={{ color: "#3C2A4D" }}>
+                        <span className="flex-1 text-[13px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                           {f.display_name}
                         </span>
                         {selected &&
-                    <Check className="w-4 h-4" style={{ color: "#1F4A1A" }} />
+                    <Check className="w-4 h-4" style={{ color: "hsl(var(--color-accent-sage-text))" }} />
                     }
                       </button>);
 
@@ -257,8 +257,8 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 className="flex-1 py-2.5 text-sm font-medium rounded-[10px]"
                 style={{
                   border: "1px solid #EDE8F4",
-                  color: "#3C2A4D",
-                  backgroundColor: "#FFFFFF"
+                  color: "hsl(var(--color-text-primary))",
+                  backgroundColor: "hsl(var(--color-surface-card))"
                 }}>
                 
                   Tillbaka
@@ -268,7 +268,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 disabled={loading}
                 className="flex-1 py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
                 style={{
-                  backgroundColor: "#3C2A4D",
+                  backgroundColor: "hsl(var(--color-text-primary))",
                   borderRadius: 10
                 }}>
                 

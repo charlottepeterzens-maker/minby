@@ -133,10 +133,10 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className="max-w-[340px] p-0 gap-0 border-0 overflow-hidden"
-        style={{ backgroundColor: "#F7F3EF", borderRadius: 20 }}
+        style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: 20 }}
       >
         <div className="p-5 space-y-4">
-          <p className="text-[14px] font-medium text-center" style={{ color: "#2A1A3C" }}>
+          <p className="text-[14px] font-medium text-center" style={{ color: "hsl(var(--color-text-primary))" }}>
             Justera din bild
           </p>
 
@@ -169,9 +169,9 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
             <button
               onClick={() => setScale((s) => Math.max(0.2, s - 0.15))}
               className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: "#EDE8F4" }}
+              style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
             >
-              <ZoomOut className="w-4 h-4" style={{ color: "#3C2A4D" }} />
+              <ZoomOut className="w-4 h-4" style={{ color: "hsl(var(--color-text-primary))" }} />
             </button>
 
             <input
@@ -187,17 +187,17 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
             <button
               onClick={() => setScale((s) => Math.min(5, s + 0.15))}
               className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: "#EDE8F4" }}
+              style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
             >
-              <ZoomIn className="w-4 h-4" style={{ color: "#3C2A4D" }} />
+              <ZoomIn className="w-4 h-4" style={{ color: "hsl(var(--color-text-primary))" }} />
             </button>
 
             <button
               onClick={() => setRotation((r) => (r + 90) % 360)}
               className="w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: "#EDE8F4" }}
+              style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
             >
-              <RotateCw className="w-4 h-4" style={{ color: "#3C2A4D" }} />
+              <RotateCw className="w-4 h-4" style={{ color: "hsl(var(--color-text-primary))" }} />
             </button>
           </div>
 
@@ -206,14 +206,14 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
             <button
               onClick={() => onOpenChange(false)}
               className="flex-1 py-2.5 rounded-full text-[13px] font-medium"
-              style={{ color: "#655675", backgroundColor: "#EDE8F4" }}
+              style={{ color: "hsl(var(--color-text-secondary))", backgroundColor: "hsl(var(--color-surface-raised))" }}
             >
               Avbryt
             </button>
             <button
               onClick={handleCrop}
               className="flex-1 py-2.5 rounded-full text-[13px] font-medium"
-              style={{ color: "#F7F3EF", backgroundColor: "#3C2A4D" }}
+              style={{ color: "#F7F3EF", backgroundColor: "hsl(var(--color-text-primary))" }}
             >
               Spara
             </button>

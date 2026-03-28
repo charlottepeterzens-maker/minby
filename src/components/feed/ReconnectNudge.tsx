@@ -55,7 +55,7 @@ const ReconnectNudge = ({ friendIds, profiles }: ReconnectNudgeProps) => {
     <div
       className="mb-4 relative"
       style={{
-        backgroundColor: "#EDE8F4",
+        backgroundColor: "hsl(var(--color-surface-raised))",
         borderRadius: 12,
         padding: "14px 16px",
       }}
@@ -64,16 +64,16 @@ const ReconnectNudge = ({ friendIds, profiles }: ReconnectNudgeProps) => {
         onClick={() => setDismissed(true)}
         className="absolute top-3 right-3"
       >
-        <X className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
+        <X className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
       </button>
-      <p className="text-[13px] font-medium pr-6" style={{ color: "#3C2A4D" }}>
+      <p className="text-[13px] font-medium pr-6" style={{ color: "hsl(var(--color-text-primary))" }}>
         Det var ett tag sedan du och {nudgeFriend.name} hördes
       </p>
       <div className="flex gap-2 mt-3">
         <button
           onClick={() => navigate(`/profile/${nudgeFriend.userId}`)}
           className="px-4 py-1.5 rounded-[20px] text-[12px] font-medium"
-          style={{ backgroundColor: "#3C2A4D", color: "#F7F3EF" }}
+          style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#F7F3EF" }}
         >
           Säg hej
         </button>
@@ -82,7 +82,7 @@ const ReconnectNudge = ({ friendIds, profiles }: ReconnectNudgeProps) => {
             navigate(`/profile/${nudgeFriend.userId}`);
           }}
           className="px-4 py-1.5 rounded-[20px] text-[12px] font-medium"
-          style={{ backgroundColor: "#FFFFFF", color: "#3C2A4D", border: "1px solid #EDE8F4" }}
+          style={{ backgroundColor: "hsl(var(--color-surface-card))", color: "hsl(var(--color-text-primary))", border: "1px solid #EDE8F4" }}
         >
           Ska ni ses?
         </button>

@@ -48,13 +48,13 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent
-        style={{ backgroundColor: "#F7F3EF" }}
+        style={{ backgroundColor: "hsl(var(--color-surface))" }}
         className="rounded-t-[20px]"
       >
         <DrawerHeader>
           <DrawerTitle
             className="text-[15px] font-semibold text-center"
-            style={{ color: "#3C2A4D" }}
+            style={{ color: "hsl(var(--color-text-primary))" }}
           >
             Skapa omröstning
           </DrawerTitle>
@@ -63,7 +63,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
         <div className="px-5 pb-6 space-y-4">
           {/* Question */}
           <div>
-            <label className="text-[11px] font-medium mb-1 block" style={{ color: "#655675" }}>
+            <label className="text-[11px] font-medium mb-1 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
               Fråga
             </label>
             <input
@@ -72,16 +72,16 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
               placeholder="Vad vill du fråga?"
               className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none"
               style={{
-                backgroundColor: "#FFFFFF",
-                borderColor: "#EDE8F4",
-                color: "#3C2A4D",
+                backgroundColor: "hsl(var(--color-surface-card))",
+                borderColor: "hsl(var(--color-surface-raised))",
+                color: "hsl(var(--color-text-primary))",
               }}
             />
           </div>
 
           {/* Options */}
           <div className="space-y-2">
-            <label className="text-[11px] font-medium block" style={{ color: "#655675" }}>
+            <label className="text-[11px] font-medium block" style={{ color: "hsl(var(--color-text-secondary))" }}>
               Svarsalternativ
             </label>
             {options.map((opt, i) => (
@@ -92,18 +92,18 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
                   placeholder={`Alternativ ${i + 1}`}
                   className="flex-1 px-3 py-2.5 text-[13px] rounded-[10px] border outline-none"
                   style={{
-                    backgroundColor: "#FFFFFF",
-                    borderColor: "#EDE8F4",
-                    color: "#3C2A4D",
+                    backgroundColor: "hsl(var(--color-surface-card))",
+                    borderColor: "hsl(var(--color-surface-raised))",
+                    color: "hsl(var(--color-text-primary))",
                   }}
                 />
                 {options.length > 2 && (
                   <button
                     onClick={() => removeOption(i)}
                     className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: "#EDE8F4" }}
+                    style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                   >
-                    <X className="w-3.5 h-3.5" style={{ color: "#655675" }} />
+                    <X className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-secondary))" }} />
                   </button>
                 )}
               </div>
@@ -112,7 +112,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
               <button
                 onClick={addOption}
                 className="flex items-center gap-1.5 text-[12px] font-medium mt-1"
-                style={{ color: "#655675" }}
+                style={{ color: "hsl(var(--color-text-secondary))" }}
               >
                 <Plus className="w-3.5 h-3.5" />
                 Lägg till alternativ
@@ -126,7 +126,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
             disabled={!canSubmit || sending}
             className="w-full py-2.5 text-[13px] font-medium text-white disabled:opacity-40 transition-opacity"
             style={{
-              backgroundColor: "#3C2A4D",
+              backgroundColor: "hsl(var(--color-text-primary))",
               borderRadius: 10,
             }}
           >

@@ -44,13 +44,13 @@ interface Tip {
 const MAX_TIPS = 6;
 
 const CATEGORIES = [
-  { key: "lyssna", label: "Lyssna", bg: "#EDE8F4", color: "#3C2A4D" },
+  { key: "lyssna", label: "Lyssna", bg: "#EDE8F4", color: "hsl(var(--color-text-primary))" },
   { key: "titta", label: "Titta", bg: "#3C2A4D", color: "#F7F3EF" },
   { key: "läsa", label: "Läsa", bg: "#FCF0F3", color: "#4B1528" },
-  { key: "hälsa", label: "Hälsa", bg: "#EAF2E8", color: "#1F4A1A" },
+  { key: "hälsa", label: "Hälsa", bg: "#EAF2E8", color: "hsl(var(--color-accent-sage-text))" },
   { key: "mat", label: "Mat", bg: "#FAEEDA", color: "#633806" },
   { key: "shoppa", label: "Shoppa", bg: "#E8D5DA", color: "#4B1528" },
-  { key: "vardagslyx", label: "Vardagslyx", bg: "#EDE8F4", color: "#655675" },
+  { key: "vardagslyx", label: "Vardagslyx", bg: "#EDE8F4", color: "hsl(var(--color-text-secondary))" },
 ];
 
 const decodeTitle = (title: string) =>
@@ -271,7 +271,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
       )}
       {previewImage && !customImage && (
         <div className="flex items-center gap-3 rounded-[12px] border border-border p-2">
-          <img src={previewImage} alt="" className="w-14 h-14 rounded-[8px] object-cover" />
+          <img src={previewImage} alt="" loading="lazy" className="w-14 h-14 rounded-[8px] object-cover" />
           <p className="text-[11px] text-muted-foreground flex-1">Bild hittad från länken</p>
           <button onClick={() => setPreviewImage(null)} className="text-muted-foreground hover:text-foreground">
             <X className="w-3.5 h-3.5" />
@@ -306,7 +306,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-fraunces font-normal text-[16px] mt-8 mb-3" style={{ color: "#2A1A3C" }}>
+        <h2 className="font-fraunces font-normal text-[16px] mt-8 mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
           Tips & favoriter
         </h2>
         {isOwner && tips.length < MAX_TIPS && (
@@ -320,12 +320,12 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
             <SheetTrigger asChild>
               <button
                 className="w-5 h-5 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: "#EDE8F4" }}
+                style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
               >
-                <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
+                <Plus className="w-3 h-3" style={{ color: "hsl(var(--color-text-primary))" }} />
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-[20px]" style={{ backgroundColor: "#F7F3EF" }}>
+            <SheetContent side="bottom" className="rounded-t-[20px]" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
               <SheetHeader>
                 <SheetTitle className="font-display text-base">
                   {editingTip ? "Redigera tips" : "Lägg till tips"}
@@ -351,7 +351,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
                 </div>
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="rounded-t-[20px]" style={{ backgroundColor: "#F7F3EF" }}>
+            <SheetContent side="bottom" className="rounded-t-[20px]" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
               <SheetHeader>
                 <SheetTitle className="font-display text-base">Lägg till tips</SheetTitle>
               </SheetHeader>
@@ -380,7 +380,7 @@ const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }
             if (!open) resetForm();
           }}
         >
-          <SheetContent side="bottom" className="rounded-t-[20px]" style={{ backgroundColor: "#F7F3EF" }}>
+          <SheetContent side="bottom" className="rounded-t-[20px]" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
             <SheetHeader>
               <SheetTitle className="font-display text-base">Redigera tips</SheetTitle>
             </SheetHeader>
@@ -510,7 +510,7 @@ const TipCard = ({
             style={{
               fontSize: 12,
               fontWeight: 500,
-              color: "#3C2A4D",
+              color: "hsl(var(--color-text-primary))",
               margin: "0 0 3px",
               overflow: "hidden",
               whiteSpace: "nowrap",
@@ -523,7 +523,7 @@ const TipCard = ({
             <p
               style={{
                 fontSize: 11,
-                color: "#655675",
+                color: "hsl(var(--color-text-secondary))",
                 margin: 0,
                 overflow: "hidden",
                 whiteSpace: "nowrap",
@@ -550,8 +550,8 @@ const TipCard = ({
               onClick={(e) => e.stopPropagation()}
               style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: "auto", marginTop: 2 }}
             >
-              <MessageCircle style={{ width: 12, height: 12, color: "#857A8F" }} />
-              <span style={{ fontSize: 10, color: "#857A8F" }}>{commentCount}</span>
+              <MessageCircle style={{ width: 12, height: 12, color: "hsl(var(--color-text-faint))" }} />
+              <span style={{ fontSize: 10, color: "hsl(var(--color-text-faint))" }}>{commentCount}</span>
             </div>
           )}
           <div onClick={(e) => e.stopPropagation()}>
@@ -568,7 +568,7 @@ const TipCard = ({
                       borderRadius: "50%",
                     }}
                   >
-                    <MoreHorizontal style={{ width: 14, height: 14, color: "#C9B8D8" }} />
+                    <MoreHorizontal style={{ width: 14, height: 14, color: "hsl(var(--color-border-lavender))" }} />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[120px]">
@@ -588,9 +588,9 @@ const TipCard = ({
                 }}
               >
                 {isSaved ? (
-                  <BookmarkCheck style={{ width: 14, height: 14, color: "#3C2A4D" }} />
+                  <BookmarkCheck style={{ width: 14, height: 14, color: "hsl(var(--color-text-primary))" }} />
                 ) : (
-                  <Bookmark style={{ width: 14, height: 14, color: "#C9B8D8" }} />
+                  <Bookmark style={{ width: 14, height: 14, color: "hsl(var(--color-border-lavender))" }} />
                 )}
               </button>
             )}
@@ -614,7 +614,7 @@ const TipCard = ({
         <SheetContent
           side="bottom"
           className="rounded-t-[20px]"
-          style={{ backgroundColor: "#F7F3EF", padding: 0, maxHeight: "85vh" }}
+          style={{ backgroundColor: "hsl(var(--color-surface))", padding: 0, maxHeight: "85vh" }}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           {signedUrl && (
@@ -636,11 +636,11 @@ const TipCard = ({
             >
               {cat.label}
             </span>
-            <p style={{ fontSize: 16, fontWeight: 500, color: "#3C2A4D", margin: 0, lineHeight: 1.3 }}>
+            <p style={{ fontSize: 16, fontWeight: 500, color: "hsl(var(--color-text-primary))", margin: 0, lineHeight: 1.3 }}>
               {displayTitle}
             </p>
             {tip.comment && (
-              <p style={{ fontSize: 13, color: "#655675", margin: 0, lineHeight: 1.5 }}>"{tip.comment}"</p>
+              <p style={{ fontSize: 13, color: "hsl(var(--color-text-secondary))", margin: 0, lineHeight: 1.5 }}>"{tip.comment}"</p>
             )}
             {tip.url && (
               <a
@@ -652,8 +652,8 @@ const TipCard = ({
                   alignItems: "center",
                   gap: 6,
                   fontSize: 13,
-                  color: "#3C2A4D",
-                  background: "#EDE8F4",
+                  color: "hsl(var(--color-text-primary))",
+                  background: "hsl(var(--color-surface-raised))",
                   borderRadius: 8,
                   padding: "8px 12px",
                   textDecoration: "none",
@@ -674,8 +674,8 @@ const TipCard = ({
                   }}
                   style={{
                     flex: 1,
-                    background: "#EDE8F4",
-                    color: "#3C2A4D",
+                    background: "hsl(var(--color-surface-raised))",
+                    color: "hsl(var(--color-text-primary))",
                     borderRadius: 10,
                     padding: "9px",
                     fontSize: 12,
@@ -692,8 +692,8 @@ const TipCard = ({
                     onDelete();
                   }}
                   style={{
-                    background: "#F7F3EF",
-                    color: "#A32D2D",
+                    background: "hsl(var(--color-surface))",
+                    color: "hsl(var(--color-accent-red))",
                     borderRadius: 10,
                     padding: "9px 14px",
                     fontSize: 12,

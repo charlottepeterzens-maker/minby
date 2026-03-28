@@ -115,7 +115,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
         >
           {/* Background: image or color */}
           {hasImage ? (
-            <img src={signedUrl!} alt={section.name} className="absolute inset-0 w-full h-full object-cover" />
+            <img src={signedUrl!} alt={section.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
           ) : (
             <div className="absolute inset-0" style={{ backgroundColor: bgColor }} />
           )}
@@ -179,7 +179,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
         title="Ta bort del av vardagen"
         description="Är du säker på att du vill ta bort denna del av din vardag? Alla inlägg i den raderas också."
         confirmLabel="Ta bort"
-        confirmStyle={{ backgroundColor: "#A32D2D" }}
+        confirmStyle={{ backgroundColor: "hsl(var(--color-accent-red))" }}
         onConfirm={handleDelete}
       />
     </>

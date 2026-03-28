@@ -76,7 +76,7 @@ const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
         <SheetContent
           side="bottom"
           className="rounded-t-[20px]"
-          style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}
+          style={{ backgroundColor: "hsl(var(--color-surface))", padding: "24px 16px" }}
         >
           <SheetHeader>
             <SheetTitle className="font-display text-base font-medium text-left">Bjud in någon</SheetTitle>
@@ -88,11 +88,11 @@ const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
 
           <div
             style={{
-              background: "#EDE8F4",
+              background: "hsl(var(--color-surface-raised))",
               borderRadius: 10,
               padding: "10px 14px",
               fontSize: 12,
-              color: "#3C2A4D",
+              color: "hsl(var(--color-text-primary))",
               wordBreak: "break-all",
               marginBottom: 16,
             }}
@@ -109,8 +109,8 @@ const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 6,
-                background: "#EDE8F4",
-                color: "#3C2A4D",
+                background: "hsl(var(--color-surface-raised))",
+                color: "hsl(var(--color-text-primary))",
                 borderRadius: 10,
                 padding: "10px",
                 fontSize: 13,

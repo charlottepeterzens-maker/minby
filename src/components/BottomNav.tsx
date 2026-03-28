@@ -49,7 +49,7 @@ const BottomNav = () => {
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 500, damping: 20 }}
                     className="absolute -top-1.5 -right-2 min-w-[16px] h-4 flex items-center justify-center rounded-full text-[9px] font-bold text-white px-1"
-                    style={{ backgroundColor: "#993556" }}
+                    style={{ backgroundColor: "hsl(var(--color-badge))" }}
                   >
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </motion.span>
@@ -59,7 +59,7 @@ const BottomNav = () => {
                 <motion.span
                   layoutId="nav-dot"
                   className="absolute bottom-0.5 w-1 h-1 rounded-full"
-                  style={{ backgroundColor: "#3C2A4D" }}
+                  style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}

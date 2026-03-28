@@ -67,7 +67,7 @@ const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange, pick
             >
               <span style={{ fontSize: 11 }}>{emoji}</span>
               {data.count > 1 && (
-                <span className="text-[9px] font-medium" style={{ color: "#655675" }}>
+                <span className="text-[9px] font-medium" style={{ color: "hsl(var(--color-text-secondary))" }}>
                   {data.count}
                 </span>
               )}
@@ -88,7 +88,7 @@ const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange, pick
               transition={{ duration: 0.15 }}
               className="absolute z-50 flex gap-1 rounded-full px-2 py-1.5 shadow-lg"
               style={{
-                backgroundColor: "#FFFFFF",
+                backgroundColor: "hsl(var(--color-surface-card))",
                 border: "none",
                 bottom: "100%",
                 marginBottom: 4,

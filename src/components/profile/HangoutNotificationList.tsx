@@ -124,14 +124,14 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
   return (
     <div className="mb-5">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[11px] uppercase tracking-wider font-medium" style={{ color: "#857A8F" }}>
+        <p className="text-[11px] uppercase tracking-wider font-medium" style={{ color: "hsl(var(--color-text-faint))" }}>
           Nytt
         </p>
         {unread.length > 1 && (
           <button
             onClick={markAllRead}
             className="text-[11px] hover:underline transition-colors"
-            style={{ color: "#655675" }}
+            style={{ color: "hsl(var(--color-text-secondary))" }}
           >
             Markera alla som lästa
           </button>
@@ -141,7 +141,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
       <div
         className="rounded-[12px] overflow-hidden"
         style={{
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "hsl(var(--color-surface-card))",
           border: "none",
         }}
       >
@@ -158,14 +158,14 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
               {/* Unread dot */}
               <div
                 className="w-1.5 h-1.5 rounded-full shrink-0"
-                style={{ backgroundColor: "#C9B8D8" }}
+                style={{ backgroundColor: "hsl(var(--color-border-lavender))" }}
               />
 
               {/* Avatar */}
               <Avatar className="w-9 h-9 shrink-0">
                 {resolveAvatarUrl(n.fromProfile?.avatar_url ?? null) && <AvatarImage src={resolveAvatarUrl(n.fromProfile?.avatar_url ?? null)!} className="object-cover" />}
                 <AvatarFallback
-                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
                   className="text-[11px] font-medium"
                 >
                   {n.fromProfile?.display_name?.charAt(0).toUpperCase() || "?"}
@@ -176,11 +176,11 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
               <div className="flex-1 min-w-0">
                 <p
                   className="text-[12px] leading-snug"
-                  style={{ color: "#3C2A4D" }}
+                  style={{ color: "hsl(var(--color-text-primary))" }}
                 >
                   {n.title}
                 </p>
-                <p className="text-[10px] mt-0.5" style={{ color: "#857A8F" }}>
+                <p className="text-[10px] mt-0.5" style={{ color: "hsl(var(--color-text-faint))" }}>
                   {timeAgo(n.created_at)}
                 </p>
               </div>

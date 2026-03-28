@@ -47,20 +47,20 @@ const NotificationList = ({ notifications, onClick, onMarkAllRead }: Props) => {
         transition={{ duration: 0.35, ease: "easeOut" }}
         className="mb-4 rounded-[12px] p-3"
         style={{
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "hsl(var(--color-surface-card))",
           border: "1px solid #EDE8F4",
         }}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-medium" style={{ color: "#655675" }}>
+          <span className="text-[11px] font-medium" style={{ color: "hsl(var(--color-text-secondary))" }}>
             Någon hörde av sig
           </span>
           {unread.length > 1 && (
             <button
               onClick={onMarkAllRead}
               className="text-[11px] hover:underline transition-colors"
-              style={{ color: "#655675" }}
+              style={{ color: "hsl(var(--color-text-secondary))" }}
             >
               Markera alla som lästa
             </button>
@@ -80,7 +80,7 @@ const NotificationList = ({ notifications, onClick, onMarkAllRead }: Props) => {
                 {n.from_user_avatar && <AvatarImage src={n.from_user_avatar} alt={n.from_user_name || ""} />}
                 <AvatarFallback
                   className="text-[11px] font-medium"
-                  style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
                 >
                   {getInitials(n.from_user_name)}
                 </AvatarFallback>
@@ -88,10 +88,10 @@ const NotificationList = ({ notifications, onClick, onMarkAllRead }: Props) => {
 
               {/* Content */}
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] leading-snug" style={{ color: "#3C2A4D" }}>
+                <p className="text-[12px] leading-snug" style={{ color: "hsl(var(--color-text-primary))" }}>
                   {n.body || "Ny händelse"}
                 </p>
-                <p className="text-[10px] mt-0.5" style={{ color: "#857A8F" }}>
+                <p className="text-[10px] mt-0.5" style={{ color: "hsl(var(--color-text-faint))" }}>
                   {timeAgo(n.created_at)}
                 </p>
               </div>
@@ -99,7 +99,7 @@ const NotificationList = ({ notifications, onClick, onMarkAllRead }: Props) => {
               {/* Unread dot */}
               <div
                 className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5"
-                style={{ backgroundColor: "#C9B8D8" }}
+                style={{ backgroundColor: "hsl(var(--color-border-lavender))" }}
               />
             </button>
           ))}

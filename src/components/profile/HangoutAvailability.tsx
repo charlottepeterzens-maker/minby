@@ -214,16 +214,16 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   return (
     <div style={{ padding: "0 0 20px 0" }}>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="font-fraunces font-normal text-[16px] mt-6 mb-3" style={{ color: "#2A1A3C" }}>
+        <h2 className="font-fraunces font-normal text-[16px] mt-6 mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
           Ses vi?
         </h2>
         {isOwner && (
           <button
             onClick={() => setShowAdd(true)}
             className="w-5 h-5 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "#EDE8F4" }}
+            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
           >
-            <Plus className="w-3 h-3" style={{ color: "#3C2A4D" }} />
+            <Plus className="w-3 h-3" style={{ color: "hsl(var(--color-text-primary))" }} />
           </button>
         )}
       </div>
@@ -246,14 +246,14 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         >
           <motion.div
             className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
-            style={{ backgroundColor: "#F0EAF6" }}
+            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
             initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 20 }}
            >
-            <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "#C9B8D8", opacity: 0.5 }} />
+            <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "hsl(var(--color-border-lavender))", opacity: 0.5 }} />
           </motion.div>
-          <p className="text-[12px] text-center" style={{ color: "#6B5C78" }}>
+          <p className="text-[12px] text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
             Inga förslag just nu
           </p>
         </motion.div>
@@ -282,7 +282,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
           </div>
           <motion.p
             className="text-center font-medium"
-            style={{ fontSize: 13, color: "#3C2A4D" }}
+            style={{ fontSize: 13, color: "hsl(var(--color-text-primary))" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
@@ -291,7 +291,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
           </motion.p>
           <motion.p
             className="text-center mt-1"
-            style={{ fontSize: 12, color: "#655675", maxWidth: 200 }}
+            style={{ fontSize: 12, color: "hsl(var(--color-text-secondary))", maxWidth: 200 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -302,7 +302,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             onClick={() => setShowAdd(true)}
             className="mt-3 text-white font-medium"
             style={{
-              backgroundColor: "#3C2A4D",
+              backgroundColor: "hsl(var(--color-text-primary))",
               borderRadius: 20,
               padding: "8px 20px",
               fontSize: 13,
@@ -340,7 +340,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                       minHeight: 100,
                       borderRadius: 8,
                       padding: 16,
-                      backgroundColor: "#FFFFFF",
+                      backgroundColor: "hsl(var(--color-surface-card))",
                       border: "none",
                     }}
                   >
@@ -352,18 +352,18 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                           <span
                             key={i}
                             className="text-[10px]"
-                            style={{ color: "#655675" }}
+                            style={{ color: "hsl(var(--color-text-secondary))" }}
                           >
                             {label}{i < item.dates.length - 1 ? "," : ""}
                           </span>
                         );
                       })}
                     </div>
-                    <p className="text-[11px] mb-1.5" style={{ color: "#857A8F" }}>
+                    <p className="text-[11px] mb-1.5" style={{ color: "hsl(var(--color-text-faint))" }}>
                       sugen på · {item.activityName}
                     </p>
                     {totalFriends > 0 && (
-                      <span className="text-[10px] mt-auto" style={{ color: "#655675" }}>
+                      <span className="text-[10px] mt-auto" style={{ color: "hsl(var(--color-text-secondary))" }}>
                         {totalFriends} intresserade
                       </span>
                     )}
@@ -392,17 +392,17 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                     minHeight: 100,
                     borderRadius: 8,
                     padding: 16,
-                    backgroundColor: "#FFFFFF",
+                    backgroundColor: "hsl(var(--color-surface-card))",
                     border: isSelected ? "1.5px solid #3C2A4D" : "none",
                   }}
                 >
                   <p
                     className="text-[12px] mb-0.5"
-                    style={{ color: "#655675", fontWeight: 400 }}
+                    style={{ color: "hsl(var(--color-text-secondary))", fontWeight: 400 }}
                   >
                     {dateDisplay}
                   </p>
-                  <p className="text-[11px] mb-1.5" style={{ color: "#857A8F" }}>
+                  <p className="text-[11px] mb-1.5" style={{ color: "hsl(var(--color-text-faint))" }}>
                     {intentLabel}
                     {activityNameLabel && ` · ${activityNameLabel}`}
                   </p>
@@ -410,7 +410,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                     <p
                       className="text-[13px] leading-[1.45]"
                       style={{
-                        color: "#3C2A4D",
+                        color: "hsl(var(--color-text-primary))",
                         display: "-webkit-box",
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: "vertical",
@@ -422,8 +422,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                   )}
                   {isFromGroup && (
                     <div className="flex items-center gap-1 mt-auto pt-1">
-                      <Users className="w-3 h-3" style={{ color: "#6B5C78" }} />
-                      <span className="text-[10px]" style={{ color: "#6B5C78" }}>
+                      <Users className="w-3 h-3" style={{ color: "hsl(var(--color-text-muted))" }} />
+                      <span className="text-[10px]" style={{ color: "hsl(var(--color-text-muted))" }}>
                         {description.split("— via ")[1] || "Sällskap"}
                       </span>
                     </div>
