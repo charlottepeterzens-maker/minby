@@ -325,7 +325,6 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               return note || activity || "Vill ses";
             })()}
           </p>
-          </p>
           {user?.id !== person.userId && (
             <div className="flex gap-2">
               <button
