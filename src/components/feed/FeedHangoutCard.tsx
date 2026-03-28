@@ -52,12 +52,26 @@ function formatDateChip(dateStr: string): string {
   return `${format(d, "d", { locale: sv })} ${format(d, "MMM", { locale: sv }).replace(".", "")}`;
 }
 
+const TYPE_COLORS: Record<string, string> = {
+  open: "#F5F0E8",
+  available: "#F5F0E8",
+  confirmed: "#EDE8F4",
+  activity: "#E8F2EC",
+};
+
+const TYPE_LABEL: Record<string, string> = {
+  open: "ledig",
+  available: "ledig",
+  confirmed: "häng med",
+  activity: "sugen på",
+};
+
 function getTypeLabel(entryType: string): string {
-  switch (entryType) {
-    case "confirmed": return "Bekräftad träff";
-    case "activity": return "Sugen på";
-    default: return "Ledig";
-  }
+  return TYPE_LABEL[entryType] || "ledig";
+}
+
+function getTypeBg(entryType: string): string {
+  return TYPE_COLORS[entryType] || "#F5F0E8";
 }
 
 /** Unified card — hierarchy: Date → Activity → Sender → Type */
