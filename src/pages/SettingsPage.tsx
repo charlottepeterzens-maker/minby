@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, Moon, Sun } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -88,6 +88,7 @@ const SettingsPage = () => {
   const { t, lang, setLang } = useLanguage();
   const { toast } = useToast();
 
+  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
@@ -208,6 +209,38 @@ const SettingsPage = () => {
       </nav>
 
       <Container className="py-6 space-y-4">
+        {/* Dark mode */}
+        <Card className="rounded-[14px]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("appearance") ?? "Utseende"}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {document.documentElement.classList.contains("dark") ? (
+                  <Moon className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+                ) : (
+                  <Sun className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+                )}
+                <Label className="text-sm">{t("darkMode") ?? "Mörkt läge"}</Label>
+              </div>
+              <Switch
+                checked={darkMode}
+                onCheckedChange={(v) => {
+                  setDarkMode(v);
+                  if (v) {
+                    document.documentElement.classList.add("dark");
+                    localStorage.setItem("theme", "dark");
+                  } else {
+                    document.documentElement.classList.remove("dark");
+                    localStorage.setItem("theme", "light");
+                  }
+                }}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Language */}
         <Card className="rounded-[14px]">
           <CardHeader className="pb-2">
