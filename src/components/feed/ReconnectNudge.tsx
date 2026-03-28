@@ -56,7 +56,7 @@ const ReconnectNudge = ({ friendIds, profiles }: ReconnectNudgeProps) => {
       className="mb-4 relative"
       style={{
         backgroundColor: "hsl(var(--color-surface-raised))",
-        borderRadius: 12,
+        borderRadius: 8,
         padding: "14px 16px",
       }}
     >

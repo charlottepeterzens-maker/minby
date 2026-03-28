@@ -74,7 +74,7 @@ const PlanTimelineCard = ({
         style={{
           backgroundColor: "hsl(var(--color-surface-card))",
           border: "none",
-          borderRadius: 12,
+          borderRadius: 8,
         }}
       >
         {/* Header */}

@@ -45,7 +45,7 @@ const PollCard = ({
         style={{
           backgroundColor: "hsl(var(--color-surface-card))",
           border: "1px solid #DDD5CC",
-          borderRadius: 12,
+          borderRadius: 8,
         }}
       >
         {/* Question */}

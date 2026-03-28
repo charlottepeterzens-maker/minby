@@ -208,7 +208,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
                 value={text}
                 onChange={(e) => setText(e.target.value.slice(0, 200))}
                 placeholder="Skriv fritt... t.ex. 'Jag är ledig på fredag och vill fika med någon' eller 'Sugen på spa i helgen'"
-                className="w-full text-[14px] rounded-xl bg-white px-4 py-3.5 placeholder:text-[#857A8F] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C9B8D8] resize-none"
+                className="w-full text-[14px] rounded-lg bg-white px-4 py-3.5 placeholder:text-[#857A8F] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C9B8D8] resize-none"
                 style={{ border: "1px solid #EDE8F4", color: "hsl(var(--color-text-primary))", lineHeight: 1.5 }}
                 rows={3}
                 maxLength={200}
@@ -231,7 +231,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               onClick={handleParse}
               disabled={!text.trim() || parsing}
               className="w-full flex items-center justify-center gap-2 py-3 text-[14px] font-medium text-white disabled:opacity-40 transition-opacity"
-              style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 12 }}
+              style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 8 }}
             >
               {parsing ? (
                 <>
@@ -260,7 +260,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               <input
                 value={editIntent}
                 onChange={(e) => setEditIntent(e.target.value)}
-                className="w-full px-3 py-2.5 text-[13px] rounded-xl bg-white focus-visible:outline-none"
+                className="w-full px-3 py-2.5 text-[13px] rounded-lg bg-white focus-visible:outline-none"
                 style={{ border: "1px solid #EDE8F4", color: "hsl(var(--color-text-primary))" }}
                 maxLength={40}
               />
@@ -273,7 +273,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               <textarea
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
-                className="w-full px-3 py-2.5 text-[13px] rounded-xl bg-white focus-visible:outline-none resize-none"
+                className="w-full px-3 py-2.5 text-[13px] rounded-lg bg-white focus-visible:outline-none resize-none"
                 style={{ border: "1px solid #EDE8F4", color: "hsl(var(--color-text-primary))" }}
                 rows={2}
                 maxLength={100}
@@ -288,7 +288,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
                 value={editDate}
                 onChange={(e) => setEditDate(e.target.value)}
                 placeholder="t.ex. fredag, i helgen"
-                className="w-full px-3 py-2.5 text-[13px] rounded-xl bg-white focus-visible:outline-none"
+                className="w-full px-3 py-2.5 text-[13px] rounded-lg bg-white focus-visible:outline-none"
                 style={{ border: "1px solid #EDE8F4", color: "hsl(var(--color-text-primary))" }}
               />
             </div>
@@ -301,7 +301,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
                 value={editActivity}
                 onChange={(e) => setEditActivity(e.target.value)}
                 placeholder="t.ex. fika, spa"
-                className="w-full px-3 py-2.5 text-[13px] rounded-xl bg-white focus-visible:outline-none"
+                className="w-full px-3 py-2.5 text-[13px] rounded-lg bg-white focus-visible:outline-none"
                 style={{ border: "1px solid #EDE8F4", color: "hsl(var(--color-text-primary))" }}
               />
             </div>
@@ -310,7 +310,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               <button
                 onClick={applyEdits}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[13px] font-medium text-white"
-                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 12 }}
+                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 8 }}
               >
                 <Check className="w-3.5 h-3.5" />
                 Spara
@@ -318,7 +318,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               <button
                 onClick={() => setEditing(false)}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[13px] font-medium"
-                style={{ color: "hsl(var(--color-text-secondary))", borderRadius: 12, border: "1px solid #EDE8F4" }}
+                style={{ color: "hsl(var(--color-text-secondary))", borderRadius: 8, border: "1px solid #EDE8F4" }}
               >
                 <X className="w-3.5 h-3.5" />
                 Avbryt
@@ -384,7 +384,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
                 onClick={handleSave}
                 disabled={saving}
                 className="flex-1 py-3 text-[14px] font-medium text-white disabled:opacity-40 transition-opacity"
-                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 12 }}
+                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 8 }}
               >
                 {saving ? "Sparar..." : "Dela med kretsen"}
               </button>

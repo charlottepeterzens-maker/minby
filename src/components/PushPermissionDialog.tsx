@@ -76,14 +76,14 @@ const PushPermissionDialog = () => {
           <div className="flex flex-col gap-2 w-full mt-2">
             <button
               onClick={handleActivate}
-              className="w-full py-3 rounded-xl text-[14px] font-medium text-white transition-colors"
+              className="w-full py-3 rounded-lg text-[14px] font-medium text-white transition-colors"
               style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
             >
               Håll mig uppdaterad
             </button>
             <button
               onClick={handleLater}
-              className="w-full py-2.5 rounded-xl text-[13px] font-medium transition-colors"
+              className="w-full py-2.5 rounded-lg text-[13px] font-medium transition-colors"
               style={{ color: "hsl(var(--color-text-secondary))" }}
             >
               Senare

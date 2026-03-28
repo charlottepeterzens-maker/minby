@@ -327,7 +327,7 @@ const HangoutDetailSheet = ({
                     <span
                       key={ae.id}
                       className="inline-flex items-center gap-1 text-[11px]"
-                      style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 12, padding: "4px 10px", color: "hsl(var(--color-text-primary))" }}
+                      style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8, padding: "4px 10px", color: "hsl(var(--color-text-primary))" }}
                     >
                       {label}
                       {isOwner && (
@@ -342,7 +342,7 @@ const HangoutDetailSheet = ({
                   <button
                     onClick={() => { onOpenChange(false); onAddActivityDate(activityGroupName); }}
                     className="inline-flex items-center gap-1 text-[11px]"
-                    style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 12, padding: "4px 10px", color: "hsl(var(--color-text-secondary))" }}
+                    style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8, padding: "4px 10px", color: "hsl(var(--color-text-secondary))" }}
                   >
                     <Plus className="w-3 h-3" /> Lägg till
                   </button>

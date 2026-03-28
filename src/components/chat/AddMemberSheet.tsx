@@ -140,7 +140,7 @@ const AddMemberSheet = ({
                   key={f.user_id}
                   type="button"
                   onClick={() => toggle(f.user_id)}
-                  className="w-full flex items-center gap-3 rounded-xl p-2.5 text-left transition-colors"
+                  className="w-full flex items-center gap-3 rounded-lg p-2.5 text-left transition-colors"
                   style={{
                     backgroundColor: isSelected ? "#EAF2E8" : "#FFFFFF",
                     border: `1px solid ${isSelected ? "#B5CCBF" : "transparent"}`,
@@ -167,7 +167,7 @@ const AddMemberSheet = ({
             onClick={handleAdd}
             disabled={!selected.length || loading}
             className="w-full mt-4 py-2.5 text-[13px] font-semibold text-white disabled:opacity-40 transition-opacity"
-            style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 12 }}
+            style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 8 }}
           >
             {loading ? "Lägger till..." : `Lägg till (${selected.length})`}
           </button>
