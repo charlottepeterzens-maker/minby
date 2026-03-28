@@ -162,8 +162,8 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
                   type: "hangout_new",
                   referenceId: user.id,
                   message: `${name} vill ses – ${parsed.description.slice(0, 50)}`,
-                })
-              )
+                }),
+              ),
           );
         }
       } catch {
@@ -195,10 +195,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
         {!parsed ? (
           /* === INPUT PHASE === */
           <div className="space-y-4">
-            <h3
-              className="text-[15px] font-medium text-center"
-              style={{ color: "hsl(var(--color-text-primary))" }}
-            >
+            <h3 className="text-[15px] font-medium text-center" style={{ color: "hsl(var(--color-text-primary))" }}>
               Vad känner du för?
             </h3>
 
@@ -207,7 +204,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
                 ref={inputRef}
                 value={text}
                 onChange={(e) => setText(e.target.value.slice(0, 200))}
-                placeholder="Skriv fritt... t.ex. 'Jag är ledig på fredag och vill fika med någon' eller 'Sugen på spa i helgen'"
+                placeholder="Skriv fritt... t.ex. 'Jag är ledig på fredag och vill fika med någon' AI sammanfattar!"
                 className="w-full text-[14px] rounded-lg bg-white px-4 py-3.5 placeholder:text-[#857A8F] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C9B8D8] resize-none"
                 style={{ border: "1px solid #EDE8F4", color: "hsl(var(--color-text-primary))", lineHeight: 1.5 }}
                 rows={3}
@@ -219,10 +216,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
                   }
                 }}
               />
-              <span
-                className="absolute bottom-2 left-4 text-[10px]"
-                style={{ color: "hsl(var(--color-text-faint))" }}
-              >
+              <span className="absolute bottom-2 left-4 text-[10px]" style={{ color: "hsl(var(--color-text-faint))" }}>
                 {text.length}/200
               </span>
             </div>
@@ -254,7 +248,10 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             </h3>
 
             <div>
-              <label className="text-[11px] font-medium mb-1 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
+              <label
+                className="text-[11px] font-medium mb-1 block"
+                style={{ color: "hsl(var(--color-text-secondary))" }}
+              >
                 Känsla
               </label>
               <input
@@ -267,7 +264,10 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium mb-1 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
+              <label
+                className="text-[11px] font-medium mb-1 block"
+                style={{ color: "hsl(var(--color-text-secondary))" }}
+              >
                 Beskrivning
               </label>
               <textarea
@@ -281,7 +281,10 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium mb-1 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
+              <label
+                className="text-[11px] font-medium mb-1 block"
+                style={{ color: "hsl(var(--color-text-secondary))" }}
+              >
                 Tid (valfritt)
               </label>
               <input
@@ -294,7 +297,10 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium mb-1 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
+              <label
+                className="text-[11px] font-medium mb-1 block"
+                style={{ color: "hsl(var(--color-text-secondary))" }}
+              >
                 Aktivitet (valfritt)
               </label>
               <input
@@ -353,15 +359,16 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               {parsed.date_display && (
                 <p
                   className="text-[12px] mb-1"
-                  style={{ color: "hsl(var(--color-text-secondary))", fontFamily: "Lexend, sans-serif", fontWeight: 400 }}
+                  style={{
+                    color: "hsl(var(--color-text-secondary))",
+                    fontFamily: "Lexend, sans-serif",
+                    fontWeight: 400,
+                  }}
                 >
                   {parsed.date_display}
                 </p>
               )}
-              <p
-                className="text-[11px] mb-1.5"
-                style={{ color: "hsl(var(--color-text-faint))" }}
-              >
+              <p className="text-[11px] mb-1.5" style={{ color: "hsl(var(--color-text-faint))" }}>
                 {parsed.intent}
                 {parsed.activity && ` · ${parsed.activity}`}
               </p>
@@ -391,7 +398,10 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             </div>
 
             <button
-              onClick={() => { setParsed(null); setText(""); }}
+              onClick={() => {
+                setParsed(null);
+                setText("");
+              }}
               className="w-full text-center text-[12px] font-medium py-1"
               style={{ color: "hsl(var(--color-text-secondary))" }}
             >
