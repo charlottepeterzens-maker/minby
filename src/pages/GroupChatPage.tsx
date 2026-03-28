@@ -432,7 +432,7 @@ const GroupChatPage = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 px-4 py-3" style={{ backgroundColor: "#3C2A4D" }}>
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate("/groups")} className="shrink-0 p-1">
+          <button onClick={() => navigate("/groups")} className="shrink-0 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Tillbaka till sällskap">
             <ChevronLeft className="w-5 h-5" style={{ color: "#C9B8D8" }} />
           </button>
           <div className="flex-1 text-center min-w-0">
@@ -461,7 +461,7 @@ const GroupChatPage = () => {
             )}
           </div>
           <div className="shrink-0 relative">
-            <button onClick={() => setMenuOpen((v) => !v)} className="p-1">
+            <button onClick={() => setMenuOpen((v) => !v)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Gruppinställningar">
               <EllipsisVertical className="w-5 h-5" style={{ color: "#C9B8D8" }} />
             </button>
             {menuOpen && (

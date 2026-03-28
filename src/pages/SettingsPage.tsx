@@ -197,7 +197,8 @@ const SettingsPage = () => {
         <Container className="py-4 flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
-            className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+            aria-label="Tillbaka"
+            className="text-muted-foreground hover:text-foreground transition-colors duration-150 min-w-[44px] min-h-[44px] flex items-center justify-center"
           >
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>

@@ -682,7 +682,8 @@ const FriendsPage = () => {
           </span>
           <button
             onClick={() => setQrOpen(true)}
-            className="w-9 h-9 rounded-full flex items-center justify-center"
+            aria-label="Visa QR-kod"
+            className="w-11 h-11 rounded-full flex items-center justify-center"
             style={{ backgroundColor: "#EDE8F4" }}
           >
             <QrCode className="w-4.5 h-4.5" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
