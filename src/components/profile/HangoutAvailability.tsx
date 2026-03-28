@@ -250,8 +250,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 20 }}
-          >
-            <span className="text-lg">🌿</span>
+           >
+            <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "#C9B8D8", opacity: 0.5 }} />
           </motion.div>
           <p className="text-[12px] text-center" style={{ color: "#9B8BA5" }}>
             Inga förslag just nu

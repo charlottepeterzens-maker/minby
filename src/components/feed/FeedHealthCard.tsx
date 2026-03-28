@@ -52,7 +52,7 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
           emoji: "🤗",
         });
         setHugSent(true);
-        toast.success("Kärlek skickad 💛");
+        toast.success("Kärlek skickad");
       }
     } catch {
       toast.error("Kunde inte skicka kram");

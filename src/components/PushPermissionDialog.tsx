@@ -59,10 +59,10 @@ const PushPermissionDialog = () => {
       >
         <div className="flex flex-col items-center text-center gap-4">
           <div
-            className="w-14 h-14 rounded-full flex items-center justify-center text-2xl"
+            className="w-14 h-14 rounded-full flex items-center justify-center"
             style={{ backgroundColor: "#EDE8F4" }}
           >
-            🔔
+            <Bell className="w-6 h-6" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
           </div>
           <div>
             <h3 className="font-display text-lg font-medium" style={{ color: "#3C2A4D" }}>

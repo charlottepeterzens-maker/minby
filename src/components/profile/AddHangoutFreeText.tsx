@@ -170,7 +170,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
         // Best effort
       }
 
-      toast({ title: "Delat med din krets ✨" });
+      toast({ title: "Delat med din krets" });
       handleOpenChange(false);
       onCreated();
     } catch (err: any) {

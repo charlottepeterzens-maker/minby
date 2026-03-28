@@ -191,9 +191,9 @@ const GroupsPage = () => {
               >
                 <div className="relative mb-5" style={{ width: 100, height: 60 }}>
                   {[
-                    { left: 0, top: 4, bg: "#EDE8F4", emoji: "👯", delay: 0.15 },
-                    { left: 28, top: 0, bg: "#FCF0F3", emoji: "💬", delay: 0.25 },
-                    { left: 56, top: 8, bg: "#EAF2E8", emoji: "📅", delay: 0.35 },
+                    { left: 0, top: 4, bg: "#EDE8F4", delay: 0.15 },
+                    { left: 28, top: 0, bg: "#FCF0F3", delay: 0.25 },
+                    { left: 56, top: 8, bg: "#EAF2E8", delay: 0.35 },
                   ].map((c, i) => (
                     <motion.div
                       key={i}
@@ -203,7 +203,7 @@ const GroupsPage = () => {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: c.delay, type: "spring", stiffness: 260, damping: 20 }}
                     >
-                      <span className="text-lg">{c.emoji}</span>
+                      <div className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: "rgba(60,42,77,0.1)" }} />
                     </motion.div>
                   ))}
                 </div>
