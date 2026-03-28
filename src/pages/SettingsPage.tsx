@@ -212,17 +212,17 @@ const SettingsPage = () => {
         {/* Dark mode */}
         <Card className="rounded-[14px]">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("appearance") ?? "Utseende"}</CardTitle>
+            <CardTitle className="text-xs text-muted-foreground font-body font-medium">{lang === "sv" ? "Utseende" : "Appearance"}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                {document.documentElement.classList.contains("dark") ? (
+                {darkMode ? (
                   <Moon className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                 ) : (
                   <Sun className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                 )}
-                <Label className="text-sm">{t("darkMode") ?? "Mörkt läge"}</Label>
+                <Label className="text-sm">{lang === "sv" ? "Mörkt läge" : "Dark mode"}</Label>
               </div>
               <Switch
                 checked={darkMode}
