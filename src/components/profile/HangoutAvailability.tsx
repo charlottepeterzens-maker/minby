@@ -378,8 +378,16 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                 item.activities.length > 0
                   ? item.activities.map((a) => ACTIVITY_MAP[a] || a).join(", ")
                   : null;
-              const description = item.custom_note || "";
-              const isFromGroup = description.includes("— via ");
+              const rawDescription = item.custom_note || "";
+              const isFromGroup = rawDescription.includes("— via ");
+
+              // Deduplicate: if custom_note already contains the activity text (or vice versa), skip one
+              const textsAreSimilar =
+                activityNameLabel && rawDescription &&
+                (rawDescription.toLowerCase().includes(activityNameLabel.toLowerCase()) ||
+                 activityNameLabel.toLowerCase().includes(rawDescription.toLowerCase()));
+              const description = textsAreSimilar ? rawDescription : rawDescription;
+              const showActivityInLabel = !textsAreSimilar;
               const isSelected = selectedEntry?.id === item.id && sheetOpen;
 
               return (
