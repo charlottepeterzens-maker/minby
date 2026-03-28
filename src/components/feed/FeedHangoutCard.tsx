@@ -31,38 +31,45 @@ interface FeedHangoutCardProps {
   onMaybe?: () => void;
 }
 
-function getTimeAgo(dateStr: string): string {
-  const now = new Date();
-  const date = new Date(dateStr);
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  if (diffMins < 1) return "nu";
-  if (diffMins < 60) return `${diffMins} min sedan`;
-  const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `${diffHours} tim sedan`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 7) return `${diffDays} d sedan`;
-  return date.toLocaleDateString("sv-SE", { day: "numeric", month: "short" });
-}
-
-function formatDate(dateStr: string): string {
+function formatDatePrimary(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
-  const weekday = format(d, "EEE", { locale: sv }).replace(".", "");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  if (d.getTime() === today.getTime()) return "Idag";
+  if (d.getTime() === tomorrow.getTime()) return "Imorgon";
+
+  const weekday = format(d, "EEEE", { locale: sv });
   const day = format(d, "d", { locale: sv });
   const month = format(d, "MMMM", { locale: sv });
-  return `${weekday} ${day} ${month}`;
+  return `${weekday.charAt(0).toUpperCase() + weekday.slice(1)} ${day} ${month}`;
 }
 
-/** Unified card for all hangout types */
+function formatDateChip(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00");
+  return `${format(d, "d", { locale: sv })} ${format(d, "MMM", { locale: sv }).replace(".", "")}`;
+}
+
+function getTypeLabel(entryType: string): string {
+  switch (entryType) {
+    case "confirmed": return "Bekräftad träff";
+    case "activity": return "Sugen på";
+    default: return "Ledig";
+  }
+}
+
+/** Unified card — hierarchy: Date → Activity → Sender → Type */
 const UnifiedHangoutCard = ({
   hangout,
   profile,
   isOwn,
   onProfileClick,
 }: FeedHangoutCardProps) => {
-  const timeAgo = getTimeAgo(hangout.created_at);
   const [detailOpen, setDetailOpen] = useState(false);
   const hangoutId = hangout.id || "";
+  const entryType = hangout.entry_type || "available";
 
   const entry = hangoutId
     ? {
@@ -70,64 +77,44 @@ const UnifiedHangoutCard = ({
         date: hangout.date || "",
         activities: hangout.activities,
         custom_note: hangout.custom_note,
-        entry_type: hangout.entry_type || "available",
+        entry_type: entryType,
         user_id: "",
       }
     : null;
 
-  const entryType = hangout.entry_type || "available";
-  const subtitle =
-    entryType === "confirmed"
-      ? "häng med"
-      : entryType === "activity"
-        ? "sugen på"
-        : "vill ses";
-
   const mainText =
     hangout.custom_note ||
-    (hangout.activities.length > 0 ? hangout.activities[0] : "Vill ses");
+    (hangout.activities.length > 0 ? hangout.activities[0] : null);
 
   return (
     <div
       className="rounded-lg p-4"
       style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
     >
-      {/* Header: avatar + name + subtitle */}
-      <div className="flex items-center gap-2.5 mb-3">
-        <FeedAvatar
-          avatarUrl={(profile as any).avatar_url || null}
-          displayName={profile.display_name}
-          initials={profile.initials}
-          onClick={onProfileClick}
-        />
-        <div>
-          <button
-            onClick={onProfileClick}
-            className="text-sm font-medium hover:underline block leading-tight"
-            style={{ color: "hsl(var(--color-text-primary))" }}
-          >
-            {profile.display_name || "Någon"}
-          </button>
-          <p className="text-[11px] leading-tight" style={{ color: "hsl(var(--color-text-secondary))" }}>
-            {subtitle} · {timeAgo}
-          </p>
-        </div>
-      </div>
-
-      {/* Date (inline, not separate box) */}
+      {/* 1. DATE — largest, most prominent */}
       {hangout.date && (
         <p
-          className="text-[12px] font-medium mb-1"
-          style={{ color: "hsl(var(--color-text-secondary))" }}
+          className="font-fraunces text-[17px] font-medium leading-tight"
+          style={{ color: "hsl(var(--color-text-primary))" }}
         >
-          {formatDate(hangout.date)}
+          {formatDatePrimary(hangout.date)}
+        </p>
+      )}
+
+      {/* 2. ACTIVITY / main text */}
+      {mainText && (
+        <p
+          className="text-[14px] leading-relaxed mt-1.5 line-clamp-2"
+          style={{ color: "hsl(var(--color-text-primary))", lineHeight: 1.5 }}
+        >
+          {mainText}
         </p>
       )}
 
       {/* Match indicator */}
       {hangout.isMatch && !isOwn && (
         <div
-          className="flex items-center gap-1.5 rounded-full px-2.5 py-1 mb-2 w-fit"
+          className="flex items-center gap-1.5 rounded-full px-2.5 py-1 mt-2.5 w-fit"
           style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
         >
           <Sparkles className="w-3 h-3" style={{ color: "#7A5AA6" }} />
@@ -137,13 +124,30 @@ const UnifiedHangoutCard = ({
         </div>
       )}
 
-      {/* Main text */}
-      <p
-        className="text-[14px] leading-relaxed line-clamp-2"
-        style={{ color: "hsl(var(--color-text-primary))", lineHeight: 1.5 }}
-      >
-        {mainText}
-      </p>
+      {/* 3. SENDER — smaller, below content */}
+      <div className="flex items-center gap-2 mt-3">
+        <FeedAvatar
+          avatarUrl={(profile as any).avatar_url || null}
+          displayName={profile.display_name}
+          initials={profile.initials}
+          onClick={onProfileClick}
+          size="w-6 h-6"
+        />
+        <button
+          onClick={onProfileClick}
+          className="text-[12px] font-medium hover:underline leading-tight"
+          style={{ color: "hsl(var(--color-text-secondary))" }}
+        >
+          {profile.display_name || "Någon"}
+        </button>
+        {/* 4. TYPE — least prominent */}
+        <span
+          className="text-[11px] leading-tight"
+          style={{ color: "hsl(var(--color-text-faint))" }}
+        >
+          · {getTypeLabel(entryType)}
+        </span>
+      </div>
 
       {/* CTA buttons */}
       {!isOwn && (
@@ -180,7 +184,7 @@ const UnifiedHangoutCard = ({
   );
 };
 
-/** Grouped activity card with date chips (kept but simplified) */
+/** Grouped activity card with date chips */
 const GroupedActivityCard = ({
   hangout,
   profile,
@@ -188,7 +192,6 @@ const GroupedActivityCard = ({
   onProfileClick,
 }: FeedHangoutCardProps) => {
   const { user } = useAuth();
-  const timeAgo = getTimeAgo(hangout.created_at);
   const activityName =
     hangout.activities.length > 0
       ? hangout.activities[0]
@@ -268,45 +271,21 @@ const GroupedActivityCard = ({
     fetchRsvps();
   };
 
-  const formatChip = (dateStr: string) => {
-    const d = new Date(dateStr + "T00:00:00");
-    return `${format(d, "d", { locale: sv })} ${format(d, "MMM", { locale: sv }).replace(".", "")}`;
-  };
-
   return (
     <div
       className="rounded-lg p-4"
       style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
     >
-      <div className="flex items-center gap-2.5 mb-3">
-        <FeedAvatar
-          avatarUrl={(profile as any).avatar_url || null}
-          displayName={profile.display_name}
-          initials={profile.initials}
-          onClick={onProfileClick}
-        />
-        <div>
-          <button
-            onClick={onProfileClick}
-            className="text-sm font-medium hover:underline block leading-tight"
-            style={{ color: "hsl(var(--color-text-primary))" }}
-          >
-            {profile.display_name || "Någon"}
-          </button>
-          <p className="text-[11px] leading-tight" style={{ color: "hsl(var(--color-text-secondary))" }}>
-            sugen på · {timeAgo}
-          </p>
-        </div>
-      </div>
-
+      {/* 1. ACTIVITY — primary for grouped cards */}
       <p
-        className="text-[14px] font-medium mb-3"
+        className="font-fraunces text-[17px] font-medium leading-tight"
         style={{ color: "hsl(var(--color-text-primary))" }}
       >
-        Sugen på {activityName.toLowerCase()}
+        {activityName}
       </p>
 
-      <div className="flex gap-1.5 flex-wrap">
+      {/* 2. DATE CHIPS */}
+      <div className="flex gap-1.5 flex-wrap mt-2.5">
         {dates.map((dateStr) => {
           const isSelected = selectedDate === dateStr;
           const count = rsvpCounts[dateStr] || 0;
@@ -317,15 +296,14 @@ const GroupedActivityCard = ({
               disabled={isOwn || saving}
               className="flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all shrink-0"
               style={{
-                backgroundColor: isSelected ? "#3C2A4D" : "#F7F3EF",
-                border: "1px solid transparent",
+                backgroundColor: isSelected ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-raised))",
               }}
             >
               <span
                 className="text-[12px] font-medium"
-                style={{ color: isSelected ? "#FFFFFF" : "#3C2A4D" }}
+                style={{ color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-primary))" }}
               >
-                {formatChip(dateStr)}
+                {formatDateChip(dateStr)}
               </span>
               {count > 0 && (
                 <span
@@ -333,8 +311,8 @@ const GroupedActivityCard = ({
                   style={{
                     backgroundColor: isSelected
                       ? "rgba(255,255,255,0.2)"
-                      : "#EDE8F4",
-                    color: isSelected ? "#FFFFFF" : "#655675",
+                      : "hsl(var(--color-border-subtle))",
+                    color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-secondary))",
                   }}
                 >
                   {count}
@@ -345,14 +323,40 @@ const GroupedActivityCard = ({
         })}
       </div>
 
+      {/* Custom note */}
       {hangout.custom_note && (
         <p
-          className="text-[12px] mt-3"
-          style={{ color: "hsl(var(--color-text-secondary))" }}
+          className="text-[13px] mt-2.5 line-clamp-2"
+          style={{ color: "hsl(var(--color-text-secondary))", lineHeight: 1.5 }}
         >
           {hangout.custom_note}
         </p>
       )}
+
+      {/* 3. SENDER */}
+      <div className="flex items-center gap-2 mt-3">
+        <FeedAvatar
+          avatarUrl={(profile as any).avatar_url || null}
+          displayName={profile.display_name}
+          initials={profile.initials}
+          onClick={onProfileClick}
+          size="w-6 h-6"
+        />
+        <button
+          onClick={onProfileClick}
+          className="text-[12px] font-medium hover:underline leading-tight"
+          style={{ color: "hsl(var(--color-text-secondary))" }}
+        >
+          {profile.display_name || "Någon"}
+        </button>
+        {/* 4. TYPE */}
+        <span
+          className="text-[11px] leading-tight"
+          style={{ color: "hsl(var(--color-text-faint))" }}
+        >
+          · Sugen på
+        </span>
+      </div>
     </div>
   );
 };
