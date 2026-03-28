@@ -316,7 +316,14 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
             </span>
           </div>
           <p className="text-[13px] line-clamp-1 mb-2.5" style={{ color: "hsl(var(--color-text-primary))" }}>
-            {person.activeHangout.custom_note || person.activeHangout.activities?.[0] || "Vill ses"}
+            {(() => {
+              const note = person.activeHangout.custom_note || null;
+              const activity = person.activeHangout.activities?.[0] || null;
+              const similar = note && activity &&
+                (note.toLowerCase().includes(activity.toLowerCase()) ||
+                 activity.toLowerCase().includes(note.toLowerCase()));
+              return note || activity || "Vill ses";
+            })()}
           </p>
           {user?.id !== person.userId && (
             <div className="flex gap-2">
