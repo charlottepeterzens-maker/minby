@@ -199,19 +199,21 @@ const FeedPage = () => {
 
     // posts
     postsRes.data?.forEach((p: any) => {
+      const prof = profileMap.get(p.user_id);
       items.push({
         type: "posts",
         created_at: p.created_at,
-        data: p,
+        data: { ...p, display_name: prof?.display_name || null, avatar_url: prof?.avatar_url || null },
       });
     });
 
     // hangouts
     hangoutsRes.data?.forEach((h: any) => {
+      const prof = profileMap.get(h.user_id);
       items.push({
         type: "hangout",
         created_at: h.created_at,
-        data: { ...h, isMatch: myHangoutDates.has(h.date) },
+        data: { ...h, isMatch: myHangoutDates.has(h.date), display_name: prof?.display_name || null, avatar_url: prof?.avatar_url || null },
       });
     });
 
