@@ -75,12 +75,12 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
           <p className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
             Ni hade {planTitle.toLowerCase()}
           </p>
-          <p className="text-[11px]" style={{ color: "#7A6A85" }}>
+          <p className="text-[11px]" style={{ color: "#655675" }}>
             {planDate} · Vill ni spara något från den kvällen?
           </p>
         </div>
         <button onClick={onDismiss} className="p-1 -mt-1 -mr-1">
-          <X className="w-3.5 h-3.5" style={{ color: "#9B8BA5" }} />
+          <X className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
         </button>
       </div>
 
@@ -99,7 +99,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
 
       <div className="flex items-center gap-2">
         <label className="shrink-0 w-8 h-8 rounded-[8px] flex items-center justify-center cursor-pointer" style={{ backgroundColor: "#EDE8F4" }}>
-          <Camera className="w-4 h-4" style={{ color: "#7A6A85" }} />
+          <Camera className="w-4 h-4" style={{ color: "#655675" }} />
           <input type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
         </label>
         <input

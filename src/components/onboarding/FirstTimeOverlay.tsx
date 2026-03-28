@@ -44,7 +44,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               Det ska vara lättare att ses.
             </h2>
 
-            <p className="text-center mb-6" style={{ fontSize: 13, color: "#7A6A85", lineHeight: 1.6 }}>
+            <p className="text-center mb-6" style={{ fontSize: 13, color: "#655675", lineHeight: 1.6 }}>
               Minby hjälper dig ta små steg mot att faktiskt hålla kontakten.
             </p>
 
@@ -65,7 +65,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             <button
               onClick={onDismiss}
               className="w-full mt-3 text-[12px]"
-              style={{ color: "#7A6A85", background: "none", border: "none" }}
+              style={{ color: "#655675", background: "none", border: "none" }}
             >
               Hoppa över
             </button>
@@ -164,7 +164,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               textAlign: "center",
             }}
           >
-            <p className="mb-4" style={{ fontSize: 14, color: "#7A6A85" }}>
+            <p className="mb-4" style={{ fontSize: 14, color: "#655675" }}>
               Du är igång.
             </p>
 

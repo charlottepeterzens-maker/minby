@@ -160,7 +160,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
           {step === 1 ?
           <div className="space-y-4 pt-4">
               <div>
-                <Label htmlFor="gname" className="text-sm" style={{ color: "#7A6A85" }}>
+                <Label htmlFor="gname" className="text-sm" style={{ color: "#655675" }}>
                   Gruppnamn
                 </Label>
                 <Input
@@ -174,7 +174,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
               </div>
 
               <div>
-                <Label className="text-sm" style={{ color: "#7A6A85" }}>Välj syfte</Label>
+                <Label className="text-sm" style={{ color: "#655675" }}>Välj syfte</Label>
                 <div className="flex gap-2 mt-2">
                   {emojiPresets.map((preset) =>
                 <button
@@ -192,7 +192,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                   }}>
                   
                       
-                      <span className="text-[10px]" style={{ color: "#7A6A85" }}>
+                      <span className="text-[10px]" style={{ color: "#655675" }}>
                         {preset.label}
                       </span>
                     </button>
@@ -215,7 +215,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
 
           <div className="space-y-4 pt-4">
               {friends.length === 0 ?
-            <p className="text-[13px] text-center py-6" style={{ color: "#7A6A85" }}>
+            <p className="text-[13px] text-center py-6" style={{ color: "#655675" }}>
                   Du har inga vänner att bjuda in ännu.
                 </p> :
 

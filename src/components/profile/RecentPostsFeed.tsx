@@ -226,7 +226,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
 
             {/* Image editing */}
             <div>
-              <p className="text-[10px] mb-1.5" style={{ color: "#B0A0B5" }}>Bild</p>
+              <p className="text-[10px] mb-1.5" style={{ color: "#857A8F" }}>Bild</p>
 
               {/* Current image preview */}
               {editingPost?.image_url && !editRemoveImage && !editNewImage && (
@@ -287,7 +287,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
                       borderRadius: 99,
                       border: "1px solid #EDE8E0",
                       background: "#F7F3EF",
-                      color: "#7A6A85",
+                      color: "#655675",
                       cursor: "pointer",
                     }}
                   >
@@ -399,7 +399,7 @@ const PostCard = ({
               className="w-7 h-7 rounded-full flex items-center justify-center"
               style={{ background: "rgba(247,243,239,0.9)", border: "1px solid #EDE8E0" }}
             >
-              <MoreHorizontal className="w-3.5 h-3.5" style={{ color: "#9B8BA5" }} />
+              <MoreHorizontal className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-[150px]" style={{ borderRadius: 8, border: "1px solid #EDE8E0" }}>
@@ -458,7 +458,7 @@ const PostCard = ({
 
       {/* Date + reactions */}
       <div className="px-3 pb-1">
-        <span className="text-[10px]" style={{ color: "#B0A0B5" }}>{dateStr}</span>
+        <span className="text-[10px]" style={{ color: "#857A8F" }}>{dateStr}</span>
       </div>
       <div className="px-3 pb-3">
         <PostReactions postId={post.id} />
@@ -485,7 +485,7 @@ const SignedImg = ({
   const Tag = onClick ? "button" : "div";
   return (
     <Tag onClick={onClick} className={`block ${className || ""}`} style={style}>
-      <img src={url} alt="" className="w-full h-full object-cover" style={{ borderRadius: "inherit" }} />
+      <img src={url} alt="Profilbild" className="w-full h-full object-cover" style={{ borderRadius: "inherit" }} />
     </Tag>
   );
 };

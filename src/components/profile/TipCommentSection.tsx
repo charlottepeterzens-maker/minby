@@ -154,9 +154,9 @@ const TipCommentSection = ({
                   <span style={{ fontSize: 11, fontWeight: 500, color: "#3C2A4D" }}>
                     {c.profile?.display_name || "Anonym"}
                   </span>
-                  <span style={{ fontSize: 10, color: "#B0A0B5" }}>{relativeTime(c.created_at)}</span>
+                  <span style={{ fontSize: 10, color: "#857A8F" }}>{relativeTime(c.created_at)}</span>
                 </div>
-                <p style={{ fontSize: 12, color: "#7A6A85", margin: "2px 0 0", lineHeight: 1.4 }}>
+                <p style={{ fontSize: 12, color: "#655675", margin: "2px 0 0", lineHeight: 1.4 }}>
                   {c.content}
                 </p>
               </div>
@@ -202,7 +202,7 @@ const TipCommentSection = ({
               transition: "background 0.2s",
             }}
           >
-            <Send style={{ width: 14, height: 14, color: newComment.trim() ? "#F7F3EF" : "#B0A0B5" }} />
+            <Send style={{ width: 14, height: 14, color: newComment.trim() ? "#F7F3EF" : "#857A8F" }} />
           </button>
         </div>
       )}

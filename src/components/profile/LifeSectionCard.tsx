@@ -247,7 +247,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   style={{
                     fontSize: 10,
                     fontWeight: 500,
-                    color: "#7A6A85",
+                    color: "#655675",
                     background: "#F7F3EF",
                     border: "1px solid #EDE8E0",
                     borderRadius: 99,
@@ -329,7 +329,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       borderRadius: 99,
                       border: "1px solid #EDE8E0",
                       background: imageFile ? "#EDE8F4" : "#F7F3EF",
-                      color: imageFile ? "#3C2A4D" : "#7A6A85",
+                      color: imageFile ? "#3C2A4D" : "#655675",
                       cursor: "pointer",
                     }}
                   >
@@ -410,7 +410,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       </AnimatePresence>
 
       {posts.length === 0 ? (
-        <p style={{ fontSize: 12, color: "#B0A0B5", textAlign: "center", padding: "16px 0" }}>
+        <p style={{ fontSize: 12, color: "#857A8F", textAlign: "center", padding: "16px 0" }}>
           Inga uppdateringar annu
         </p>
       ) : (
@@ -443,7 +443,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                           cursor: "pointer",
                         }}
                       >
-                        <MoreHorizontal style={{ width: 14, height: 14, color: "#9B8BA5" }} />
+                        <MoreHorizontal style={{ width: 14, height: 14, color: "#6B5C78" }} />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -507,7 +507,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       {post.link_url.slice(0, 40)}...
                     </a>
                   )}
-                  <p style={{ fontSize: 10, color: "#B0A0B5", marginTop: 4 }}>{formatRelativeDate(post.created_at)}</p>
+                  <p style={{ fontSize: 10, color: "#857A8F", marginTop: 4 }}>{formatRelativeDate(post.created_at)}</p>
                 </div>
               </div>
 

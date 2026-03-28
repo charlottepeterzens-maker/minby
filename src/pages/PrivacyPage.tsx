@@ -57,7 +57,7 @@ const PrivacyPage = () => {
             <p>Svensk lag tillämpas och GDPR efterföljs.</p>
           </section>
 
-          <p className="text-[11px] pt-2" style={{ color: "#9B8BA5" }}>Senast uppdaterad: mars 2026</p>
+          <p className="text-[11px] pt-2" style={{ color: "#6B5C78" }}>Senast uppdaterad: mars 2026</p>
         </div>
       </div>
     </div>

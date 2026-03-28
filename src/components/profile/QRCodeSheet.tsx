@@ -116,7 +116,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
                   level="M"
                 />
               </div>
-              <p className="text-[12px] mt-4 text-center" style={{ color: "#9B8BA5" }}>
+              <p className="text-[12px] mt-4 text-center" style={{ color: "#6B5C78" }}>
                 Låt någon skanna din kod för att kopplas ihop
               </p>
             </div>
@@ -127,7 +127,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
                 className="w-full max-w-[280px] rounded-[12px] overflow-hidden"
                 style={{ minHeight: 280 }}
               />
-              <p className="text-[12px] mt-4 text-center" style={{ color: "#9B8BA5" }}>
+              <p className="text-[12px] mt-4 text-center" style={{ color: "#6B5C78" }}>
                 Rikta kameran mot en Minby QR-kod
               </p>
             </div>

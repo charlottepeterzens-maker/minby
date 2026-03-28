@@ -206,7 +206,7 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
             <button
               onClick={() => onOpenChange(false)}
               className="flex-1 py-2.5 rounded-full text-[13px] font-medium"
-              style={{ color: "#7A6A85", backgroundColor: "#EDE8F4" }}
+              style={{ color: "#655675", backgroundColor: "#EDE8F4" }}
             >
               Avbryt
             </button>

@@ -67,7 +67,7 @@ const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange, pick
             >
               <span style={{ fontSize: 11 }}>{emoji}</span>
               {data.count > 1 && (
-                <span className="text-[9px] font-medium" style={{ color: "#7A6A85" }}>
+                <span className="text-[9px] font-medium" style={{ color: "#655675" }}>
                   {data.count}
                 </span>
               )}

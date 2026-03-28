@@ -101,7 +101,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
               style={{ backgroundColor: "#EDE8F4" }}
             >
               {resolveAvatarUrl(profile?.avatar_url ?? null) ? (
-                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="" className="w-full h-full object-cover" />
+                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="Profilbild" className="w-full h-full object-cover" />
               ) : (
                 <span className="text-[10px] font-medium" style={{ color: "#3C2A4D" }}>{initial}</span>
               )}
@@ -115,7 +115,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                 borderRadius: 99,
                 padding: "6px 14px",
                 fontSize: 11,
-                color: "#B0A0B5",
+                color: "#857A8F",
               }}
             >
               Dela något med din krets...
@@ -140,7 +140,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                   borderRadius: 99,
                    border: "none",
                   background: "#F7F3EF",
-                  color: "#7A6A85",
+                  color: "#655675",
                   cursor: "pointer",
                 }}
               >
@@ -209,7 +209,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                     borderRadius: 99,
                     border: "none",
                     background: imageFile ? "#EDE8F4" : "#F7F3EF",
-                    color: imageFile ? "#3C2A4D" : "#7A6A85",
+                    color: imageFile ? "#3C2A4D" : "#655675",
                     cursor: "pointer",
                   }}
                 >
@@ -253,7 +253,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
 
             {/* Section picker */}
             <div className="mt-3">
-              <p className="text-[10px] mb-1.5" style={{ color: "#B0A0B5" }}>
+              <p className="text-[10px] mb-1.5" style={{ color: "#857A8F" }}>
                 Lägg till i en del av din vardag? (valfritt)
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -284,7 +284,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                         borderRadius: 99,
                         background: "transparent",
                         border: "1px dashed #C9B8D8",
-                        color: "#7A6A85",
+                        color: "#655675",
                         cursor: "pointer",
                       }}
                     >
@@ -300,7 +300,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
               <button
                 onClick={reset}
                 className="text-[12px]"
-                style={{ color: "#B0A0B5", background: "none", border: "none", cursor: "pointer" }}
+                style={{ color: "#857A8F", background: "none", border: "none", cursor: "pointer" }}
               >
                 Avbryt
               </button>

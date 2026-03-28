@@ -63,7 +63,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
         <div className="px-5 pb-6 space-y-4">
           {/* Question */}
           <div>
-            <label className="text-[11px] font-medium mb-1 block" style={{ color: "#7A6A85" }}>
+            <label className="text-[11px] font-medium mb-1 block" style={{ color: "#655675" }}>
               Fråga
             </label>
             <input
@@ -81,7 +81,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
 
           {/* Options */}
           <div className="space-y-2">
-            <label className="text-[11px] font-medium block" style={{ color: "#7A6A85" }}>
+            <label className="text-[11px] font-medium block" style={{ color: "#655675" }}>
               Svarsalternativ
             </label>
             {options.map((opt, i) => (
@@ -103,7 +103,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
                     className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center"
                     style={{ backgroundColor: "#EDE8F4" }}
                   >
-                    <X className="w-3.5 h-3.5" style={{ color: "#7A6A85" }} />
+                    <X className="w-3.5 h-3.5" style={{ color: "#655675" }} />
                   </button>
                 )}
               </div>
@@ -112,7 +112,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
               <button
                 onClick={addOption}
                 className="flex items-center gap-1.5 text-[12px] font-medium mt-1"
-                style={{ color: "#7A6A85" }}
+                style={{ color: "#655675" }}
               >
                 <Plus className="w-3.5 h-3.5" />
                 Lägg till alternativ

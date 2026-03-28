@@ -253,7 +253,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
            >
             <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "#C9B8D8", opacity: 0.5 }} />
           </motion.div>
-          <p className="text-[12px] text-center" style={{ color: "#9B8BA5" }}>
+          <p className="text-[12px] text-center" style={{ color: "#6B5C78" }}>
             Inga förslag just nu
           </p>
         </motion.div>
@@ -291,7 +291,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
           </motion.p>
           <motion.p
             className="text-center mt-1"
-            style={{ fontSize: 12, color: "#7A6A85", maxWidth: 200 }}
+            style={{ fontSize: 12, color: "#655675", maxWidth: 200 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -352,18 +352,18 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                           <span
                             key={i}
                             className="text-[10px]"
-                            style={{ color: "#7A6A85" }}
+                            style={{ color: "#655675" }}
                           >
                             {label}{i < item.dates.length - 1 ? "," : ""}
                           </span>
                         );
                       })}
                     </div>
-                    <p className="text-[11px] mb-1.5" style={{ color: "#B0A0B5" }}>
+                    <p className="text-[11px] mb-1.5" style={{ color: "#857A8F" }}>
                       sugen på · {item.activityName}
                     </p>
                     {totalFriends > 0 && (
-                      <span className="text-[10px] mt-auto" style={{ color: "#7A6A85" }}>
+                      <span className="text-[10px] mt-auto" style={{ color: "#655675" }}>
                         {totalFriends} intresserade
                       </span>
                     )}
@@ -398,11 +398,11 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                 >
                   <p
                     className="text-[12px] mb-0.5"
-                    style={{ color: "#7A6A85", fontWeight: 400 }}
+                    style={{ color: "#655675", fontWeight: 400 }}
                   >
                     {dateDisplay}
                   </p>
-                  <p className="text-[11px] mb-1.5" style={{ color: "#B0A0B5" }}>
+                  <p className="text-[11px] mb-1.5" style={{ color: "#857A8F" }}>
                     {intentLabel}
                     {activityNameLabel && ` · ${activityNameLabel}`}
                   </p>
@@ -422,8 +422,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                   )}
                   {isFromGroup && (
                     <div className="flex items-center gap-1 mt-auto pt-1">
-                      <Users className="w-3 h-3" style={{ color: "#9B8BA5" }} />
-                      <span className="text-[10px]" style={{ color: "#9B8BA5" }}>
+                      <Users className="w-3 h-3" style={{ color: "#6B5C78" }} />
+                      <span className="text-[10px]" style={{ color: "#6B5C78" }}>
                         {description.split("— via ")[1] || "Sällskap"}
                       </span>
                     </div>

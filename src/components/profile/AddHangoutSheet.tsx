@@ -260,8 +260,8 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                 }}
               >
                 <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>{opt.title}</p>
-                <p className="text-[12px] mt-0.5" style={{ color: '#7A6A85' }}>{opt.desc}</p>
-                <p className="text-[11px] mt-1" style={{ color: '#7A6A85', opacity: 0.8 }}>{opt.hint}</p>
+                <p className="text-[12px] mt-0.5" style={{ color: '#655675' }}>{opt.desc}</p>
+                <p className="text-[11px] mt-1" style={{ color: '#655675', opacity: 0.8 }}>{opt.hint}</p>
               </button>
             ))}
           </div>
@@ -275,7 +275,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
               <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>
                 {TYPE_OPTIONS.find(o => o.value === entryType)?.title}
               </p>
-              <p className="text-[12px] mt-0.5" style={{ color: '#7A6A85' }}>
+              <p className="text-[12px] mt-0.5" style={{ color: '#655675' }}>
                 {TYPE_OPTIONS.find(o => o.value === entryType)?.desc}
               </p>
             </div>
@@ -285,7 +285,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
               <>
                 {/* Date picker */}
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#7A6A85' }}>Datum</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Datum</label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white", !selectedDate && "text-muted-foreground")} style={{ borderColor: '#EDE8F4' }}>
@@ -300,7 +300,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                 </div>
                 {/* Note */}
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#7A6A85' }}>Fritext</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Fritext</label>
                   <textarea
                     value={note}
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
@@ -318,7 +318,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
             {entryType === "confirmed" && (
               <>
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#7A6A85' }}>Datum</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Datum</label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white", !selectedDate && "text-muted-foreground")} style={{ borderColor: '#EDE8F4' }}>
@@ -332,7 +332,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                   </Popover>
                 </div>
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#7A6A85' }}>Aktivitet</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Aktivitet</label>
                   <Input
                     value={planName}
                     onChange={(e) => setPlanName(e.target.value)}
@@ -344,7 +344,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                 </div>
                 {/* Friends already in */}
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#7A6A85' }}>Redan med</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Redan med</label>
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     {friends.map((f) => (
                       <span
@@ -390,7 +390,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
             {entryType === "activity" && (
               <>
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#7A6A85' }}>Aktivitet</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Aktivitet</label>
                   <Input
                     value={activityName}
                     onChange={(e) => setActivityName(e.target.value)}
@@ -401,7 +401,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                   />
                 </div>
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#7A6A85' }}>Fritext</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Fritext</label>
                   <textarea
                     value={note}
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
@@ -413,7 +413,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                   />
                 </div>
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#7A6A85' }}>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>
                     Datum ({activityDates.length}/5)
                   </label>
                   <div className="flex flex-wrap gap-1.5 mb-2">
@@ -456,7 +456,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
 
             {/* Visibility */}
             <div>
-              <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#7A6A85' }}>Synlighet</label>
+              <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Synlighet</label>
               <div className="flex gap-1.5">
                 {VISIBILITY_OPTIONS.map((opt) => {
                   // For plan type, show different label for private

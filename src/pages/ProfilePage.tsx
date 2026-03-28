@@ -295,7 +295,8 @@ const ProfilePage = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate("/")}
-              className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150"
+              aria-label="Tillbaka"
+              className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150 min-w-[44px] min-h-[44px] justify-center"
             >
               <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </button>
@@ -306,7 +307,7 @@ const ProfilePage = () => {
         <CurvedSeparator />
       </nav>
 
-      <Container className="px-4 pt-6 pb-24">
+      <main className="px-4 pt-6 pb-24">
         {/* ===== (1) PROFILE HEADER ===== */}
         <div className="flex items-start gap-4 mb-6">
           <div className="relative shrink-0">
@@ -317,7 +318,7 @@ const ProfilePage = () => {
               onClick={isOwnProfile ? () => fileInputRef.current?.click() : undefined}
             >
               {resolveAvatarUrl(profile?.avatar_url ?? null) ? (
-                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="" className="w-full h-full object-cover" />
+                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt={`Profilbild för ${profile?.display_name || 'användare'}`} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-xl font-display font-medium" style={{ color: "#3C2A4D" }}>
                   {initial}
@@ -329,7 +330,8 @@ const ProfilePage = () => {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar}
                 whileTap={{ scale: 0.85 }}
-                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
+                aria-label="Byt profilbild"
+                className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
               >
                 <Camera className="w-3 h-3" />
               </motion.button>
@@ -377,7 +379,7 @@ const ProfilePage = () => {
                   <button
                     onClick={() => setEditingBio(true)}
                     className="group flex items-start gap-1.5 text-[13px] hover:text-foreground transition-colors w-full text-left"
-                    style={{ color: "#7A6A85", wordBreak: "break-word" }}
+                    style={{ color: "#655675", wordBreak: "break-word" }}
                   >
                     {profile?.bio ? (
                       <span>{profile.bio}</span>
@@ -389,7 +391,7 @@ const ProfilePage = () => {
                 )}
               </div>
             ) : profile?.bio ? (
-              <p className="mt-1.5 text-[13px]" style={{ color: "#7A6A85" }}>
+              <p className="mt-1.5 text-[13px]" style={{ color: "#655675" }}>
                 {profile.bio}
               </p>
             ) : null}
@@ -479,7 +481,7 @@ const ProfilePage = () => {
             className="w-full text-center mt-3"
             style={{
               fontSize: 11,
-              color: "#7A6A85",
+              color: "#655675",
               background: "none",
               border: "none",
               cursor: "pointer",
@@ -491,7 +493,7 @@ const ProfilePage = () => {
 
           {/* Delar av min vardag */}
           <div className="flex items-center justify-between mt-6 mb-3">
-            <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "#B0A0B5" }}>
+            <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "#857A8F" }}>
               Delar av min vardag
             </span>
             {isOwnProfile && (
@@ -513,7 +515,7 @@ const ProfilePage = () => {
           {loading ? (
             <div className="text-center py-4 text-muted-foreground text-xs">{t("loading")}</div>
           ) : sections.length === 0 ? (
-            <p className="text-[11px] text-center py-4" style={{ color: "#B0A0B5" }}>
+            <p className="text-[11px] text-center py-4" style={{ color: "#857A8F" }}>
               {isOwnProfile ? "Lägg till en del av din vardag" : t("nothingSharedYet")}
             </p>
           ) : (
@@ -584,7 +586,7 @@ const ProfilePage = () => {
 
         {/* ===== (7) TIPS & FAVORITES ===== */}
         {targetUserId && <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />}
-      </Container>
+      </main>
       <ScrollToTopButton />
       <BottomNav />
       <AvatarCropDialog

@@ -284,7 +284,7 @@ const HangoutDetailSheet = ({
           {/* Close button */}
           <div className="flex justify-end px-4 pt-1">
             <button onClick={() => onOpenChange(false)} className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-muted/50 transition-colors">
-              <X className="w-4 h-4" style={{ color: "#7A6A85" }} />
+              <X className="w-4 h-4" style={{ color: "#655675" }} />
             </button>
           </div>
 
@@ -297,7 +297,7 @@ const HangoutDetailSheet = ({
               </p>
 
               {/* Intent */}
-              <p className="text-[12px]" style={{ color: "#B0A0B5", fontWeight: 400 }}>
+              <p className="text-[12px]" style={{ color: "#857A8F", fontWeight: 400 }}>
                 {intentLabel}
                 {activityName && ` · ${activityName}`}
               </p>
@@ -311,7 +311,7 @@ const HangoutDetailSheet = ({
 
               {/* Owner name (if viewing someone else's) */}
               {!isOwner && (
-                <p className="text-[12px] pt-0.5" style={{ color: "#7A6A85" }}>
+                <p className="text-[12px] pt-0.5" style={{ color: "#655675" }}>
                   {ownerName}
                 </p>
               )}
@@ -342,7 +342,7 @@ const HangoutDetailSheet = ({
                   <button
                     onClick={() => { onOpenChange(false); onAddActivityDate(activityGroupName); }}
                     className="inline-flex items-center gap-1 text-[11px]"
-                    style={{ backgroundColor: "#EDE8F4", borderRadius: 6, padding: "4px 10px", color: "#7A6A85" }}
+                    style={{ backgroundColor: "#EDE8F4", borderRadius: 6, padding: "4px 10px", color: "#655675" }}
                   >
                     <Plus className="w-3 h-3" /> Lägg till
                   </button>
@@ -368,14 +368,14 @@ const HangoutDetailSheet = ({
                   <button
                     onClick={() => handleRSVP("maybe")}
                     className="flex-1 py-2 text-[13px] font-medium transition-colors"
-                    style={{ color: "#7A6A85", backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 99 }}
+                    style={{ color: "#655675", backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 99 }}
                   >
                     Kanske
                   </button>
                   <button
                     onClick={() => setShowCommentInput(true)}
                     className="flex-1 py-2 text-[13px] font-medium transition-colors"
-                    style={{ color: "#7A6A85", backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 99 }}
+                    style={{ color: "#655675", backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4", borderRadius: 99 }}
                   >
                     Skriv något
                   </button>
@@ -400,7 +400,7 @@ const HangoutDetailSheet = ({
                           <span className="text-[11px] font-medium" style={{ color: "#3C2A4D" }}>
                             {c.user_id === user?.id ? "Du" : (c.profile?.display_name || "Någon")}
                           </span>
-                          <p className="text-[12px]" style={{ color: "#7A6A85" }}>{c.content}</p>
+                          <p className="text-[12px]" style={{ color: "#655675" }}>{c.content}</p>
                         </div>
                         {(c.user_id === user?.id || isOwner) && (
                           <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-destructive">
@@ -436,7 +436,7 @@ const HangoutDetailSheet = ({
             {/* ── RESPONSES ── */}
             {totalResponses > 0 && (
               <div className="space-y-1.5">
-                <p className="text-[11px] uppercase tracking-wider font-medium" style={{ color: "#B0A0B5" }}>
+                <p className="text-[11px] uppercase tracking-wider font-medium" style={{ color: "#857A8F" }}>
                   Svar
                 </p>
                 {taggedFriends.map(tf => (
@@ -447,7 +447,7 @@ const HangoutDetailSheet = ({
                         {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-[12px] flex-1" style={{ color: "#7A6A85" }}>
+                    <span className="text-[12px] flex-1" style={{ color: "#655675" }}>
                       {tf.profile?.display_name || "Okänd"} kan
                     </span>
                     {isOwner && (
@@ -466,7 +466,7 @@ const HangoutDetailSheet = ({
             {/* ── CREATE GROUP SUGGESTION ── */}
             {canCreateGroup && (
               <div className="space-y-2 pt-1">
-                <p className="text-[12px] text-center" style={{ color: "#7A6A85" }}>
+                <p className="text-[12px] text-center" style={{ color: "#655675" }}>
                   Ni verkar bli några – vill ni ta det vidare?
                 </p>
                 <button
@@ -487,7 +487,7 @@ const HangoutDetailSheet = ({
                 <button
                   onClick={() => entry.entry_type === "activity" && activityEntries.length > 1 ? setDeleteAllConfirm(true) : setDeleteConfirm(true)}
                   className="text-[12px] mx-auto block"
-                  style={{ color: "#B0A0B5" }}
+                  style={{ color: "#857A8F" }}
                 >
                   Ta bort
                 </button>

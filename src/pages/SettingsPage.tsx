@@ -197,7 +197,8 @@ const SettingsPage = () => {
         <Container className="py-4 flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
-            className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+            aria-label="Tillbaka"
+            className="text-muted-foreground hover:text-foreground transition-colors duration-150 min-w-[44px] min-h-[44px] flex items-center justify-center"
           >
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
@@ -280,7 +281,7 @@ const SettingsPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <Label className="text-sm">Morgonrapport</Label>
-                  <p className="text-[10px] mt-0.5" style={{ color: "#B0A8B5" }}>
+                  <p className="text-[10px] mt-0.5" style={{ color: "#857A8F" }}>
                     Kommer snart
                   </p>
                 </div>

@@ -64,7 +64,7 @@ const ReconnectNudge = ({ friendIds, profiles }: ReconnectNudgeProps) => {
         onClick={() => setDismissed(true)}
         className="absolute top-3 right-3"
       >
-        <X className="w-3.5 h-3.5" style={{ color: "#9B8BA5" }} />
+        <X className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
       </button>
       <p className="text-[13px] font-medium pr-6" style={{ color: "#3C2A4D" }}>
         Det var ett tag sedan du och {nudgeFriend.name} hördes

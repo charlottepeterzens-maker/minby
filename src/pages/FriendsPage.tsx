@@ -581,7 +581,7 @@ const FriendsPage = () => {
             style={{ backgroundColor: "#EDE8F4" }}
           >
             {resolveAvatarUrl(f.avatar_url) ? (
-              <img src={resolveAvatarUrl(f.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
+              <img src={resolveAvatarUrl(f.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
             ) : (
               <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
                 {f.initial}
@@ -596,12 +596,12 @@ const FriendsPage = () => {
               {isClose && <Heart className="w-3 h-3 shrink-0" style={{ color: "#C9B8D8" }} fill="#C9B8D8" />}
             </div>
             {isMuted && (
-              <p className="text-[10px] mt-0.5" style={{ color: "#9B8BA5" }}>
+              <p className="text-[10px] mt-0.5" style={{ color: "#6B5C78" }}>
                 Mutad
               </p>
             )}
             {!isMuted && statusText && (
-              <p className="text-[11px] truncate mt-0.5" style={{ color: "#9B8BA5" }}>
+              <p className="text-[11px] truncate mt-0.5" style={{ color: "#6B5C78" }}>
                 {statusText}
               </p>
             )}
@@ -616,7 +616,7 @@ const FriendsPage = () => {
           }}
           className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full"
         >
-          <MoreHorizontal className="w-4 h-4" style={{ color: "#9B8BA5" }} />
+          <MoreHorizontal className="w-4 h-4" style={{ color: "#6B5C78" }} />
         </button>
 
         {menuOpenFor === f.user_id && (
@@ -640,7 +640,7 @@ const FriendsPage = () => {
             >
               <Heart
                 className="w-3.5 h-3.5"
-                style={{ color: isClose ? "#C9B8D8" : "#9B8BA5" }}
+                style={{ color: isClose ? "#C9B8D8" : "#6B5C78" }}
                 fill={isClose ? "#C9B8D8" : "none"}
               />
               {isClose ? "Ta bort från närmaste krets" : "Lägg till i närmaste krets"}
@@ -682,7 +682,8 @@ const FriendsPage = () => {
           </span>
           <button
             onClick={() => setQrOpen(true)}
-            className="w-9 h-9 rounded-full flex items-center justify-center"
+            aria-label="Visa QR-kod"
+            className="w-11 h-11 rounded-full flex items-center justify-center"
             style={{ backgroundColor: "#EDE8F4" }}
           >
             <QrCode className="w-4.5 h-4.5" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
@@ -694,7 +695,7 @@ const FriendsPage = () => {
           <button
             onClick={() => setActiveTab("krets")}
             className="flex-1 pb-2.5 text-[13px] font-medium text-center transition-colors relative"
-            style={{ color: activeTab === "krets" ? "#3C2A4D" : "#9B8BA5" }}
+            style={{ color: activeTab === "krets" ? "#3C2A4D" : "#6B5C78" }}
           >
             Min krets
             {activeTab === "krets" && (
@@ -707,7 +708,7 @@ const FriendsPage = () => {
           <button
             onClick={() => setActiveTab("sallskap")}
             className="flex-1 pb-2.5 text-[13px] font-medium text-center transition-colors relative"
-            style={{ color: activeTab === "sallskap" ? "#3C2A4D" : "#9B8BA5" }}
+            style={{ color: activeTab === "sallskap" ? "#3C2A4D" : "#6B5C78" }}
           >
             <span className="inline-flex items-center gap-1.5">
               Sällskap
@@ -733,14 +734,14 @@ const FriendsPage = () => {
               <div className="relative">
                 <Search
                   className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
-                  style={{ color: "#9B8BA5" }}
+                  style={{ color: "#6B5C78" }}
                   strokeWidth={1.5}
                 />
                 <input
                   value={peopleSearch}
                   onChange={(e) => setPeopleSearch(e.target.value)}
                   placeholder="Sök på namn..."
-                  className="w-full pl-10 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#9B8BA5] font-display"
+                  className="w-full pl-10 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#6B5C78] font-display"
                   style={{ backgroundColor: "#FFFFFF", border: "none", borderRadius: 8, color: "#3C2A4D" }}
                 />
               </div>
@@ -749,11 +750,11 @@ const FriendsPage = () => {
               {peopleSearch.trim().length >= 2 && (
                 <div className="mt-2 space-y-1.5">
                   {searching ? (
-                    <p className="text-[12px] py-3 text-center" style={{ color: "#9B8BA5" }}>
+                    <p className="text-[12px] py-3 text-center" style={{ color: "#6B5C78" }}>
                       Söker...
                     </p>
                   ) : searchResults.length === 0 ? (
-                    <p className="text-[12px] py-3 text-center" style={{ color: "#9B8BA5" }}>
+                    <p className="text-[12px] py-3 text-center" style={{ color: "#6B5C78" }}>
                       Inga resultat
                     </p>
                   ) : (
@@ -768,7 +769,7 @@ const FriendsPage = () => {
                           style={{ backgroundColor: "#EDE8F4" }}
                         >
                           {resolveAvatarUrl(r.avatar_url) ? (
-                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
+                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
                           ) : (
                             <span className="text-[12px] font-display font-medium" style={{ color: "#3C2A4D" }}>
                               {r.initial}
@@ -779,11 +780,11 @@ const FriendsPage = () => {
                           {r.display_name}
                         </p>
                         {r.status === "friend" ? (
-                          <span className="text-[11px]" style={{ color: "#9B8BA5" }}>
+                          <span className="text-[11px]" style={{ color: "#6B5C78" }}>
                             I din krets
                           </span>
                         ) : r.status === "sent" ? (
-                          <span className="text-[11px]" style={{ color: "#9B8BA5" }}>
+                          <span className="text-[11px]" style={{ color: "#6B5C78" }}>
                             Skickat
                           </span>
                         ) : (
@@ -814,7 +815,7 @@ const FriendsPage = () => {
                     />
                   ))}
                 </div>
-                <p className="text-[12px] mt-4" style={{ color: "#9B8BA5" }}>
+                <p className="text-[12px] mt-4" style={{ color: "#6B5C78" }}>
                   Laddar din krets…
                 </p>
               </div>
@@ -842,7 +843,7 @@ const FriendsPage = () => {
                 <p className="font-display text-[16px] font-medium mb-1.5" style={{ color: "#3C2A4D" }}>
                   Din krets väntar – bjud in dina närmaste
                 </p>
-                <p className="text-[13px] mb-6" style={{ color: "#9B8BA5" }}>
+                <p className="text-[13px] mb-6" style={{ color: "#6B5C78" }}>
                   Sök på namn eller skanna en QR-kod för att kopplas ihop
                 </p>
                 <InviteFriendDialog />
@@ -854,7 +855,7 @@ const FriendsPage = () => {
                   <div>
                     <p
                       className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
-                      style={{ color: "#9B8BA5" }}
+                      style={{ color: "#6B5C78" }}
                     >
                       Vill vara med ({pendingRequests.length})
                     </p>
@@ -871,7 +872,7 @@ const FriendsPage = () => {
                             style={{ backgroundColor: "#EDE8F4" }}
                           >
                             {resolveAvatarUrl(r.avatar_url) ? (
-                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
+                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" className="w-full h-full rounded-full object-cover" />
                             ) : (
                               <span className="text-sm font-display font-medium" style={{ color: "#3C2A4D" }}>
                                 {r.initial}
@@ -882,7 +883,7 @@ const FriendsPage = () => {
                             <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
                               {r.display_name}
                             </p>
-                            <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>
+                            <p className="text-[11px] mt-0.5" style={{ color: "#6B5C78" }}>
                               Vill vara med i din vardag
                             </p>
                           </div>
@@ -915,7 +916,7 @@ const FriendsPage = () => {
                   <div>
                     <p
                       className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
-                      style={{ color: "#9B8BA5" }}
+                      style={{ color: "#6B5C78" }}
                     >
                       Din närmaste krets
                     </p>
@@ -925,10 +926,10 @@ const FriendsPage = () => {
                         style={{ backgroundColor: "#F5F0FA", border: "1px dashed #C9B8D8", borderRadius: 8 }}
                       >
                         <Heart className="w-5 h-5 mx-auto mb-2" style={{ color: "#C9B8D8" }} />
-                        <p className="text-[12px]" style={{ color: "#7A6A85" }}>
+                        <p className="text-[12px]" style={{ color: "#655675" }}>
                           Lägg till några du vill ha lite extra nära
                         </p>
-                        <p className="text-[11px] mt-1" style={{ color: "#9B8BA5" }}>
+                        <p className="text-[11px] mt-1" style={{ color: "#6B5C78" }}>
                           Tryck ••• bredvid en person för att lägga till
                         </p>
                       </div>
@@ -943,7 +944,7 @@ const FriendsPage = () => {
                   <div>
                     <p
                       className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
-                      style={{ color: "#9B8BA5" }}
+                      style={{ color: "#6B5C78" }}
                     >
                       Din krets ({friends.length})
                     </p>
@@ -952,14 +953,14 @@ const FriendsPage = () => {
                       <div className="relative mb-3">
                         <Search
                           className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
-                          style={{ color: "#9B8BA5" }}
+                          style={{ color: "#6B5C78" }}
                           strokeWidth={1.5}
                         />
                         <input
                           value={friendSearch}
                           onChange={(e) => setFriendSearch(e.target.value)}
                           placeholder="Sök i din krets..."
-                          className="w-full pl-9 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#9B8BA5]"
+                          className="w-full pl-9 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#6B5C78]"
                           style={{
                             backgroundColor: "#FFFFFF",
                             borderRadius: 8,
@@ -971,7 +972,7 @@ const FriendsPage = () => {
 
                     <div className="space-y-2">
                       {otherFriends.length === 0 && friendSearch ? (
-                        <p className="text-center py-8 text-[13px]" style={{ color: "#9B8BA5" }}>
+                        <p className="text-center py-8 text-[13px]" style={{ color: "#6B5C78" }}>
                           Inga resultat i din krets
                         </p>
                       ) : (
@@ -1023,12 +1024,12 @@ const FriendsPage = () => {
                       <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>
                         {g.name}
                       </p>
-                      <p className="text-[11px] truncate italic" style={{ color: "#7A6A85" }}>
+                      <p className="text-[11px] truncate italic" style={{ color: "#655675" }}>
                         {g.last_message || "Inga meddelanden än"}
                       </p>
                     </div>
                     <div className="shrink-0 flex flex-col items-end gap-1">
-                      <span className="text-[10px]" style={{ color: "#7A6A85" }}>
+                      <span className="text-[10px]" style={{ color: "#655675" }}>
                         {g.last_message_at ? formatTime(g.last_message_at) : "–"}
                       </span>
                       {g.has_unread && (
@@ -1050,9 +1051,9 @@ const FriendsPage = () => {
                         className="shrink-0 flex items-center justify-center"
                         style={{ width: 42, height: 42, borderRadius: 8, border: "1px dashed #EDE8E0" }}
                       >
-                        <Plus className="w-4 h-4" style={{ color: "#7A6A85" }} />
+                        <Plus className="w-4 h-4" style={{ color: "#655675" }} />
                       </div>
-                      <span className="text-[12px] font-medium" style={{ color: "#7A6A85" }}>
+                      <span className="text-[12px] font-medium" style={{ color: "#655675" }}>
                         Skapa ett nytt sällskap
                       </span>
                     </button>
@@ -1061,10 +1062,10 @@ const FriendsPage = () => {
 
                 {groups.length === 0 && (
                   <div className="text-center py-12">
-                    <p className="font-display text-base" style={{ color: "#7A6A85" }}>
+                    <p className="font-display text-base" style={{ color: "#655675" }}>
                       Inga sällskap ännu
                     </p>
-                    <p className="text-[12px] mt-1" style={{ color: "#9B8BA5" }}>
+                    <p className="text-[12px] mt-1" style={{ color: "#6B5C78" }}>
                       Skapa ett sällskap för att chatta med din krets
                     </p>
                   </div>

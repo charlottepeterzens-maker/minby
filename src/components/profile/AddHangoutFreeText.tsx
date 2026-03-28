@@ -208,7 +208,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
                 value={text}
                 onChange={(e) => setText(e.target.value.slice(0, 200))}
                 placeholder="Skriv fritt... t.ex. 'Jag är ledig på fredag och vill fika med någon' eller 'Sugen på spa i helgen'"
-                className="w-full text-[14px] rounded-[12px] bg-white px-4 py-3.5 placeholder:text-[#B0A0B5] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C9B8D8] resize-none"
+                className="w-full text-[14px] rounded-[12px] bg-white px-4 py-3.5 placeholder:text-[#857A8F] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C9B8D8] resize-none"
                 style={{ border: "1px solid #EDE8F4", color: "#3C2A4D", lineHeight: 1.5 }}
                 rows={3}
                 maxLength={200}
@@ -221,7 +221,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               />
               <span
                 className="absolute bottom-2 left-4 text-[10px]"
-                style={{ color: "#B0A0B5" }}
+                style={{ color: "#857A8F" }}
               >
                 {text.length}/200
               </span>
@@ -254,7 +254,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             </h3>
 
             <div>
-              <label className="text-[11px] font-medium mb-1 block" style={{ color: "#7A6A85" }}>
+              <label className="text-[11px] font-medium mb-1 block" style={{ color: "#655675" }}>
                 Känsla
               </label>
               <input
@@ -267,7 +267,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium mb-1 block" style={{ color: "#7A6A85" }}>
+              <label className="text-[11px] font-medium mb-1 block" style={{ color: "#655675" }}>
                 Beskrivning
               </label>
               <textarea
@@ -281,7 +281,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium mb-1 block" style={{ color: "#7A6A85" }}>
+              <label className="text-[11px] font-medium mb-1 block" style={{ color: "#655675" }}>
                 Tid (valfritt)
               </label>
               <input
@@ -294,7 +294,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             </div>
 
             <div>
-              <label className="text-[11px] font-medium mb-1 block" style={{ color: "#7A6A85" }}>
+              <label className="text-[11px] font-medium mb-1 block" style={{ color: "#655675" }}>
                 Aktivitet (valfritt)
               </label>
               <input
@@ -318,7 +318,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               <button
                 onClick={() => setEditing(false)}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[13px] font-medium"
-                style={{ color: "#7A6A85", borderRadius: 10, border: "1px solid #EDE8F4" }}
+                style={{ color: "#655675", borderRadius: 10, border: "1px solid #EDE8F4" }}
               >
                 <X className="w-3.5 h-3.5" />
                 Avbryt
@@ -335,7 +335,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               <button
                 onClick={startEditing}
                 className="flex items-center gap-1 text-[12px] font-medium"
-                style={{ color: "#7A6A85" }}
+                style={{ color: "#655675" }}
               >
                 <Pencil className="w-3 h-3" />
                 Redigera
@@ -353,14 +353,14 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               {parsed.date_display && (
                 <p
                   className="text-[12px] mb-1"
-                  style={{ color: "#7A6A85", fontFamily: "Lexend, sans-serif", fontWeight: 400 }}
+                  style={{ color: "#655675", fontFamily: "Lexend, sans-serif", fontWeight: 400 }}
                 >
                   {parsed.date_display}
                 </p>
               )}
               <p
                 className="text-[11px] mb-1.5"
-                style={{ color: "#B0A0B5" }}
+                style={{ color: "#857A8F" }}
               >
                 {parsed.intent}
                 {parsed.activity && ` · ${parsed.activity}`}
@@ -393,7 +393,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             <button
               onClick={() => { setParsed(null); setText(""); }}
               className="w-full text-center text-[12px] font-medium py-1"
-              style={{ color: "#7A6A85" }}
+              style={{ color: "#655675" }}
             >
               ← Börja om
             </button>

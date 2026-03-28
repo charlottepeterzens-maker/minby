@@ -50,7 +50,7 @@ const CATEGORIES = [
   { key: "hälsa", label: "Hälsa", bg: "#EAF2E8", color: "#1F4A1A" },
   { key: "mat", label: "Mat", bg: "#FAEEDA", color: "#633806" },
   { key: "shoppa", label: "Shoppa", bg: "#E8D5DA", color: "#4B1528" },
-  { key: "vardagslyx", label: "Vardagslyx", bg: "#EDE8F4", color: "#7A6A85" },
+  { key: "vardagslyx", label: "Vardagslyx", bg: "#EDE8F4", color: "#655675" },
 ];
 
 const decodeTitle = (title: string) =>
@@ -523,7 +523,7 @@ const TipCard = ({
             <p
               style={{
                 fontSize: 11,
-                color: "#7A6A85",
+                color: "#655675",
                 margin: 0,
                 overflow: "hidden",
                 whiteSpace: "nowrap",
@@ -550,8 +550,8 @@ const TipCard = ({
               onClick={(e) => e.stopPropagation()}
               style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: "auto", marginTop: 2 }}
             >
-              <MessageCircle style={{ width: 12, height: 12, color: "#B0A0B5" }} />
-              <span style={{ fontSize: 10, color: "#B0A0B5" }}>{commentCount}</span>
+              <MessageCircle style={{ width: 12, height: 12, color: "#857A8F" }} />
+              <span style={{ fontSize: 10, color: "#857A8F" }}>{commentCount}</span>
             </div>
           )}
           <div onClick={(e) => e.stopPropagation()}>
@@ -640,7 +640,7 @@ const TipCard = ({
               {displayTitle}
             </p>
             {tip.comment && (
-              <p style={{ fontSize: 13, color: "#7A6A85", margin: 0, lineHeight: 1.5 }}>"{tip.comment}"</p>
+              <p style={{ fontSize: 13, color: "#655675", margin: 0, lineHeight: 1.5 }}>"{tip.comment}"</p>
             )}
             {tip.url && (
               <a
