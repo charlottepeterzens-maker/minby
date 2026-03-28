@@ -231,7 +231,7 @@ const OnboardingButton = ({
     disabled={disabled}
     className="w-full text-[14px] font-medium"
     style={{
-      backgroundColor: "#3C2A4D",
+      backgroundColor: "hsl(var(--color-text-primary))",
       color: "#fff",
       borderRadius: 99,
       height: 52,
@@ -306,7 +306,7 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
           <>
             <div
               style={{
-                background: "#EDE8F4",
+                background: "hsl(var(--color-surface-raised))",
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 12,
@@ -339,7 +339,7 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
                 onClick={handleCopy}
                 style={{
                   flex: 1,
-                  background: "#EDE8F4",
+                  background: "hsl(var(--color-surface-raised))",
                   color: "hsl(var(--color-text-primary))",
                   borderRadius: 10,
                   padding: 10,

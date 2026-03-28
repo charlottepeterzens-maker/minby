@@ -77,7 +77,7 @@ const PushPermissionDialog = () => {
             <button
               onClick={handleActivate}
               className="w-full py-3 rounded-[12px] text-[14px] font-medium text-white transition-colors"
-              style={{ backgroundColor: "#3C2A4D" }}
+              style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
             >
               Håll mig uppdaterad
             </button>

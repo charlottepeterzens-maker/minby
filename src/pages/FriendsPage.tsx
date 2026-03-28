@@ -701,7 +701,7 @@ const FriendsPage = () => {
             {activeTab === "krets" && (
               <div
                 className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full"
-                style={{ backgroundColor: "#3C2A4D" }}
+                style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
               />
             )}
           </button>
@@ -719,7 +719,7 @@ const FriendsPage = () => {
             {activeTab === "sallskap" && (
               <div
                 className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full"
-                style={{ backgroundColor: "#3C2A4D" }}
+                style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
               />
             )}
           </button>
@@ -892,7 +892,7 @@ const FriendsPage = () => {
                               onClick={() => handleAccept(r.id, r.from_user_id)}
                               disabled={respondingId === r.id}
                               className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                              style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 20 }}
+                              style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF", borderRadius: 20 }}
                             >
                               Ja, gärna
                             </button>

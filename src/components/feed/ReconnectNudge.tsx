@@ -73,7 +73,7 @@ const ReconnectNudge = ({ friendIds, profiles }: ReconnectNudgeProps) => {
         <button
           onClick={() => navigate(`/profile/${nudgeFriend.userId}`)}
           className="px-4 py-1.5 rounded-[20px] text-[12px] font-medium"
-          style={{ backgroundColor: "#3C2A4D", color: "#F7F3EF" }}
+          style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#F7F3EF" }}
         >
           Säg hej
         </button>

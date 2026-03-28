@@ -73,7 +73,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
               className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none"
               style={{
                 backgroundColor: "hsl(var(--color-surface-card))",
-                borderColor: "#EDE8F4",
+                borderColor: "hsl(var(--color-surface-raised))",
                 color: "hsl(var(--color-text-primary))",
               }}
             />
@@ -93,7 +93,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
                   className="flex-1 px-3 py-2.5 text-[13px] rounded-[10px] border outline-none"
                   style={{
                     backgroundColor: "hsl(var(--color-surface-card))",
-                    borderColor: "#EDE8F4",
+                    borderColor: "hsl(var(--color-surface-raised))",
                     color: "hsl(var(--color-text-primary))",
                   }}
                 />
@@ -126,7 +126,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
             disabled={!canSubmit || sending}
             className="w-full py-2.5 text-[13px] font-medium text-white disabled:opacity-40 transition-opacity"
             style={{
-              backgroundColor: "#3C2A4D",
+              backgroundColor: "hsl(var(--color-text-primary))",
               borderRadius: 10,
             }}
           >

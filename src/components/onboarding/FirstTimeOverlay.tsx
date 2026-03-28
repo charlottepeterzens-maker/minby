@@ -52,7 +52,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               onClick={next}
               className="w-full"
               style={{
-                backgroundColor: "#3C2A4D",
+                backgroundColor: "hsl(var(--color-text-primary))",
                 color: "#fff",
                 borderRadius: 20,
                 height: 44,
@@ -137,7 +137,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               disabled={!intent}
               className="w-full"
               style={{
-                backgroundColor: "#3C2A4D",
+                backgroundColor: "hsl(var(--color-text-primary))",
                 color: "#fff",
                 borderRadius: 20,
                 height: 44,
@@ -172,7 +172,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               onClick={handleFinish}
               className="w-full"
               style={{
-                backgroundColor: "#3C2A4D",
+                backgroundColor: "hsl(var(--color-text-primary))",
                 color: "#fff",
                 borderRadius: 20,
                 height: 44,

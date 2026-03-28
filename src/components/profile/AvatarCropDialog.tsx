@@ -213,7 +213,7 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
             <button
               onClick={handleCrop}
               className="flex-1 py-2.5 rounded-full text-[13px] font-medium"
-              style={{ color: "#F7F3EF", backgroundColor: "#3C2A4D" }}
+              style={{ color: "#F7F3EF", backgroundColor: "hsl(var(--color-text-primary))" }}
             >
               Spara
             </button>

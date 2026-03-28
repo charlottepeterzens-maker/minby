@@ -231,7 +231,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               onClick={handleParse}
               disabled={!text.trim() || parsing}
               className="w-full flex items-center justify-center gap-2 py-3 text-[14px] font-medium text-white disabled:opacity-40 transition-opacity"
-              style={{ backgroundColor: "#3C2A4D", borderRadius: 12 }}
+              style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 12 }}
             >
               {parsing ? (
                 <>
@@ -310,7 +310,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               <button
                 onClick={applyEdits}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[13px] font-medium text-white"
-                style={{ backgroundColor: "#3C2A4D", borderRadius: 10 }}
+                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 10 }}
               >
                 <Check className="w-3.5 h-3.5" />
                 Spara
@@ -384,7 +384,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
                 onClick={handleSave}
                 disabled={saving}
                 className="flex-1 py-3 text-[14px] font-medium text-white disabled:opacity-40 transition-opacity"
-                style={{ backgroundColor: "#3C2A4D", borderRadius: 12 }}
+                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 12 }}
               >
                 {saving ? "Sparar..." : "Dela med kretsen"}
               </button>

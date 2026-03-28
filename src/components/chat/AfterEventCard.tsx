@@ -107,13 +107,13 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
           onChange={(e) => setNote(e.target.value)}
           placeholder="Skriv en rad..."
           className="flex-1 px-3 py-2 text-[12px] rounded-[8px] border outline-none"
-          style={{ backgroundColor: "hsl(var(--color-surface))", borderColor: "#EDE8F4", color: "hsl(var(--color-text-primary))" }}
+          style={{ backgroundColor: "hsl(var(--color-surface))", borderColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
         />
         <button
           onClick={handleSave}
           disabled={saving || (!note.trim() && !imageFile)}
           className="shrink-0 px-3 py-2 text-[11px] font-medium rounded-[8px] disabled:opacity-40 transition-opacity"
-          style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
+          style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF" }}
         >
           Spara
         </button>

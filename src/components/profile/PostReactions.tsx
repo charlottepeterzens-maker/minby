@@ -207,7 +207,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
             className="absolute left-0 bg-card border rounded-xl z-30 shadow-sm"
             style={{
               top: "calc(100% + 6px)",
-              borderColor: "#EDE8F4",
+              borderColor: "hsl(var(--color-surface-raised))",
               padding: "10px 14px",
               minWidth: 140,
             }}

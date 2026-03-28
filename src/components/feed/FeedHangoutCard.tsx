@@ -151,7 +151,7 @@ const UnifiedHangoutCard = ({
           <button
             onClick={() => setDetailOpen(true)}
             className="text-[13px] font-medium py-2 px-5 rounded-full transition-colors"
-            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
+            style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF" }}
           >
             Jag kan
           </button>

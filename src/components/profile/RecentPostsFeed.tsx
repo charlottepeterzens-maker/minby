@@ -286,7 +286,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
                       padding: "4px 10px",
                       borderRadius: 99,
                       border: "1px solid hsl(var(--color-border-subtle))",
-                      background: "#F7F3EF",
+                      background: "hsl(var(--color-surface))",
                       color: "hsl(var(--color-text-secondary))",
                       cursor: "pointer",
                     }}
@@ -397,7 +397,7 @@ const PostCard = ({
           <DropdownMenuTrigger asChild>
             <button
               className="w-7 h-7 rounded-full flex items-center justify-center"
-              style={{ background: "rgba(247,243,239,0.9)", border: "1px solid hsl(var(--color-border-subtle))" }}
+              style={{ background: "hsl(var(--color-surface) / 0.9)", border: "1px solid hsl(var(--color-border-subtle))" }}
             >
               <MoreHorizontal className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
             </button>

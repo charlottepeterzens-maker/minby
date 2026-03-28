@@ -33,7 +33,7 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
       <Button
         onClick={onGetStarted}
         className="w-full text-[13px] font-normal"
-        style={{ backgroundColor: "#3C2A4D", color: "#fff", borderRadius: "20px", height: "48px" }}
+        style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#fff", borderRadius: "20px", height: "48px" }}
       >
         Kom igång
       </Button>
@@ -197,7 +197,7 @@ const AuthPage = () => {
             type="submit"
             className="w-full rounded-[10px] font-medium text-sm"
             disabled={loading || (isSignUp && !consent)}
-            style={isSignUp && consent ? { backgroundColor: "#3C2A4D", color: "#fff" } : undefined}
+            style={isSignUp && consent ? { backgroundColor: "hsl(var(--color-text-primary))", color: "#fff" } : undefined}
           >
             {loading ? "..." : isSignUp ? t("createAccount") : t("signIn")}
           </Button>

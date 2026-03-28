@@ -205,7 +205,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
               disabled={!name}
               className="w-full py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
               style={{
-                backgroundColor: "#3C2A4D",
+                backgroundColor: "hsl(var(--color-text-primary))",
                 borderRadius: 10
               }}>
               
@@ -268,7 +268,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 disabled={loading}
                 className="flex-1 py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
                 style={{
-                  backgroundColor: "#3C2A4D",
+                  backgroundColor: "hsl(var(--color-text-primary))",
                   borderRadius: 10
                 }}>
                 

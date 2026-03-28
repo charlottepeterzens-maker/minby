@@ -110,7 +110,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
               onClick={() => setComposing(true)}
               className="flex-1 text-left"
               style={{
-                background: "#F7F3EF",
+                background: "hsl(var(--color-surface))",
                 border: "none",
                 borderRadius: 99,
                 padding: "6px 14px",
@@ -139,7 +139,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                   padding: "4px 10px",
                   borderRadius: 99,
                    border: "none",
-                  background: "#F7F3EF",
+                  background: "hsl(var(--color-surface))",
                   color: "hsl(var(--color-text-secondary))",
                   cursor: "pointer",
                 }}
@@ -156,7 +156,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                     fontSize: 11,
                     padding: "4px 10px",
                     borderRadius: 99,
-                    background: "#EDE8F4",
+                    background: "hsl(var(--color-surface-raised))",
                     border: "1px solid #C9B8D8",
                     color: "hsl(var(--color-text-primary))",
                     cursor: "pointer",

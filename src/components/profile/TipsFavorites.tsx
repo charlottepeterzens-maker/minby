@@ -653,7 +653,7 @@ const TipCard = ({
                   gap: 6,
                   fontSize: 13,
                   color: "hsl(var(--color-text-primary))",
-                  background: "#EDE8F4",
+                  background: "hsl(var(--color-surface-raised))",
                   borderRadius: 8,
                   padding: "8px 12px",
                   textDecoration: "none",
@@ -674,7 +674,7 @@ const TipCard = ({
                   }}
                   style={{
                     flex: 1,
-                    background: "#EDE8F4",
+                    background: "hsl(var(--color-surface-raised))",
                     color: "hsl(var(--color-text-primary))",
                     borderRadius: 10,
                     padding: "9px",
@@ -692,7 +692,7 @@ const TipCard = ({
                     onDelete();
                   }}
                   style={{
-                    background: "#F7F3EF",
+                    background: "hsl(var(--color-surface))",
                     color: "hsl(var(--color-accent-red))",
                     borderRadius: 10,
                     padding: "9px 14px",

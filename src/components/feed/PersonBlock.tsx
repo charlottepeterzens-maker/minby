@@ -322,7 +322,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               <button
                 onClick={(e) => { e.stopPropagation(); setHangoutSheetOpen(true); }}
                 className="text-[12px] font-medium py-1.5 px-4 rounded-full"
-                style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
+                style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF" }}
               >
                 Jag kan
               </button>

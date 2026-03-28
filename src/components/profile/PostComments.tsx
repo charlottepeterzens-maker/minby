@@ -157,7 +157,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
                   width: 24,
                   height: 24,
                   borderRadius: "50%",
-                  background: "#EDE8F4",
+                  background: "hsl(var(--color-surface-raised))",
                   flexShrink: 0,
                   display: "flex",
                   alignItems: "center",
@@ -171,7 +171,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
                   <span style={{ fontSize: 9, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}>{c.initials}</span>
                 )}
               </div>
-              <div style={{ flex: 1, background: "#F7F3EF", borderRadius: "0 8px 8px 8px", padding: "7px 10px" }}>
+              <div style={{ flex: 1, background: "hsl(var(--color-surface))", borderRadius: "0 8px 8px 8px", padding: "7px 10px" }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 2 }}>
                   <span style={{ fontSize: 11, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}>
                     {c.user_id === user?.id ? "Du" : c.display_name || "Någon"}
@@ -206,7 +206,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
             width: 24,
             height: 24,
             borderRadius: "50%",
-            background: "#EDE8F4",
+            background: "hsl(var(--color-surface-raised))",
             flexShrink: 0,
             display: "flex",
             alignItems: "center",
@@ -235,7 +235,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
           style={{
             flex: 1,
             height: 30,
-            background: "#F7F3EF",
+            background: "hsl(var(--color-surface))",
             border: focused ? "1px solid #C9B8D8" : "none",
             borderRadius: 99,
             padding: "0 12px",

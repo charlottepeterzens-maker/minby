@@ -358,7 +358,7 @@ const HangoutDetailSheet = ({
                   onClick={() => handleRSVP("yes")}
                   disabled={isSelfTagged}
                   className="w-full py-2.5 text-[14px] font-medium text-white disabled:opacity-60 transition-colors"
-                  style={{ backgroundColor: "#3C2A4D", borderRadius: 99 }}
+                  style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 99 }}
                 >
                   {isSelfTagged ? "Du är med!" : "Jag kan"}
                 </button>
@@ -425,7 +425,7 @@ const HangoutDetailSheet = ({
                     disabled={sending || !commentText.trim()}
                     onClick={handleAddComment}
                     className="w-9 h-9 rounded-full flex items-center justify-center disabled:opacity-40 transition-colors shrink-0"
-                    style={{ backgroundColor: "#3C2A4D" }}
+                    style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
                   >
                     <Send className="w-3.5 h-3.5 text-white" />
                   </button>

@@ -63,7 +63,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
     handleOpenChange(false);
   };
 
-  const inputStyle = { backgroundColor: "hsl(var(--color-surface-card))", borderColor: "#EDE8F4", color: "hsl(var(--color-text-primary))" };
+  const inputStyle = { backgroundColor: "hsl(var(--color-surface-card))", borderColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" };
 
   return (
     <Drawer open={open} onOpenChange={handleOpenChange}>
@@ -130,7 +130,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
               </div>
               <button onClick={handleSubmitPoll} disabled={!canSubmitPoll || sending}
                 className="w-full py-2.5 text-[13px] font-medium text-white disabled:opacity-40 transition-opacity"
-                style={{ backgroundColor: "#3C2A4D", borderRadius: 10 }}>
+                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 10 }}>
                 Skicka omröstning
               </button>
             </div>
@@ -157,7 +157,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
               </div>
               <button onClick={handleSubmitPlan} disabled={!canSubmitPlan || sending}
                 className="w-full py-2.5 text-[13px] font-medium text-white disabled:opacity-40 transition-opacity"
-                style={{ backgroundColor: "#3C2A4D", borderRadius: 10 }}>
+                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 10 }}>
                 Föreslå plan
               </button>
             </div>

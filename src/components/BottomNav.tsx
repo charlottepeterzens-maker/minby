@@ -59,7 +59,7 @@ const BottomNav = () => {
                 <motion.span
                   layoutId="nav-dot"
                   className="absolute bottom-0.5 w-1 h-1 rounded-full"
-                  style={{ backgroundColor: "#3C2A4D" }}
+                  style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}

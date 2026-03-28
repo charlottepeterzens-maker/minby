@@ -132,7 +132,7 @@ const TipCommentSection = ({
                   width: 28,
                   height: 28,
                   borderRadius: "50%",
-                  background: "#EDE8F4",
+                  background: "hsl(var(--color-surface-raised))",
                   color: "hsl(var(--color-text-primary))",
                   display: "flex",
                   alignItems: "center",

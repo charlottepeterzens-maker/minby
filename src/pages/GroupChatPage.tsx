@@ -430,7 +430,7 @@ const GroupChatPage = () => {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 px-4 py-3" style={{ backgroundColor: "#3C2A4D" }}>
+      <header className="sticky top-0 z-50 px-4 py-3" style={{ backgroundColor: "hsl(var(--color-text-primary))" }}>
         <div className="flex items-center gap-3">
           <button onClick={() => navigate("/groups")} className="shrink-0 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Tillbaka till sällskap">
             <ChevronLeft className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
@@ -690,7 +690,7 @@ const GroupChatPage = () => {
             className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#6B5C78]" style={{ color: "hsl(var(--color-text-primary))" }} />
           <button onClick={handleSend} disabled={!newMessage.trim() || sending}
             className="shrink-0 flex items-center justify-center rounded-full disabled:opacity-40 transition-opacity"
-            style={{ width: 32, height: 32, backgroundColor: "#3C2A4D" }}>
+            style={{ width: 32, height: 32, backgroundColor: "hsl(var(--color-text-primary))" }}>
             <SendHorizontal className="w-4 h-4" style={{ color: "#FFFFFF" }} />
           </button>
         </div>

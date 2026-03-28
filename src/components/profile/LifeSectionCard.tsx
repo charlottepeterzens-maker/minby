@@ -226,7 +226,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 width: 28,
                 height: 28,
                 borderRadius: "50%",
-                background: "#EDE8F4",
+                background: "hsl(var(--color-surface-raised))",
                 border: "none",
                 display: "flex",
                 alignItems: "center",
@@ -248,7 +248,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     fontSize: 10,
                     fontWeight: 500,
                     color: "hsl(var(--color-text-secondary))",
-                    background: "#F7F3EF",
+                    background: "hsl(var(--color-surface))",
                     border: "1px solid hsl(var(--color-border-subtle))",
                     borderRadius: 99,
                     padding: "4px 10px",
@@ -305,7 +305,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 style={{
                   fontSize: 13,
                   minHeight: 60,
-                  background: "#F7F3EF",
+                  background: "hsl(var(--color-surface))",
                   border: "1px solid hsl(var(--color-border-subtle))",
                   borderRadius: 8,
                   resize: "none",
@@ -383,7 +383,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
                   placeholder="Klistra in en lank..."
-                  style={{ flex: 1, height: 28, fontSize: 11, background: "#F7F3EF", border: "1px solid hsl(var(--color-border-subtle))" }}
+                  style={{ flex: 1, height: 28, fontSize: 11, background: "hsl(var(--color-surface))", border: "1px solid hsl(var(--color-border-subtle))" }}
                 />
                 <button
                   onClick={handlePost}
@@ -435,7 +435,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                           width: 28,
                           height: 28,
                           borderRadius: "50%",
-                          background: "rgba(247,243,239,0.9)",
+                          background: "hsl(var(--color-surface) / 0.9)",
                           border: "1px solid hsl(var(--color-border-subtle))",
                           display: "flex",
                           alignItems: "center",

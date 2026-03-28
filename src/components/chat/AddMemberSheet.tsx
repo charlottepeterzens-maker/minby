@@ -167,7 +167,7 @@ const AddMemberSheet = ({
             onClick={handleAdd}
             disabled={!selected.length || loading}
             className="w-full mt-4 py-2.5 text-[13px] font-semibold text-white disabled:opacity-40 transition-opacity"
-            style={{ backgroundColor: "#3C2A4D", borderRadius: 10 }}
+            style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 10 }}
           >
             {loading ? "Lägger till..." : `Lägg till (${selected.length})`}
           </button>
