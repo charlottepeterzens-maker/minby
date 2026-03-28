@@ -6,10 +6,10 @@ type Props = {
 
 export const ContentFeed = ({ items }: Props) => {
   return (
-    <>
+    <div className="space-y-3">
       {items.map((item) => (
         <FeedItemRenderer key={item.data.id} item={item} />
       ))}
-    </>
+    </div>
   );
 };
