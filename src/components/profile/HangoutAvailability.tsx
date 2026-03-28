@@ -412,7 +412,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                   </p>
                   <p className="text-[11px] mb-1.5" style={{ color: "hsl(var(--color-text-faint))" }}>
                     {intentLabel}
-                    {activityNameLabel && ` · ${activityNameLabel}`}
+                    {showActivityInLabel && activityNameLabel && ` · ${activityNameLabel}`}
                   </p>
                   {description && (
                     <p
