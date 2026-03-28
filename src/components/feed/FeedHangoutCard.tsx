@@ -326,67 +326,74 @@ const GroupedActivityCard = ({
 
   return (
     <div
-      className="rounded-lg p-4"
-      style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
+      className="rounded-lg"
+      style={{ backgroundColor: TYPE_COLORS.activity, padding: 14, overflow: "hidden" }}
     >
-      {/* 1. ACTIVITY — primary for grouped cards */}
+      {/* 1. TYPE LABEL */}
+      <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5", marginBottom: 8 }}>
+        sugen på
+      </p>
+
+      {/* 2. ACTIVITY — Georgia serif */}
       <p
-        className="font-fraunces text-[17px] font-medium leading-tight"
-        style={{ color: "hsl(var(--color-text-primary))" }}
+        style={{
+          fontFamily: "Georgia, serif",
+          fontSize: 14,
+          fontWeight: 500,
+          color: "hsl(var(--color-text-primary))",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical" as any,
+          overflow: "hidden",
+          marginBottom: 8,
+        }}
       >
         {activityName}
       </p>
 
-      {/* 2. DATE CHIPS */}
-      <div className="flex gap-1.5 flex-wrap mt-2.5">
-        {dates.map((dateStr) => {
-          const isSelected = selectedDate === dateStr;
-          const count = rsvpCounts[dateStr] || 0;
-          return (
-            <button
-              key={dateStr}
-              onClick={() => handleDateClick(dateStr)}
-              disabled={isOwn || saving}
-              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-all shrink-0"
-              style={{
-                backgroundColor: isSelected ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-raised))",
-              }}
-            >
-              <span
-                className="text-[12px] font-medium"
-                style={{ color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-primary))" }}
+      {/* 3. DATE CHIPS */}
+      <div style={{ marginBottom: 4 }}>
+        <p style={{ fontSize: 10, color: "#B0A8B5", marginBottom: 4 }}>
+          förslag på datum
+        </p>
+        <div className="flex gap-1.5 flex-wrap">
+          {dates.map((dateStr) => {
+            const isSelected = selectedDate === dateStr;
+            const count = rsvpCounts[dateStr] || 0;
+            return (
+              <button
+                key={dateStr}
+                onClick={() => handleDateClick(dateStr)}
+                disabled={isOwn || saving}
+                className="flex items-center gap-1 rounded-full transition-all shrink-0"
+                style={{
+                  backgroundColor: isSelected ? "#3C2A4D" : "rgba(255,255,255,0.6)",
+                  padding: "2px 8px",
+                  fontSize: 10,
+                }}
               >
-                {formatDateChip(dateStr)}
-              </span>
-              {count > 0 && (
-                <span
-                  className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
-                  style={{
-                    backgroundColor: isSelected
-                      ? "rgba(255,255,255,0.2)"
-                      : "hsl(var(--color-border-subtle))",
-                    color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-secondary))",
-                  }}
-                >
-                  {count}
+                <span style={{ color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-primary))" }}>
+                  {formatDateChip(dateStr)}
                 </span>
-              )}
-            </button>
-          );
-        })}
+                {count > 0 && (
+                  <span
+                    className="font-medium px-1 rounded-full"
+                    style={{
+                      fontSize: 9,
+                      backgroundColor: isSelected ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.06)",
+                      color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-secondary))",
+                    }}
+                  >
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Custom note */}
-      {hangout.custom_note && (
-        <p
-          className="text-[13px] mt-2.5 line-clamp-2"
-          style={{ color: "hsl(var(--color-text-secondary))", lineHeight: 1.5 }}
-        >
-          {hangout.custom_note}
-        </p>
-      )}
-
-      {/* 3. SENDER */}
+      {/* 4. SENDER */}
       <div className="flex items-center gap-2 mt-3">
         <FeedAvatar
           avatarUrl={(profile as any).avatar_url || null}
@@ -402,13 +409,6 @@ const GroupedActivityCard = ({
         >
           {profile.display_name || "Någon"}
         </button>
-        {/* 4. TYPE */}
-        <span
-          className="text-[11px] leading-tight"
-          style={{ color: "hsl(var(--color-text-faint))" }}
-        >
-          · Sugen på
-        </span>
       </div>
     </div>
   );
