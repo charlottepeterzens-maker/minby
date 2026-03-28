@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import PageTransition from "@/components/PageTransition";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
@@ -673,7 +674,7 @@ const FriendsPage = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+    <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       {/* Header */}
       <nav className="sticky top-0 z-50" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="py-4 flex items-center justify-between">
@@ -1094,7 +1095,7 @@ const FriendsPage = () => {
           setRemoveConfirm(null);
         }}
       />
-    </div>
+    </PageTransition>
   );
 };
 
