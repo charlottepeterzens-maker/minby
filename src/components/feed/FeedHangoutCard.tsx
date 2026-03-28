@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { Sparkles } from "lucide-react";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +30,14 @@ interface FeedHangoutCardProps {
   onMaybe?: () => void;
 }
 
-function formatDatePrimary(dateStr: string): string {
+const TYPE_PILL_LABEL: Record<string, string> = {
+  open: "ledig",
+  available: "ledig",
+  confirmed: "häng med",
+  activity: "sugen på",
+};
+
+function formatFeedDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -44,7 +50,7 @@ function formatDatePrimary(dateStr: string): string {
   const weekday = format(d, "EEEE", { locale: sv });
   const day = format(d, "d", { locale: sv });
   const month = format(d, "MMMM", { locale: sv });
-  return `${weekday.charAt(0).toUpperCase() + weekday.slice(1)} ${day} ${month}`;
+  return `${weekday} ${day} ${month}`;
 }
 
 function formatDateChip(dateStr: string): string {
@@ -52,29 +58,7 @@ function formatDateChip(dateStr: string): string {
   return `${format(d, "d", { locale: sv })} ${format(d, "MMM", { locale: sv }).replace(".", "")}`;
 }
 
-const TYPE_COLORS: Record<string, string> = {
-  open: "#F5F0E8",
-  available: "#F5F0E8",
-  confirmed: "#EDE8F4",
-  activity: "#E8F2EC",
-};
-
-const TYPE_LABEL: Record<string, string> = {
-  open: "ledig",
-  available: "ledig",
-  confirmed: "häng med",
-  activity: "sugen på",
-};
-
-function getTypeLabel(entryType: string): string {
-  return TYPE_LABEL[entryType] || "ledig";
-}
-
-function getTypeBg(entryType: string): string {
-  return TYPE_COLORS[entryType] || "#F5F0E8";
-}
-
-/** Unified card — hierarchy: Date → Activity → Sender → Type */
+/** Single hangout card in the feed */
 const UnifiedHangoutCard = ({
   hangout,
   profile,
@@ -96,95 +80,55 @@ const UnifiedHangoutCard = ({
       }
     : null;
 
-  // Avoid duplication: if custom_note already contains the activity text, only show note
   const activityText = hangout.activities.length > 0 ? hangout.activities[0] : null;
   const noteText = hangout.custom_note || null;
-
   const textsAreSimilar =
     noteText && activityText &&
     (noteText.toLowerCase().includes(activityText.toLowerCase()) ||
      activityText.toLowerCase().includes(noteText.toLowerCase()));
-
   const mainText = noteText || activityText;
-  const secondaryText = textsAreSimilar ? null : (noteText ? activityText : null);
 
-  const typeBg = getTypeBg(entryType);
-
-  // Parse date parts for Georgia serif display
-  const dateObj = hangout.date ? new Date(hangout.date + "T00:00:00") : null;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  const isToday = dateObj && dateObj.getTime() === today.getTime();
-  const isTomorrow = dateObj && dateObj.getTime() === tomorrow.getTime();
+  const typePillLabel = TYPE_PILL_LABEL[entryType] || "ledig";
 
   return (
     <div
       className="rounded-lg"
-      style={{ backgroundColor: typeBg, padding: 14, overflow: "hidden" }}
+      style={{
+        backgroundColor: "#FFFFFF",
+        border: "1px solid #EDE8E0",
+        borderRadius: 8,
+        padding: 16,
+        overflow: "hidden",
+      }}
     >
-      {/* 1. TYPE LABEL */}
-      <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5", marginBottom: 4 }}>
-        {getTypeLabel(entryType)}
-      </p>
-
-      {/* 2. DATE — Georgia serif */}
-      {dateObj && (
-        <>
-          <p style={{ fontSize: 11, fontWeight: 300, color: "#9A8FA3", marginBottom: 2 }}>
-            {isToday ? "idag" : isTomorrow ? "imorgon" : format(dateObj, "EEEE", { locale: sv })}
-          </p>
-          {!isToday && !isTomorrow && (
-            <div className="flex items-baseline gap-1.5" style={{ marginBottom: 6 }}>
-              <span style={{ fontFamily: "Georgia, serif", fontSize: 28, color: "hsl(var(--color-text-primary))", lineHeight: 1 }}>
-                {format(dateObj, "d")}
-              </span>
-              <span style={{ fontSize: 13, color: "hsl(var(--color-text-primary))" }}>
-                {format(dateObj, "MMMM", { locale: sv })}
-              </span>
-            </div>
-          )}
-          {(isToday || isTomorrow) && (
-            <p style={{ fontFamily: "Georgia, serif", fontSize: 22, color: "hsl(var(--color-text-primary))", lineHeight: 1, marginBottom: 6 }}>
-              {isToday ? "Idag" : "Imorgon"}
-            </p>
-          )}
-        </>
+      {/* 1. DATE — Georgia serif */}
+      {hangout.date && (
+        <p style={{
+          fontFamily: "Georgia, serif",
+          fontSize: 22,
+          fontWeight: 500,
+          color: "#3C2A4D",
+          lineHeight: 1.2,
+          marginBottom: 6,
+        }}>
+          {formatFeedDate(hangout.date)}
+        </p>
       )}
 
-      {/* 3. ACTIVITY / main text */}
+      {/* 2. FRITEXT */}
       {mainText && (
-        <p
-          style={{
-            fontSize: 13,
-            lineHeight: 1.45,
-            color: "hsl(var(--color-text-primary))",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical" as any,
-            overflow: "hidden",
-          }}
-        >
+        <p style={{
+          fontSize: 15,
+          lineHeight: 1.55,
+          color: "#3C2A4D",
+          marginBottom: 10,
+        }}>
           {mainText}
         </p>
       )}
 
-      {/* Match indicator */}
-      {hangout.isMatch && !isOwn && (
-        <div
-          className="flex items-center gap-1.5 rounded-full px-2.5 py-1 mt-2 w-fit"
-          style={{ backgroundColor: "rgba(255,255,255,0.6)" }}
-        >
-          <Sparkles className="w-3 h-3" style={{ color: "#7A5AA6" }} />
-          <span className="text-[11px] font-medium" style={{ color: "#7A5AA6" }}>
-            Du är också ledig!
-          </span>
-        </div>
-      )}
-
-      {/* 4. SENDER */}
-      <div className="flex items-center gap-2 mt-3">
+      {/* 3. META ROW: avatar + name + type pill + match pill */}
+      <div className="flex items-center gap-2" style={{ marginBottom: 12 }}>
         <FeedAvatar
           avatarUrl={(profile as any).avatar_url || null}
           displayName={profile.display_name}
@@ -195,32 +139,63 @@ const UnifiedHangoutCard = ({
         <button
           onClick={onProfileClick}
           className="text-[12px] font-medium hover:underline leading-tight"
-          style={{ color: "hsl(var(--color-text-secondary))" }}
+          style={{ color: "#7A6A85" }}
         >
           {profile.display_name || "Någon"}
         </button>
+        <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
+        <span style={{
+          fontSize: 11,
+          backgroundColor: "#F7F3EF",
+          border: "1px solid #EDE8E0",
+          borderRadius: 99,
+          padding: "2px 9px",
+          color: "#7A6A85",
+        }}>
+          {typePillLabel}
+        </span>
+        {hangout.isMatch && !isOwn && (
+          <span style={{
+            fontSize: 11,
+            backgroundColor: "#EDE8F4",
+            borderRadius: 99,
+            padding: "2px 9px",
+            color: "#5C4A7A",
+            marginLeft: "auto",
+          }}>
+            ni matcher
+          </span>
+        )}
       </div>
 
-      {/* CTA buttons */}
+      {/* 4. ACTIONS */}
       {!isOwn && (
-        <div className="flex gap-2 mt-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setDetailOpen(true)}
-            className="flex-1 text-[13px] font-medium py-2 rounded-lg transition-colors"
-            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF" }}
+            className="flex-1 text-[13px] font-medium py-2 transition-colors"
+            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8 }}
           >
             Jag kan
           </button>
           <button
             onClick={() => setDetailOpen(true)}
-            className="flex-1 text-[13px] font-medium py-2 rounded-lg transition-colors"
+            className="flex-1 text-[13px] font-medium py-2 transition-colors"
             style={{
-              backgroundColor: "transparent",
-              border: "1px solid #3C2A4D",
+              backgroundColor: "#F7F3EF",
+              border: "1px solid #EDE8E0",
               color: "#3C2A4D",
+              borderRadius: 8,
             }}
           >
             Kanske
+          </button>
+          <button
+            onClick={() => setDetailOpen(true)}
+            className="text-[12px] font-medium"
+            style={{ color: "#7A6A85", marginLeft: 4 }}
+          >
+            Kommentera
           </button>
         </div>
       )}
@@ -327,33 +302,31 @@ const GroupedActivityCard = ({
   return (
     <div
       className="rounded-lg"
-      style={{ backgroundColor: TYPE_COLORS.activity, padding: 14, overflow: "hidden" }}
+      style={{
+        backgroundColor: "#FFFFFF",
+        border: "1px solid #EDE8E0",
+        borderRadius: 8,
+        padding: 16,
+        overflow: "hidden",
+      }}
     >
-      {/* 1. TYPE LABEL */}
-      <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5", marginBottom: 8 }}>
-        sugen på
-      </p>
-
-      {/* 2. ACTIVITY — Georgia serif */}
+      {/* 1. ACTIVITY — Georgia serif */}
       <p
         style={{
           fontFamily: "Georgia, serif",
-          fontSize: 14,
+          fontSize: 22,
           fontWeight: 500,
-          color: "hsl(var(--color-text-primary))",
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical" as any,
-          overflow: "hidden",
+          color: "#3C2A4D",
+          lineHeight: 1.2,
           marginBottom: 8,
         }}
       >
         {activityName}
       </p>
 
-      {/* 3. DATE CHIPS */}
-      <div style={{ marginBottom: 4 }}>
-        <p style={{ fontSize: 10, color: "#B0A8B5", marginBottom: 4 }}>
+      {/* 2. DATE CHIPS */}
+      <div style={{ marginBottom: 10 }}>
+        <p style={{ fontSize: 10, color: "#7A6A85", marginBottom: 4 }}>
           förslag på datum
         </p>
         <div className="flex gap-1.5 flex-wrap">
@@ -367,12 +340,13 @@ const GroupedActivityCard = ({
                 disabled={isOwn || saving}
                 className="flex items-center gap-1 rounded-full transition-all shrink-0"
                 style={{
-                  backgroundColor: isSelected ? "#3C2A4D" : "rgba(255,255,255,0.6)",
-                  padding: "2px 8px",
-                  fontSize: 10,
+                  backgroundColor: isSelected ? "#3C2A4D" : "#F7F3EF",
+                  border: isSelected ? "none" : "1px solid #EDE8E0",
+                  padding: "2px 9px",
+                  fontSize: 11,
                 }}
               >
-                <span style={{ color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-primary))" }}>
+                <span style={{ color: isSelected ? "#FFFFFF" : "#3C2A4D" }}>
                   {formatDateChip(dateStr)}
                 </span>
                 {count > 0 && (
@@ -381,7 +355,7 @@ const GroupedActivityCard = ({
                     style={{
                       fontSize: 9,
                       backgroundColor: isSelected ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.06)",
-                      color: isSelected ? "#FFFFFF" : "hsl(var(--color-text-secondary))",
+                      color: isSelected ? "#FFFFFF" : "#7A6A85",
                     }}
                   >
                     {count}
@@ -393,8 +367,8 @@ const GroupedActivityCard = ({
         </div>
       </div>
 
-      {/* 4. SENDER */}
-      <div className="flex items-center gap-2 mt-3">
+      {/* 3. META ROW */}
+      <div className="flex items-center gap-2" style={{ marginBottom: 12 }}>
         <FeedAvatar
           avatarUrl={(profile as any).avatar_url || null}
           displayName={profile.display_name}
@@ -405,11 +379,51 @@ const GroupedActivityCard = ({
         <button
           onClick={onProfileClick}
           className="text-[12px] font-medium hover:underline leading-tight"
-          style={{ color: "hsl(var(--color-text-secondary))" }}
+          style={{ color: "#7A6A85" }}
         >
           {profile.display_name || "Någon"}
         </button>
+        <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
+        <span style={{
+          fontSize: 11,
+          backgroundColor: "#F7F3EF",
+          border: "1px solid #EDE8E0",
+          borderRadius: 99,
+          padding: "2px 9px",
+          color: "#7A6A85",
+        }}>
+          sugen på
+        </span>
       </div>
+
+      {/* 4. ACTIONS */}
+      {!isOwn && (
+        <div className="flex items-center gap-2">
+          <button
+            className="flex-1 text-[13px] font-medium py-2 transition-colors"
+            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8 }}
+          >
+            Jag kan
+          </button>
+          <button
+            className="flex-1 text-[13px] font-medium py-2 transition-colors"
+            style={{
+              backgroundColor: "#F7F3EF",
+              border: "1px solid #EDE8E0",
+              color: "#3C2A4D",
+              borderRadius: 8,
+            }}
+          >
+            Kanske
+          </button>
+          <button
+            className="text-[12px] font-medium"
+            style={{ color: "#7A6A85", marginLeft: 4 }}
+          >
+            Kommentera
+          </button>
+        </div>
+      )}
     </div>
   );
 };
