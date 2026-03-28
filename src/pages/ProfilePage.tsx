@@ -295,7 +295,8 @@ const ProfilePage = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate("/")}
-              className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150"
+              aria-label="Tillbaka"
+              className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150 min-w-[44px] min-h-[44px] justify-center"
             >
               <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </button>
@@ -306,7 +307,7 @@ const ProfilePage = () => {
         <CurvedSeparator />
       </nav>
 
-      <Container className="px-4 pt-6 pb-24">
+      <main className="px-4 pt-6 pb-24">
         {/* ===== (1) PROFILE HEADER ===== */}
         <div className="flex items-start gap-4 mb-6">
           <div className="relative shrink-0">
@@ -317,7 +318,7 @@ const ProfilePage = () => {
               onClick={isOwnProfile ? () => fileInputRef.current?.click() : undefined}
             >
               {resolveAvatarUrl(profile?.avatar_url ?? null) ? (
-                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt="" className="w-full h-full object-cover" />
+                <img src={resolveAvatarUrl(profile?.avatar_url ?? null)!} alt={`Profilbild för ${profile?.display_name || 'användare'}`} className="w-full h-full object-cover" />
               ) : (
                 <span className="text-xl font-display font-medium" style={{ color: "#3C2A4D" }}>
                   {initial}
@@ -329,7 +330,8 @@ const ProfilePage = () => {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploadingAvatar}
                 whileTap={{ scale: 0.85 }}
-                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
+                aria-label="Byt profilbild"
+                className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center disabled:opacity-50"
               >
                 <Camera className="w-3 h-3" />
               </motion.button>
