@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronRight, ChevronDown, Heart, Check, Calendar, Headphones } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import LazyImage from "@/components/LazyImage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import FeedAvatar from "@/components/feed/FeedAvatar";
@@ -107,7 +108,7 @@ const PostImage = ({ imageUrl }: { imageUrl: string }) => {
   if (!signedUrl) return null;
   return (
     <div className="relative w-full rounded-lg overflow-hidden" style={{ maxHeight: 120 }}>
-      <img src={signedUrl} alt="Profilbild" className="w-full h-full object-cover" style={{ maxHeight: 120 }} />
+      <LazyImage src={signedUrl} alt="Inläggsbild" className="w-full h-full" style={{ maxHeight: 120 }} />
       <div className="absolute inset-0" style={{ background: "linear-gradient(transparent 40%, rgba(0,0,0,0.4))" }} />
     </div>
   );
