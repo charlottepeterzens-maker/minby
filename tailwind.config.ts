@@ -63,6 +63,23 @@ export default {
           DEFAULT: "hsl(var(--lavender))",
           bg: "hsl(var(--lavender-bg))",
         },
+        surface: {
+          DEFAULT: "hsl(var(--color-surface))",
+          card: "hsl(var(--color-surface-card))",
+          raised: "hsl(var(--color-surface-raised))",
+          rose: "hsl(var(--color-surface-rose))",
+          sage: "hsl(var(--color-surface-sage))",
+        },
+        ink: {
+          DEFAULT: "hsl(var(--color-text-primary))",
+          secondary: "hsl(var(--color-text-secondary))",
+          muted: "hsl(var(--color-text-muted))",
+          faint: "hsl(var(--color-text-faint))",
+        },
+        line: {
+          subtle: "hsl(var(--color-border-subtle))",
+          lavender: "hsl(var(--color-border-lavender))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
