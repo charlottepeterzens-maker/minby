@@ -95,9 +95,9 @@ const PWAInstallBanner = () => {
                 Lägg Minby på hemskärmen – öppna som en app
               </p>
               {isIOS && (
-                <p className="text-[11px] mt-1 leading-snug" style={{ color: "#7A6A85" }}>
+                <p className="text-[11px] mt-1 leading-snug" style={{ color: "#655675" }}>
                   Tryck på{" "}
-                  <Share className="inline w-3 h-3 -mt-0.5" style={{ color: "#7A6A85" }} />{" "}
+                  <Share className="inline w-3 h-3 -mt-0.5" style={{ color: "#655675" }} />{" "}
                   Dela → Lägg till på hemskärmen
                 </p>
               )}
@@ -114,7 +114,7 @@ const PWAInstallBanner = () => {
             )}
 
             <button onClick={dismiss} className="shrink-0 p-1">
-              <X className="w-4 h-4" style={{ color: "#7A6A85" }} />
+              <X className="w-4 h-4" style={{ color: "#655675" }} />
             </button>
           </div>
         </motion.div>

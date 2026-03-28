@@ -69,7 +69,7 @@ const PushPermissionDialog = () => {
             <h3 className="font-display text-lg font-medium" style={{ color: "#3C2A4D" }}>
               Missa inget från dina nära
             </h3>
-            <p className="text-[13px] mt-2 leading-relaxed" style={{ color: "#7A6A85" }}>
+            <p className="text-[13px] mt-2 leading-relaxed" style={{ color: "#655675" }}>
               Få en notis när en vän vill hänga med, kommenterar eller bjuder in dig.
             </p>
           </div>
@@ -84,7 +84,7 @@ const PushPermissionDialog = () => {
             <button
               onClick={handleLater}
               className="w-full py-2.5 rounded-[12px] text-[13px] font-medium transition-colors"
-              style={{ color: "#7A6A85" }}
+              style={{ color: "#655675" }}
             >
               Senare
             </button>

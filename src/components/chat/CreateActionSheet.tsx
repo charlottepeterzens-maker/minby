@@ -85,7 +85,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
                 </div>
                 <div>
                   <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>Föreslå en plan</p>
-                  <p className="text-[11px]" style={{ color: "#7A6A85" }}>Datum, aktivitet och plats</p>
+                  <p className="text-[11px]" style={{ color: "#655675" }}>Datum, aktivitet och plats</p>
                 </div>
               </button>
               <button onClick={() => setMode("poll")}
@@ -96,7 +96,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
                 </div>
                 <div>
                   <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>Skapa omröstning</p>
-                  <p className="text-[11px]" style={{ color: "#7A6A85" }}>Ställ en fråga med svarsalternativ</p>
+                  <p className="text-[11px]" style={{ color: "#655675" }}>Ställ en fråga med svarsalternativ</p>
                 </div>
               </button>
             </div>
@@ -105,25 +105,25 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
           {mode === "poll" && (
             <div className="space-y-4">
               <div>
-                <label className="text-[11px] font-medium mb-1 block" style={{ color: "#7A6A85" }}>Fråga</label>
+                <label className="text-[11px] font-medium mb-1 block" style={{ color: "#655675" }}>Fråga</label>
                 <input value={question} onChange={(e) => setQuestion(e.target.value)}
                   placeholder="Vad vill du fråga?" className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none" style={inputStyle} />
               </div>
               <div className="space-y-2">
-                <label className="text-[11px] font-medium block" style={{ color: "#7A6A85" }}>Svarsalternativ</label>
+                <label className="text-[11px] font-medium block" style={{ color: "#655675" }}>Svarsalternativ</label>
                 {options.map((opt, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <input value={opt} onChange={(e) => updateOption(i, e.target.value)}
                       placeholder={`Alternativ ${i + 1}`} className="flex-1 px-3 py-2.5 text-[13px] rounded-[10px] border outline-none" style={inputStyle} />
                     {options.length > 2 && (
                       <button onClick={() => removeOption(i)} className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: "#EDE8F4" }}>
-                        <X className="w-3.5 h-3.5" style={{ color: "#7A6A85" }} />
+                        <X className="w-3.5 h-3.5" style={{ color: "#655675" }} />
                       </button>
                     )}
                   </div>
                 ))}
                 {options.length < 4 && (
-                  <button onClick={addOption} className="flex items-center gap-1.5 text-[12px] font-medium mt-1" style={{ color: "#7A6A85" }}>
+                  <button onClick={addOption} className="flex items-center gap-1.5 text-[12px] font-medium mt-1" style={{ color: "#655675" }}>
                     <Plus className="w-3.5 h-3.5" /> Lägg till alternativ
                   </button>
                 )}
@@ -139,17 +139,17 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
           {mode === "plan" && (
             <div className="space-y-4">
               <div>
-                <label className="text-[11px] font-medium mb-1 block" style={{ color: "#7A6A85" }}>Vad ska ni göra?</label>
+                <label className="text-[11px] font-medium mb-1 block" style={{ color: "#655675" }}>Vad ska ni göra?</label>
                 <input value={planTitle} onChange={(e) => setPlanTitle(e.target.value)}
                   placeholder="T.ex. Middag, Fika, Vandring..." className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none" style={inputStyle} />
               </div>
               <div>
-                <label className="text-[11px] font-medium mb-1 block" style={{ color: "#7A6A85" }}>När?</label>
+                <label className="text-[11px] font-medium mb-1 block" style={{ color: "#655675" }}>När?</label>
                 <input value={planDate} onChange={(e) => setPlanDate(e.target.value)}
                   placeholder="T.ex. Torsdag kväll, Nästa helg..." className="w-full px-3 py-2.5 text-[13px] rounded-[10px] border outline-none" style={inputStyle} />
               </div>
               <div>
-                <label className="text-[11px] font-medium mb-1 block" style={{ color: "#7A6A85" }}>
+                <label className="text-[11px] font-medium mb-1 block" style={{ color: "#655675" }}>
                   <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> Var? <span className="font-normal">(valfritt)</span></span>
                 </label>
                 <input value={planLocation} onChange={(e) => setPlanLocation(e.target.value)}
@@ -164,7 +164,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
           )}
 
           {mode !== "choose" && (
-            <button onClick={() => setMode("choose")} className="w-full mt-2 py-2 text-[12px] font-medium rounded-[10px]" style={{ color: "#7A6A85" }}>
+            <button onClick={() => setMode("choose")} className="w-full mt-2 py-2 text-[12px] font-medium rounded-[10px]" style={{ color: "#655675" }}>
               ← Tillbaka
             </button>
           )}

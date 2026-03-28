@@ -280,7 +280,7 @@ const SettingsPage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <Label className="text-sm">Morgonrapport</Label>
-                  <p className="text-[10px] mt-0.5" style={{ color: "#B0A8B5" }}>
+                  <p className="text-[10px] mt-0.5" style={{ color: "#857A8F" }}>
                     Kommer snart
                   </p>
                 </div>

@@ -291,7 +291,7 @@ const filteredItems = feedItems.filter((item) => {
             {getGreeting()}, {currentUserName || "du"}.
           </h1>
           {!loading && (
-            <p className="text-[12px] mt-1" style={{ color: "#7A6A85" }}>
+            <p className="text-[12px] mt-1" style={{ color: "#655675" }}>
               {activeCount > 0
                 ? `${activeCount} ${activeCount === 1 ? "person har" : "personer har"} delat något`
                 : "Tyst i din by idag – kanske är det din tur?"}
@@ -309,7 +309,7 @@ const filteredItems = feedItems.filter((item) => {
                     padding: "6px 14px",
                     borderRadius: 99,
                     backgroundColor: filter === f.value ? "#3C2A4D" : "transparent",
-                    color: filter === f.value ? "#F7F3EF" : "#9B8BA5",
+                    color: filter === f.value ? "#F7F3EF" : "#6B5C78",
                     border: filter === f.value ? "none" : "none",
                   }}
                 >
@@ -342,7 +342,7 @@ const filteredItems = feedItems.filter((item) => {
     {quietPersons.length > 0 && activePersons.length > 0 && (
       <div className="flex items-center gap-3 py-2">
         <div className="flex-1 h-px" style={{ backgroundColor: "#EDE8E0" }} />
-        <span className="text-[9px] shrink-0" style={{ color: "#B0A0B5" }}>
+        <span className="text-[9px] shrink-0" style={{ color: "#857A8F" }}>
           Inte hört av sig på ett tag
         </span>
         <div className="flex-1 h-px" style={{ backgroundColor: "#EDE8E0" }} />
@@ -419,7 +419,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
       </motion.h2>
       <motion.p
         className="text-[13px] text-center mb-6 leading-relaxed"
-        style={{ color: "#7A6A85", maxWidth: 260 }}
+        style={{ color: "#655675", maxWidth: 260 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.4 }}
@@ -445,7 +445,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
             </div>
             <div className="flex-1">
               <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>{item.title}</p>
-              <p className="text-[11px] mt-0.5" style={{ color: "#9B8BA5" }}>{item.sub}</p>
+              <p className="text-[11px] mt-0.5" style={{ color: "#6B5C78" }}>{item.sub}</p>
             </div>
             <span className="text-[11px] font-medium shrink-0" style={{ color: "#7A5AA6" }}>{item.cta}</span>
           </motion.button>

@@ -152,13 +152,13 @@ const GroupsPage = () => {
                       compact
                     />
                   ) : (
-                    <p className="text-[11px] truncate italic" style={{ color: "#7A6A85" }}>
+                    <p className="text-[11px] truncate italic" style={{ color: "#655675" }}>
                       {g.last_message || "Inga meddelanden än"}
                     </p>
                   )}
                 </div>
                 <div className="shrink-0 flex flex-col items-end gap-1">
-                  <span className="text-[10px]" style={{ color: "#7A6A85" }}>
+                  <span className="text-[10px]" style={{ color: "#655675" }}>
                     {g.last_message_at ? formatTime(g.last_message_at) : "–"}
                   </span>
                 </div>
@@ -173,9 +173,9 @@ const GroupsPage = () => {
                   style={{ border: "1.5px dashed #EDE8F4" }}>
                   <div className="shrink-0 flex items-center justify-center"
                     style={{ width: 42, height: 42, borderRadius: 10, border: "0.5px dashed #EDE8F4" }}>
-                    <Plus className="w-4 h-4" style={{ color: "#7A6A85" }} />
+                    <Plus className="w-4 h-4" style={{ color: "#655675" }} />
                   </div>
-                  <span className="text-[12px] font-medium" style={{ color: "#7A6A85" }}>
+                  <span className="text-[12px] font-medium" style={{ color: "#655675" }}>
                     Skapa ett nytt sällskap
                   </span>
                 </button>
@@ -218,7 +218,7 @@ const GroupsPage = () => {
                 </motion.h3>
                 <motion.p
                   className="text-[12px] text-center leading-relaxed mb-1"
-                  style={{ color: "#7A6A85", maxWidth: 220 }}
+                  style={{ color: "#655675", maxWidth: 220 }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4, duration: 0.4 }}

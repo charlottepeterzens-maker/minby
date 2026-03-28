@@ -19,13 +19,13 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
       </span>
 
       <div className="space-y-3 mb-10">
-        <p style={{ fontSize: "13px", color: "#7A6A85", lineHeight: 1.6 }}>
+        <p style={{ fontSize: "13px", color: "#655675", lineHeight: 1.6 }}>
           Du scrollar i timmar och vet ändå inte hur din bästa vän egentligen mår.
         </p>
         <p style={{ fontSize: "13px", color: "#3C2A4D", fontWeight: 500, lineHeight: 1.6 }}>
           Minby är din slutna krets – de närmaste, de som faktiskt vill veta.
         </p>
-        <p style={{ fontSize: "13px", color: "#7A6A85", lineHeight: 1.6 }}>
+        <p style={{ fontSize: "13px", color: "#655675", lineHeight: 1.6 }}>
           Dela din dag, planera något, ses på riktigt.
         </p>
       </div>
@@ -41,7 +41,7 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
       <button
         onClick={onLogin}
         className="mt-4 text-[13px] hover:underline"
-        style={{ color: "#7A6A85" }}
+        style={{ color: "#655675" }}
       >
         Har du redan ett konto? <span style={{ color: "#3C2A4D", fontWeight: 500 }}>Logga in</span>
       </button>

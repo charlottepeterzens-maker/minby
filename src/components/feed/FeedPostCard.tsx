@@ -106,7 +106,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
       {/* Föreslå att ses – mjukt, direkt under innehåll */}
       {!isOwn && onSuggestPlan && (
         <div style={{ marginTop: 6 }}>
-          <button onClick={onSuggestPlan} style={{ fontSize: 11, color: "#B0A0B5" }} className="hover:underline">
+          <button onClick={onSuggestPlan} style={{ fontSize: 11, color: "#857A8F" }} className="hover:underline">
             Föreslå att ses →
           </button>
         </div>
@@ -132,7 +132,7 @@ const OwnPostReactionLink = ({ postId, onShow }: { postId: string; onShow: () =>
   if (count === null || count === 0) return null;
 
   return (
-    <button onClick={onShow} style={{ fontSize: 11, color: "#7A6A85" }} className="hover:underline mt-1.5">
+    <button onClick={onShow} style={{ fontSize: 11, color: "#655675" }} className="hover:underline mt-1.5">
       {count === 1 ? "Någon reagerade" : `${count} personer har reagerat`}
     </button>
   );

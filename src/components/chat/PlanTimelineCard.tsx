@@ -88,13 +88,13 @@ const PlanTimelineCard = ({
             </p>
             <div className="flex items-center gap-2 mt-0.5">
               <div className="flex items-center gap-1">
-                <CalendarDays className="w-3 h-3" style={{ color: "#7A6A85" }} />
-                <span className="text-[11px]" style={{ color: "#7A6A85" }}>{dateText}</span>
+                <CalendarDays className="w-3 h-3" style={{ color: "#655675" }} />
+                <span className="text-[11px]" style={{ color: "#655675" }}>{dateText}</span>
               </div>
               {location && (
                 <div className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" style={{ color: "#7A6A85" }} />
-                  <span className="text-[11px]" style={{ color: "#7A6A85" }}>{location}</span>
+                  <MapPin className="w-3 h-3" style={{ color: "#655675" }} />
+                  <span className="text-[11px]" style={{ color: "#655675" }}>{location}</span>
                 </div>
               )}
             </div>
@@ -103,7 +103,7 @@ const PlanTimelineCard = ({
 
         {/* Status summary */}
         {rsvps.length > 0 && (
-          <div className="text-[11px] leading-relaxed" style={{ color: "#7A6A85" }}>
+          <div className="text-[11px] leading-relaxed" style={{ color: "#655675" }}>
             {counts.in > 0 && (
               <span>
                 {respondents.join(", ")} kan
@@ -132,7 +132,7 @@ const PlanTimelineCard = ({
                 className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-[8px] text-[11px] font-medium transition-all disabled:cursor-default"
                 style={{
                   backgroundColor: isActive ? qr.bg : (userRsvp ? "#F7F3EF" : qr.bg),
-                  color: isActive ? qr.color : (userRsvp ? "#9B8BA5" : qr.color),
+                  color: isActive ? qr.color : (userRsvp ? "#6B5C78" : qr.color),
                   border: isActive ? `1.5px solid ${qr.activeBorder}` : "1.5px solid transparent",
                   opacity: userRsvp && !isActive ? 0.5 : 1,
                 }}
@@ -146,8 +146,8 @@ const PlanTimelineCard = ({
 
         {/* Footer */}
         <div className="flex items-center justify-between">
-          <span className="text-[10px]" style={{ color: "#7A6A85" }}>{creatorName}</span>
-          <span className="text-[10px]" style={{ color: "#9B8BA5" }}>
+          <span className="text-[10px]" style={{ color: "#655675" }}>{creatorName}</span>
+          <span className="text-[10px]" style={{ color: "#6B5C78" }}>
             {counts.in} av {members.length} · {time}
           </span>
         </div>

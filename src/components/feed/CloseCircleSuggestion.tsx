@@ -60,7 +60,7 @@ const CloseCircleSuggestion = ({ friendUserId, friendName, onDismiss }: CloseCir
           onClick={onDismiss}
           className="w-6 h-6 flex items-center justify-center"
         >
-          <X className="w-3.5 h-3.5" style={{ color: "#9B8BA5" }} />
+          <X className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
         </button>
       </div>
     </div>

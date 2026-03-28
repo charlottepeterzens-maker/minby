@@ -455,7 +455,7 @@ const GroupChatPage = () => {
             ))}
             {members.length > 4 && (
               <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
-                style={{ backgroundColor: "#7A6A85", color: "#F7F3EF", borderColor: "#3C2A4D" }}>
+                style={{ backgroundColor: "#655675", color: "#F7F3EF", borderColor: "#3C2A4D" }}>
                 +{members.length - 4}
               </div>
             )}
@@ -472,14 +472,14 @@ const GroupChatPage = () => {
                   <button onClick={() => { setMenuOpen(false); setAddMemberOpen(true); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
                     style={{ color: "#3C2A4D" }}>
-                    <UserPlus className="w-4 h-4" style={{ color: "#7A6A85" }} />
+                    <UserPlus className="w-4 h-4" style={{ color: "#655675" }} />
                     Lägg till vän
                   </button>
                   <InviteFriendDialog trigger={
                     <button onClick={() => setMenuOpen(false)}
                       className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
                       style={{ color: "#3C2A4D" }}>
-                      <ArrowUpFromLine className="w-4 h-4" style={{ color: "#7A6A85" }} />
+                      <ArrowUpFromLine className="w-4 h-4" style={{ color: "#655675" }} />
                       Bjud in till sällskapet
                     </button>
                   } />
@@ -525,7 +525,7 @@ const GroupChatPage = () => {
         )}
         {timeline.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-[13px]" style={{ color: "#7A6A85" }}>Inga meddelanden ännu. Skriv det första!</p>
+            <p className="text-[13px]" style={{ color: "#655675" }}>Inga meddelanden ännu. Skriv det första!</p>
           </div>
         )}
 
@@ -542,8 +542,8 @@ const GroupChatPage = () => {
               <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"} group`}>
                 {repliedMsg && (
                   <div className="flex items-center gap-1 px-2 mb-0.5" style={{ maxWidth: 200 }}>
-                    <Reply className="w-3 h-3 shrink-0" style={{ color: "#9B8BA5", transform: "scaleX(-1)" }} />
-                    <span className="text-[10px] truncate" style={{ color: "#9B8BA5" }}>
+                    <Reply className="w-3 h-3 shrink-0" style={{ color: "#6B5C78", transform: "scaleX(-1)" }} />
+                    <span className="text-[10px] truncate" style={{ color: "#6B5C78" }}>
                       {repliedMember?.display_name || "Anonym"}: {repliedMsg.content}
                     </span>
                   </div>
@@ -554,14 +554,14 @@ const GroupChatPage = () => {
                       <button
                         onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
                         className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
-                        style={{ color: "#9B8BA5" }}
+                        style={{ color: "#6B5C78" }}
                       >
                         <SmilePlus className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
                         className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
-                        style={{ color: "#9B8BA5" }}
+                        style={{ color: "#6B5C78" }}
                       >
                         <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
                       </button>
@@ -586,14 +586,14 @@ const GroupChatPage = () => {
                       <button
                         onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
                         className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
-                        style={{ color: "#9B8BA5" }}
+                        style={{ color: "#6B5C78" }}
                       >
                         <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
                       </button>
                       <button
                         onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
                         className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
-                        style={{ color: "#9B8BA5" }}
+                        style={{ color: "#6B5C78" }}
                       >
                         <SmilePlus className="w-3.5 h-3.5" />
                       </button>
@@ -609,8 +609,8 @@ const GroupChatPage = () => {
                   onPickerToggle={(open) => setReactionPickerMsgId(open ? msg.id : null)}
                 />
                 <div className="flex items-center gap-1.5 mt-0.5 px-1">
-                  {!isOwn && <span className="text-[10px]" style={{ color: "#7A6A85" }}>{member?.display_name || "Anonym"}</span>}
-                  <span className="text-[10px]" style={{ color: "#9B8BA5" }}>{formatTime(msg.created_at)}</span>
+                  {!isOwn && <span className="text-[10px]" style={{ color: "#655675" }}>{member?.display_name || "Anonym"}</span>}
+                  <span className="text-[10px]" style={{ color: "#6B5C78" }}>{formatTime(msg.created_at)}</span>
                 </div>
               </div>
             );
@@ -667,17 +667,17 @@ const GroupChatPage = () => {
       <div className="sticky bottom-0 px-4 py-3 safe-area-bottom" style={{ backgroundColor: "#F7F3EF" }}>
         {replyTo && (
           <div className="flex items-center gap-2 px-4 py-1.5 mb-1 rounded-t-[12px]" style={{ backgroundColor: "#EDE8F4" }}>
-            <Reply className="w-3.5 h-3.5 shrink-0" style={{ color: "#7A6A85", transform: "scaleX(-1)" }} />
+            <Reply className="w-3.5 h-3.5 shrink-0" style={{ color: "#655675", transform: "scaleX(-1)" }} />
             <div className="flex-1 min-w-0">
               <span className="text-[10px] font-medium block" style={{ color: "#3C2A4D" }}>
                 {getMember(replyTo.user_id)?.display_name || "Anonym"}
               </span>
-              <span className="text-[11px] truncate block" style={{ color: "#7A6A85" }}>
+              <span className="text-[11px] truncate block" style={{ color: "#655675" }}>
                 {replyTo.content}
               </span>
             </div>
             <button onClick={() => setReplyTo(null)} className="shrink-0 p-0.5">
-              <X className="w-3.5 h-3.5" style={{ color: "#7A6A85" }} />
+              <X className="w-3.5 h-3.5" style={{ color: "#655675" }} />
             </button>
           </div>
         )}
@@ -687,7 +687,7 @@ const GroupChatPage = () => {
           </button>
           <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder={replyTo ? "Svara..." : "Skriv något..."}
-            className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#9B8BA5]" style={{ color: "#3C2A4D" }} />
+            className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#6B5C78]" style={{ color: "#3C2A4D" }} />
           <button onClick={handleSend} disabled={!newMessage.trim() || sending}
             className="shrink-0 flex items-center justify-center rounded-full disabled:opacity-40 transition-opacity"
             style={{ width: 32, height: 32, backgroundColor: "#3C2A4D" }}>

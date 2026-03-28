@@ -97,7 +97,7 @@ const PollCard = ({
                   {userVote && (
                     <span
                       className="text-[10px] font-medium ml-2 shrink-0"
-                      style={{ color: "#7A6A85" }}
+                      style={{ color: "#655675" }}
                     >
                       {count} ({pct}%)
                     </span>
@@ -110,10 +110,10 @@ const PollCard = ({
 
         {/* Footer */}
         <div className="flex items-center justify-between">
-          <span className="text-[10px]" style={{ color: "#7A6A85" }}>
+          <span className="text-[10px]" style={{ color: "#655675" }}>
             {creatorName}
           </span>
-          <span className="text-[10px]" style={{ color: "#9B8BA5" }}>
+          <span className="text-[10px]" style={{ color: "#6B5C78" }}>
             {totalVotes} röst{totalVotes !== 1 ? "er" : ""} · {time}
           </span>
         </div>

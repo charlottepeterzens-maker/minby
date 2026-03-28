@@ -54,7 +54,7 @@ const FeedTipCard = ({ tip, profile, onProfileClick }: FeedTipCardProps) => {
           >
             {profile.display_name || "Någon"}
           </button>
-          <p className="text-[11px] leading-tight" style={{ color: "#7A6A85" }}>
+          <p className="text-[11px] leading-tight" style={{ color: "#655675" }}>
             delade ett tips · {timeAgo}
           </p>
         </div>
@@ -65,7 +65,7 @@ const FeedTipCard = ({ tip, profile, onProfileClick }: FeedTipCardProps) => {
       </p>
 
       {tip.comment && (
-        <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#7A6A85" }}>
+        <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#655675" }}>
           {tip.comment}
         </p>
       )}
@@ -76,7 +76,7 @@ const FeedTipCard = ({ tip, profile, onProfileClick }: FeedTipCardProps) => {
           target="_blank"
           rel="noopener noreferrer"
           className="text-[12px] mt-2 inline-block hover:underline"
-          style={{ color: "#B0A0B5" }}
+          style={{ color: "#857A8F" }}
         >
           Källa →
         </a>

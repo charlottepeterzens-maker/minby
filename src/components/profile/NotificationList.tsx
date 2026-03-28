@@ -53,14 +53,14 @@ const NotificationList = ({ notifications, onClick, onMarkAllRead }: Props) => {
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-medium" style={{ color: "#7A6A85" }}>
+          <span className="text-[11px] font-medium" style={{ color: "#655675" }}>
             Någon hörde av sig
           </span>
           {unread.length > 1 && (
             <button
               onClick={onMarkAllRead}
               className="text-[11px] hover:underline transition-colors"
-              style={{ color: "#7A6A85" }}
+              style={{ color: "#655675" }}
             >
               Markera alla som lästa
             </button>
@@ -91,7 +91,7 @@ const NotificationList = ({ notifications, onClick, onMarkAllRead }: Props) => {
                 <p className="text-[12px] leading-snug" style={{ color: "#3C2A4D" }}>
                   {n.body || "Ny händelse"}
                 </p>
-                <p className="text-[10px] mt-0.5" style={{ color: "#B0A8B5" }}>
+                <p className="text-[10px] mt-0.5" style={{ color: "#857A8F" }}>
                   {timeAgo(n.created_at)}
                 </p>
               </div>

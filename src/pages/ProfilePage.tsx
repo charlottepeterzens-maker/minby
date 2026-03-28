@@ -377,7 +377,7 @@ const ProfilePage = () => {
                   <button
                     onClick={() => setEditingBio(true)}
                     className="group flex items-start gap-1.5 text-[13px] hover:text-foreground transition-colors w-full text-left"
-                    style={{ color: "#7A6A85", wordBreak: "break-word" }}
+                    style={{ color: "#655675", wordBreak: "break-word" }}
                   >
                     {profile?.bio ? (
                       <span>{profile.bio}</span>
@@ -389,7 +389,7 @@ const ProfilePage = () => {
                 )}
               </div>
             ) : profile?.bio ? (
-              <p className="mt-1.5 text-[13px]" style={{ color: "#7A6A85" }}>
+              <p className="mt-1.5 text-[13px]" style={{ color: "#655675" }}>
                 {profile.bio}
               </p>
             ) : null}
@@ -479,7 +479,7 @@ const ProfilePage = () => {
             className="w-full text-center mt-3"
             style={{
               fontSize: 11,
-              color: "#7A6A85",
+              color: "#655675",
               background: "none",
               border: "none",
               cursor: "pointer",
@@ -491,7 +491,7 @@ const ProfilePage = () => {
 
           {/* Delar av min vardag */}
           <div className="flex items-center justify-between mt-6 mb-3">
-            <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "#B0A0B5" }}>
+            <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "#857A8F" }}>
               Delar av min vardag
             </span>
             {isOwnProfile && (
@@ -513,7 +513,7 @@ const ProfilePage = () => {
           {loading ? (
             <div className="text-center py-4 text-muted-foreground text-xs">{t("loading")}</div>
           ) : sections.length === 0 ? (
-            <p className="text-[11px] text-center py-4" style={{ color: "#B0A0B5" }}>
+            <p className="text-[11px] text-center py-4" style={{ color: "#857A8F" }}>
               {isOwnProfile ? "Lägg till en del av din vardag" : t("nothingSharedYet")}
             </p>
           ) : (

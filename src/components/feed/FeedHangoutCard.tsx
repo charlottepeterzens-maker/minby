@@ -108,7 +108,7 @@ const UnifiedHangoutCard = ({
           >
             {profile.display_name || "Någon"}
           </button>
-          <p className="text-[11px] leading-tight" style={{ color: "#7A6A85" }}>
+          <p className="text-[11px] leading-tight" style={{ color: "#655675" }}>
             {subtitle} · {timeAgo}
           </p>
         </div>
@@ -118,7 +118,7 @@ const UnifiedHangoutCard = ({
       {hangout.date && (
         <p
           className="text-[12px] font-medium mb-1"
-          style={{ color: "#7A6A85" }}
+          style={{ color: "#655675" }}
         >
           {formatDate(hangout.date)}
         </p>
@@ -293,7 +293,7 @@ const GroupedActivityCard = ({
           >
             {profile.display_name || "Någon"}
           </button>
-          <p className="text-[11px] leading-tight" style={{ color: "#7A6A85" }}>
+          <p className="text-[11px] leading-tight" style={{ color: "#655675" }}>
             sugen på · {timeAgo}
           </p>
         </div>
@@ -334,7 +334,7 @@ const GroupedActivityCard = ({
                     backgroundColor: isSelected
                       ? "rgba(255,255,255,0.2)"
                       : "#EDE8F4",
-                    color: isSelected ? "#FFFFFF" : "#7A6A85",
+                    color: isSelected ? "#FFFFFF" : "#655675",
                   }}
                 >
                   {count}
@@ -348,7 +348,7 @@ const GroupedActivityCard = ({
       {hangout.custom_note && (
         <p
           className="text-[12px] mt-3"
-          style={{ color: "#7A6A85" }}
+          style={{ color: "#655675" }}
         >
           {hangout.custom_note}
         </p>

@@ -176,14 +176,14 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
             >
               {person.displayName}
             </button>
-            <span className="text-[10px]" style={{ color: "#B0A0B5" }}>
+            <span className="text-[10px]" style={{ color: "#857A8F" }}>
               {formatRelativeTime(person.lastActivityAt)}
             </span>
           </div>
           {preview && (
             <p
               className="text-[11px] truncate mt-0.5 cursor-pointer"
-              style={{ color: "#7A6A85" }}
+              style={{ color: "#655675" }}
               onClick={() => setExpanded(!expanded)}
             >
               {preview}
@@ -192,9 +192,9 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
         </div>
         <button onClick={() => setExpanded(!expanded)} className="shrink-0 p-1">
           {expanded ? (
-            <ChevronDown size={16} style={{ color: "#B0A0B5" }} />
+            <ChevronDown size={16} style={{ color: "#857A8F" }} />
           ) : (
-            <ChevronRight size={16} style={{ color: "#B0A0B5" }} />
+            <ChevronRight size={16} style={{ color: "#857A8F" }} />
           )}
         </button>
       </div>
@@ -250,7 +250,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                       </p>
                     )}
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[10px]" style={{ color: "#B0A0B5" }}>
+                      <span className="text-[10px]" style={{ color: "#857A8F" }}>
                         {formatDateSwedish(post.created_at)}
                       </span>
                       {post.sectionName && (
@@ -296,7 +296,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               <button
                 onClick={() => navigate(`/profile/${person.userId}`)}
                 className="mt-3 text-[11px]"
-                style={{ color: "#7A6A85" }}
+                style={{ color: "#655675" }}
               >
                 Se alla delar i {person.displayName}s vardag →
               </button>
@@ -309,8 +309,8 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
       {person.activeHangout && (
         <div style={{ borderTop: "1px solid #F7F3EF", padding: "10px 14px" }}>
           <div className="flex items-center gap-1.5 mb-1">
-            <Calendar size={11} style={{ color: "#7A6A85" }} />
-            <span className="text-[11px]" style={{ color: "#7A6A85" }}>
+            <Calendar size={11} style={{ color: "#655675" }} />
+            <span className="text-[11px]" style={{ color: "#655675" }}>
               {formatHangoutDate(person.activeHangout.date)}
             </span>
           </div>
@@ -342,7 +342,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
       {person.latestTip && !person.activeHangout && (
         <div
           className="flex items-center gap-1"
-          style={{ borderTop: "1px solid #F7F3EF", padding: "8px 14px", fontSize: 10, color: "#7A6A85" }}
+          style={{ borderTop: "1px solid #F7F3EF", padding: "8px 14px", fontSize: 10, color: "#655675" }}
         >
           <Heart size={10} />
           {person.latestTip.title.slice(0, 30)}

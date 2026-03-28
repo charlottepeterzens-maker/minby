@@ -65,7 +65,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                 Du har sagt "vi måste ses" och menat det. Ändå gick månaderna.
               </h1>
 
-              <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "#7A6A85" }}>
+              <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "#655675" }}>
                 Vi vet vad som händer i varandras liv, men stannar sällan upp. Vi vet – men vi är inte riktigt där.
               </p>
 
@@ -79,7 +79,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                 Minby är något annat.
               </h1>
 
-              <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "#7A6A85" }}>
+              <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "#655675" }}>
                 En liten, sluten plats – bara för de du faktiskt håller av. Inget brus. Bara din närmaste krets.
               </p>
 
@@ -93,7 +93,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                 Två enkla saker.
               </h1>
 
-              <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "#7A6A85" }}>
+              <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "#655675" }}>
                 Dela det som faktiskt händer. Och när du vill ses – säg till.
               </p>
 
@@ -160,7 +160,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
                 {intent === "meet" ? "Vem hade du velat ses med?" : "Vem vill du ha i din by?"}
               </h1>
 
-              <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "#7A6A85" }}>
+              <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "#655675" }}>
                 {intent === "meet"
                   ? "Tänk på någon du skulle vilja träffa snart. Bjud in – det tar en minut."
                   : "Bjud in en person du faktiskt vill hålla kontakten med. Det är där allt börjar."}
@@ -353,7 +353,7 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
             </div>
           </>
         ) : (
-          <p className="text-center text-sm" style={{ color: "#B0A8B5" }}>
+          <p className="text-center text-sm" style={{ color: "#857A8F" }}>
             Skapar länk…
           </p>
         )}

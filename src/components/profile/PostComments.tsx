@@ -132,7 +132,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
       {comments.length > 0 && !expanded && (
         <button
           onClick={() => setExpanded(true)}
-          style={{ fontSize: 11, color: "#7A6A85", marginBottom: 8 }}
+          style={{ fontSize: 11, color: "#655675", marginBottom: 8 }}
           className="hover:underline"
         >
           {comments.length === 1 ? "1 svar" : `${comments.length} svar`}
@@ -176,7 +176,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
                   <span style={{ fontSize: 11, fontWeight: 500, color: "#2A1A3C" }}>
                     {c.user_id === user?.id ? "Du" : c.display_name || "Någon"}
                   </span>
-                  <span style={{ fontSize: 10, color: "#B0A0B5" }}>{getTimeAgo(c.created_at)}</span>
+                  <span style={{ fontSize: 10, color: "#857A8F" }}>{getTimeAgo(c.created_at)}</span>
                 </div>
                 <p style={{ fontSize: 12, color: "#5A4A6A", lineHeight: 1.5 }}>{c.content}</p>
               </div>

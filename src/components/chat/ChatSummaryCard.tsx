@@ -80,8 +80,8 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
             boxShadow: "0 2px 12px -2px rgba(60,42,77,0.08)",
           }}
         >
-          <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ color: "#7A6A85" }} />
-          <span className="text-[11px]" style={{ color: "#7A6A85" }}>Sammanfattar...</span>
+          <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ color: "#655675" }} />
+          <span className="text-[11px]" style={{ color: "#655675" }}>Sammanfattar...</span>
         </div>
       </div>
     );
@@ -90,7 +90,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
   if (error) {
     return (
       <div className={stickyClass} style={stickyStyle}>
-        <button onClick={fetchSummary} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium" style={{ backgroundColor: "#EDE8F4", color: "#7A6A85" }}>
+        <button onClick={fetchSummary} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium" style={{ backgroundColor: "#EDE8F4", color: "#655675" }}>
           <Sparkles className="w-3 h-3" />
           Försök igen
         </button>
@@ -118,14 +118,14 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
           className="w-full flex items-center justify-between px-3 py-2"
         >
           <div className="flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" style={{ color: "#7A6A85" }} />
+            <Sparkles className="w-3.5 h-3.5" style={{ color: "#655675" }} />
             <span className="text-[11px] font-medium" style={{ color: "#3C2A4D" }}>
               Sammanfattning
             </span>
             {newSinceLastSummary > 0 && (
               <span
                 className="text-[10px] font-medium px-1.5 py-0.5 rounded-full"
-                style={{ backgroundColor: "#EDE8F4", color: "#7A6A85" }}
+                style={{ backgroundColor: "#EDE8F4", color: "#655675" }}
               >
                 +{newSinceLastSummary} nya
               </span>
@@ -139,15 +139,15 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
                   fetchSummary();
                 }}
                 className="p-1 rounded-full hover:opacity-70 transition-opacity"
-                style={{ color: "#9B8BA5" }}
+                style={{ color: "#6B5C78" }}
               >
                 <RefreshCw className="w-3 h-3" />
               </button>
             )}
             {expanded ? (
-              <ChevronUp className="w-3.5 h-3.5" style={{ color: "#9B8BA5" }} />
+              <ChevronUp className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
             ) : (
-              <ChevronDown className="w-3.5 h-3.5" style={{ color: "#9B8BA5" }} />
+              <ChevronDown className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
             )}
           </div>
         </button>
@@ -166,14 +166,14 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
                 <ul className="space-y-1">
                   {summary.bullets.map((b, i) => (
                     <li key={i} className="text-[12px] leading-relaxed flex gap-1.5" style={{ color: "#3C2A4D" }}>
-                      <span style={{ color: "#9B8BA5" }}>•</span>
+                      <span style={{ color: "#6B5C78" }}>•</span>
                       <span>{b}</span>
                     </li>
                   ))}
                 </ul>
 
                 {summary.action && (
-                  <p className="text-[11px] italic" style={{ color: "#7A6A85" }}>
+                  <p className="text-[11px] italic" style={{ color: "#655675" }}>
                     {summary.action}
                   </p>
                 )}
@@ -192,7 +192,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
                 <button
                   onClick={fetchSummary}
                   className="text-[10px] font-medium"
-                  style={{ color: "#9B8BA5" }}
+                  style={{ color: "#6B5C78" }}
                 >
                   Uppdatera
                 </button>

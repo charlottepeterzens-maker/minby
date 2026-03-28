@@ -128,7 +128,7 @@ const AddMemberSheet = ({
         </SheetHeader>
 
         {friends.length === 0 ? (
-          <p className="text-[13px] text-center py-8" style={{ color: "#7A6A85" }}>
+          <p className="text-[13px] text-center py-8" style={{ color: "#655675" }}>
             Alla dina vänner är redan med i gruppen.
           </p>
         ) : (

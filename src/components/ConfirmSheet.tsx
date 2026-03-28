@@ -24,7 +24,7 @@ const ConfirmSheet = ({ open, onOpenChange, title, description, confirmLabel = "
         </DrawerTitle>
       </DrawerHeader>
       <div className="px-5 pb-6 space-y-4">
-        <p className="text-[13px] text-center" style={{ color: "#7A6A85" }}>{description}</p>
+        <p className="text-[13px] text-center" style={{ color: "#655675" }}>{description}</p>
         <div className="flex gap-2">
           <button
             onClick={() => onOpenChange(false)}

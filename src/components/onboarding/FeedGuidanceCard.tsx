@@ -21,7 +21,7 @@ const FeedGuidanceCard = () => {
       <p style={{ fontSize: 13, color: "#3C2A4D", fontWeight: 500, marginBottom: 4 }}>
         Dina närmsta vill veta om din dag. Berätta något, litet som stort.
       </p>
-      <span style={{ fontSize: 12, color: "#7A6A85" }}>Dela något →</span>
+      <span style={{ fontSize: 12, color: "#655675" }}>Dela något →</span>
     </motion.button>
   );
 };

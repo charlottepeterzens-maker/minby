@@ -124,14 +124,14 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
   return (
     <div className="mb-5">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[11px] uppercase tracking-wider font-medium" style={{ color: "#B0A8B5" }}>
+        <p className="text-[11px] uppercase tracking-wider font-medium" style={{ color: "#857A8F" }}>
           Nytt
         </p>
         {unread.length > 1 && (
           <button
             onClick={markAllRead}
             className="text-[11px] hover:underline transition-colors"
-            style={{ color: "#7A6A85" }}
+            style={{ color: "#655675" }}
           >
             Markera alla som lästa
           </button>
@@ -180,7 +180,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
                 >
                   {n.title}
                 </p>
-                <p className="text-[10px] mt-0.5" style={{ color: "#B0A8B5" }}>
+                <p className="text-[10px] mt-0.5" style={{ color: "#857A8F" }}>
                   {timeAgo(n.created_at)}
                 </p>
               </div>

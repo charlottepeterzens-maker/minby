@@ -57,7 +57,7 @@ const DateSuggestionCard = ({
         >
           {typeLabel}
         </span>
-        <span className="text-[11px]" style={{ color: "#7A6A85" }}>
+        <span className="text-[11px]" style={{ color: "#655675" }}>
           {label}
         </span>
       </div>
@@ -72,7 +72,7 @@ const DateSuggestionCard = ({
         <button
           onClick={onDismiss}
           className="px-4 py-1.5 text-[12px] font-medium rounded-[8px]"
-          style={{ backgroundColor: "#F0ECE7", color: "#7A6A85" }}
+          style={{ backgroundColor: "#F0ECE7", color: "#655675" }}
         >
           Hoppa över
         </button>
