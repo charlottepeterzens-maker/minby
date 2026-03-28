@@ -2,11 +2,10 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
-import { Plus, Users } from "lucide-react";
+import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import AddHangoutFreeText from "@/components/profile/AddHangoutFreeText";
 import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
@@ -38,6 +37,24 @@ interface Props {
   onOpenedEntry?: () => void;
 }
 
+const TYPE_COLORS: Record<string, { bg: string }> = {
+  open: { bg: "#F5F0E8" },
+  confirmed: { bg: "#EDE8F4" },
+  activity: { bg: "#E8F2EC" },
+};
+
+const TYPE_LABEL: Record<string, string> = {
+  open: "ledig",
+  confirmed: "häng med",
+  activity: "sugen på",
+};
+
+const getActivityLabel = (key: string) => ACTIVITY_MAP[key] || key;
+
+const getActivityName = (entry: AvailabilityEntry) => {
+  return entry.activities.length > 0 ? getActivityLabel(entry.activities[0]) : entry.custom_note || "";
+};
+
 const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Props) => {
   const { user } = useAuth();
   const { t } = useLanguage();
@@ -48,18 +65,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const [confirmedCounts, setConfirmedCounts] = useState<Map<string, number>>(new Map());
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  // Activity group map: activity name → array of entries
   const [activityGroupMap, setActivityGroupMap] = useState<Map<string, AvailabilityEntry[]>>(new Map());
-
-  // Prefilled activity name for AddHangoutSheet
   const [prefillActivityName, setPrefillActivityName] = useState<string | undefined>();
-
-  const getActivityLabel = (key: string) => ACTIVITY_MAP[key] || key;
-
-  const getActivityName = (entry: AvailabilityEntry) => {
-    return entry.activities.length > 0 ? getActivityLabel(entry.activities[0]) : entry.custom_note || "";
-  };
 
   const fetchEntries = useCallback(async () => {
     const today = format(new Date(), "yyyy-MM-dd");
@@ -73,14 +80,11 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
       const typedData = data as AvailabilityEntry[];
       setEntries(typedData);
 
-      // Build activity group map
       const groupMap = new Map<string, AvailabilityEntry[]>();
       for (const entry of typedData) {
         if (entry.entry_type === "activity") {
-          const name = entry.activities.length > 0 ? getActivityLabel(entry.activities[0]) : entry.custom_note || "";
-          if (!groupMap.has(name)) {
-            groupMap.set(name, []);
-          }
+          const name = getActivityName(entry);
+          if (!groupMap.has(name)) groupMap.set(name, []);
           groupMap.get(name)!.push(entry);
         }
       }
@@ -101,11 +105,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
     }
   }, [userId]);
 
-  useEffect(() => {
-    fetchEntries();
-  }, [fetchEntries]);
+  useEffect(() => { fetchEntries(); }, [fetchEntries]);
 
-  // Open a specific entry from notification
   useEffect(() => {
     if (openEntryId && entries.length > 0) {
       const entry = entries.find((e) => e.id === openEntryId);
@@ -122,38 +123,15 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
     setSheetOpen(true);
   };
 
-  // Scroll tracking for pagination dots
   const handleScroll = () => {
     if (!scrollRef.current) return;
     const el = scrollRef.current;
-    const cardWidth = 130;
+    const cardWidth = 156; // 148 + 8 gap
     const idx = Math.round(el.scrollLeft / cardWidth);
     setCurrentIndex(idx);
   };
 
-  const getTypeStyle = (type: string) => {
-    switch (type) {
-      case "confirmed":
-        return { bg: "#EDE8F4", border: "#C9B8D8" };
-      case "activity":
-        return { bg: "#EAF2E8", border: "#B5CCBF" };
-      default:
-        return { bg: "#F7F3EF", border: "#EDE8F4" };
-    }
-  };
-
-  const getTypeLabel = (type: string) => {
-    switch (type) {
-      case "confirmed":
-        return "häng med";
-      case "activity":
-        return "sugen på";
-      default:
-        return "vill ses";
-    }
-  };
-
-  // Group activity entries by activity name
+  // --- Build carousel items ---
   interface GroupedActivity {
     id: string;
     entry_type: "activity";
@@ -161,45 +139,37 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
     dates: string[];
     ids: string[];
   }
-
   type CarouselItem = AvailabilityEntry | GroupedActivity;
-
   const isGrouped = (item: CarouselItem): item is GroupedActivity => "dates" in item && "ids" in item;
 
   const buildCarouselItems = (): CarouselItem[] => {
     const nonActivity: AvailabilityEntry[] = [];
-    const activityMap = new Map<string, { entries: AvailabilityEntry[] }>();
-
+    const actMap = new Map<string, AvailabilityEntry[]>();
     for (const entry of entries) {
       if (entry.entry_type === "activity") {
         const name = getActivityName(entry);
-        if (!activityMap.has(name)) {
-          activityMap.set(name, { entries: [] });
-        }
-        activityMap.get(name)!.entries.push(entry);
+        if (!actMap.has(name)) actMap.set(name, []);
+        actMap.get(name)!.push(entry);
       } else {
         nonActivity.push(entry);
       }
     }
-
     const grouped: GroupedActivity[] = [];
-    activityMap.forEach((val, name) => {
+    actMap.forEach((val, name) => {
       grouped.push({
-        id: val.entries[0].id,
+        id: val[0].id,
         entry_type: "activity",
         activityName: name,
-        dates: val.entries.map((e) => e.date),
-        ids: val.entries.map((e) => e.id),
+        dates: val.map((e) => e.date),
+        ids: val.map((e) => e.id),
       });
     });
-
     return [...nonActivity, ...grouped];
   };
 
   const carouselItems = buildCarouselItems();
   const totalCards = carouselItems.length + (isOwner ? 1 : 0);
 
-  // Get grouped entries for the currently selected entry
   const getGroupedEntriesForSelected = (): AvailabilityEntry[] | undefined => {
     if (!selectedEntry || selectedEntry.entry_type !== "activity") return undefined;
     const name = getActivityName(selectedEntry);
@@ -211,22 +181,180 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
     setShowAdd(true);
   };
 
+  // --- Render helpers ---
+  const renderDateCard = (item: AvailabilityEntry) => {
+    const dateObj = new Date(item.date + "T00:00:00");
+    const weekday = format(dateObj, "EEEE", { locale: sv });
+    const dayNum = format(dateObj, "d");
+    const month = format(dateObj, "MMMM", { locale: sv });
+    const typeLabel = TYPE_LABEL[item.entry_type] || "ledig";
+    const colors = TYPE_COLORS[item.entry_type] || TYPE_COLORS.open;
+
+    const activityNameLabel = item.activities.length > 0
+      ? item.activities.map((a) => ACTIVITY_MAP[a] || a).join(", ")
+      : null;
+    const rawDescription = item.custom_note || "";
+    const textsAreSimilar = activityNameLabel && rawDescription &&
+      (rawDescription.toLowerCase().includes(activityNameLabel.toLowerCase()) ||
+       activityNameLabel.toLowerCase().includes(rawDescription.toLowerCase()));
+    const description = rawDescription;
+    const showActivity = !textsAreSimilar && !!activityNameLabel;
+
+    return (
+      <button
+        key={item.id}
+        onClick={() => handleCardClick(item)}
+        className="flex-shrink-0 flex flex-col text-left"
+        style={{
+          width: 148,
+          height: 160,
+          borderRadius: 8,
+          padding: 14,
+          backgroundColor: colors.bg,
+          border: "none",
+          overflow: "hidden",
+        }}
+      >
+        {/* Etikett */}
+        <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5", marginBottom: 4 }}>
+          {typeLabel}
+        </p>
+
+        {/* Veckodag */}
+        <p style={{ fontSize: 11, fontWeight: 300, color: "#9A8FA3", marginBottom: 2 }}>
+          {weekday}
+        </p>
+
+        {/* Datum: siffra + månad */}
+        <div className="flex items-baseline gap-1.5" style={{ marginBottom: 6 }}>
+          <span style={{ fontFamily: "Georgia, serif", fontSize: 28, color: "hsl(var(--color-text-primary))", lineHeight: 1 }}>
+            {dayNum}
+          </span>
+          <span style={{ fontSize: 13, color: "hsl(var(--color-text-primary))" }}>
+            {month}
+          </span>
+        </div>
+
+        {/* Fritext */}
+        {(description || showActivity) && (
+          <p
+            style={{
+              fontSize: 13,
+              lineHeight: 1.45,
+              color: "hsl(var(--color-text-primary))",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              marginTop: "auto",
+            }}
+          >
+            {description || activityNameLabel}
+          </p>
+        )}
+      </button>
+    );
+  };
+
+  const renderActivityCard = (item: GroupedActivity) => {
+    return (
+      <button
+        key={`grouped-${item.activityName}`}
+        onClick={() => {
+          const first = entries.find((e) => e.id === item.id);
+          if (first) handleCardClick(first);
+        }}
+        className="flex-shrink-0 flex flex-col text-left"
+        style={{
+          width: 148,
+          height: 160,
+          borderRadius: 8,
+          padding: 14,
+          backgroundColor: TYPE_COLORS.activity.bg,
+          border: "none",
+          overflow: "hidden",
+        }}
+      >
+        {/* Etikett */}
+        <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5", marginBottom: 8 }}>
+          sugen på
+        </p>
+
+        {/* Aktivitetstext */}
+        <p
+          style={{
+            fontFamily: "Georgia, serif",
+            fontSize: 14,
+            fontWeight: 500,
+            color: "hsl(var(--color-text-primary))",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            marginBottom: "auto",
+          }}
+        >
+          {item.activityName}
+        </p>
+
+        {/* Datum-förslag */}
+        {item.dates.length > 0 && (
+          <div style={{ marginTop: 8 }}>
+            <p style={{ fontSize: 10, color: "#B0A8B5", marginBottom: 4 }}>
+              förslag på datum
+            </p>
+            <div className="flex flex-wrap gap-1">
+              {item.dates.map((d, i) => {
+                const dateObj = new Date(d + "T00:00:00");
+                const label = format(dateObj, "d/M", { locale: sv });
+                return (
+                  <span
+                    key={i}
+                    style={{
+                      backgroundColor: "rgba(255,255,255,0.6)",
+                      borderRadius: 99,
+                      padding: "2px 8px",
+                      fontSize: 10,
+                      color: "hsl(var(--color-text-primary))",
+                    }}
+                  >
+                    {label}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </button>
+    );
+  };
+
+  const renderAddButton = () => (
+    <button
+      key="add-btn"
+      onClick={() => setShowAdd(true)}
+      className="flex-shrink-0 flex items-center justify-center"
+      style={{
+        width: 56,
+        height: 160,
+        borderRadius: 8,
+        border: "1px dashed #C9B8D8",
+        backgroundColor: "transparent",
+      }}
+      aria-label="Lägg till hangout"
+    >
+      <Plus className="w-5 h-5" style={{ color: "#C9B8D8" }} />
+    </button>
+  );
+
   return (
     <div style={{ padding: "0 0 20px 0" }}>
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="font-fraunces font-normal text-[16px] mt-6 mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
-          Ses vi?
-        </h2>
-        {isOwner && (
-          <button
-            onClick={() => setShowAdd(true)}
-            className="w-5 h-5 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-          >
-            <Plus className="w-3 h-3" style={{ color: "hsl(var(--color-text-primary))" }} />
-          </button>
-        )}
-      </div>
+      <h2
+        className="font-fraunces font-normal text-[16px] mt-6 mb-3"
+        style={{ color: "hsl(var(--color-text-primary))" }}
+      >
+        Ses vi?
+      </h2>
 
       <AddHangoutFreeText
         open={showAdd}
@@ -250,7 +378,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             initial={{ scale: 0.6, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 20 }}
-           >
+          >
             <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "hsl(var(--color-border-lavender))", opacity: 0.5 }} />
           </motion.div>
           <p className="text-[12px] text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
@@ -266,9 +394,9 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         >
           <div className="relative mb-4" style={{ width: 100, height: 50 }}>
             {[
-              { left: 4, top: 0, bg: "#EDE8F4", delay: 0.15 },
-              { left: 32, top: 4, bg: "#EAF2E8", delay: 0.25 },
-              { left: 54, top: 0, bg: "#FCF0F3", delay: 0.35 },
+              { left: 4, top: 0, bg: "#F5F0E8", delay: 0.15 },
+              { left: 32, top: 4, bg: "#E8F2EC", delay: 0.25 },
+              { left: 54, top: 0, bg: "#EDE8F4", delay: 0.35 },
             ].map((c, i) => (
               <motion.div
                 key={i}
@@ -321,126 +449,16 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
           <div
             ref={scrollRef}
             onScroll={handleScroll}
-            className="flex gap-2.5 overflow-x-scroll pb-2 scrollbar-hide"
+            className="flex gap-2 overflow-x-scroll pb-2 scrollbar-hide"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {carouselItems.map((item) => {
-              if (isGrouped(item)) {
-                const totalFriends = item.ids.reduce((sum, id) => sum + (confirmedCounts.get(id) || 0), 0);
-                return (
-                  <button
-                    key={`grouped-${item.activityName}`}
-                    onClick={() => {
-                      const first = entries.find((e) => e.id === item.id);
-                      if (first) handleCardClick(first);
-                    }}
-                    className="flex-shrink-0 flex flex-col text-left"
-                    style={{
-                      width: 160,
-                      minHeight: 100,
-                      borderRadius: 8,
-                      padding: 16,
-                      backgroundColor: "hsl(var(--color-surface-card))",
-                      border: "none",
-                    }}
-                  >
-                    <div className="flex flex-wrap gap-1 mb-1">
-                      {item.dates.map((d, i) => {
-                        const dateObj = new Date(d + "T00:00:00");
-                        const label = format(dateObj, "EEE d MMM", { locale: sv }).replace(".", "");
-                        return (
-                          <span
-                            key={i}
-                            className="text-[10px]"
-                            style={{ color: "hsl(var(--color-text-secondary))" }}
-                          >
-                            {label}{i < item.dates.length - 1 ? "," : ""}
-                          </span>
-                        );
-                      })}
-                    </div>
-                    <p className="text-[11px] mb-1.5" style={{ color: "hsl(var(--color-text-faint))" }}>
-                      sugen på · {item.activityName}
-                    </p>
-                    {totalFriends > 0 && (
-                      <span className="text-[10px] mt-auto" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                        {totalFriends} intresserade
-                      </span>
-                    )}
-                  </button>
-                );
-              }
-
-              const dateObj = new Date(item.date + "T00:00:00");
-              const dateDisplay = format(dateObj, "EEE d MMMM", { locale: sv }).replace(".", "");
-              const intentLabel = getTypeLabel(item.entry_type);
-              const activityNameLabel =
-                item.activities.length > 0
-                  ? item.activities.map((a) => ACTIVITY_MAP[a] || a).join(", ")
-                  : null;
-              const rawDescription = item.custom_note || "";
-              const isFromGroup = rawDescription.includes("— via ");
-
-              // Deduplicate: if custom_note already contains the activity text (or vice versa), skip one
-              const textsAreSimilar =
-                activityNameLabel && rawDescription &&
-                (rawDescription.toLowerCase().includes(activityNameLabel.toLowerCase()) ||
-                 activityNameLabel.toLowerCase().includes(rawDescription.toLowerCase()));
-              const description = textsAreSimilar ? rawDescription : rawDescription;
-              const showActivityInLabel = !textsAreSimilar;
-              const isSelected = selectedEntry?.id === item.id && sheetOpen;
-
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleCardClick(item)}
-                  className="flex-shrink-0 flex flex-col text-left transition-all"
-                  style={{
-                    width: 160,
-                    minHeight: 100,
-                    borderRadius: 8,
-                    padding: 16,
-                    backgroundColor: "hsl(var(--color-surface-card))",
-                    border: isSelected ? "1.5px solid #3C2A4D" : "none",
-                  }}
-                >
-                  <p
-                    className="text-[12px] mb-0.5"
-                    style={{ color: "hsl(var(--color-text-secondary))", fontWeight: 400 }}
-                  >
-                    {dateDisplay}
-                  </p>
-                  <p className="text-[11px] mb-1.5" style={{ color: "hsl(var(--color-text-faint))" }}>
-                    {intentLabel}
-                    {showActivityInLabel && activityNameLabel && ` · ${activityNameLabel}`}
-                  </p>
-                  {description && (
-                    <p
-                      className="text-[13px] leading-[1.45]"
-                      style={{
-                        color: "hsl(var(--color-text-primary))",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {description}
-                    </p>
-                  )}
-                  {isFromGroup && (
-                    <div className="flex items-center gap-1 mt-auto pt-1">
-                      <Users className="w-3 h-3" style={{ color: "hsl(var(--color-text-muted))" }} />
-                      <span className="text-[10px]" style={{ color: "hsl(var(--color-text-muted))" }}>
-                        {description.split("— via ")[1] || "Sällskap"}
-                      </span>
-                    </div>
-                  )}
-                </button>
-              );
-            })}
+            {carouselItems.map((item) =>
+              isGrouped(item) ? renderActivityCard(item) : renderDateCard(item)
+            )}
+            {isOwner && renderAddButton()}
           </div>
 
+          {/* Pagination dots */}
           {totalCards > 1 && (
             <div className="flex justify-center gap-1 mt-2">
               {Array.from({ length: totalCards }).map((_, i) => (
@@ -448,9 +466,9 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                   key={i}
                   className="rounded-full transition-all"
                   style={{
-                    width: i === currentIndex ? 12 : 5,
-                    height: 5,
-                    backgroundColor: i === currentIndex ? "#3C2A4D" : "#EDE8F4",
+                    width: i === currentIndex ? 16 : 6,
+                    height: 6,
+                    backgroundColor: i === currentIndex ? "#3C2A4D" : "#C9B8D8",
                   }}
                 />
               ))}
@@ -465,9 +483,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         onOpenChange={setSheetOpen}
         isOwner={isOwner}
         onDeleted={fetchEntries}
-        onEdited={() => {
-          setSheetOpen(false);
-        }}
+        onEdited={() => setSheetOpen(false)}
         groupedEntries={getGroupedEntriesForSelected()}
         onRefresh={fetchEntries}
         onAddActivityDate={handleAddActivityDate}
