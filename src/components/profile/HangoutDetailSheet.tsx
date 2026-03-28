@@ -50,6 +50,12 @@ const ACTIVITY_MAP: Record<string, string> = {
   activityGames: "Spel",
 };
 
+const TYPE_LABEL: Record<string, string> = {
+  open: "ledig",
+  confirmed: "häng med",
+  activity: "sugen på",
+};
+
 interface Props {
   entry: AvailabilityEntry | null;
   open: boolean;
@@ -72,16 +78,14 @@ const HangoutDetailSheet = ({
   const [taggedFriends, setTaggedFriends] = useState<TaggedFriend[]>([]);
   const [commentText, setCommentText] = useState("");
   const [sending, setSending] = useState(false);
-  const [showCommentInput, setShowCommentInput] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteAllConfirm, setDeleteAllConfirm] = useState(false);
-  const [ownerProfile, setOwnerProfile] = useState<{ display_name: string | null } | null>(null);
+  const [ownerProfile, setOwnerProfile] = useState<{ display_name: string | null; avatar_url: string | null } | null>(null);
   const [creatingGroup, setCreatingGroup] = useState(false);
   const { subscribe: subscribePush, subscribed: pushSubscribed, permission: pushPermission, isSupported: pushSupported } = usePushNotifications();
 
   const fetchDetails = useCallback(async () => {
     if (!entry) return;
-
     const entryIds = entry.entry_type === "activity" && groupedEntries && groupedEntries.length > 0
       ? groupedEntries.map(e => e.id)
       : [entry.id];
@@ -120,7 +124,7 @@ const HangoutDetailSheet = ({
     }
 
     if (!isOwner && entry.user_id) {
-      const { data } = await supabase.from("profiles").select("display_name").eq("user_id", entry.user_id).single();
+      const { data } = await supabase.from("profiles").select("display_name, avatar_url").eq("user_id", entry.user_id).single();
       if (data) setOwnerProfile(data);
     }
   }, [entry, isOwner, groupedEntries]);
@@ -129,19 +133,16 @@ const HangoutDetailSheet = ({
     if (open && entry) {
       fetchDetails();
       setCommentText("");
-      setShowCommentInput(false);
     }
   }, [open, entry, fetchDetails]);
 
   if (!entry) return null;
 
   const dateObj = new Date(entry.date + "T00:00:00");
-  const dateDisplay = format(dateObj, "EEEE d MMMM", { locale: sv });
-  const shortWeekday = format(dateObj, "EEE", { locale: sv }).replace(".", "");
-  const day = format(dateObj, "d");
-  const shortMonth = format(dateObj, "M");
-
-  const intentLabel = entry.entry_type === "confirmed" ? "Häng med" : entry.entry_type === "activity" ? "Sugen på" : "Jag vill ses";
+  const weekday = format(dateObj, "EEEE", { locale: sv });
+  const dayNum = format(dateObj, "d");
+  const month = format(dateObj, "MMMM", { locale: sv });
+  const typeLabel = TYPE_LABEL[entry.entry_type] || "ledig";
   const activityName = entry.activities.length > 0 ? entry.activities.map(a => ACTIVITY_MAP[a] || a).join(", ") : null;
   const description = entry.custom_note || "";
   const ownerName = ownerProfile?.display_name || "Någon";
@@ -151,12 +152,16 @@ const HangoutDetailSheet = ({
     : entry.entry_type === "activity" ? [entry] : [];
   const activityGroupName = activityName || entry.custom_note || "";
 
+  // Dedup: don't show activity label if custom_note already contains it
+  const textsAreSimilar = activityName && description &&
+    (description.toLowerCase().includes(activityName.toLowerCase()) ||
+     activityName.toLowerCase().includes(description.toLowerCase()));
+
   // Handlers
   const handleAddComment = async () => {
     if (!commentText.trim() || !user) return;
     setSending(true);
     await supabase.from("hangout_comments").insert({ availability_id: entry.id, user_id: user.id, content: commentText.trim() });
-
     if (entry.user_id !== user.id) {
       const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
       const name = myProfile?.display_name || "Någon";
@@ -165,10 +170,9 @@ const HangoutDetailSheet = ({
         fromUserId: user.id,
         type: "hangout_comment",
         referenceId: entry.id,
-        message: `${name} kommenterade på "${description || activityGroupName || "häng"}"`,
+        message: `${name} kommenterade på ${description || activityGroupName || "häng"}`,
       });
     }
-
     setCommentText("");
     await fetchDetails();
     setSending(false);
@@ -185,7 +189,6 @@ const HangoutDetailSheet = ({
     if (!existing && status === "yes") {
       await supabase.from("hangout_tagged_friends").insert({ availability_id: entry.id, tagged_user_id: user.id, tagged_by: user.id });
     }
-
     if (entry.user_id !== user.id) {
       const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
       const name = myProfile?.display_name || "Någon";
@@ -193,7 +196,6 @@ const HangoutDetailSheet = ({
       const message = status === "yes"
         ? `${name} vill hänga med på ${label}!`
         : `${name} kanske hänger med på ${label}`;
-
       await sendNotification({
         recipientUserId: entry.user_id,
         fromUserId: user.id,
@@ -202,11 +204,7 @@ const HangoutDetailSheet = ({
         message,
       });
     }
-
-    if (pushSupported && pushPermission === "default" && !pushSubscribed) {
-      subscribePush();
-    }
-
+    if (pushSupported && pushPermission === "default" && !pushSubscribed) subscribePush();
     toast({ title: status === "yes" ? "Du är med!" : "Kanske – vi ser!" });
     await fetchDetails();
   };
@@ -220,9 +218,7 @@ const HangoutDetailSheet = ({
   const handleRemoveSingleDate = async (entryId: string) => {
     await supabase.from("hangout_availability").delete().eq("id", entryId);
     toast({ title: "Datum borttaget" });
-    if (activityEntries.length <= 1) {
-      onOpenChange(false);
-    }
+    if (activityEntries.length <= 1) onOpenChange(false);
     onRefresh?.();
     onDeleted?.();
   };
@@ -239,29 +235,23 @@ const HangoutDetailSheet = ({
     if (!user || creatingGroup) return;
     setCreatingGroup(true);
     try {
-      const groupName = `${activityName || description || "Häng"} ${shortWeekday} ${day}/${shortMonth}`;
-
+      const groupName = `${activityName || description || "Häng"} ${weekday} ${dayNum}/${format(dateObj, "M")}`;
       const { data: group, error: groupError } = await supabase
         .from("friend_groups")
-        .insert({ name: groupName, owner_id: user.id, emoji: "🎉" })
+        .insert({ name: groupName, owner_id: user.id, emoji: "" })
         .select("id")
         .single();
-
       if (groupError || !group) {
         toast({ title: "Kunde inte skapa grupp", variant: "destructive" });
         setCreatingGroup(false);
         return;
       }
-
-      // Add all tagged friends + owner to group
       const memberInserts = taggedFriends
         .filter(tf => tf.tagged_user_id !== user.id)
         .map(tf => ({ group_id: group.id, user_id: tf.tagged_user_id, role: "member" }));
-
       if (memberInserts.length > 0) {
         await supabase.from("group_memberships").insert(memberInserts);
       }
-
       onOpenChange(false);
       navigate(`/groups/${group.id}`);
     } catch {
@@ -281,37 +271,62 @@ const HangoutDetailSheet = ({
           className="mx-auto max-w-lg border-0 max-h-[85vh]"
           style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: "20px 20px 0 0" }}
         >
+          {/* Handle bar */}
+          <div className="flex justify-center pt-3 pb-1">
+            <div style={{ width: 36, height: 4, borderRadius: 99, backgroundColor: "#EDE8E0" }} />
+          </div>
+
           {/* Close button */}
-          <div className="flex justify-end px-4 pt-1">
-            <button onClick={() => onOpenChange(false)} className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-muted/50 transition-colors">
+          <div className="flex justify-end px-4 pt-0">
+            <button
+              onClick={() => onOpenChange(false)}
+              className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-muted/50 transition-colors"
+              aria-label="Stäng"
+            >
               <X className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
             </button>
           </div>
 
           <div className="px-5 pb-8 space-y-5 overflow-y-auto">
             {/* ── HEADER ── */}
-            <div className="space-y-1.5">
-              {/* Date */}
-              <p className="font-fraunces text-[18px] font-normal capitalize" style={{ color: "hsl(var(--color-text-primary))" }}>
-                {dateDisplay}
+            <div className="space-y-1">
+              {/* Etikett */}
+              <p style={{ fontSize: 11, letterSpacing: "0.04em", color: "#B0A8B5" }}>
+                {typeLabel}
               </p>
 
-              {/* Intent */}
-              <p className="text-[12px]" style={{ color: "hsl(var(--color-text-faint))", fontWeight: 400 }}>
-                {intentLabel}
-                {activityName && ` · ${activityName}`}
+              {/* Veckodag */}
+              <p style={{ fontSize: 13, fontWeight: 300, color: "#7A6A85" }}>
+                {weekday}
               </p>
 
-              {/* Description */}
+              {/* Datum: siffra + månad */}
+              <div className="flex items-baseline gap-2">
+                <span style={{ fontFamily: "Georgia, serif", fontSize: 36, color: "hsl(var(--color-text-primary))", lineHeight: 1 }}>
+                  {dayNum}
+                </span>
+                <span style={{ fontSize: 16, color: "hsl(var(--color-text-primary))" }}>
+                  {month}
+                </span>
+              </div>
+
+              {/* Activity name (if not similar to description) */}
+              {!textsAreSimilar && activityName && (
+                <p style={{ fontSize: 14, fontWeight: 500, color: "hsl(var(--color-text-primary))", marginTop: 4 }}>
+                  {activityName}
+                </p>
+              )}
+
+              {/* Fritext – full text */}
               {description && (
-                <p className="text-[14px] leading-[1.5] pt-1" style={{ color: "hsl(var(--color-text-primary))", fontWeight: 400 }}>
+                <p style={{ fontSize: 15, lineHeight: 1.6, color: "hsl(var(--color-text-primary))", marginTop: 8 }}>
                   {description}
                 </p>
               )}
 
-              {/* Owner name (if viewing someone else's) */}
+              {/* Owner name (viewing someone else's) */}
               {!isOwner && (
-                <p className="text-[12px] pt-0.5" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                <p className="text-[12px] pt-1" style={{ color: "#7A6A85" }}>
                   {ownerName}
                 </p>
               )}
@@ -331,7 +346,7 @@ const HangoutDetailSheet = ({
                     >
                       {label}
                       {isOwner && (
-                        <button onClick={() => handleRemoveSingleDate(ae.id)} className="hover:opacity-70 ml-0.5">
+                        <button onClick={() => handleRemoveSingleDate(ae.id)} className="hover:opacity-70 ml-0.5" aria-label="Ta bort datum">
                           <X className="w-2.5 h-2.5" />
                         </button>
                       )}
@@ -350,99 +365,21 @@ const HangoutDetailSheet = ({
               </div>
             )}
 
-            {/* ── ACTIONS (non-owner) ── */}
-            {!isOwner && (
-              <div className="space-y-2.5">
-                {/* Primary CTA */}
-                <button
-                  onClick={() => handleRSVP("yes")}
-                  disabled={isSelfTagged}
-                  className="w-full py-2.5 text-[14px] font-medium text-white disabled:opacity-60 transition-colors"
-                  style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 99 }}
-                >
-                  {isSelfTagged ? "Du är med!" : "Jag kan"}
-                </button>
-
-                {/* Secondary actions row */}
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleRSVP("maybe")}
-                    className="flex-1 py-2 text-[13px] font-medium transition-colors"
-                    style={{ color: "hsl(var(--color-text-secondary))", backgroundColor: "hsl(var(--color-surface-card))", border: "1px solid #EDE8F4", borderRadius: 99 }}
-                  >
-                    Kanske
-                  </button>
-                  <button
-                    onClick={() => setShowCommentInput(true)}
-                    className="flex-1 py-2 text-[13px] font-medium transition-colors"
-                    style={{ color: "hsl(var(--color-text-secondary))", backgroundColor: "hsl(var(--color-surface-card))", border: "1px solid #EDE8F4", borderRadius: 99 }}
-                  >
-                    Skriv något
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* ── COMMENT INPUT (inline) ── */}
-            {(showCommentInput || isOwner || comments.length > 0) && (
-              <div className="space-y-2">
-                {comments.length > 0 && (
-                  <div className="space-y-2">
-                    {comments.map(c => (
-                      <div key={c.id} className="flex items-start gap-2 group">
-                        <Avatar className="w-5 h-5 mt-0.5">
-                          {resolveAvatarUrl(c.profile?.avatar_url ?? null) && <AvatarImage src={resolveAvatarUrl(c.profile?.avatar_url ?? null)!} alt={c.profile?.display_name || ""} className="object-cover" />}
-                          <AvatarFallback style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }} className="text-[8px]">
-                            {(c.profile?.display_name || "?").charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <span className="text-[11px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                            {c.user_id === user?.id ? "Du" : (c.profile?.display_name || "Någon")}
-                          </span>
-                          <p className="text-[12px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{c.content}</p>
-                        </div>
-                        {(c.user_id === user?.id || isOwner) && (
-                          <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-destructive">
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <div className="flex gap-1.5 items-center">
-                  <Input
-                    value={commentText}
-                    onChange={e => setCommentText(e.target.value)}
-                    placeholder={`Skriv något till ${isOwner ? "alla" : ownerName}...`}
-                    className="h-9 text-[13px] flex-1 bg-white border-border/30 rounded-full px-4"
-                    onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleAddComment()}
-                    autoFocus={showCommentInput}
-                  />
-                  <button
-                    disabled={sending || !commentText.trim()}
-                    onClick={handleAddComment}
-                    className="w-9 h-9 rounded-full flex items-center justify-center disabled:opacity-40 transition-colors shrink-0"
-                    style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
-                  >
-                    <Send className="w-3.5 h-3.5 text-white" />
-                  </button>
-                </div>
-              </div>
-            )}
+            {/* ── Divider ── */}
+            <div style={{ height: 1, backgroundColor: "#F7F3EF" }} />
 
             {/* ── RESPONSES ── */}
-            {totalResponses > 0 && (
-              <div className="space-y-1.5">
-                <p className="text-[11px] uppercase tracking-wider font-medium" style={{ color: "hsl(var(--color-text-faint))" }}>
-                  Svar
-                </p>
-                {taggedFriends.map(tf => (
+            <div className="space-y-1.5">
+              <p style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#B0A8B5", fontWeight: 500 }}>
+                svar
+              </p>
+              {totalResponses > 0 ? (
+                taggedFriends.map(tf => (
                   <div key={tf.id} className="flex items-center gap-2 py-0.5">
                     <Avatar className="w-5 h-5">
-                      {resolveAvatarUrl(tf.profile?.avatar_url ?? null) && <AvatarImage src={resolveAvatarUrl(tf.profile?.avatar_url ?? null)!} alt={tf.profile?.display_name || ""} className="object-cover" />}
+                      {resolveAvatarUrl(tf.profile?.avatar_url ?? null) && (
+                        <AvatarImage src={resolveAvatarUrl(tf.profile?.avatar_url ?? null)!} alt={tf.profile?.display_name || ""} className="object-cover" />
+                      )}
                       <AvatarFallback style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }} className="text-[8px] font-medium">
                         {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                       </AvatarFallback>
@@ -454,12 +391,96 @@ const HangoutDetailSheet = ({
                       <button onClick={async () => {
                         await supabase.from("hangout_tagged_friends").delete().eq("id", tf.id);
                         setTaggedFriends(prev => prev.filter(t => t.id !== tf.id));
-                      }} className="text-muted-foreground/30 hover:text-destructive">
+                      }} className="text-muted-foreground/30 hover:text-destructive" aria-label="Ta bort svar">
                         <Trash2 className="w-3 h-3" />
                       </button>
                     )}
                   </div>
-                ))}
+                ))
+              ) : (
+                <p style={{ fontSize: 12, color: "#B0A8B5" }}>Ingen har svarat än</p>
+              )}
+            </div>
+
+            {/* ── Divider ── */}
+            <div style={{ height: 1, backgroundColor: "#F7F3EF" }} />
+
+            {/* ── COMMENT SECTION ── */}
+            <div className="space-y-2">
+              {comments.length > 0 && (
+                <div className="space-y-2">
+                  {comments.map(c => (
+                    <div key={c.id} className="flex items-start gap-2 group">
+                      <Avatar className="w-5 h-5 mt-0.5">
+                        {resolveAvatarUrl(c.profile?.avatar_url ?? null) && (
+                          <AvatarImage src={resolveAvatarUrl(c.profile?.avatar_url ?? null)!} alt={c.profile?.display_name || ""} className="object-cover" />
+                        )}
+                        <AvatarFallback style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }} className="text-[8px]">
+                          {(c.profile?.display_name || "?").charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[11px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                          {c.user_id === user?.id ? "Du" : (c.profile?.display_name || "Någon")}
+                        </span>
+                        <p className="text-[12px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{c.content}</p>
+                      </div>
+                      {(c.user_id === user?.id || isOwner) && (
+                        <button onClick={() => handleDeleteComment(c.id)} className="opacity-0 group-hover:opacity-100 text-muted-foreground/40 hover:text-destructive" aria-label="Ta bort kommentar">
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Comment input */}
+              <div className="flex gap-1.5 items-center">
+                {user && (
+                  <Avatar className="w-6 h-6 shrink-0">
+                    <AvatarFallback style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }} className="text-[9px]">
+                      {user.email?.charAt(0).toUpperCase() || "?"}
+                    </AvatarFallback>
+                  </Avatar>
+                )}
+                <Input
+                  value={commentText}
+                  onChange={e => setCommentText(e.target.value)}
+                  placeholder="Skriv något till alla..."
+                  className="h-9 text-[13px] flex-1 bg-white border-border/30 rounded-lg px-4"
+                  onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleAddComment()}
+                />
+                <button
+                  disabled={sending || !commentText.trim()}
+                  onClick={handleAddComment}
+                  className="w-9 h-9 rounded-lg flex items-center justify-center disabled:opacity-40 transition-colors shrink-0"
+                  style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
+                  aria-label="Skicka kommentar"
+                >
+                  <Send className="w-3.5 h-3.5 text-white" />
+                </button>
+              </div>
+            </div>
+
+            {/* ── ACTIONS (non-owner) ── */}
+            {!isOwner && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleRSVP("yes")}
+                  disabled={isSelfTagged}
+                  className="flex-1 py-2.5 text-[14px] font-medium text-white disabled:opacity-60 transition-colors"
+                  style={{ backgroundColor: "#3C2A4D", borderRadius: 8 }}
+                >
+                  {isSelfTagged ? "Du är med!" : "Jag kan"}
+                </button>
+                <button
+                  onClick={() => handleRSVP("maybe")}
+                  className="flex-1 py-2.5 text-[14px] font-medium transition-colors"
+                  style={{ color: "hsl(var(--color-text-primary))", backgroundColor: "transparent", border: "1px solid #C9B8D8", borderRadius: 8 }}
+                >
+                  Kanske
+                </button>
               </div>
             )}
 
@@ -473,7 +494,7 @@ const HangoutDetailSheet = ({
                   onClick={handleCreateGroup}
                   disabled={creatingGroup}
                   className="w-full flex items-center justify-center gap-2 py-2.5 text-[13px] font-medium transition-colors disabled:opacity-60"
-                  style={{ color: "hsl(var(--color-text-primary))", backgroundColor: "hsl(var(--color-surface-card))", border: "1px solid #EDE8F4", borderRadius: 99 }}
+                  style={{ color: "hsl(var(--color-text-primary))", backgroundColor: "hsl(var(--color-surface-card))", border: "1px solid #EDE8F4", borderRadius: 8 }}
                 >
                   <Users className="w-3.5 h-3.5" />
                   Starta sällskap att chatta i
@@ -481,13 +502,12 @@ const HangoutDetailSheet = ({
               </div>
             )}
 
-            {/* ── OWNER ACTIONS ── */}
+            {/* ── OWNER DELETE ── */}
             {isOwner && (
-              <div className="pt-2">
+              <div className="pt-2 flex justify-center">
                 <button
                   onClick={() => entry.entry_type === "activity" && activityEntries.length > 1 ? setDeleteAllConfirm(true) : setDeleteConfirm(true)}
-                  className="text-[12px] mx-auto block"
-                  style={{ color: "hsl(var(--color-text-faint))" }}
+                  style={{ fontSize: 12, color: "#B0A8B5" }}
                 >
                   Ta bort
                 </button>
