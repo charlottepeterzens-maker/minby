@@ -33,7 +33,6 @@ const BottomNav = () => {
               aria-current={isActive ? "page" : undefined}
               role="listitem"
             >
-            >
               <motion.div
                 className="relative"
                 animate={{ y: isActive ? -2 : 0 }}
