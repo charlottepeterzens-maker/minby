@@ -76,7 +76,7 @@ const PWAInstallBanner = () => {
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
           className="fixed bottom-20 left-4 right-4 z-50 rounded-2xl p-4 shadow-lg"
-          style={{ backgroundColor: "#FFFFFF", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}
+          style={{ backgroundColor: "hsl(var(--color-surface-card))", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}
         >
           <div className="flex items-center gap-3">
             <div
@@ -84,20 +84,20 @@ const PWAInstallBanner = () => {
               style={{ width: 40, height: 40, backgroundColor: "#3C2A4D" }}
             >
               {isIOS ? (
-                <Share className="w-5 h-5" style={{ color: "#C9B8D8" }} />
+                <Share className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
               ) : (
-                <Download className="w-5 h-5" style={{ color: "#C9B8D8" }} />
+                <Download className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
               )}
             </div>
 
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>
+              <p className="text-[13px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                 Lägg Minby på hemskärmen – öppna som en app
               </p>
               {isIOS && (
-                <p className="text-[11px] mt-1 leading-snug" style={{ color: "#655675" }}>
+                <p className="text-[11px] mt-1 leading-snug" style={{ color: "hsl(var(--color-text-secondary))" }}>
                   Tryck på{" "}
-                  <Share className="inline w-3 h-3 -mt-0.5" style={{ color: "#655675" }} />{" "}
+                  <Share className="inline w-3 h-3 -mt-0.5" style={{ color: "hsl(var(--color-text-secondary))" }} />{" "}
                   Dela → Lägg till på hemskärmen
                 </p>
               )}
@@ -114,7 +114,7 @@ const PWAInstallBanner = () => {
             )}
 
             <button onClick={dismiss} className="shrink-0 p-1">
-              <X className="w-4 h-4" style={{ color: "#655675" }} />
+              <X className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
             </button>
           </div>
         </motion.div>

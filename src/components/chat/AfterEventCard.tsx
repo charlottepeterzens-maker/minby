@@ -68,19 +68,19 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className="mx-4 mb-2 p-3 rounded-[12px] space-y-2.5"
-      style={{ backgroundColor: "#FFFFFF", border: "1px solid #EDE8F4" }}
+      style={{ backgroundColor: "hsl(var(--color-surface-card))", border: "1px solid #EDE8F4" }}
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-[12px] font-medium" style={{ color: "#3C2A4D" }}>
+          <p className="text-[12px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
             Ni hade {planTitle.toLowerCase()}
           </p>
-          <p className="text-[11px]" style={{ color: "#655675" }}>
+          <p className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
             {planDate} · Vill ni spara något från den kvällen?
           </p>
         </div>
         <button onClick={onDismiss} className="p-1 -mt-1 -mr-1">
-          <X className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
+          <X className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
         </button>
       </div>
 
@@ -98,8 +98,8 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
       )}
 
       <div className="flex items-center gap-2">
-        <label className="shrink-0 w-8 h-8 rounded-[8px] flex items-center justify-center cursor-pointer" style={{ backgroundColor: "#EDE8F4" }}>
-          <Camera className="w-4 h-4" style={{ color: "#655675" }} />
+        <label className="shrink-0 w-8 h-8 rounded-[8px] flex items-center justify-center cursor-pointer" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
+          <Camera className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
           <input type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
         </label>
         <input
@@ -107,7 +107,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
           onChange={(e) => setNote(e.target.value)}
           placeholder="Skriv en rad..."
           className="flex-1 px-3 py-2 text-[12px] rounded-[8px] border outline-none"
-          style={{ backgroundColor: "#F7F3EF", borderColor: "#EDE8F4", color: "#3C2A4D" }}
+          style={{ backgroundColor: "hsl(var(--color-surface))", borderColor: "#EDE8F4", color: "hsl(var(--color-text-primary))" }}
         />
         <button
           onClick={handleSave}

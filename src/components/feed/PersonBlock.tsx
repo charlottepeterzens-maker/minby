@@ -148,7 +148,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   return (
     <div
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "hsl(var(--color-surface-card))",
         border: expanded ? "1.5px solid #C9B8D8" : "none",
         borderRadius: 10,
         opacity: person.isQuiet && !expanded ? 0.7 : 1,
@@ -172,18 +172,18 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
             <button
               onClick={() => navigate(`/profile/${person.userId}`)}
               className="font-medium text-[13px] hover:underline"
-              style={{ color: "#2A1A3C", fontFamily: "Lexend" }}
+              style={{ color: "hsl(var(--color-text-primary))", fontFamily: "Lexend" }}
             >
               {person.displayName}
             </button>
-            <span className="text-[10px]" style={{ color: "#857A8F" }}>
+            <span className="text-[10px]" style={{ color: "hsl(var(--color-text-faint))" }}>
               {formatRelativeTime(person.lastActivityAt)}
             </span>
           </div>
           {preview && (
             <p
               className="text-[11px] truncate mt-0.5 cursor-pointer"
-              style={{ color: "#655675" }}
+              style={{ color: "hsl(var(--color-text-secondary))" }}
               onClick={() => setExpanded(!expanded)}
             >
               {preview}
@@ -192,9 +192,9 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
         </div>
         <button onClick={() => setExpanded(!expanded)} className="shrink-0 p-1">
           {expanded ? (
-            <ChevronDown size={16} style={{ color: "#857A8F" }} />
+            <ChevronDown size={16} style={{ color: "hsl(var(--color-text-faint))" }} />
           ) : (
-            <ChevronRight size={16} style={{ color: "#857A8F" }} />
+            <ChevronRight size={16} style={{ color: "hsl(var(--color-text-faint))" }} />
           )}
         </button>
       </div>
@@ -245,18 +245,18 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                     )}
                     {post.image_url && <PostImage imageUrl={post.image_url} />}
                     {post.content && (
-                      <p className="text-[13px] mt-1" style={{ color: "#2A1A3C" }}>
+                      <p className="text-[13px] mt-1" style={{ color: "hsl(var(--color-text-primary))" }}>
                         {post.content}
                       </p>
                     )}
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[10px]" style={{ color: "#857A8F" }}>
+                      <span className="text-[10px]" style={{ color: "hsl(var(--color-text-faint))" }}>
                         {formatDateSwedish(post.created_at)}
                       </span>
                       {post.sectionName && (
                         <span
                           className="text-[8px] px-2 py-0.5 rounded-full"
-                          style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+                          style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
                         >
                           {post.sectionName}
                         </span>
@@ -296,7 +296,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               <button
                 onClick={() => navigate(`/profile/${person.userId}`)}
                 className="mt-3 text-[11px]"
-                style={{ color: "#655675" }}
+                style={{ color: "hsl(var(--color-text-secondary))" }}
               >
                 Se alla delar i {person.displayName}s vardag →
               </button>
@@ -309,12 +309,12 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
       {person.activeHangout && (
         <div style={{ borderTop: "1px solid #F7F3EF", padding: "10px 14px" }}>
           <div className="flex items-center gap-1.5 mb-1">
-            <Calendar size={11} style={{ color: "#655675" }} />
-            <span className="text-[11px]" style={{ color: "#655675" }}>
+            <Calendar size={11} style={{ color: "hsl(var(--color-text-secondary))" }} />
+            <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
               {formatHangoutDate(person.activeHangout.date)}
             </span>
           </div>
-          <p className="text-[13px] line-clamp-1 mb-2.5" style={{ color: "#3C2A4D" }}>
+          <p className="text-[13px] line-clamp-1 mb-2.5" style={{ color: "hsl(var(--color-text-primary))" }}>
             {person.activeHangout.custom_note || person.activeHangout.activities?.[0] || "Vill ses"}
           </p>
           {user?.id !== person.userId && (
@@ -329,7 +329,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               <button
                 onClick={(e) => { e.stopPropagation(); setHangoutSheetOpen(true); }}
                 className="text-[12px] font-medium py-1.5 px-4 rounded-full"
-                style={{ color: "#3C2A4D" }}
+                style={{ color: "hsl(var(--color-text-primary))" }}
               >
                 Kanske
               </button>
@@ -342,7 +342,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
       {person.latestTip && !person.activeHangout && (
         <div
           className="flex items-center gap-1"
-          style={{ borderTop: "1px solid #F7F3EF", padding: "8px 14px", fontSize: 10, color: "#655675" }}
+          style={{ borderTop: "1px solid #F7F3EF", padding: "8px 14px", fontSize: 10, color: "hsl(var(--color-text-secondary))" }}
         >
           <Heart size={10} />
           {person.latestTip.title.slice(0, 30)}

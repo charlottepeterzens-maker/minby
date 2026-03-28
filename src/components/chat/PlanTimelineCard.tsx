@@ -57,9 +57,9 @@ const PlanTimelineCard = ({
   }, [rsvps, members]);
 
   const quickReplies = [
-    { status: "in", label: "Jag kan", icon: Check, bg: "#EAF2E8", color: "#1F4A1A", activeBorder: "#B5CCBF" },
+    { status: "in", label: "Jag kan", icon: Check, bg: "#EAF2E8", color: "hsl(var(--color-accent-sage-text))", activeBorder: "#B5CCBF" },
     { status: "maybe", label: "Kanske", icon: HelpCircle, bg: "#FFF8E1", color: "#8B6914", activeBorder: "#E8D48A" },
-    { status: "out", label: "Kan inte", icon: X, bg: "#FDECEC", color: "#A32D2D", activeBorder: "#E8AAAA" },
+    { status: "out", label: "Kan inte", icon: X, bg: "#FDECEC", color: "hsl(var(--color-accent-red))", activeBorder: "#E8AAAA" },
   ];
 
   return (
@@ -72,29 +72,29 @@ const PlanTimelineCard = ({
       <div
         className="p-3 space-y-2.5"
         style={{
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "hsl(var(--color-surface-card))",
           border: "none",
           borderRadius: 12,
         }}
       >
         {/* Header */}
         <div className="flex items-start gap-2">
-          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: "#EAF2E8" }}>
-            <CalendarDays className="w-4 h-4" style={{ color: "#1F4A1A" }} />
+          <div className="w-8 h-8 rounded-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: "hsl(var(--color-surface-sage))" }}>
+            <CalendarDays className="w-4 h-4" style={{ color: "hsl(var(--color-accent-sage-text))" }} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-medium leading-snug" style={{ color: "#3C2A4D" }}>
+            <p className="text-[13px] font-medium leading-snug" style={{ color: "hsl(var(--color-text-primary))" }}>
               {title}
             </p>
             <div className="flex items-center gap-2 mt-0.5">
               <div className="flex items-center gap-1">
-                <CalendarDays className="w-3 h-3" style={{ color: "#655675" }} />
-                <span className="text-[11px]" style={{ color: "#655675" }}>{dateText}</span>
+                <CalendarDays className="w-3 h-3" style={{ color: "hsl(var(--color-text-secondary))" }} />
+                <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{dateText}</span>
               </div>
               {location && (
                 <div className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" style={{ color: "#655675" }} />
-                  <span className="text-[11px]" style={{ color: "#655675" }}>{location}</span>
+                  <MapPin className="w-3 h-3" style={{ color: "hsl(var(--color-text-secondary))" }} />
+                  <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{location}</span>
                 </div>
               )}
             </div>
@@ -103,7 +103,7 @@ const PlanTimelineCard = ({
 
         {/* Status summary */}
         {rsvps.length > 0 && (
-          <div className="text-[11px] leading-relaxed" style={{ color: "#655675" }}>
+          <div className="text-[11px] leading-relaxed" style={{ color: "hsl(var(--color-text-secondary))" }}>
             {counts.in > 0 && (
               <span>
                 {respondents.join(", ")} kan
@@ -146,8 +146,8 @@ const PlanTimelineCard = ({
 
         {/* Footer */}
         <div className="flex items-center justify-between">
-          <span className="text-[10px]" style={{ color: "#655675" }}>{creatorName}</span>
-          <span className="text-[10px]" style={{ color: "#6B5C78" }}>
+          <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{creatorName}</span>
+          <span className="text-[10px]" style={{ color: "hsl(var(--color-text-muted))" }}>
             {counts.in} av {members.length} · {time}
           </span>
         </div>

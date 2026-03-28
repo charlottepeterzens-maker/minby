@@ -19,7 +19,7 @@ const FeedAvatar = ({ avatarUrl, displayName, initials, size = "w-9 h-9", onClic
           <AvatarImage src={resolvedUrl} alt={displayName || "Profilbild"} className="object-cover" />
         )}
         <AvatarFallback
-          style={{ backgroundColor: "#EDE8F4", color: "#3C2A4D" }}
+          style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
           className="text-xs font-medium"
         >
           {initials}

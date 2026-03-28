@@ -34,17 +34,17 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             transition={{ duration: 0.3 }}
             className="w-full max-w-[320px]"
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "hsl(var(--color-surface-card))",
                border: "none",
               borderRadius: 16,
               padding: 24,
             }}
           >
-            <h2 className="text-center mb-3" style={{ fontSize: 18, color: "#3C2A4D" }}>
+            <h2 className="text-center mb-3" style={{ fontSize: 18, color: "hsl(var(--color-text-primary))" }}>
               Det ska vara lättare att ses.
             </h2>
 
-            <p className="text-center mb-6" style={{ fontSize: 13, color: "#655675", lineHeight: 1.6 }}>
+            <p className="text-center mb-6" style={{ fontSize: 13, color: "hsl(var(--color-text-secondary))", lineHeight: 1.6 }}>
               Minby hjälper dig ta små steg mot att faktiskt hålla kontakten.
             </p>
 
@@ -65,7 +65,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             <button
               onClick={onDismiss}
               className="w-full mt-3 text-[12px]"
-              style={{ color: "#655675", background: "none", border: "none" }}
+              style={{ color: "hsl(var(--color-text-secondary))", background: "none", border: "none" }}
             >
               Hoppa över
             </button>
@@ -81,13 +81,13 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             transition={{ duration: 0.3 }}
             className="w-full max-w-[320px]"
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "hsl(var(--color-surface-card))",
                border: "none",
               borderRadius: 16,
               padding: 24,
             }}
           >
-            <h2 className="text-center mb-4" style={{ fontSize: 18, color: "#3C2A4D" }}>
+            <h2 className="text-center mb-4" style={{ fontSize: 18, color: "hsl(var(--color-text-primary))" }}>
               Hur känns det just nu?
             </h2>
 
@@ -157,14 +157,14 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             className="w-full max-w-[320px]"
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "hsl(var(--color-surface-card))",
               border: "none",
               borderRadius: 16,
               padding: 24,
               textAlign: "center",
             }}
           >
-            <p className="mb-4" style={{ fontSize: 14, color: "#655675" }}>
+            <p className="mb-4" style={{ fontSize: 14, color: "hsl(var(--color-text-secondary))" }}>
               Du är igång.
             </p>
 

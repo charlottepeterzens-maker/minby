@@ -56,20 +56,20 @@ const PushPermissionDialog = () => {
     <Dialog open={show} onOpenChange={(open) => !open && handleLater()}>
       <DialogContent
         className="max-w-[320px] rounded-[20px] p-6 border-0"
-        style={{ backgroundColor: "#F7F3EF" }}
+        style={{ backgroundColor: "hsl(var(--color-surface))" }}
       >
         <div className="flex flex-col items-center text-center gap-4">
           <div
             className="w-14 h-14 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "#EDE8F4" }}
+            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
           >
-            <Bell className="w-6 h-6" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
+            <Bell className="w-6 h-6" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />
           </div>
           <div>
-            <h3 className="font-display text-lg font-medium" style={{ color: "#3C2A4D" }}>
+            <h3 className="font-display text-lg font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
               Missa inget från dina nära
             </h3>
-            <p className="text-[13px] mt-2 leading-relaxed" style={{ color: "#655675" }}>
+            <p className="text-[13px] mt-2 leading-relaxed" style={{ color: "hsl(var(--color-text-secondary))" }}>
               Få en notis när en vän vill hänga med, kommenterar eller bjuder in dig.
             </p>
           </div>
@@ -84,7 +84,7 @@ const PushPermissionDialog = () => {
             <button
               onClick={handleLater}
               className="w-full py-2.5 rounded-[12px] text-[13px] font-medium transition-colors"
-              style={{ color: "#655675" }}
+              style={{ color: "hsl(var(--color-text-secondary))" }}
             >
               Senare
             </button>

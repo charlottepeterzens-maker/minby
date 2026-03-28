@@ -17,19 +17,19 @@ interface Props {
 
 const ConfirmSheet = ({ open, onOpenChange, title, description, confirmLabel = "Ta bort", confirmStyle, onConfirm }: Props) => (
   <Drawer open={open} onOpenChange={onOpenChange}>
-    <DrawerContent className="mx-auto max-w-lg border-0" style={{ backgroundColor: "#F7F3EF", borderRadius: "20px 20px 0 0" }}>
+    <DrawerContent className="mx-auto max-w-lg border-0" style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: "20px 20px 0 0" }}>
       <DrawerHeader className="pb-2">
-        <DrawerTitle className="font-display text-[16px] font-medium text-center" style={{ color: "#3C2A4D" }}>
+        <DrawerTitle className="font-display text-[16px] font-medium text-center" style={{ color: "hsl(var(--color-text-primary))" }}>
           {title}
         </DrawerTitle>
       </DrawerHeader>
       <div className="px-5 pb-6 space-y-4">
-        <p className="text-[13px] text-center" style={{ color: "#655675" }}>{description}</p>
+        <p className="text-[13px] text-center" style={{ color: "hsl(var(--color-text-secondary))" }}>{description}</p>
         <div className="flex gap-2">
           <button
             onClick={() => onOpenChange(false)}
             className="flex-1 py-2.5 text-[13px] font-medium rounded-[10px]"
-            style={{ color: "#3C2A4D", backgroundColor: "#F0ECE7" }}
+            style={{ color: "hsl(var(--color-text-primary))", backgroundColor: "#F0ECE7" }}
           >
             Avbryt
           </button>

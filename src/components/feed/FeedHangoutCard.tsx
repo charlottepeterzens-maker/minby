@@ -90,7 +90,7 @@ const UnifiedHangoutCard = ({
   return (
     <div
       className="rounded-xl p-4"
-      style={{ backgroundColor: "#FFFFFF" }}
+      style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
     >
       {/* Header: avatar + name + subtitle */}
       <div className="flex items-center gap-2.5 mb-3">
@@ -104,11 +104,11 @@ const UnifiedHangoutCard = ({
           <button
             onClick={onProfileClick}
             className="text-sm font-medium hover:underline block leading-tight"
-            style={{ color: "#3C2A4D" }}
+            style={{ color: "hsl(var(--color-text-primary))" }}
           >
             {profile.display_name || "Någon"}
           </button>
-          <p className="text-[11px] leading-tight" style={{ color: "#655675" }}>
+          <p className="text-[11px] leading-tight" style={{ color: "hsl(var(--color-text-secondary))" }}>
             {subtitle} · {timeAgo}
           </p>
         </div>
@@ -118,7 +118,7 @@ const UnifiedHangoutCard = ({
       {hangout.date && (
         <p
           className="text-[12px] font-medium mb-1"
-          style={{ color: "#655675" }}
+          style={{ color: "hsl(var(--color-text-secondary))" }}
         >
           {formatDate(hangout.date)}
         </p>
@@ -140,7 +140,7 @@ const UnifiedHangoutCard = ({
       {/* Main text */}
       <p
         className="text-[14px] leading-relaxed line-clamp-2"
-        style={{ color: "#3C2A4D", lineHeight: 1.5 }}
+        style={{ color: "hsl(var(--color-text-primary))", lineHeight: 1.5 }}
       >
         {mainText}
       </p>
@@ -160,7 +160,7 @@ const UnifiedHangoutCard = ({
             className="text-[13px] font-medium py-2 px-5 rounded-full transition-colors"
             style={{
               backgroundColor: "transparent",
-              color: "#3C2A4D",
+              color: "hsl(var(--color-text-primary))",
             }}
           >
             Kanske
@@ -276,7 +276,7 @@ const GroupedActivityCard = ({
   return (
     <div
       className="rounded-xl p-4"
-      style={{ backgroundColor: "#FFFFFF" }}
+      style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
     >
       <div className="flex items-center gap-2.5 mb-3">
         <FeedAvatar
@@ -289,11 +289,11 @@ const GroupedActivityCard = ({
           <button
             onClick={onProfileClick}
             className="text-sm font-medium hover:underline block leading-tight"
-            style={{ color: "#3C2A4D" }}
+            style={{ color: "hsl(var(--color-text-primary))" }}
           >
             {profile.display_name || "Någon"}
           </button>
-          <p className="text-[11px] leading-tight" style={{ color: "#655675" }}>
+          <p className="text-[11px] leading-tight" style={{ color: "hsl(var(--color-text-secondary))" }}>
             sugen på · {timeAgo}
           </p>
         </div>
@@ -301,7 +301,7 @@ const GroupedActivityCard = ({
 
       <p
         className="text-[14px] font-medium mb-3"
-        style={{ color: "#3C2A4D" }}
+        style={{ color: "hsl(var(--color-text-primary))" }}
       >
         Sugen på {activityName.toLowerCase()}
       </p>
@@ -348,7 +348,7 @@ const GroupedActivityCard = ({
       {hangout.custom_note && (
         <p
           className="text-[12px] mt-3"
-          style={{ color: "#655675" }}
+          style={{ color: "hsl(var(--color-text-secondary))" }}
         >
           {hangout.custom_note}
         </p>

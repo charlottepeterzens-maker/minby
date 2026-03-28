@@ -12,16 +12,16 @@ const FeedGuidanceCard = () => {
       onClick={() => navigate("/profile")}
       className="w-full text-left mb-4"
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "hsl(var(--color-surface-card))",
         boxShadow: "0 1px 4px 0 rgba(0,0,0,0.05)",
         borderRadius: 16,
         padding: "16px 18px",
       }}
     >
-      <p style={{ fontSize: 13, color: "#3C2A4D", fontWeight: 500, marginBottom: 4 }}>
+      <p style={{ fontSize: 13, color: "hsl(var(--color-text-primary))", fontWeight: 500, marginBottom: 4 }}>
         Dina närmsta vill veta om din dag. Berätta något, litet som stort.
       </p>
-      <span style={{ fontSize: 12, color: "#655675" }}>Dela något →</span>
+      <span style={{ fontSize: 12, color: "hsl(var(--color-text-secondary))" }}>Dela något →</span>
     </motion.button>
   );
 };

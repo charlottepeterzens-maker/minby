@@ -41,9 +41,9 @@ const CloseCircleSuggestion = ({ friendUserId, friendName, onDismiss }: CloseCir
         padding: "12px 14px",
       }}
     >
-      <Heart className="w-4 h-4 shrink-0" style={{ color: "#C9B8D8" }} />
+      <Heart className="w-4 h-4 shrink-0" style={{ color: "hsl(var(--color-border-lavender))" }} />
       <div className="flex-1 min-w-0">
-        <p className="text-[12px]" style={{ color: "#3C2A4D" }}>
+        <p className="text-[12px]" style={{ color: "hsl(var(--color-text-primary))" }}>
           Vill du lägga till <span className="font-medium">{friendName}</span> i din närmaste krets?
         </p>
       </div>
@@ -60,7 +60,7 @@ const CloseCircleSuggestion = ({ friendUserId, friendName, onDismiss }: CloseCir
           onClick={onDismiss}
           className="w-6 h-6 flex items-center justify-center"
         >
-          <X className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
+          <X className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
         </button>
       </div>
     </div>

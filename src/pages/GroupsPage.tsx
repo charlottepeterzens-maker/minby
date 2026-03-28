@@ -114,8 +114,8 @@ const GroupsPage = () => {
   }, [fetchGroups]);
 
   return (
-    <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
-      <nav className="sticky top-0 z-50" style={{ backgroundColor: "#F7F3EF" }}>
+    <div className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+      <nav className="sticky top-0 z-50" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="py-4 flex items-center justify-between">
           <span className="font-display text-[20px] font-medium text-foreground">Sällskap</span>
         </Container>
@@ -136,14 +136,14 @@ const GroupsPage = () => {
                 key={g.id}
                 onClick={() => navigate(`/groups/${g.id}`)}
                 className="w-full flex items-center gap-3 rounded-[16px] p-3 text-left transition-colors hover:opacity-90"
-                style={{ backgroundColor: "#FFFFFF" }}
+                style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
               >
                 <div className="shrink-0 flex items-center justify-center"
-                  style={{ width: 42, height: 42, borderRadius: 10, backgroundColor: "#F7F3EF" }}>
+                  style={{ width: 42, height: 42, borderRadius: 10, backgroundColor: "hsl(var(--color-surface))" }}>
                   <span className="text-lg">{g.emoji}</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium truncate" style={{ color: "#3C2A4D" }}>{g.name}</p>
+                  <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>{g.name}</p>
                   {g.latestPlan ? (
                     <GroupStatusLine
                       memberCount={g.member_count}
@@ -152,13 +152,13 @@ const GroupsPage = () => {
                       compact
                     />
                   ) : (
-                    <p className="text-[11px] truncate italic" style={{ color: "#655675" }}>
+                    <p className="text-[11px] truncate italic" style={{ color: "hsl(var(--color-text-secondary))" }}>
                       {g.last_message || "Inga meddelanden än"}
                     </p>
                   )}
                 </div>
                 <div className="shrink-0 flex flex-col items-end gap-1">
-                  <span className="text-[10px]" style={{ color: "#655675" }}>
+                  <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
                     {g.last_message_at ? formatTime(g.last_message_at) : "–"}
                   </span>
                 </div>
@@ -173,9 +173,9 @@ const GroupsPage = () => {
                   style={{ border: "1.5px dashed #EDE8F4" }}>
                   <div className="shrink-0 flex items-center justify-center"
                     style={{ width: 42, height: 42, borderRadius: 10, border: "0.5px dashed #EDE8F4" }}>
-                    <Plus className="w-4 h-4" style={{ color: "#655675" }} />
+                    <Plus className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
                   </div>
-                  <span className="text-[12px] font-medium" style={{ color: "#655675" }}>
+                  <span className="text-[12px] font-medium" style={{ color: "hsl(var(--color-text-secondary))" }}>
                     Skapa ett nytt sällskap
                   </span>
                 </button>
@@ -209,7 +209,7 @@ const GroupsPage = () => {
                 </div>
                 <motion.h3
                   className="font-fraunces text-[16px] font-medium mb-1"
-                  style={{ color: "#3C2A4D" }}
+                  style={{ color: "hsl(var(--color-text-primary))" }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.4 }}
@@ -218,7 +218,7 @@ const GroupsPage = () => {
                 </motion.h3>
                 <motion.p
                   className="text-[12px] text-center leading-relaxed mb-1"
-                  style={{ color: "#655675", maxWidth: 220 }}
+                  style={{ color: "hsl(var(--color-text-secondary))", maxWidth: 220 }}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4, duration: 0.4 }}

@@ -119,16 +119,16 @@ const AddMemberSheet = ({
       <SheetContent
         side="bottom"
         className="rounded-t-[20px]"
-        style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}
+        style={{ backgroundColor: "hsl(var(--color-surface))", padding: "24px 16px" }}
       >
         <SheetHeader>
-          <SheetTitle className="font-display text-base font-medium text-left" style={{ color: "#3C2A4D" }}>
+          <SheetTitle className="font-display text-base font-medium text-left" style={{ color: "hsl(var(--color-text-primary))" }}>
             Lägg till i {groupName}
           </SheetTitle>
         </SheetHeader>
 
         {friends.length === 0 ? (
-          <p className="text-[13px] text-center py-8" style={{ color: "#655675" }}>
+          <p className="text-[13px] text-center py-8" style={{ color: "hsl(var(--color-text-secondary))" }}>
             Alla dina vänner är redan med i gruppen.
           </p>
         ) : (
@@ -148,14 +148,14 @@ const AddMemberSheet = ({
                 >
                   <div
                     className="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-medium"
-                    style={{ backgroundColor: "#C9B8D8", color: "#3C2A4D" }}
+                    style={{ backgroundColor: "#C9B8D8", color: "hsl(var(--color-text-primary))" }}
                   >
                     {f.initial}
                   </div>
-                  <span className="flex-1 text-[13px] font-medium" style={{ color: "#3C2A4D" }}>
+                  <span className="flex-1 text-[13px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                     {f.display_name}
                   </span>
-                  {isSelected && <Check className="w-4 h-4" style={{ color: "#1F4A1A" }} />}
+                  {isSelected && <Check className="w-4 h-4" style={{ color: "hsl(var(--color-accent-sage-text))" }} />}
                 </button>
               );
             })}

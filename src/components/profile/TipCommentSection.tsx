@@ -133,7 +133,7 @@ const TipCommentSection = ({
                   height: 28,
                   borderRadius: "50%",
                   background: "#EDE8F4",
-                  color: "#3C2A4D",
+                  color: "hsl(var(--color-text-primary))",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -151,12 +151,12 @@ const TipCommentSection = ({
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-                  <span style={{ fontSize: 11, fontWeight: 500, color: "#3C2A4D" }}>
+                  <span style={{ fontSize: 11, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}>
                     {c.profile?.display_name || "Anonym"}
                   </span>
-                  <span style={{ fontSize: 10, color: "#857A8F" }}>{relativeTime(c.created_at)}</span>
+                  <span style={{ fontSize: 10, color: "hsl(var(--color-text-faint))" }}>{relativeTime(c.created_at)}</span>
                 </div>
-                <p style={{ fontSize: 12, color: "#655675", margin: "2px 0 0", lineHeight: 1.4 }}>
+                <p style={{ fontSize: 12, color: "hsl(var(--color-text-secondary))", margin: "2px 0 0", lineHeight: 1.4 }}>
                   {c.content}
                 </p>
               </div>
@@ -182,7 +182,7 @@ const TipCommentSection = ({
               fontFamily: "Lexend, sans-serif",
               outline: "none",
               background: "transparent",
-              color: "#3C2A4D",
+              color: "hsl(var(--color-text-primary))",
             }}
           />
           <button

@@ -284,14 +284,14 @@ const filteredItems = feedItems.filter((item) => {
   ];
 
   return (
-    <div className="min-h-screen pb-20" style={{ backgroundColor: "#F7F3EF" }}>
-      <nav className="sticky top-0 z-50" style={{ backgroundColor: "#F7F3EF" }}>
+    <div className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+      <nav className="sticky top-0 z-50" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="pt-5 pb-2">
-          <h1 className="font-fraunces text-[20px] font-medium" style={{ color: "#2A1A3C" }}>
+          <h1 className="font-fraunces text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
             {getGreeting()}, {currentUserName || "du"}.
           </h1>
           {!loading && (
-            <p className="text-[12px] mt-1" style={{ color: "#655675" }}>
+            <p className="text-[12px] mt-1" style={{ color: "hsl(var(--color-text-secondary))" }}>
               {activeCount > 0
                 ? `${activeCount} ${activeCount === 1 ? "person har" : "personer har"} delat något`
                 : "Tyst i din by idag – kanske är det din tur?"}
@@ -341,11 +341,11 @@ const filteredItems = feedItems.filter((item) => {
     {/* Separator */}
     {quietPersons.length > 0 && activePersons.length > 0 && (
       <div className="flex items-center gap-3 py-2">
-        <div className="flex-1 h-px" style={{ backgroundColor: "#EDE8E0" }} />
-        <span className="text-[9px] shrink-0" style={{ color: "#857A8F" }}>
+        <div className="flex-1 h-px" style={{ backgroundColor: "hsl(var(--color-border-subtle))" }} />
+        <span className="text-[9px] shrink-0" style={{ color: "hsl(var(--color-text-faint))" }}>
           Inte hört av sig på ett tag
         </span>
-        <div className="flex-1 h-px" style={{ backgroundColor: "#EDE8E0" }} />
+        <div className="flex-1 h-px" style={{ backgroundColor: "hsl(var(--color-border-subtle))" }} />
       </div>
     )}
 
@@ -410,7 +410,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
 
       <motion.h2
         className="font-fraunces text-[18px] font-medium text-center mb-1.5"
-        style={{ color: "#3C2A4D" }}
+        style={{ color: "hsl(var(--color-text-primary))" }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.4 }}
@@ -419,7 +419,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
       </motion.h2>
       <motion.p
         className="text-[13px] text-center mb-6 leading-relaxed"
-        style={{ color: "#655675", maxWidth: 260 }}
+        style={{ color: "hsl(var(--color-text-secondary))", maxWidth: 260 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4, duration: 0.4 }}
@@ -433,7 +433,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
             key={i}
             onClick={item.onClick}
             className="w-full flex items-center gap-3.5 rounded-xl p-4 text-left transition-all hover:shadow-sm"
-            style={{ backgroundColor: "#FFFFFF" }}
+            style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: item.delay, duration: 0.35, ease: "easeOut" }}
@@ -441,11 +441,11 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
           >
             <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
               style={{ backgroundColor: item.bg }}>
-              <item.icon className="w-5 h-5" style={{ color: "#3C2A4D" }} strokeWidth={1.5} />
+              <item.icon className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />
             </div>
             <div className="flex-1">
-              <p className="text-[13px] font-medium" style={{ color: "#3C2A4D" }}>{item.title}</p>
-              <p className="text-[11px] mt-0.5" style={{ color: "#6B5C78" }}>{item.sub}</p>
+              <p className="text-[13px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>{item.title}</p>
+              <p className="text-[11px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>{item.sub}</p>
             </div>
             <span className="text-[11px] font-medium shrink-0" style={{ color: "#7A5AA6" }}>{item.cta}</span>
           </motion.button>

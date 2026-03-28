@@ -179,7 +179,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
         title="Ta bort del av vardagen"
         description="Är du säker på att du vill ta bort denna del av din vardag? Alla inlägg i den raderas också."
         confirmLabel="Ta bort"
-        confirmStyle={{ backgroundColor: "#A32D2D" }}
+        confirmStyle={{ backgroundColor: "hsl(var(--color-accent-red))" }}
         onConfirm={handleDelete}
       />
     </>

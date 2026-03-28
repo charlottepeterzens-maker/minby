@@ -34,7 +34,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
   return (
     <div
       style={{
-        backgroundColor: "#FFFFFF",
+        backgroundColor: "hsl(var(--color-surface-card))",
         borderRadius: 6,
         border: "none",
         padding: 16,
@@ -80,13 +80,13 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             {post.content && (
-              <p style={{ fontSize: 13, color: "#3C2A4D", margin: 0, lineHeight: 1.55 }}>{post.content}</p>
+              <p style={{ fontSize: 13, color: "hsl(var(--color-text-primary))", margin: 0, lineHeight: 1.55 }}>{post.content}</p>
             )}
           </div>
         </div>
       ) : (
         post.content && (
-          <p style={{ fontSize: 13, color: "#3C2A4D", margin: "0 0 10px", lineHeight: 1.55 }}>{post.content}</p>
+          <p style={{ fontSize: 13, color: "hsl(var(--color-text-primary))", margin: "0 0 10px", lineHeight: 1.55 }}>{post.content}</p>
         )
       )}
 
@@ -106,7 +106,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
       {/* Föreslå att ses – mjukt, direkt under innehåll */}
       {!isOwn && onSuggestPlan && (
         <div style={{ marginTop: 6 }}>
-          <button onClick={onSuggestPlan} style={{ fontSize: 11, color: "#857A8F" }} className="hover:underline">
+          <button onClick={onSuggestPlan} style={{ fontSize: 11, color: "hsl(var(--color-text-faint))" }} className="hover:underline">
             Föreslå att ses →
           </button>
         </div>
@@ -132,7 +132,7 @@ const OwnPostReactionLink = ({ postId, onShow }: { postId: string; onShow: () =>
   if (count === null || count === 0) return null;
 
   return (
-    <button onClick={onShow} style={{ fontSize: 11, color: "#655675" }} className="hover:underline mt-1.5">
+    <button onClick={onShow} style={{ fontSize: 11, color: "hsl(var(--color-text-secondary))" }} className="hover:underline mt-1.5">
       {count === 1 ? "Någon reagerade" : `${count} personer har reagerat`}
     </button>
   );

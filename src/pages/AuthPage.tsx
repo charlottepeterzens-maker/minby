@@ -9,23 +9,23 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; onLogin: () => void }) => (
-  <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "#F7F3EF" }}>
+  <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
     <div className="w-full max-w-sm text-center">
       <span
         className="block font-display lowercase mb-8"
-        style={{ fontWeight: 300, fontSize: "26px", letterSpacing: "-0.5px", color: "#3C2A4D" }}
+        style={{ fontWeight: 300, fontSize: "26px", letterSpacing: "-0.5px", color: "hsl(var(--color-text-primary))" }}
       >
         minby
       </span>
 
       <div className="space-y-3 mb-10">
-        <p style={{ fontSize: "13px", color: "#655675", lineHeight: 1.6 }}>
+        <p style={{ fontSize: "13px", color: "hsl(var(--color-text-secondary))", lineHeight: 1.6 }}>
           Du scrollar i timmar och vet ändå inte hur din bästa vän egentligen mår.
         </p>
-        <p style={{ fontSize: "13px", color: "#3C2A4D", fontWeight: 500, lineHeight: 1.6 }}>
+        <p style={{ fontSize: "13px", color: "hsl(var(--color-text-primary))", fontWeight: 500, lineHeight: 1.6 }}>
           Minby är din slutna krets – de närmaste, de som faktiskt vill veta.
         </p>
-        <p style={{ fontSize: "13px", color: "#655675", lineHeight: 1.6 }}>
+        <p style={{ fontSize: "13px", color: "hsl(var(--color-text-secondary))", lineHeight: 1.6 }}>
           Dela din dag, planera något, ses på riktigt.
         </p>
       </div>
@@ -41,9 +41,9 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
       <button
         onClick={onLogin}
         className="mt-4 text-[13px] hover:underline"
-        style={{ color: "#655675" }}
+        style={{ color: "hsl(var(--color-text-secondary))" }}
       >
-        Har du redan ett konto? <span style={{ color: "#3C2A4D", fontWeight: 500 }}>Logga in</span>
+        Har du redan ett konto? <span style={{ color: "hsl(var(--color-text-primary))", fontWeight: 500 }}>Logga in</span>
       </button>
     </div>
   </div>
@@ -124,7 +124,7 @@ const AuthPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "#F7F3EF" }}>
+    <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
           <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>

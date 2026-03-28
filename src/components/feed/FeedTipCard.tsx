@@ -37,7 +37,7 @@ const FeedTipCard = ({ tip, profile, onProfileClick }: FeedTipCardProps) => {
   return (
     <div
       className="rounded-xl p-4"
-      style={{ backgroundColor: "#FFFFFF" }}
+      style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
     >
       <div className="flex items-center gap-2.5 mb-3">
         <FeedAvatar
@@ -50,22 +50,22 @@ const FeedTipCard = ({ tip, profile, onProfileClick }: FeedTipCardProps) => {
           <button
             onClick={onProfileClick}
             className="text-sm font-medium hover:underline block leading-tight"
-            style={{ color: "#3C2A4D" }}
+            style={{ color: "hsl(var(--color-text-primary))" }}
           >
             {profile.display_name || "Någon"}
           </button>
-          <p className="text-[11px] leading-tight" style={{ color: "#655675" }}>
+          <p className="text-[11px] leading-tight" style={{ color: "hsl(var(--color-text-secondary))" }}>
             delade ett tips · {timeAgo}
           </p>
         </div>
       </div>
 
-      <p className="text-[14px] font-medium leading-snug" style={{ color: "#3C2A4D" }}>
+      <p className="text-[14px] font-medium leading-snug" style={{ color: "hsl(var(--color-text-primary))" }}>
         {tip.title}
       </p>
 
       {tip.comment && (
-        <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "#655675" }}>
+        <p className="text-[13px] mt-1 leading-relaxed" style={{ color: "hsl(var(--color-text-secondary))" }}>
           {tip.comment}
         </p>
       )}
@@ -76,7 +76,7 @@ const FeedTipCard = ({ tip, profile, onProfileClick }: FeedTipCardProps) => {
           target="_blank"
           rel="noopener noreferrer"
           className="text-[12px] mt-2 inline-block hover:underline"
-          style={{ color: "#857A8F" }}
+          style={{ color: "hsl(var(--color-text-faint))" }}
         >
           Källa →
         </a>

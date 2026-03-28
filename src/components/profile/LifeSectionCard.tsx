@@ -234,12 +234,12 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 cursor: "pointer",
               }}
             >
-              <X style={{ width: 14, height: 14, color: "#3C2A4D" }} />
+              <X style={{ width: 14, height: 14, color: "hsl(var(--color-text-primary))" }} />
             </button>
           </div>
         ) : (
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <p style={{ fontSize: 16, fontWeight: 500, color: "#2A1A3C" }}>{section.name}</p>
+            <p style={{ fontSize: 16, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}>{section.name}</p>
             {isOwner && (
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <button
@@ -247,7 +247,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   style={{
                     fontSize: 10,
                     fontWeight: 500,
-                    color: "#655675",
+                    color: "hsl(var(--color-text-secondary))",
                     background: "#F7F3EF",
                     border: "1px solid #EDE8E0",
                     borderRadius: 99,
@@ -410,7 +410,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
       </AnimatePresence>
 
       {posts.length === 0 ? (
-        <p style={{ fontSize: 12, color: "#857A8F", textAlign: "center", padding: "16px 0" }}>
+        <p style={{ fontSize: 12, color: "hsl(var(--color-text-faint))", textAlign: "center", padding: "16px 0" }}>
           Inga uppdateringar annu
         </p>
       ) : (
@@ -443,7 +443,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                           cursor: "pointer",
                         }}
                       >
-                        <MoreHorizontal style={{ width: 14, height: 14, color: "#6B5C78" }} />
+                        <MoreHorizontal style={{ width: 14, height: 14, color: "hsl(var(--color-text-muted))" }} />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -458,7 +458,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => setDeletePostId(post.id)}
-                        style={{ fontSize: 12, gap: 8, color: "#A32D2D", cursor: "pointer" }}
+                        style={{ fontSize: 12, gap: 8, color: "hsl(var(--color-accent-red))", cursor: "pointer" }}
                       >
                         <Trash2 style={{ width: 13, height: 13 }} /> Ta bort inlagg
                       </DropdownMenuItem>
@@ -487,7 +487,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   {post.content && (
-                    <p style={{ fontSize: 13, color: "#2A1A3C", lineHeight: 1.55, marginBottom: 2 }}>{post.content}</p>
+                    <p style={{ fontSize: 13, color: "hsl(var(--color-text-primary))", lineHeight: 1.55, marginBottom: 2 }}>{post.content}</p>
                   )}
                   {post.link_url && (
                     <a
@@ -496,7 +496,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       rel="noopener noreferrer"
                       style={{
                         fontSize: 11,
-                        color: "#3C2A4D",
+                        color: "hsl(var(--color-text-primary))",
                         display: "flex",
                         alignItems: "center",
                         gap: 4,
@@ -507,7 +507,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       {post.link_url.slice(0, 40)}...
                     </a>
                   )}
-                  <p style={{ fontSize: 10, color: "#857A8F", marginTop: 4 }}>{formatRelativeDate(post.created_at)}</p>
+                  <p style={{ fontSize: 10, color: "hsl(var(--color-text-faint))", marginTop: 4 }}>{formatRelativeDate(post.created_at)}</p>
                 </div>
               </div>
 
@@ -555,7 +555,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         <SheetContent
           side="bottom"
           className="rounded-t-[20px]"
-          style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}
+          style={{ backgroundColor: "hsl(var(--color-surface))", padding: "24px 16px" }}
         >
           <SheetHeader>
             <SheetTitle style={{ fontSize: 15, fontWeight: 500 }}>Redigera inlagg</SheetTitle>

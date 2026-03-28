@@ -211,7 +211,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
         <SheetContent
           side="bottom"
           className="rounded-t-[20px]"
-          style={{ backgroundColor: "#F7F3EF", padding: "24px 16px" }}
+          style={{ backgroundColor: "hsl(var(--color-surface))", padding: "24px 16px" }}
         >
           <SheetHeader>
             <SheetTitle style={{ fontSize: 15, fontWeight: 500 }}>Redigera inlägg</SheetTitle>
@@ -226,7 +226,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
 
             {/* Image editing */}
             <div>
-              <p className="text-[10px] mb-1.5" style={{ color: "#857A8F" }}>Bild</p>
+              <p className="text-[10px] mb-1.5" style={{ color: "hsl(var(--color-text-faint))" }}>Bild</p>
 
               {/* Current image preview */}
               {editingPost?.image_url && !editRemoveImage && !editNewImage && (
@@ -287,7 +287,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
                       borderRadius: 99,
                       border: "1px solid #EDE8E0",
                       background: "#F7F3EF",
-                      color: "#655675",
+                      color: "hsl(var(--color-text-secondary))",
                       cursor: "pointer",
                     }}
                   >
@@ -399,7 +399,7 @@ const PostCard = ({
               className="w-7 h-7 rounded-full flex items-center justify-center"
               style={{ background: "rgba(247,243,239,0.9)", border: "1px solid #EDE8E0" }}
             >
-              <MoreHorizontal className="w-3.5 h-3.5" style={{ color: "#6B5C78" }} />
+              <MoreHorizontal className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-[150px]" style={{ borderRadius: 8, border: "1px solid #EDE8E0" }}>
@@ -445,7 +445,7 @@ const PostCard = ({
           )}
           <div className="flex-1 min-w-0">
             {post.content && (
-              <p className="text-[13px] leading-relaxed" style={{ color: "#2A1A3C" }}>{post.content}</p>
+              <p className="text-[13px] leading-relaxed" style={{ color: "hsl(var(--color-text-primary))" }}>{post.content}</p>
             )}
           </div>
         </div>
@@ -458,7 +458,7 @@ const PostCard = ({
 
       {/* Date + reactions */}
       <div className="px-3 pb-1">
-        <span className="text-[10px]" style={{ color: "#857A8F" }}>{dateStr}</span>
+        <span className="text-[10px]" style={{ color: "hsl(var(--color-text-faint))" }}>{dateStr}</span>
       </div>
       <div className="px-3 pb-3">
         <PostReactions postId={post.id} />
