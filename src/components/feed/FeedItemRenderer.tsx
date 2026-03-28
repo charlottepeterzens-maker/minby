@@ -7,11 +7,12 @@ export const FeedItemRenderer = ({ item }: { item: any }) => {
   const navigate = useNavigate();
   const data = item.data;
   const userId = data.user_id;
-  const profile = {
-    display_name: data.profiles?.display_name || data.display_name || null,
-    avatar_url: data.profiles?.avatar_url || data.avatar_url || null,
-    initials: (data.profiles?.display_name || data.display_name || "?").slice(0, 2).toUpperCase(),
-  };
+  const displayName = data.profiles?.display_name || data.display_name || null;
+  const avatarUrl = data.profiles?.avatar_url || data.avatar_url || null;
+  const initials = displayName
+    ? displayName.split(" ").map((w: string) => w[0]).join("").toUpperCase().slice(0, 2)
+    : "?";
+  const profile = { display_name: displayName, avatar_url: avatarUrl, initials };
   const onProfileClick = () => {
     if (userId) navigate(`/profile/${userId}`);
   };
