@@ -201,13 +201,6 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
                   </button>
                 )}
 
-                <button
-                  onClick={fetchSummary}
-                  className="text-[10px] font-medium"
-                  style={{ color: "hsl(var(--color-text-muted))" }}
-                >
-                  Uppdatera
-                </button>
               </div>
             </motion.div>
           )}
