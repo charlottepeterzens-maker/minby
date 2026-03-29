@@ -487,21 +487,30 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             {isOwner && renderAddButton()}
           </div>
 
-          {totalCards > 1 && (
-            <div className="flex justify-center gap-1 mt-2">
-              {Array.from({ length: totalCards }).map((_, i) => (
-                <div
-                  key={i}
-                  className="rounded-full transition-all"
-                  style={{
-                    width: i === currentIndex ? 16 : 6,
-                    height: 6,
-                    backgroundColor: i === currentIndex ? "#3C2A4D" : "#C9B8D8",
-                  }}
-                />
-              ))}
-            </div>
-          )}
+          {(() => {
+            const cardWidth = 148;
+            const gap = 8;
+            const addBtnWidth = isOwner ? 56 : 0;
+            const totalWidth = carouselItems.length * (cardWidth + gap) + (isOwner ? addBtnWidth + gap : 0) - gap;
+            const containerWidth = scrollRef.current?.clientWidth ?? 9999;
+            const needsScroll = totalWidth > containerWidth;
+            if (!needsScroll || totalCards <= 1) return null;
+            return (
+              <div className="flex justify-center gap-1 mt-2">
+                {Array.from({ length: totalCards }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="rounded-full transition-all"
+                    style={{
+                      width: i === currentIndex ? 16 : 6,
+                      height: 6,
+                      backgroundColor: i === currentIndex ? "#3C2A4D" : "#C9B8D8",
+                    }}
+                  />
+                ))}
+              </div>
+            );
+          })()}
         </>
       )}
 
