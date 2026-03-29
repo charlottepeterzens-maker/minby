@@ -12,7 +12,7 @@ interface GroupStatusLineProps {
 
 const GroupStatusLine = ({ memberCount, latestPlan, lastMessageAt, compact = false }: GroupStatusLineProps) => {
   let statusText = "";
-  let statusColor = "#655675";
+  let statusColor = compact ? "hsl(var(--color-border-lavender))" : "#655675";
 
   if (latestPlan) {
     if (latestPlan.rsvpInCount > 0) {
