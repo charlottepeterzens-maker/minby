@@ -17,6 +17,7 @@ import { recognizeDates, type RecognizedDate } from "@/utils/dateRecognition";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import AddMemberSheet from "@/components/chat/AddMemberSheet";
 import SwipeableMessage from "@/components/chat/SwipeableMessage";
+import { useTypingBroadcast, TypingIndicator } from "@/components/chat/TypingIndicator";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
@@ -130,6 +131,14 @@ const GroupChatPage = () => {
   const [reactionPickerMsgId, setReactionPickerMsgId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Typing indicator
+  const myProfile = members.find((m) => m.user_id === user?.id);
+  const { typingUsers, setTyping } = useTypingBroadcast(
+    groupId || "",
+    user?.id || "",
+    myProfile?.display_name || "Anonym"
+  );
 
   const scrollToBottom = () => {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
