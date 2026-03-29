@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { Sparkles, ChevronDown, ChevronUp, ArrowRight, RefreshCw } from "lucide-react";
+import { useState, useCallback, useEffect } from "react";
+import { Sparkles, ChevronDown, ChevronUp, ArrowRight, RefreshCw, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -9,6 +9,7 @@ interface ChatSummaryCardProps {
   groupName: string;
   onCreatePlan?: (suggestion: { title: string; dateText: string }) => void;
   totalMessageCount: number;
+  onClose?: () => void;
 }
 
 interface SummaryData {
@@ -25,7 +26,7 @@ const summaryStyle = {
   boxShadow: "0 1px 0 0 hsla(270, 20%, 50%, 0.06)",
 } as const;
 
-const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount }: ChatSummaryCardProps) => {
+const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount, onClose }: ChatSummaryCardProps) => {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -53,21 +54,17 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
     }
   }, [loading, messages, members, groupName, totalMessageCount]);
 
-  // No summary yet — show compact pill
+  // Auto-fetch on mount
+  useEffect(() => {
+    if (!summary && !loading && messages.length >= 3) {
+      fetchSummary();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // No summary yet — show compact loading or nothing
   if (!summary && !loading) {
-    return (
-      <div className={summaryClass} style={summaryStyle}>
-        <button
-          onClick={fetchSummary}
-          disabled={messages.length < 3}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-opacity disabled:opacity-30"
-          style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
-        >
-          <Sparkles className="w-3 h-3" />
-          Sammanfatta
-        </button>
-      </div>
-    );
+    return null;
   }
 
   if (loading) {
@@ -152,6 +149,18 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
             ) : (
               <ChevronDown className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
             )}
+            {onClose && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+                className="p-1 rounded-full hover:opacity-70 transition-opacity"
+                style={{ color: "hsl(var(--color-text-muted))" }}
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
           </div>
         </button>
 
@@ -192,13 +201,6 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
                   </button>
                 )}
 
-                <button
-                  onClick={fetchSummary}
-                  className="text-[10px] font-medium"
-                  style={{ color: "hsl(var(--color-text-muted))" }}
-                >
-                  Uppdatera
-                </button>
               </div>
             </motion.div>
           )}
