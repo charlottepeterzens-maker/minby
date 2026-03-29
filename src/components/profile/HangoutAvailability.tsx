@@ -73,6 +73,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const [sheetOpen, setSheetOpen] = useState(false);
   const [confirmedCounts, setConfirmedCounts] = useState<Map<string, number>>(new Map());
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activityGroupMap, setActivityGroupMap] = useState<Map<string, AvailabilityEntry[]>>(new Map());
   const [prefillActivityName, setPrefillActivityName] = useState<string | undefined>();
