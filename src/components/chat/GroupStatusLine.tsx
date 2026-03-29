@@ -12,16 +12,18 @@ interface GroupStatusLineProps {
 
 const GroupStatusLine = ({ memberCount, latestPlan, lastMessageAt, compact = false }: GroupStatusLineProps) => {
   let statusText = "";
-  let statusColor = "#655675";
+  let statusColor = compact ? "hsl(var(--color-border-lavender))" : "#655675";
 
   if (latestPlan) {
     if (latestPlan.rsvpInCount > 0) {
       statusText = `${latestPlan.rsvpInCount} kan ${latestPlan.dateText.toLowerCase()}`;
-      statusColor = "#1F4A1A";
+      statusColor = compact ? "#B5CCBF" : "#1F4A1A";
     } else if (latestPlan.rsvpMaybeCount > 0) {
       statusText = `${latestPlan.rsvpMaybeCount} kanske · ${latestPlan.title}`;
+      statusColor = compact ? "hsl(var(--color-border-lavender))" : "#655675";
     } else {
       statusText = `Plan: ${latestPlan.title} – ingen har svarat`;
+      statusColor = compact ? "hsl(var(--color-border-lavender))" : "#655675";
     }
   } else if (lastMessageAt) {
     const d = new Date(lastMessageAt);
