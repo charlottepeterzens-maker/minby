@@ -449,7 +449,7 @@ const ProfilePage = () => {
         <div className="mb-8">
           {/* Section label */}
           <h2 className="font-fraunces font-normal text-[16px] mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
-            Min vardag
+            {isOwnProfile ? "Min vardag" : `${profile?.display_name || "Deras"} vardag`}
           </h2>
 
           {/* Quick post */}
@@ -494,7 +494,7 @@ const ProfilePage = () => {
           {/* Delar av min vardag */}
           <div className="flex items-center justify-between mt-6 mb-3">
             <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "hsl(var(--color-text-faint))" }}>
-              Delar av min vardag
+              {isOwnProfile ? "Delar av min vardag" : `Delar av ${profile?.display_name || "deras"} vardag`}
             </span>
             {isOwnProfile && (
               <CreateSectionDialog
