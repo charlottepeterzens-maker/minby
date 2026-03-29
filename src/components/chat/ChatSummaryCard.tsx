@@ -17,11 +17,9 @@ interface SummaryData {
   planSuggestion: { title: string; dateText: string } | null;
 }
 
-const stickyClass = "sticky top-0 z-30 px-4 pt-2 pb-1";
-const stickyStyle = {
-  backgroundColor: "rgba(247, 243, 239, 0.82)",
-  backdropFilter: "blur(12px)",
-  WebkitBackdropFilter: "blur(12px)",
+const summaryClass = "px-4 pt-2 pb-1 z-30";
+const summaryStyle = {
+  backgroundColor: "hsl(var(--color-surface))",
 } as const;
 
 const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount }: ChatSummaryCardProps) => {
@@ -55,7 +53,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
   // No summary yet — show compact pill
   if (!summary && !loading) {
     return (
-      <div className={stickyClass} style={stickyStyle}>
+      <div className={summaryClass} style={summaryStyle}>
         <button
           onClick={fetchSummary}
           disabled={messages.length < 3}
@@ -71,7 +69,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
 
   if (loading) {
     return (
-      <div className={stickyClass} style={stickyStyle}>
+      <div className={summaryClass} style={summaryStyle}>
         <div
           className="p-2.5 rounded-lg flex items-center gap-2"
           style={{
@@ -89,7 +87,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
 
   if (error) {
     return (
-      <div className={stickyClass} style={stickyStyle}>
+      <div className={summaryClass} style={summaryStyle}>
         <button onClick={fetchSummary} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium" style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-secondary))" }}>
           <Sparkles className="w-3 h-3" />
           Försök igen
@@ -101,7 +99,7 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
   if (!summary) return null;
 
   return (
-    <div className={stickyClass} style={stickyStyle}>
+    <div className={summaryClass} style={summaryStyle}>
       <motion.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
