@@ -607,6 +607,7 @@ const FriendsPage = () => {
                 initial={{ opacity: 0, x: -12 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.06 * i, type: "spring", stiffness: 300, damping: 24 }}
+                className="flex items-center gap-3 p-3"
                 style={{ backgroundColor: "#EDE8F4", border: "1px solid #C9B8D8", borderRadius: 8 }}
               >
                 <button
@@ -648,7 +649,7 @@ const FriendsPage = () => {
                     Neka
                   </button>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
