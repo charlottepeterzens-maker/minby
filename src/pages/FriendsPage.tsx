@@ -601,10 +601,12 @@ const FriendsPage = () => {
         {/* Pending friend requests – on top */}
         {pendingRequests.length > 0 && (
           <div className="space-y-2">
-            {pendingRequests.map((r) => (
-              <div
+            {pendingRequests.map((r, i) => (
+              <motion.div
                 key={r.id}
-                className="flex items-center gap-3 p-3"
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.06 * i, type: "spring", stiffness: 300, damping: 24 }}
                 style={{ backgroundColor: "#EDE8F4", border: "1px solid #C9B8D8", borderRadius: 8 }}
               >
                 <button
