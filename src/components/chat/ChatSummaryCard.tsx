@@ -1,5 +1,5 @@
-import { useState, useCallback } from "react";
-import { Sparkles, ChevronDown, ChevronUp, ArrowRight, RefreshCw } from "lucide-react";
+import { useState, useCallback, useEffect } from "react";
+import { Sparkles, ChevronDown, ChevronUp, ArrowRight, RefreshCw, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -26,7 +26,7 @@ const summaryStyle = {
   boxShadow: "0 1px 0 0 hsla(270, 20%, 50%, 0.06)",
 } as const;
 
-const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount }: ChatSummaryCardProps) => {
+const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount, onClose }: ChatSummaryCardProps) => {
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
