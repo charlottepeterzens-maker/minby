@@ -483,29 +483,39 @@ const GroupChatPage = () => {
               />
             )}
           </div>
-          <div className="shrink-0 flex items-center -space-x-2">
-            {members.slice(0, 4).map((m) => (
-              <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
-                style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderColor: "hsl(var(--color-text-primary))" }}>
-                {m.initial}
-              </div>
-            ))}
-            {members.length > 4 && (
-              <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
-                style={{ backgroundColor: "#655675", color: "#F7F3EF", borderColor: "hsl(var(--color-text-primary))" }}>
-                +{members.length - 4}
-              </div>
-            )}
-          </div>
+          {groupAvatarUrl ? (
+            <img src={groupAvatarUrl} alt={groupName} className="w-8 h-8 rounded-full object-cover shrink-0 border-2" style={{ borderColor: "hsl(var(--color-text-primary))" }} />
+          ) : (
+            <div className="shrink-0 flex items-center -space-x-2">
+              {members.slice(0, 4).map((m) => (
+                <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
+                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderColor: "hsl(var(--color-text-primary))" }}>
+                  {m.initial}
+                </div>
+              ))}
+              {members.length > 4 && (
+                <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
+                  style={{ backgroundColor: "#655675", color: "#F7F3EF", borderColor: "hsl(var(--color-text-primary))" }}>
+                  +{members.length - 4}
+                </div>
+              )}
+            </div>
+          )}
           <div className="shrink-0 relative">
             <button onClick={() => setMenuOpen((v) => !v)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Sällskapsinställningar">
-              <EllipsisVertical className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
+              <Ellipsis className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
             </button>
             {menuOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
                 <div className="absolute right-0 top-full mt-1 z-50 py-1.5 rounded-lg shadow-lg min-w-[180px]"
                   style={{ backgroundColor: "hsl(var(--color-surface-card))", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}>
+                  <button onClick={() => { setMenuOpen(false); avatarInputRef.current?.click(); }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80 min-h-[44px]"
+                    style={{ color: "hsl(var(--color-text-primary))" }}>
+                    <Camera className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
+                    Byt profilbild
+                  </button>
                   <button onClick={() => { setMenuOpen(false); setAddMemberOpen(true); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80 min-h-[44px]"
                     style={{ color: "hsl(var(--color-text-primary))" }}>
