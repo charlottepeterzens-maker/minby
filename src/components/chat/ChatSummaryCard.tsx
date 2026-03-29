@@ -19,7 +19,9 @@ interface SummaryData {
 
 const summaryClass = "pt-2 pb-1 z-30 -mx-4 px-4";
 const summaryStyle = {
-  backgroundColor: "hsl(var(--color-surface))",
+  backgroundColor: "hsla(30, 27%, 95%, 0.75)",
+  backdropFilter: "blur(12px)",
+  WebkitBackdropFilter: "blur(12px)",
 } as const;
 
 const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount }: ChatSummaryCardProps) => {
