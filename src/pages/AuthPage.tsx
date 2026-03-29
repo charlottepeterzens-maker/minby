@@ -53,7 +53,7 @@ const AuthPage = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [view, setView] = useState<"welcome" | "signup" | "login">("welcome");
+  const [view, setView] = useState<"welcome" | "signup" | "login" | "forgot">("welcome");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
@@ -114,12 +114,71 @@ const AuthPage = () => {
     }
   };
 
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success("Kolla din e-post för en återställningslänk!");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (view === "welcome") {
     return (
       <WelcomeScreen
         onGetStarted={() => setView("signup")}
         onLogin={() => setView("login")}
       />
+    );
+  }
+
+  if (view === "forgot") {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+        <div className="w-full max-w-sm">
+          <div className="text-center mb-10">
+            <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
+            <h1 className="font-display font-medium text-[20px] text-foreground mt-4">Glömt lösenord?</h1>
+            <p className="text-muted-foreground mt-2 text-sm">Ange din e-post så skickar vi en återställningslänk</p>
+          </div>
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            <div>
+              <Label htmlFor="forgot-email" className="text-xs text-muted-foreground">{t("email")}</Label>
+              <Input
+                id="forgot-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                className="mt-1.5 rounded-lg bg-card border border-border"
+                autoComplete="email"
+                required
+              />
+            </div>
+            <Button
+              type="submit"
+              className="w-full rounded-lg font-medium text-sm"
+              disabled={loading}
+              style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#fff" }}
+            >
+              {loading ? "..." : "Skicka återställningslänk"}
+            </Button>
+          </form>
+          <p className="text-center text-sm text-muted-foreground mt-8">
+            <button onClick={() => setView("login")} className="text-foreground font-medium hover:underline">
+              Tillbaka till inloggning
+            </button>
+          </p>
+        </div>
+      </div>
     );
   }
 
@@ -203,6 +262,18 @@ const AuthPage = () => {
             {loading ? "..." : isSignUp ? t("createAccount") : t("signIn")}
           </Button>
         </form>
+
+        {!isSignUp && (
+          <div className="text-center mt-3">
+            <button
+              type="button"
+              onClick={() => setView("forgot")}
+              className="text-xs text-muted-foreground hover:underline"
+            >
+              Glömt lösenord?
+            </button>
+          </div>
+        )}
 
         <p className="text-center text-sm text-muted-foreground mt-8">
           {isSignUp ? t("alreadyHaveAccount") : t("dontHaveAccount")}{" "}
