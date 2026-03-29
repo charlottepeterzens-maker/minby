@@ -501,7 +501,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             const gap = 8;
             const addBtnWidth = isOwner ? 56 : 0;
             const totalWidth = carouselItems.length * (cardWidth + gap) + (isOwner ? addBtnWidth + gap : 0) - gap;
-            const containerWidth = scrollRef.current?.clientWidth ?? 9999;
+            const cw = containerWidth || scrollRef.current?.clientWidth || 9999;
             const needsScroll = totalWidth > containerWidth;
             if (!needsScroll || totalCards <= 1) return null;
             return (
