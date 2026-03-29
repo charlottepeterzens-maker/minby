@@ -19,7 +19,9 @@ interface SummaryData {
 
 const summaryClass = "pt-2 pb-1 z-30 -mx-4 px-4";
 const summaryStyle = {
-  backgroundColor: "hsl(var(--color-surface))",
+  backgroundColor: "hsla(30, 27%, 95%, 0.75)",
+  backdropFilter: "blur(12px)",
+  WebkitBackdropFilter: "blur(12px)",
 } as const;
 
 const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount }: ChatSummaryCardProps) => {
@@ -73,7 +75,9 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
         <div
           className="p-2.5 rounded-lg flex items-center gap-2"
           style={{
-            backgroundColor: "rgba(255,255,255,0.85)",
+            backgroundColor: "hsla(0, 0%, 100%, 0.7)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
             border: "none",
             boxShadow: "0 2px 12px -2px rgba(60,42,77,0.08)",
           }}
@@ -105,7 +109,9 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
         animate={{ opacity: 1, y: 0 }}
         className="rounded-lg overflow-hidden"
         style={{
-          backgroundColor: "rgba(255,255,255,0.88)",
+          backgroundColor: "hsla(0, 0%, 100%, 0.65)",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
           border: "none",
           boxShadow: "0 2px 16px -4px rgba(60,42,77,0.10)",
         }}
