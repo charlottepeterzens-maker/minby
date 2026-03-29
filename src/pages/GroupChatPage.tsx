@@ -443,7 +443,7 @@ const GroupChatPage = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 px-4 py-3" style={{ backgroundColor: "hsl(var(--color-text-primary))" }}>
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate("/groups")} className="shrink-0 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Tillbaka till sällskap">
+          <button onClick={() => navigate("/friends")} className="shrink-0 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Tillbaka till sällskap">
             <ChevronLeft className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
           </button>
           <div className="flex-1 text-center min-w-0">
@@ -724,7 +724,7 @@ const GroupChatPage = () => {
           if (!user || !groupId) return;
           await supabase.from("group_memberships").delete().eq("group_id", groupId).eq("user_id", user.id);
           toast.success("Du har lämnat gruppen");
-          navigate("/groups");
+          navigate("/friends");
         }}
       />
       <AddMemberSheet

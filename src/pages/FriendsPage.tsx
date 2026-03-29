@@ -839,7 +839,7 @@ const FriendsPage = () => {
                 </button>
               ))}
 
-              {groups.length < 2 && (
+              {groups.length === 0 && (
                 <div
                   className="p-4 text-center"
                   style={{ border: "1.5px dashed #C9B8D8", borderRadius: 8 }}
