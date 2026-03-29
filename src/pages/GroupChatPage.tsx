@@ -542,18 +542,22 @@ const GroupChatPage = () => {
             const msgReactions = messageReactions.filter((r) => r.message_id === msg.id);
             const showPicker = reactionPickerMsgId === msg.id;
             return (
-              <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}>
-                {repliedMsg && (
-                  <div className="flex items-center gap-1 px-2 mb-0.5" style={{ maxWidth: "75%" }}>
-                    <Reply className="w-3 h-3 shrink-0" style={{ color: "hsl(var(--color-text-muted))", transform: "scaleX(-1)" }} />
-                    <span className="text-[10px] truncate" style={{ color: "hsl(var(--color-text-muted))" }}>
-                      {repliedMember?.display_name || "Anonym"}: {repliedMsg.content}
-                    </span>
-                  </div>
-                )}
-                <div className="flex items-center gap-1">
-                  {isOwn && (
-                    <>
+              <SwipeableMessage
+                key={msg.id}
+                isOwn={isOwn}
+                onReply={() => { setReplyTo(msg); inputRef.current?.focus(); }}
+              >
+                <div className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}>
+                  {repliedMsg && (
+                    <div className="flex items-center gap-1 px-2 mb-0.5" style={{ maxWidth: "75%" }}>
+                      <Reply className="w-3 h-3 shrink-0" style={{ color: "hsl(var(--color-text-muted))", transform: "scaleX(-1)" }} />
+                      <span className="text-[10px] truncate" style={{ color: "hsl(var(--color-text-muted))" }}>
+                        {repliedMember?.display_name || "Anonym"}: {repliedMsg.content}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1">
+                    {isOwn && (
                       <button
                         onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
                         className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
@@ -562,39 +566,21 @@ const GroupChatPage = () => {
                       >
                         <SmilePlus className="w-3.5 h-3.5" />
                       </button>
-                      <button
-                        onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-                        className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
-                        style={{ color: "hsl(var(--color-text-muted))" }}
-                        aria-label="Svara på meddelande"
-                      >
-                        <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
-                      </button>
-                    </>
-                  )}
-                  <div
-                    onDoubleClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
-                    className="px-3.5 py-2.5 select-none"
-                    style={{
-                      maxWidth: "75vw",
-                      borderRadius: isOwn ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                      backgroundColor: isOwn ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-card))",
-                      color: isOwn ? "#FFFFFF" : "hsl(var(--color-text-primary))",
-                      fontSize: 14, lineHeight: "20px",
-                    }}
-                  >
-                    {msg.content}
-                  </div>
-                  {!isOwn && (
-                    <>
-                      <button
-                        onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-                        className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
-                        style={{ color: "hsl(var(--color-text-muted))" }}
-                        aria-label="Svara på meddelande"
-                      >
-                        <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
-                      </button>
+                    )}
+                    <div
+                      onDoubleClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
+                      className="px-3.5 py-2.5 select-none"
+                      style={{
+                        maxWidth: "75vw",
+                        borderRadius: isOwn ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+                        backgroundColor: isOwn ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-card))",
+                        color: isOwn ? "#FFFFFF" : "hsl(var(--color-text-primary))",
+                        fontSize: 14, lineHeight: "20px",
+                      }}
+                    >
+                      {msg.content}
+                    </div>
+                    {!isOwn && (
                       <button
                         onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
                         className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
@@ -603,22 +589,22 @@ const GroupChatPage = () => {
                       >
                         <SmilePlus className="w-3.5 h-3.5" />
                       </button>
-                    </>
-                  )}
+                    )}
+                  </div>
+                  <MessageReactions
+                    messageId={msg.id}
+                    isOwn={isOwn}
+                    reactions={msgReactions}
+                    onReactionsChange={fetchReactions}
+                    pickerOpen={showPicker}
+                    onPickerToggle={(open) => setReactionPickerMsgId(open ? msg.id : null)}
+                  />
+                  <div className="flex items-center gap-1.5 mt-0.5 px-1">
+                    {!isOwn && <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{member?.display_name || "Anonym"}</span>}
+                    <span className="text-[10px]" style={{ color: "hsl(var(--color-text-muted))" }}>{formatTime(msg.created_at)}</span>
+                  </div>
                 </div>
-                <MessageReactions
-                  messageId={msg.id}
-                  isOwn={isOwn}
-                  reactions={msgReactions}
-                  onReactionsChange={fetchReactions}
-                  pickerOpen={showPicker}
-                  onPickerToggle={(open) => setReactionPickerMsgId(open ? msg.id : null)}
-                />
-                <div className="flex items-center gap-1.5 mt-0.5 px-1">
-                  {!isOwn && <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{member?.display_name || "Anonym"}</span>}
-                  <span className="text-[10px]" style={{ color: "hsl(var(--color-text-muted))" }}>{formatTime(msg.created_at)}</span>
-                </div>
-              </div>
+              </SwipeableMessage>
             );
           }
 
