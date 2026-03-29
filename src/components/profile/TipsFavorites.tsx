@@ -60,7 +60,7 @@ const decodeTitle = (title: string) =>
     .replace(/&quot;/g, '"')
     .replace(/&apos;/g, "'");
 
-const TipsFavorites = ({ userId, isOwner }: { userId: string; isOwner: boolean }) => {
+const TipsFavorites = ({ userId, isOwner, displayName }: { userId: string; isOwner: boolean; displayName?: string | null }) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [tips, setTips] = useState<Tip[]>([]);
