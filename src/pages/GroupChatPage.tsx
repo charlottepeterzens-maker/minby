@@ -548,19 +548,6 @@ const GroupChatPage = () => {
       {/* Timeline */}
       <div className="relative flex-1 min-h-0">
         <div className="h-full overflow-y-auto px-4 pb-2 space-y-3 relative">
-          {/* Summary card rendered inline when expanded */}
-          {summaryVisible && (
-            <div className="-mx-4 px-4 pt-2 pb-1">
-              <ChatSummaryCard
-                messages={summaryMessages}
-                members={members}
-                groupName={groupName}
-                onCreatePlan={handleSummaryCreatePlan}
-                totalMessageCount={messages.length}
-                onClose={() => setSummaryVisible(false)}
-              />
-            </div>
-          )}
           {pastPlanForMemory && (
             <AfterEventCard
               planId={pastPlanForMemory.id}
@@ -709,6 +696,19 @@ const GroupChatPage = () => {
       {/* Input field */}
       <div className="sticky bottom-0 px-4 pb-3 pt-1 safe-area-bottom" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <TypingIndicator typingUsers={typingUsers} />
+        {/* Summary card sticky above input */}
+        {summaryVisible && (
+          <div className="mb-1.5">
+            <ChatSummaryCard
+              messages={summaryMessages}
+              members={members}
+              groupName={groupName}
+              onCreatePlan={handleSummaryCreatePlan}
+              totalMessageCount={messages.length}
+              onClose={() => setSummaryVisible(false)}
+            />
+          </div>
+        )}
         {/* Contextual summarize button — only when enough messages and summary not already open */}
         {messages.length >= 4 && !summaryVisible && (
           <button
