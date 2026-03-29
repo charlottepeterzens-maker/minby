@@ -16,6 +16,7 @@ import MessageReactions from "@/components/chat/MessageReactions";
 import { recognizeDates, type RecognizedDate } from "@/utils/dateRecognition";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import AddMemberSheet from "@/components/chat/AddMemberSheet";
+import SwipeableMessage from "@/components/chat/SwipeableMessage";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
