@@ -118,6 +118,14 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   useEffect(() => { fetchEntries(); }, [fetchEntries]);
 
   useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setContainerWidth(entry.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [entries]);
+
+  useEffect(() => {
     if (openEntryId && entries.length > 0) {
       const entry = entries.find((e) => e.id === openEntryId);
       if (entry) {
