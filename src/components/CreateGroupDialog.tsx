@@ -190,8 +190,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                     "1px solid #C9B8D8" :
                     "1px solid transparent"
                   }}>
-                  
-                      
+                      <span className="text-xl">{preset.emoji}</span>
                       <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
                         {preset.label}
                       </span>
