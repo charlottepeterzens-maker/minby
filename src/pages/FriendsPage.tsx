@@ -5,14 +5,14 @@ import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Users, Search, QrCode, MoreHorizontal, Heart, Plus } from "lucide-react";
+import { Search, QrCode, Plus } from "lucide-react";
 import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import QRCodeSheet from "@/components/profile/QRCodeSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
-import ConfirmSheet from "@/components/ConfirmSheet";
+import KretspersonSheet from "@/components/profile/KretspersonSheet";
 import { Container } from "@/components/layout";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
 
@@ -61,18 +61,20 @@ interface GroupRow {
   has_unread: boolean;
 }
 
-function timeAgo(dateStr: string): string {
-  const now = new Date();
-  const then = new Date(dateStr);
-  const diffMs = now.getTime() - then.getTime();
-  const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return "Just nu";
-  if (mins < 60) return `${mins} min sedan`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours} tim sedan`;
-  const days = Math.floor(hours / 24);
-  if (days === 1) return "1 dag sedan";
-  if (days < 30) return `${days} dagar sedan`;
+function statusText(f: FriendRow): string {
+  if (f.hangout_status) {
+    const h = f.hangout_status;
+    if (h.custom_note) return h.custom_note;
+    if (h.activities.length > 0) return h.activities[0];
+    return h.entry_type === "confirmed" ? "häng med" : "ledig";
+  }
+  if (f.last_activity) {
+    const days = Math.floor((Date.now() - new Date(f.last_activity).getTime()) / 86400000);
+    if (days === 0) return "aktiv idag";
+    if (days === 1) return "1 d sedan";
+    if (days < 30) return `${days} d sedan`;
+    return "länge sedan";
+  }
   return "";
 }
 
@@ -87,43 +89,36 @@ function formatTime(dateStr: string): string {
   return d.toLocaleDateString("sv-SE", { month: "short", day: "numeric" });
 }
 
+function hasRecentActivity(dateStr: string | null): boolean {
+  if (!dateStr) return false;
+  return (Date.now() - new Date(dateStr).getTime()) < 86400000;
+}
+
 const FriendsPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"krets" | "sallskap">("krets");
 
-  // Friends state
   const [friends, setFriends] = useState<FriendRow[]>([]);
   const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);
-  const [friendSearch, setFriendSearch] = useState("");
   const [respondingId, setRespondingId] = useState<string | null>(null);
 
-  // People search state
+  // Search state
+  const [searchOpen, setSearchOpen] = useState(false);
   const [peopleSearch, setPeopleSearch] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [sendingTo, setSendingTo] = useState<string | null>(null);
 
-  // Friend menu state
-  const [menuOpenFor, setMenuOpenFor] = useState<string | null>(null);
+  // Person sheet
+  const [selectedPerson, setSelectedPerson] = useState<FriendRow | null>(null);
   const [mutedUsers, setMutedUsers] = useState<string[]>([]);
-  const [removeConfirm, setRemoveConfirm] = useState<{ userId: string; name: string } | null>(null);
 
   // Groups state
   const [groups, setGroups] = useState<GroupRow[]>([]);
   const [groupsLoading, setGroupsLoading] = useState(true);
-  const [hasUnreadGroups, setHasUnreadGroups] = useState(false);
-
-  // Close menu when clicking outside
-  useEffect(() => {
-    if (!menuOpenFor) return;
-    const handler = () => setMenuOpenFor(null);
-    document.addEventListener("click", handler);
-    return () => document.removeEventListener("click", handler);
-  }, [menuOpenFor]);
 
   const fetchData = useCallback(async () => {
     if (!user) return;
@@ -156,7 +151,6 @@ const FriendsPage = () => {
       const tierMap = new Map<string, string>();
       tiers.forEach((t) => tierMap.set(t.friend_user_id, t.tier));
 
-      // Process pending requests
       if (pending.length) {
         const pendingUserIds = pending.map((p) => p.from_user_id);
         const { data: pendingProfiles } = await supabase
@@ -183,7 +177,6 @@ const FriendsPage = () => {
         setPendingRequests([]);
       }
 
-      // Process accepted friends
       if (!accepted.length) {
         setFriends([]);
         setLoading(false);
@@ -235,7 +228,11 @@ const FriendsPage = () => {
         tier: tierMap.get(p.user_id) || "outer",
       }));
 
+      // Sort: close first, then by latest activity
       list.sort((a, b) => {
+        const aClose = a.tier === "close" ? 0 : 1;
+        const bClose = b.tier === "close" ? 0 : 1;
+        if (aClose !== bClose) return aClose - bClose;
         if (!a.last_activity && !b.last_activity) return 0;
         if (!a.last_activity) return 1;
         if (!b.last_activity) return -1;
@@ -244,7 +241,7 @@ const FriendsPage = () => {
 
       setFriends(list);
     } catch (err) {
-      console.error("[FriendsPage] Error fetching friends:", err);
+      console.error("[FriendsPage] Error:", err);
       setError(true);
     } finally {
       setLoading(false);
@@ -270,7 +267,6 @@ const FriendsPage = () => {
 
       if (!memberships?.length) {
         setGroups([]);
-        setHasUnreadGroups(false);
         setGroupsLoading(false);
         return;
       }
@@ -285,8 +281,6 @@ const FriendsPage = () => {
         setGroupsLoading(false);
         return;
       }
-
-      let anyUnread = false;
 
       const groupsWithMembers: GroupRow[] = await Promise.all(
         groupsData.map(async (g) => {
@@ -303,16 +297,13 @@ const FriendsPage = () => {
 
           const memberIds = (members || []).map((m) => m.user_id);
           const { data: profiles } = await supabase.from("profiles").select("display_name").in("user_id", memberIds);
-
           const names = (profiles || []).map((p) => p.display_name || "Anonym").slice(0, 4);
 
-          // Check for unread: last message exists, is from someone else, and is after user joined
           const hasUnread = !!(
             lastMsg?.created_at &&
             lastMsg.user_id !== user.id &&
             new Date(lastMsg.created_at) > new Date(joinedAtMap.get(g.id) || 0)
           );
-          if (hasUnread) anyUnread = true;
 
           return {
             ...g,
@@ -332,7 +323,6 @@ const FriendsPage = () => {
       });
 
       setGroups(groupsWithMembers);
-      setHasUnreadGroups(anyUnread);
     } catch {
       setGroups([]);
     } finally {
@@ -346,42 +336,6 @@ const FriendsPage = () => {
     fetchGroups();
   }, [fetchData, fetchMutedUsers, fetchGroups]);
 
-  // Toggle close circle
-  const handleToggleClose = async (friendUserId: string, currentTier: string) => {
-    if (!user) return;
-    const newTier = currentTier === "close" ? "outer" : "close";
-    const { error } = await supabase
-      .from("friend_access_tiers")
-      .update({ tier: newTier as any })
-      .eq("owner_id", user.id)
-      .eq("friend_user_id", friendUserId);
-
-    if (error) {
-      toast.error("Kunde inte uppdatera");
-    } else {
-      setFriends((prev) => prev.map((f) => (f.user_id === friendUserId ? { ...f, tier: newTier } : f)));
-      toast.success(newTier === "close" ? "Tillagd i närmaste krets" : "Borttagen från närmaste krets");
-    }
-    setMenuOpenFor(null);
-  };
-
-  const handleRemoveFriend = async (friendUserId: string) => {
-    if (!user) return;
-    await Promise.all([
-      supabase.from("friend_access_tiers").delete().eq("owner_id", user.id).eq("friend_user_id", friendUserId),
-      supabase.from("friend_access_tiers").delete().eq("owner_id", friendUserId).eq("friend_user_id", user.id),
-    ]);
-    await supabase
-      .from("friend_requests")
-      .delete()
-      .or(
-        `and(from_user_id.eq.${user.id},to_user_id.eq.${friendUserId}),and(from_user_id.eq.${friendUserId},to_user_id.eq.${user.id})`,
-      )
-      .eq("status", "accepted");
-    setFriends((prev) => prev.filter((f) => f.user_id !== friendUserId));
-    toast.success("Borttagen från din krets");
-  };
-
   const handleToggleMute = async (friendUserId: string) => {
     if (!user) return;
     const isMuted = mutedUsers.includes(friendUserId);
@@ -389,7 +343,6 @@ const FriendsPage = () => {
     setMutedUsers(updated);
     await (supabase as any).from("profiles").update({ muted_users: updated }).eq("user_id", user.id);
     toast.success(isMuted ? "Avmutad" : "Mutad");
-    setMenuOpenFor(null);
   };
 
   // People search
@@ -537,564 +490,379 @@ const FriendsPage = () => {
     setRespondingId(null);
   };
 
-  const filtered = friends.filter((f) => f.display_name.toLowerCase().includes(friendSearch.toLowerCase()));
-
-  const closeFriends = filtered.filter((f) => f.tier === "close");
-  const otherFriends = filtered.filter((f) => f.tier !== "close");
-  const hasFriendsOrPending = friends.length > 0 || pendingRequests.length > 0;
-
-  const renderFriendCard = (f: FriendRow) => {
-    let statusText: string | null = null;
-    if (f.hangout_status) {
-      const h = f.hangout_status;
-      const dateObj = new Date(h.date + "T00:00:00");
-      const dateLabel = `${format(dateObj, "EEE", { locale: sv }).replace(".", "")} ${format(dateObj, "d/M")}`;
-      if (h.entry_type === "confirmed") {
-        statusText = `häng med ${dateLabel}`;
-      } else if (h.entry_type === "activity") {
-        const actName = h.activities.length > 0 ? h.activities[0] : "Aktivitet";
-        statusText = `sugen på: ${actName} ${dateLabel}`;
-      } else {
-        statusText = `vill ses ${dateLabel}`;
-      }
-    } else if (f.last_activity) {
-      statusText = `Lade upp något ${timeAgo(f.last_activity)}`;
-    }
-    const isMuted = mutedUsers.includes(f.user_id);
-    const isClose = f.tier === "close";
-
-    return (
-      <div
-        key={f.user_id}
-        className="relative flex items-center gap-3 p-3 transition-colors hover:opacity-90"
-        style={{
-          backgroundColor: "hsl(var(--color-surface-card))",
-          border: isClose ? "1.5px solid #C9B8D8" : "none",
-          borderRadius: 8,
-        }}
-      >
-        <button
-          onClick={() => navigate(`/profile/${f.user_id}`)}
-          className="flex items-center gap-3 flex-1 min-w-0 text-left"
-        >
-          <div
-            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-          >
-            {resolveAvatarUrl(f.avatar_url) ? (
-              <img src={resolveAvatarUrl(f.avatar_url)!} alt="Profilbild" loading="lazy" className="w-full h-full rounded-full object-cover" />
-            ) : (
-              <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                {f.initial}
-              </span>
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5">
-              <p className="font-fraunces text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
-                {f.display_name}
-              </p>
-              {isClose && <Heart className="w-3 h-3 shrink-0" style={{ color: "hsl(var(--color-border-lavender))" }} fill="hsl(var(--color-border-lavender))" />}
-            </div>
-            {isMuted && (
-              <p className="text-[10px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>
-                Mutad
-              </p>
-            )}
-            {!isMuted && statusText && (
-              <p className="text-[11px] truncate mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>
-                {statusText}
-              </p>
-            )}
-          </div>
-        </button>
-
-        {/* Three-dot menu */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setMenuOpenFor(menuOpenFor === f.user_id ? null : f.user_id);
-          }}
-          className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full"
-        >
-          <MoreHorizontal className="w-4 h-4" style={{ color: "hsl(var(--color-text-muted))" }} />
-        </button>
-
-        {menuOpenFor === f.user_id && (
-          <div
-            className="absolute right-3 top-12 z-20 py-1"
-            style={{
-              backgroundColor: "hsl(var(--color-surface-card))",
-              border: "none",
-              borderRadius: 8,
-              minWidth: 200,
-              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-            }}
-          >
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleToggleClose(f.user_id, f.tier);
-              }}
-              className="w-full text-left px-4 py-2.5 text-[13px] flex items-center gap-2"
-              style={{ color: "hsl(var(--color-text-primary))" }}
-            >
-              <Heart
-                className="w-3.5 h-3.5"
-                style={{ color: isClose ? "#C9B8D8" : "#6B5C78" }}
-                fill={isClose ? "#C9B8D8" : "none"}
-              />
-              {isClose ? "Ta bort från närmaste krets" : "Lägg till i närmaste krets"}
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleToggleMute(f.user_id);
-              }}
-              className="w-full text-left px-4 py-2.5 text-[13px]"
-              style={{ color: "hsl(var(--color-text-primary))" }}
-            >
-              {isMuted ? `Sluta muta ${f.display_name}` : `Muta ${f.display_name}`}
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setMenuOpenFor(null);
-                setRemoveConfirm({ userId: f.user_id, name: f.display_name });
-              }}
-              className="w-full text-left px-4 py-2.5 text-[13px]"
-              style={{ color: "hsl(var(--color-accent-red))" }}
-            >
-              Ta bort från kretsen
-            </button>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       {/* Header */}
       <nav className="sticky top-0 z-50" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="py-4 flex items-center justify-between">
-          <span className="font-display text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-            Min krets
+          <span className="font-display text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))", fontFamily: "Georgia, serif" }}>
+            Sällskap
           </span>
-          <button
-            onClick={() => setQrOpen(true)}
-            aria-label="Visa QR-kod"
-            className="w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-          >
-            <QrCode className="w-4.5 h-4.5" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />
-          </button>
-        </Container>
-
-        {/* Tabs */}
-        <Container className="flex gap-0" style={{ borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
-          <button
-            onClick={() => setActiveTab("krets")}
-            className="flex-1 pb-2.5 text-[13px] font-medium text-center transition-colors relative"
-            style={{ color: activeTab === "krets" ? "#3C2A4D" : "#6B5C78" }}
-          >
-            Min krets
-            {activeTab === "krets" && (
-              <div
-                className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full"
-                style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
-              />
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab("sallskap")}
-            className="flex-1 pb-2.5 text-[13px] font-medium text-center transition-colors relative"
-            style={{ color: activeTab === "sallskap" ? "#3C2A4D" : "#6B5C78" }}
-          >
-            <span className="inline-flex items-center gap-1.5">
-              Sällskap
-              {hasUnreadGroups && (
-                <span className="w-2 h-2 rounded-full inline-block" style={{ backgroundColor: "hsl(var(--color-accent-terra))" }} />
-              )}
-            </span>
-            {activeTab === "sallskap" && (
-              <div
-                className="absolute bottom-0 left-1/4 right-1/4 h-[2px] rounded-full"
-                style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
-              />
-            )}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSearchOpen(!searchOpen)}
+              aria-label="Sök"
+              className="w-11 h-11 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+            >
+              <Search className="w-4.5 h-4.5" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />
+            </button>
+            <button
+              onClick={() => setQrOpen(true)}
+              aria-label="Visa QR-kod"
+              className="w-11 h-11 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+            >
+              <QrCode className="w-4.5 h-4.5" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />
+            </button>
+          </div>
         </Container>
       </nav>
 
-      <Container className="py-5 space-y-5">
-        {activeTab === "krets" ? (
-          <>
-            {/* Search */}
-            <div>
-              <div className="relative">
-                <Search
-                  className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
-                  style={{ color: "hsl(var(--color-text-muted))" }}
-                  strokeWidth={1.5}
-                />
-                <input
-                  value={peopleSearch}
-                  onChange={(e) => setPeopleSearch(e.target.value)}
-                  placeholder="Sök på namn..."
-                  className="w-full pl-10 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#6B5C78] font-display"
-                  style={{ backgroundColor: "hsl(var(--color-surface-card))", border: "none", borderRadius: 8, color: "hsl(var(--color-text-primary))" }}
-                />
-              </div>
-
-              {/* Search results */}
-              {peopleSearch.trim().length >= 2 && (
-                <div className="mt-2 space-y-1.5">
-                  {searching ? (
-                    <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
-                      Söker...
-                    </p>
-                  ) : searchResults.length === 0 ? (
-                    <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
-                      Inga resultat
-                    </p>
-                  ) : (
-                    searchResults.map((r) => (
-                      <div
-                        key={r.user_id}
-                        className="flex items-center gap-3 p-3"
-                        style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
-                      >
-                        <div
-                          className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-                          style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-                        >
-                          {resolveAvatarUrl(r.avatar_url) ? (
-                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" loading="lazy" className="w-full h-full rounded-full object-cover" />
-                          ) : (
-                            <span className="text-[12px] font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                              {r.initial}
-                            </span>
-                          )}
-                        </div>
-                        <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
-                          {r.display_name}
-                        </p>
-                        {r.status === "friend" ? (
-                          <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>
-                            I din krets
-                          </span>
-                        ) : r.status === "sent" ? (
-                          <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>
-                            Skickat
-                          </span>
-                        ) : (
-                          <button
-                            onClick={() => handleSendFriendRequest(r.user_id)}
-                            disabled={sendingTo === r.user_id}
-                            className="shrink-0 px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                            style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
-                          >
-                            Lägg till i min krets
-                          </button>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
+      <Container className="py-2 space-y-5">
+        {/* Search panel */}
+        {searchOpen && (
+          <div>
+            <div className="relative">
+              <Search
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
+                style={{ color: "hsl(var(--color-text-muted))" }}
+                strokeWidth={1.5}
+              />
+              <input
+                value={peopleSearch}
+                onChange={(e) => setPeopleSearch(e.target.value)}
+                placeholder="Sök på namn..."
+                autoFocus
+                className="w-full pl-10 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#6B5C78] font-display"
+                style={{ backgroundColor: "hsl(var(--color-surface-card))", border: "none", borderRadius: 8, color: "hsl(var(--color-text-primary))" }}
+              />
             </div>
 
-            {loading ? (
-              <div className="flex flex-col items-center justify-center py-16">
-                <div className="space-y-3 w-full">
-                  {[1, 2, 3].map((i) => (
+            {peopleSearch.trim().length >= 2 && (
+              <div className="mt-2 space-y-1.5">
+                {searching ? (
+                  <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
+                    Söker...
+                  </p>
+                ) : searchResults.length === 0 ? (
+                  <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
+                    Inga resultat
+                  </p>
+                ) : (
+                  searchResults.map((r) => (
                     <div
-                      key={i}
-                      className="h-[64px] animate-pulse"
-                      style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8 }}
-                    />
-                  ))}
-                </div>
-                <p className="text-[12px] mt-4" style={{ color: "hsl(var(--color-text-muted))" }}>
-                  Laddar din krets…
-                </p>
+                      key={r.user_id}
+                      className="flex items-center gap-3 p-3"
+                      style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
+                    >
+                      <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
+                        style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                      >
+                        {resolveAvatarUrl(r.avatar_url) ? (
+                          <img src={resolveAvatarUrl(r.avatar_url)!} alt="" loading="lazy" className="w-full h-full rounded-full object-cover" />
+                        ) : (
+                          <span className="text-[12px] font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                            {r.initial}
+                          </span>
+                        )}
+                      </div>
+                      <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                        {r.display_name}
+                      </p>
+                      {r.status === "friend" ? (
+                        <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>
+                          I din krets
+                        </span>
+                      ) : r.status === "sent" ? (
+                        <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>
+                          Skickat
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => handleSendFriendRequest(r.user_id)}
+                          disabled={sendingTo === r.user_id}
+                          className="shrink-0 px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                          style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
+                        >
+                          Bjud in
+                        </button>
+                      )}
+                    </div>
+                  ))
+                )}
               </div>
-            ) : error ? (
-              <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-                <p className="font-display text-[14px] font-medium mb-2" style={{ color: "hsl(var(--color-text-primary))" }}>
-                  Vi kunde inte hämta din krets
-                </p>
+            )}
+          </div>
+        )}
+
+        {/* Pending friend requests – on top */}
+        {pendingRequests.length > 0 && (
+          <div className="space-y-2">
+            {pendingRequests.map((r) => (
+              <div
+                key={r.id}
+                className="flex items-center gap-3 p-3"
+                style={{ backgroundColor: "#EDE8F4", border: "1px solid #C9B8D8", borderRadius: 8 }}
+              >
                 <button
-                  onClick={() => fetchData()}
-                  className="px-4 py-1.5 text-[12px] font-medium"
-                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
-                >
-                  Försök igen
-                </button>
-              </div>
-            ) : !hasFriendsOrPending && peopleSearch.trim().length < 2 ? (
-              <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
+                  onClick={() => navigate(`/profile/${r.from_user_id}`)}
+                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
                   style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                 >
-                  <Users className="w-7 h-7" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />
+                  {resolveAvatarUrl(r.avatar_url) ? (
+                    <img src={resolveAvatarUrl(r.avatar_url)!} alt="" loading="lazy" className="w-full h-full rounded-full object-cover" />
+                  ) : (
+                    <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                      {r.initial}
+                    </span>
+                  )}
+                </button>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                    {r.display_name}
+                  </p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>
+                    Vill vara med i din vardag
+                  </p>
                 </div>
-                <p className="font-display text-[16px] font-medium mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    onClick={() => handleAccept(r.id, r.from_user_id)}
+                    disabled={respondingId === r.id}
+                    className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                    style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8 }}
+                  >
+                    Acceptera
+                  </button>
+                  <button
+                    onClick={() => handleDecline(r.id)}
+                    disabled={respondingId === r.id}
+                    className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                    style={{ backgroundColor: "transparent", color: "#A32D2D", borderRadius: 8 }}
+                  >
+                    Neka
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Section 1: Din krets */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-10">
+            <p className="text-[12px]" style={{ color: "hsl(var(--color-text-muted))" }}>Laddar...</p>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-10 text-center">
+            <p className="font-display text-[14px] font-medium mb-2" style={{ color: "hsl(var(--color-text-primary))" }}>
+              Vi kunde inte hämta din krets
+            </p>
+            <button
+              onClick={() => fetchData()}
+              className="px-4 py-1.5 text-[12px] font-medium"
+              style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
+            >
+              Försök igen
+            </button>
+          </div>
+        ) : (
+          <div>
+            <p
+              className="text-[11px] font-medium uppercase mb-3 px-1"
+              style={{ color: "#B0A8B5", letterSpacing: "0.07em" }}
+            >
+              Din krets
+            </p>
+
+            {friends.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-[13px] mb-3" style={{ color: "hsl(var(--color-text-muted))" }}>
                   Din krets väntar – bjud in dina närmaste
-                </p>
-                <p className="text-[13px] mb-6" style={{ color: "hsl(var(--color-text-muted))" }}>
-                  Sök på namn eller skanna en QR-kod för att kopplas ihop
                 </p>
                 <InviteFriendDialog />
               </div>
             ) : (
-              <div className="space-y-5">
-                {/* Pending requests */}
-                {pendingRequests.length > 0 && (
-                  <div>
-                    <p
-                      className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
-                      style={{ color: "hsl(var(--color-text-muted))" }}
-                    >
-                      Vill vara med ({pendingRequests.length})
-                    </p>
-                    <div className="space-y-2">
-                      {pendingRequests.map((r) => (
-                        <div
-                          key={r.id}
-                          className="flex items-center gap-3 p-3"
-                          style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
-                        >
-                          <button
-                            onClick={() => navigate(`/profile/${r.from_user_id}`)}
-                            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-                            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-                          >
-                            {resolveAvatarUrl(r.avatar_url) ? (
-                              <img src={resolveAvatarUrl(r.avatar_url)!} alt="Profilbild" loading="lazy" className="w-full h-full rounded-full object-cover" />
-                            ) : (
-                              <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                                {r.initial}
-                              </span>
-                            )}
-                          </button>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
-                              {r.display_name}
-                            </p>
-                            <p className="text-[11px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>
-                              Vill vara med i din vardag
-                            </p>
-                          </div>
-                          <div className="flex items-center gap-1.5 shrink-0">
-                            <button
-                              onClick={() => handleAccept(r.id, r.from_user_id)}
-                              disabled={respondingId === r.id}
-                              className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                              style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF", borderRadius: 8 }}
-                            >
-                              Ja, gärna
-                            </button>
-                            <button
-                              onClick={() => handleDecline(r.id)}
-                              disabled={respondingId === r.id}
-                              className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                              style={{ backgroundColor: "hsl(var(--color-surface))", color: "hsl(var(--color-accent-red))", borderRadius: 8 }}
-                            >
-                              Inte nu
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              <div className="flex gap-3 overflow-x-auto pb-2 -mx-2 px-2" style={{ scrollbarWidth: "none" }}>
+                {friends.map((f) => {
+                  const isClose = f.tier === "close";
+                  const hasActivity = hasRecentActivity(f.last_activity);
+                  const status = statusText(f);
 
-                {/* Close circle section */}
-                {friends.length > 0 && (
-                  <div>
-                    <p
-                      className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
-                      style={{ color: "hsl(var(--color-text-muted))" }}
-                    >
-                      Din närmaste krets
-                    </p>
-                    {closeFriends.length === 0 ? (
-                      <div
-                        className="py-5 px-4 text-center"
-                        style={{ backgroundColor: "hsl(var(--color-surface-raised))", border: "1px dashed hsl(var(--color-border-lavender))", borderRadius: 8 }}
-                      >
-                        <Heart className="w-5 h-5 mx-auto mb-2" style={{ color: "hsl(var(--color-border-lavender))" }} />
-                        <p className="text-[12px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                          Lägg till några du vill ha lite extra nära
-                        </p>
-                        <p className="text-[11px] mt-1" style={{ color: "hsl(var(--color-text-muted))" }}>
-                          Tryck ••• bredvid en person för att lägga till
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">{closeFriends.map(renderFriendCard)}</div>
-                    )}
-                  </div>
-                )}
-
-                {/* Other friends */}
-                {(otherFriends.length > 0 || closeFriends.length > 0) && (
-                  <div>
-                    <p
-                      className="text-[11px] font-medium uppercase tracking-wide mb-2 px-1"
-                      style={{ color: "hsl(var(--color-text-muted))" }}
-                    >
-                      Din krets ({friends.length})
-                    </p>
-
-                    {friends.length > 3 && (
-                      <div className="relative mb-3">
-                        <Search
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
-                          style={{ color: "hsl(var(--color-text-muted))" }}
-                          strokeWidth={1.5}
-                        />
-                        <input
-                          value={friendSearch}
-                          onChange={(e) => setFriendSearch(e.target.value)}
-                          placeholder="Sök i din krets..."
-                          className="w-full pl-9 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#6B5C78]"
-                          style={{
-                            backgroundColor: "hsl(var(--color-surface-card))",
-                            borderRadius: 8,
-                            color: "hsl(var(--color-text-primary))",
-                          }}
-                        />
-                      </div>
-                    )}
-
-                    <div className="space-y-2">
-                      {otherFriends.length === 0 && friendSearch ? (
-                        <p className="text-center py-8 text-[13px]" style={{ color: "hsl(var(--color-text-muted))" }}>
-                          Inga resultat i din krets
-                        </p>
-                      ) : (
-                        otherFriends.map(renderFriendCard)
-                      )}
-
-                      {/* Invite row */}
-                      <div
-                        className="flex items-center gap-3 p-3"
-                        style={{ border: "1.5px dashed #EDE8E0", borderRadius: 8, backgroundColor: "transparent" }}
-                      >
-                        <InviteFriendDialog />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </>
-        ) : (
-          /* Sällskap tab */
-          <>
-            {groupsLoading ? (
-              <div className="space-y-3">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="h-[72px] animate-pulse"
-                    style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8 }}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-2.5">
-                {groups.map((g) => (
-                  <button
-                    key={g.id}
-                    onClick={() => navigate(`/groups/${g.id}`)}
-                    className="w-full flex items-center gap-3 p-3 text-left transition-colors hover:opacity-90"
-                    style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
-                  >
-                    <div
-                      className="shrink-0 flex items-center justify-center"
-                      style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: "hsl(var(--color-surface))" }}
-                    >
-                      <span className="text-lg">{g.emoji}</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
-                        {g.name}
-                      </p>
-                      <p className="text-[11px] truncate italic" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                        {g.last_message || "Inga meddelanden än"}
-                      </p>
-                    </div>
-                    <div className="shrink-0 flex flex-col items-end gap-1">
-                      <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                        {g.last_message_at ? formatTime(g.last_message_at) : "–"}
-                      </span>
-                      {g.has_unread && (
-                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "hsl(var(--color-accent-terra))" }} />
-                      )}
-                    </div>
-                  </button>
-                ))}
-
-                {/* Create new group */}
-                <CreateGroupDialog
-                  onGroupCreated={fetchGroups}
-                  trigger={
+                  return (
                     <button
-                      className="w-full flex items-center gap-3 p-3 text-left transition-colors hover:opacity-80 outline-none focus:outline-none"
-                      style={{ border: "1.5px dashed #EDE8E0", borderRadius: 8 }}
+                      key={f.user_id}
+                      onClick={() => setSelectedPerson(f)}
+                      className="flex flex-col items-center shrink-0"
+                      style={{ width: 64 }}
                     >
-                      <div
-                        className="shrink-0 flex items-center justify-center"
-                        style={{ width: 42, height: 42, borderRadius: 8, border: "1px dashed #EDE8E0" }}
-                      >
-                        <Plus className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
+                      <div className="relative mb-1">
+                        <div
+                          className="w-[44px] h-[44px] rounded-full flex items-center justify-center overflow-hidden"
+                          style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                        >
+                          {resolveAvatarUrl(f.avatar_url) ? (
+                            <img src={resolveAvatarUrl(f.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
+                          ) : (
+                            <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                              {f.initial}
+                            </span>
+                          )}
+                        </div>
+                        {hasActivity && (
+                          <div
+                            className="absolute bottom-0 right-0 w-[11px] h-[11px] rounded-full"
+                            style={{ backgroundColor: "#C9503A", border: "2px solid #F7F3EF" }}
+                          />
+                        )}
                       </div>
-                      <span className="text-[12px] font-medium" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                        Skapa ett nytt sällskap
-                      </span>
+                      <div className="flex items-center gap-0.5 max-w-full">
+                        <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                          {f.display_name.split(" ")[0]}
+                        </span>
+                        {isClose && (
+                          <svg width="8" height="8" viewBox="0 0 8 8" fill="#C9B8D8" className="shrink-0">
+                            <path d="M4 7L1.17 4.17a2 2 0 112.83-2.83L4 1.34l.17-.17a2 2 0 012.83 2.83L4 7z" />
+                          </svg>
+                        )}
+                      </div>
+                      {status && (
+                        <span className="text-[10px] truncate max-w-full" style={{ color: "#B0A8B5" }}>
+                          {status}
+                        </span>
+                      )}
                     </button>
+                  );
+                })}
+
+                {/* Invite + avatar */}
+                <InviteFriendDialog
+                  trigger={
+                    <div className="flex flex-col items-center shrink-0" style={{ width: 64 }}>
+                      <div
+                        className="w-[44px] h-[44px] rounded-full flex items-center justify-center mb-1"
+                        style={{ border: "1.5px dashed #C9B8D8" }}
+                      >
+                        <Plus className="w-4 h-4" style={{ color: "#C9B8D8" }} />
+                      </div>
+                      <span className="text-[10px]" style={{ color: "#B0A8B5" }}>Bjud in</span>
+                    </div>
                   }
                 />
-
-                {groups.length === 0 && (
-                  <div className="text-center py-12">
-                    <p className="font-display text-base" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                      Inga sällskap ännu
-                    </p>
-                    <p className="text-[12px] mt-1" style={{ color: "hsl(var(--color-text-muted))" }}>
-                      Skapa ett sällskap för att chatta med din krets
-                    </p>
-                  </div>
-                )}
               </div>
             )}
-          </>
+          </div>
         )}
+
+        {/* Section 2: Dina sällskap */}
+        <div>
+          <div className="flex items-center justify-between mb-3 px-1">
+            <p
+              className="text-[11px] font-medium uppercase"
+              style={{ color: "#B0A8B5", letterSpacing: "0.07em" }}
+            >
+              Dina sällskap
+            </p>
+            <CreateGroupDialog
+              onGroupCreated={fetchGroups}
+              trigger={
+                <button
+                  className="px-3 py-1 text-[11px] font-medium text-white"
+                  style={{ backgroundColor: "#3C2A4D", borderRadius: 99 }}
+                >
+                  + Nytt
+                </button>
+              }
+            />
+          </div>
+
+          {groupsLoading ? (
+            <div className="space-y-2">
+              {[1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="h-[64px] animate-pulse"
+                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8 }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {groups.map((g) => (
+                <button
+                  key={g.id}
+                  onClick={() => navigate(`/groups/${g.id}`)}
+                  className="w-full flex items-center gap-3 p-3 text-left transition-colors hover:opacity-90"
+                  style={{
+                    backgroundColor: "hsl(var(--color-surface-card))",
+                    borderRadius: 8,
+                    borderLeft: g.has_unread ? "3px solid #3C2A4D" : "3px solid transparent",
+                  }}
+                >
+                  <div
+                    className="shrink-0 flex items-center justify-center"
+                    style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: "hsl(var(--color-surface))" }}
+                  >
+                    <span className="text-lg">{g.emoji}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                      {g.name}
+                    </p>
+                    <p className="text-[11px] truncate italic" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                      {g.last_message || "Inga meddelanden än"}
+                    </p>
+                  </div>
+                  <div className="shrink-0 flex flex-col items-end gap-1">
+                    <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                      {g.last_message_at ? formatTime(g.last_message_at) : "–"}
+                    </span>
+                    {g.has_unread && (
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#C9503A" }} />
+                    )}
+                  </div>
+                </button>
+              ))}
+
+              {groups.length < 2 && (
+                <div
+                  className="p-4 text-center"
+                  style={{ border: "1.5px dashed #C9B8D8", borderRadius: 8 }}
+                >
+                  <p className="text-[13px] mb-1" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                    Har ni en gruppchatt som planerar saker?
+                  </p>
+                  <CreateGroupDialog
+                    onGroupCreated={fetchGroups}
+                    trigger={
+                      <span className="text-[13px] font-medium cursor-pointer" style={{ color: "#3C2A4D" }}>
+                        Starta ett sällskap med din krets →
+                      </span>
+                    }
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </Container>
 
       <QRCodeSheet open={qrOpen} onOpenChange={setQrOpen} />
       <ScrollToTopButton />
       <BottomNav />
 
-      <ConfirmSheet
-        open={!!removeConfirm}
-        onOpenChange={(open) => {
-          if (!open) setRemoveConfirm(null);
-        }}
-        title="Ta bort från kretsen"
-        description={`Vill du ta bort ${removeConfirm?.name || ""} från din krets? Ni delar inte längre era vardagar.`}
-        confirmLabel="Ta bort"
-        confirmStyle={{ backgroundColor: "hsl(var(--color-accent-red))" }}
-        onConfirm={() => {
-          if (removeConfirm) handleRemoveFriend(removeConfirm.userId);
-          setRemoveConfirm(null);
-        }}
-      />
+      {selectedPerson && (
+        <KretspersonSheet
+          open={!!selectedPerson}
+          onOpenChange={(v) => { if (!v) setSelectedPerson(null); }}
+          person={selectedPerson}
+          onUpdate={() => { fetchData(); setSelectedPerson(null); }}
+          mutedUsers={mutedUsers}
+          onToggleMute={(userId) => { handleToggleMute(userId); setSelectedPerson(null); }}
+        />
+      )}
     </PageTransition>
   );
 };

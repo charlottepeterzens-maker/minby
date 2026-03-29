@@ -1,26 +1,26 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, User, UserPlus, Settings } from "lucide-react";
-import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
+import { Home, User, MessageCircle, Settings } from "lucide-react";
+import { useUnreadSallskap } from "@/hooks/useUnreadSallskap";
 import { motion } from "framer-motion";
 
 const navItems = [
   { label: "Hemma", icon: Home, path: "/" },
   { label: "Mitt", icon: User, path: "/profile" },
-  { label: "Min krets", icon: UserPlus, path: "/friends" },
+  { label: "Sällskap", icon: MessageCircle, path: "/friends" },
   { label: "Inställningar", icon: Settings, path: "/settings" },
 ];
 
 const BottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { count: unreadCount } = useUnreadNotifications();
+  const { count: unreadCount } = useUnreadSallskap();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border safe-area-bottom" aria-label="Huvudnavigering">
       <div className="max-w-lg mx-auto flex items-center justify-around py-2" role="list">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
-          const showBadge = item.path === "/profile" && unreadCount > 0;
+          const showBadge = item.path === "/friends" && unreadCount > 0;
 
           return (
             <motion.button
@@ -49,7 +49,7 @@ const BottomNav = () => {
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 500, damping: 20 }}
                     className="absolute -top-1.5 -right-2 min-w-[16px] h-4 flex items-center justify-center rounded-full text-[9px] font-bold text-white px-1"
-                    style={{ backgroundColor: "hsl(var(--color-badge))" }}
+                    style={{ backgroundColor: "#C9503A" }}
                   >
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </motion.span>

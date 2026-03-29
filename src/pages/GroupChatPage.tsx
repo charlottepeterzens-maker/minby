@@ -461,7 +461,7 @@ const GroupChatPage = () => {
             )}
           </div>
           <div className="shrink-0 relative">
-            <button onClick={() => setMenuOpen((v) => !v)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Gruppinställningar">
+            <button onClick={() => setMenuOpen((v) => !v)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Sällskapsinställningar">
               <EllipsisVertical className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
             </button>
             {menuOpen && (
@@ -473,7 +473,7 @@ const GroupChatPage = () => {
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
                     style={{ color: "hsl(var(--color-text-primary))" }}>
                     <UserPlus className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
-                    Lägg till vän
+                    Bjud in till sällskapet
                   </button>
                   <InviteFriendDialog trigger={
                     <button onClick={() => setMenuOpen(false)}
@@ -488,7 +488,7 @@ const GroupChatPage = () => {
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
                     style={{ color: "hsl(var(--color-accent-red))" }}>
                     <LogOut className="w-4 h-4" style={{ color: "hsl(var(--color-accent-red))" }} />
-                    Lämna grupp
+                    Lämna sällskap
                   </button>
                 </div>
               </>
@@ -707,7 +707,7 @@ const GroupChatPage = () => {
       <ConfirmSheet
         open={leaveConfirmOpen}
         onOpenChange={setLeaveConfirmOpen}
-        title="Lämna grupp"
+        title="Lämna sällskap"
         description={`Är du säker på att du vill lämna ${groupName}?`}
         confirmLabel="Lämna"
         onConfirm={async () => {
