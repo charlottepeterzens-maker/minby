@@ -545,149 +545,150 @@ const GroupChatPage = () => {
       </header>
 
       {/* Timeline */}
-      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3 relative">
-
-        {/* Sticky AI summary — inside scroll container */}
-        <div className="sticky top-0 z-30">
-          <ChatSummaryCard
-            messages={summaryMessages}
-            members={members}
-            groupName={groupName}
-            onCreatePlan={handleSummaryCreatePlan}
-            totalMessageCount={messages.length}
-          />
+      <div className="relative flex-1 min-h-0">
+        <div className="absolute inset-x-0 top-0 z-30 pointer-events-none px-4">
+          <div className="pointer-events-auto">
+            <ChatSummaryCard
+              messages={summaryMessages}
+              members={members}
+              groupName={groupName}
+              onCreatePlan={handleSummaryCreatePlan}
+              totalMessageCount={messages.length}
+            />
+          </div>
         </div>
 
-        {pastPlanForMemory && (
-          <AfterEventCard
-            planId={pastPlanForMemory.id}
-            planTitle={pastPlanForMemory.title}
-            planDate={pastPlanForMemory.date_text}
-            groupId={groupId || ""}
-            onDismiss={() => {
-              addToDismissed(DISMISSED_MEMORIES_KEY, pastPlanForMemory.id);
-              setDismissedMemories((prev) => new Set([...prev, pastPlanForMemory.id]));
-            }}
-            onMemorySaved={() => {
-              addToDismissed(DISMISSED_MEMORIES_KEY, pastPlanForMemory.id);
-              setDismissedMemories((prev) => new Set([...prev, pastPlanForMemory.id]));
-            }}
-          />
-        )}
-        {timeline.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-[13px]" style={{ color: "hsl(var(--color-text-secondary))" }}>Inga meddelanden ännu. Skriv det första!</p>
-          </div>
-        )}
+        <div className="h-full overflow-y-auto px-4 pt-14 pb-2 space-y-3 relative">
+          {pastPlanForMemory && (
+            <AfterEventCard
+              planId={pastPlanForMemory.id}
+              planTitle={pastPlanForMemory.title}
+              planDate={pastPlanForMemory.date_text}
+              groupId={groupId || ""}
+              onDismiss={() => {
+                addToDismissed(DISMISSED_MEMORIES_KEY, pastPlanForMemory.id);
+                setDismissedMemories((prev) => new Set([...prev, pastPlanForMemory.id]));
+              }}
+              onMemorySaved={() => {
+                addToDismissed(DISMISSED_MEMORIES_KEY, pastPlanForMemory.id);
+                setDismissedMemories((prev) => new Set([...prev, pastPlanForMemory.id]));
+              }}
+            />
+          )}
+          {timeline.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-[13px]" style={{ color: "hsl(var(--color-text-secondary))" }}>Inga meddelanden ännu. Skriv det första!</p>
+            </div>
+          )}
 
-        {timeline.map((item) => {
-          if (item.type === "message") {
-            const msg = item.data;
-            const isOwn = msg.user_id === user?.id;
-            const member = getMember(msg.user_id);
-            const repliedMsg = msg.reply_to_id ? messages.find((m) => m.id === msg.reply_to_id) : null;
-            const repliedMember = repliedMsg ? getMember(repliedMsg.user_id) : null;
-            const msgReactions = messageReactions.filter((r) => r.message_id === msg.id);
-            const showPicker = reactionPickerMsgId === msg.id;
-            return (
-              <SwipeableMessage
-                key={msg.id}
-                isOwn={isOwn}
-                onReply={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-              >
-                <div className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}>
-                  {repliedMsg && (
-                    <div className="flex items-center gap-1 px-2 mb-0.5" style={{ maxWidth: "75%" }}>
-                      <Reply className="w-3 h-3 shrink-0" style={{ color: "hsl(var(--color-text-muted))", transform: "scaleX(-1)" }} />
-                      <span className="text-[10px] truncate" style={{ color: "hsl(var(--color-text-muted))" }}>
-                        {repliedMember?.display_name || "Anonym"}: {repliedMsg.content}
-                      </span>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-1">
-                    {isOwn && (
-                      <button
-                        onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
-                        className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
-                        style={{ color: "hsl(var(--color-text-muted))" }}
-                        aria-label="Reagera på meddelande"
-                      >
-                        <SmilePlus className="w-3.5 h-3.5" />
-                      </button>
+          {timeline.map((item) => {
+            if (item.type === "message") {
+              const msg = item.data;
+              const isOwn = msg.user_id === user?.id;
+              const member = getMember(msg.user_id);
+              const repliedMsg = msg.reply_to_id ? messages.find((m) => m.id === msg.reply_to_id) : null;
+              const repliedMember = repliedMsg ? getMember(repliedMsg.user_id) : null;
+              const msgReactions = messageReactions.filter((r) => r.message_id === msg.id);
+              const showPicker = reactionPickerMsgId === msg.id;
+              return (
+                <SwipeableMessage
+                  key={msg.id}
+                  isOwn={isOwn}
+                  onReply={() => { setReplyTo(msg); inputRef.current?.focus(); }}
+                >
+                  <div className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}>
+                    {repliedMsg && (
+                      <div className="flex items-center gap-1 px-2 mb-0.5" style={{ maxWidth: "75%" }}>
+                        <Reply className="w-3 h-3 shrink-0" style={{ color: "hsl(var(--color-text-muted))", transform: "scaleX(-1)" }} />
+                        <span className="text-[10px] truncate" style={{ color: "hsl(var(--color-text-muted))" }}>
+                          {repliedMember?.display_name || "Anonym"}: {repliedMsg.content}
+                        </span>
+                      </div>
                     )}
-                    <div
-                      onDoubleClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
-                      className="px-3.5 py-2.5 select-none"
-                      style={{
-                        maxWidth: "75vw",
-                        borderRadius: isOwn ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                        backgroundColor: isOwn ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-card))",
-                        color: isOwn ? "#FFFFFF" : "hsl(var(--color-text-primary))",
-                        fontSize: 14, lineHeight: "20px",
-                      }}
-                    >
-                      {msg.content}
-                    </div>
-                    {!isOwn && (
-                      <button
-                        onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
-                        className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
-                        style={{ color: "hsl(var(--color-text-muted))" }}
-                        aria-label="Reagera på meddelande"
+                    <div className="flex items-center gap-1">
+                      {isOwn && (
+                        <button
+                          onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
+                          className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
+                          style={{ color: "hsl(var(--color-text-muted))" }}
+                          aria-label="Reagera på meddelande"
+                        >
+                          <SmilePlus className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      <div
+                        onDoubleClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
+                        className="px-3.5 py-2.5 select-none"
+                        style={{
+                          maxWidth: "75vw",
+                          borderRadius: isOwn ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+                          backgroundColor: isOwn ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-card))",
+                          color: isOwn ? "hsl(var(--primary-foreground))" : "hsl(var(--color-text-primary))",
+                          fontSize: 14, lineHeight: "20px",
+                        }}
                       >
-                        <SmilePlus className="w-3.5 h-3.5" />
-                      </button>
-                    )}
+                        {msg.content}
+                      </div>
+                      {!isOwn && (
+                        <button
+                          onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
+                          className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
+                          style={{ color: "hsl(var(--color-text-muted))" }}
+                          aria-label="Reagera på meddelande"
+                        >
+                          <SmilePlus className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                    <MessageReactions
+                      messageId={msg.id}
+                      isOwn={isOwn}
+                      reactions={msgReactions}
+                      onReactionsChange={fetchReactions}
+                      pickerOpen={showPicker}
+                      onPickerToggle={(open) => setReactionPickerMsgId(open ? msg.id : null)}
+                    />
+                    <div className="flex items-center gap-1.5 mt-0.5 px-1">
+                      {!isOwn && <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{member?.display_name || "Anonym"}</span>}
+                      <span className="text-[10px]" style={{ color: "hsl(var(--color-text-muted))" }}>{formatTime(msg.created_at)}</span>
+                    </div>
                   </div>
-                  <MessageReactions
-                    messageId={msg.id}
-                    isOwn={isOwn}
-                    reactions={msgReactions}
-                    onReactionsChange={fetchReactions}
-                    pickerOpen={showPicker}
-                    onPickerToggle={(open) => setReactionPickerMsgId(open ? msg.id : null)}
-                  />
-                  <div className="flex items-center gap-1.5 mt-0.5 px-1">
-                    {!isOwn && <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>{member?.display_name || "Anonym"}</span>}
-                    <span className="text-[10px]" style={{ color: "hsl(var(--color-text-muted))" }}>{formatTime(msg.created_at)}</span>
-                  </div>
-                </div>
-              </SwipeableMessage>
-            );
-          }
+                </SwipeableMessage>
+              );
+            }
 
-          if (item.type === "plan") {
-            const plan = item.data as Plan;
-            const planRsvps = rsvps.filter((r) => r.plan_id === plan.id);
-            const creator = getMember(plan.created_by);
+            if (item.type === "plan") {
+              const plan = item.data as Plan;
+              const planRsvps = rsvps.filter((r) => r.plan_id === plan.id);
+              const creator = getMember(plan.created_by);
+              return (
+                <PlanTimelineCard
+                  key={`plan-${plan.id}`}
+                  planId={plan.id}
+                  title={plan.title}
+                  dateText={plan.date_text}
+                  location={plan.location}
+                  creatorName={creator?.display_name || "Anonym"}
+                  time={formatTime(plan.created_at)}
+                  rsvps={planRsvps}
+                  currentUserId={user?.id || ""}
+                  members={members}
+                  onRsvp={handleRsvp}
+                />
+              );
+            }
+
+            const poll = item.data as Poll;
+            const votes = pollVotes.filter((v) => v.poll_id === poll.id);
+            const creator = getMember(poll.user_id);
             return (
-              <PlanTimelineCard
-                key={`plan-${plan.id}`}
-                planId={plan.id}
-                title={plan.title}
-                dateText={plan.date_text}
-                location={plan.location}
-                
-                creatorName={creator?.display_name || "Anonym"}
-                time={formatTime(plan.created_at)}
-                rsvps={planRsvps}
-                currentUserId={user?.id || ""}
-                members={members}
-                onRsvp={handleRsvp}
-              />
+              <PollCard key={poll.id} question={poll.question} options={poll.options} votes={votes}
+                currentUserId={user?.id || ""} onVote={(idx) => handleVote(poll.id, idx)}
+                creatorName={creator?.display_name || "Anonym"} time={formatTime(poll.created_at)} />
             );
-          }
-
-          const poll = item.data as Poll;
-          const votes = pollVotes.filter((v) => v.poll_id === poll.id);
-          const creator = getMember(poll.user_id);
-          return (
-            <PollCard key={poll.id} question={poll.question} options={poll.options} votes={votes}
-              currentUserId={user?.id || ""} onVote={(idx) => handleVote(poll.id, idx)}
-              creatorName={creator?.display_name || "Anonym"} time={formatTime(poll.created_at)} />
-          );
-        })}
-        <div ref={bottomRef} />
+          })}
+          <div ref={bottomRef} />
+        </div>
       </div>
 
       {/* Date suggestion */}
