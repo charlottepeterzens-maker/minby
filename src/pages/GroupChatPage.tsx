@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo, Fragment } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, SendHorizontal, Plus, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut, Reply, X, SmilePlus } from "lucide-react";
+import { ChevronLeft, SendHorizontal, Plus, Ellipsis, UserPlus, ArrowUpFromLine, LogOut, Reply, X, SmilePlus, Camera } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
@@ -113,6 +113,7 @@ const GroupChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [groupName, setGroupName] = useState("");
+  const [groupAvatarUrl, setGroupAvatarUrl] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [polls, setPolls] = useState<Poll[]>([]);
@@ -131,6 +132,7 @@ const GroupChatPage = () => {
   const [reactionPickerMsgId, setReactionPickerMsgId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   // Typing indicator
   const myProfile = members.find((m) => m.user_id === user?.id);
