@@ -665,7 +665,8 @@ const GroupChatPage = () => {
       )}
 
       {/* Input field */}
-      <div className="sticky bottom-0 px-4 py-3 safe-area-bottom" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+      <div className="sticky bottom-0 px-4 pb-3 pt-1 safe-area-bottom" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+        <TypingIndicator typingUsers={typingUsers} />
         {replyTo && (
           <div className="flex items-center gap-2 px-4 py-1.5 mb-1 rounded-t-[12px]" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
             <Reply className="w-3.5 h-3.5 shrink-0" style={{ color: "hsl(var(--color-text-secondary))", transform: "scaleX(-1)" }} />
@@ -688,8 +689,11 @@ const GroupChatPage = () => {
             aria-label="Skapa plan eller omröstning">
             <Plus className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
           </button>
-          <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder={replyTo ? "Svara..." : "Skriv något..."}
+          <input ref={inputRef} type="text" value={newMessage}
+            onChange={(e) => { setNewMessage(e.target.value); setTyping(e.target.value.length > 0); }}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            onBlur={() => setTyping(false)}
+            placeholder={replyTo ? "Svara..." : "Skriv något..."}
             className="flex-1 bg-transparent text-[14px] outline-none" style={{ color: "hsl(var(--color-text-primary))" }}
             aria-label="Skriv meddelande" />
           <button onClick={handleSend} disabled={!newMessage.trim() || sending}
