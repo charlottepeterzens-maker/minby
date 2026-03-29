@@ -195,7 +195,15 @@ const HangoutDetailSheet = ({
   const handleRSVP = async (status: "yes" | "maybe") => {
     if (!user) return;
     const existing = taggedFriends.find(t => t.tagged_user_id === user.id);
-    if (!existing && status === "yes") {
+    if (existing) {
+      // Already responded – remove existing response first
+      await supabase.from("hangout_tagged_friends").delete().eq("id", existing.id);
+      setTaggedFriends(prev => prev.filter(t => t.id !== existing.id));
+      toast({ title: "Svar borttaget" });
+      await fetchDetails();
+      return;
+    }
+    if (status === "yes") {
       await supabase.from("hangout_tagged_friends").insert({ availability_id: entry.id, tagged_user_id: user.id, tagged_by: user.id });
     }
     if (entry.user_id !== user.id) {
