@@ -17,6 +17,7 @@ import { recognizeDates, type RecognizedDate } from "@/utils/dateRecognition";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import AddMemberSheet from "@/components/chat/AddMemberSheet";
 import SwipeableMessage from "@/components/chat/SwipeableMessage";
+import { useTypingBroadcast, TypingIndicator } from "@/components/chat/TypingIndicator";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
@@ -130,6 +131,14 @@ const GroupChatPage = () => {
   const [reactionPickerMsgId, setReactionPickerMsgId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Typing indicator
+  const myProfile = members.find((m) => m.user_id === user?.id);
+  const { typingUsers, setTyping } = useTypingBroadcast(
+    groupId || "",
+    user?.id || "",
+    myProfile?.display_name || "Anonym"
+  );
 
   const scrollToBottom = () => {
     setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
@@ -341,6 +350,7 @@ const GroupChatPage = () => {
     const replyId = replyTo?.id || null;
     setNewMessage("");
     setReplyTo(null);
+    setTyping(false);
     await (supabase as any).from("group_messages").insert({ group_id: groupId, user_id: user.id, content, reply_to_id: replyId });
     try {
       const otherMembers = members.filter(m => m.user_id !== user.id);
@@ -656,7 +666,8 @@ const GroupChatPage = () => {
       )}
 
       {/* Input field */}
-      <div className="sticky bottom-0 px-4 py-3 safe-area-bottom" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+      <div className="sticky bottom-0 px-4 pb-3 pt-1 safe-area-bottom" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+        <TypingIndicator typingUsers={typingUsers} />
         {replyTo && (
           <div className="flex items-center gap-2 px-4 py-1.5 mb-1 rounded-t-[12px]" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
             <Reply className="w-3.5 h-3.5 shrink-0" style={{ color: "hsl(var(--color-text-secondary))", transform: "scaleX(-1)" }} />
@@ -679,8 +690,11 @@ const GroupChatPage = () => {
             aria-label="Skapa plan eller omröstning">
             <Plus className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
           </button>
-          <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder={replyTo ? "Svara..." : "Skriv något..."}
+          <input ref={inputRef} type="text" value={newMessage}
+            onChange={(e) => { setNewMessage(e.target.value); setTyping(e.target.value.length > 0); }}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            onBlur={() => setTyping(false)}
+            placeholder={replyTo ? "Svara..." : "Skriv något..."}
             className="flex-1 bg-transparent text-[14px] outline-none" style={{ color: "hsl(var(--color-text-primary))" }}
             aria-label="Skriv meddelande" />
           <button onClick={handleSend} disabled={!newMessage.trim() || sending}
