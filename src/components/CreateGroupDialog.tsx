@@ -92,7 +92,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
     single();
 
     if (error || !group) {
-      toast.error("Kunde inte skapa gruppen");
+      toast.error("Kunde inte starta sällskapet");
       setLoading(false);
       return;
     }
@@ -142,7 +142,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
       <DrawerTrigger asChild>
         {trigger ||
         <Button variant="ghost" size="sm" className="gap-1.5">
-            <Plus className="w-4 h-4" /> Ny grupp
+            <Plus className="w-4 h-4" /> Nytt sällskap
           </Button>
         }
       </DrawerTrigger>
@@ -273,8 +273,8 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 }}>
                 
                   {selectedFriends.length > 0 ?
-                `Skapa (${selectedFriends.length} valda)` :
-                "Skapa utan vänner"}
+                `Starta (${selectedFriends.length} valda)` :
+                "Starta utan krets"}
                 </button>
               </div>
             </div>
