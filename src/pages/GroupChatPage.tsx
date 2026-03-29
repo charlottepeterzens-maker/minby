@@ -461,7 +461,7 @@ const GroupChatPage = () => {
             )}
           </div>
           <div className="shrink-0 relative">
-            <button onClick={() => setMenuOpen((v) => !v)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Gruppinställningar">
+            <button onClick={() => setMenuOpen((v) => !v)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Sällskapsinställningar">
               <EllipsisVertical className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
             </button>
             {menuOpen && (
