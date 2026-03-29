@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Heart, Calendar, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveAvatarUrl } from "@/utils/avatarUrl";
