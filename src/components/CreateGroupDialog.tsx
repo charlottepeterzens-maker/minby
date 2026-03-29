@@ -219,8 +219,9 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 </p> :
 
             <div
-              className="space-y-1.5 max-h-60 overflow-y-auto overscroll-contain"
+              className="space-y-1.5 max-h-60 overflow-y-auto overscroll-contain touch-pan-y"
               onPointerDown={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
             >
                   {friends.map((f) => {
                 const selected = selectedFriends.includes(f.user_id);
