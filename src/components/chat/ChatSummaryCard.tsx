@@ -17,11 +17,13 @@ interface SummaryData {
   planSuggestion: { title: string; dateText: string } | null;
 }
 
-const summaryClass = "pt-2 pb-1 z-30 -mx-4 px-4";
+const summaryClass = "pt-2 pb-2";
 const summaryStyle = {
-  backgroundColor: "hsla(30, 27%, 95%, 0.75)",
-  backdropFilter: "blur(12px)",
-  WebkitBackdropFilter: "blur(12px)",
+  backgroundColor: "hsla(30, 27%, 95%, 0.8)",
+  backdropFilter: "blur(14px)",
+  WebkitBackdropFilter: "blur(14px)",
+  maskImage: "linear-gradient(to bottom, black 85%, transparent 100%)",
+  WebkitMaskImage: "linear-gradient(to bottom, black 85%, transparent 100%)",
 } as const;
 
 const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount }: ChatSummaryCardProps) => {
