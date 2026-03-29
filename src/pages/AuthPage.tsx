@@ -263,6 +263,18 @@ const AuthPage = () => {
           </Button>
         </form>
 
+        {!isSignUp && (
+          <div className="text-center mt-3">
+            <button
+              type="button"
+              onClick={() => setView("forgot")}
+              className="text-xs text-muted-foreground hover:underline"
+            >
+              Glömt lösenord?
+            </button>
+          </div>
+        )}
+
         <p className="text-center text-sm text-muted-foreground mt-8">
           {isSignUp ? t("alreadyHaveAccount") : t("dontHaveAccount")}{" "}
           <button

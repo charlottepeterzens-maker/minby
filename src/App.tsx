@@ -12,6 +12,7 @@ import FirstTimeOverlay from "@/components/onboarding/FirstTimeOverlay";
 import PushPermissionDialog from "@/components/PushPermissionDialog";
 import FeedPage from "./pages/FeedPage";
 import AuthPage from "./pages/AuthPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ProfilePage from "./pages/ProfilePage";
 import FriendsPage from "./pages/FriendsPage";
 import NotificationsPage from "./pages/NotificationsPage";
