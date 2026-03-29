@@ -149,6 +149,18 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
             ) : (
               <ChevronDown className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
             )}
+            {onClose && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClose();
+                }}
+                className="p-1 rounded-full hover:opacity-70 transition-opacity"
+                style={{ color: "hsl(var(--color-text-muted))" }}
+              >
+                <X className="w-3 h-3" />
+              </button>
+            )}
           </div>
         </button>
 
