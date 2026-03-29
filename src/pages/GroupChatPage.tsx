@@ -150,8 +150,16 @@ const GroupChatPage = () => {
   const fetchGroupInfo = useCallback(async () => {
     if (!groupId) return;
     const { data: group } = await supabase
-      .from("friend_groups").select("name").eq("id", groupId).single();
-    if (group) setGroupName(group.name);
+      .from("friend_groups").select("name, avatar_url").eq("id", groupId).single();
+    if (group) {
+      setGroupName(group.name);
+      if (group.avatar_url) {
+        const { data: urlData } = supabase.storage.from("group-avatars").getPublicUrl(group.avatar_url);
+        setGroupAvatarUrl(urlData?.publicUrl || null);
+      } else {
+        setGroupAvatarUrl(null);
+      }
+    }
 
     const { data: memberships } = await supabase
       .from("group_memberships").select("user_id").eq("group_id", groupId);
@@ -168,6 +176,22 @@ const GroupChatPage = () => {
       );
     }
   }, [groupId]);
+
+  const handleGroupAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !groupId || !user) return;
+    const ext = file.name.split(".").pop() || "jpg";
+    const filePath = `${groupId}/${Date.now()}.${ext}`;
+    const { error: uploadError } = await supabase.storage
+      .from("group-avatars").upload(filePath, file, { upsert: true });
+    if (uploadError) { toast.error("Kunde inte ladda upp bild"); return; }
+    const { error: updateError } = await supabase
+      .from("friend_groups").update({ avatar_url: filePath }).eq("id", groupId);
+    if (updateError) { toast.error("Kunde inte spara bild"); return; }
+    toast.success("Profilbild uppdaterad");
+    fetchGroupInfo();
+    if (avatarInputRef.current) avatarInputRef.current.value = "";
+  };
 
   const fetchMessages = useCallback(async () => {
     if (!groupId) return;
