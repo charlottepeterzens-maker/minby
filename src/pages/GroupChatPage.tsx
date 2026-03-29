@@ -508,17 +508,19 @@ const GroupChatPage = () => {
         </div>
       </header>
 
-      {/* Sticky AI summary — outside scroll container */}
-      <ChatSummaryCard
-        messages={summaryMessages}
-        members={members}
-        groupName={groupName}
-        onCreatePlan={handleSummaryCreatePlan}
-        totalMessageCount={messages.length}
-      />
-
       {/* Timeline */}
       <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3 relative">
+
+        {/* Sticky AI summary — inside scroll container */}
+        <div className="sticky top-0 z-30">
+          <ChatSummaryCard
+            messages={summaryMessages}
+            members={members}
+            groupName={groupName}
+            onCreatePlan={handleSummaryCreatePlan}
+            totalMessageCount={messages.length}
+          />
+        </div>
 
         {pastPlanForMemory && (
           <AfterEventCard
