@@ -710,7 +710,7 @@ const GroupChatPage = () => {
       <div className="sticky bottom-0 px-4 pb-3 pt-1 safe-area-bottom" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <TypingIndicator typingUsers={typingUsers} />
         {/* Contextual summarize button — only when enough messages and summary not already open */}
-        {messages.length >= 8 && !summaryVisible && (
+        {messages.length >= 4 && !summaryVisible && (
           <button
             onClick={() => setSummaryVisible(true)}
             className="mb-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-opacity hover:opacity-80"
