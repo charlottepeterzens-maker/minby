@@ -17,11 +17,12 @@ interface SummaryData {
   planSuggestion: { title: string; dateText: string } | null;
 }
 
-const summaryClass = "pt-2 pb-2";
+const summaryClass = "pt-1.5 pb-1.5";
 const summaryStyle = {
-  backgroundColor: "hsla(30, 27%, 95%, 0.82)",
-  backdropFilter: "blur(14px)",
-  WebkitBackdropFilter: "blur(14px)",
+  backgroundColor: "hsla(30, 27%, 95%, 0.88)",
+  backdropFilter: "saturate(1.4) blur(20px)",
+  WebkitBackdropFilter: "saturate(1.4) blur(20px)",
+  boxShadow: "0 1px 0 0 hsla(270, 20%, 50%, 0.06)",
 } as const;
 
 const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount }: ChatSummaryCardProps) => {
@@ -75,11 +76,10 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
         <div
           className="p-2.5 rounded-lg flex items-center gap-2"
           style={{
-            backgroundColor: "hsla(0, 0%, 100%, 0.7)",
-            backdropFilter: "blur(8px)",
-            WebkitBackdropFilter: "blur(8px)",
-            border: "none",
-            boxShadow: "0 2px 12px -2px rgba(60,42,77,0.08)",
+            backgroundColor: "hsla(0, 0%, 100%, 0.6)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            boxShadow: "0 1px 8px -2px rgba(60,42,77,0.06)",
           }}
         >
           <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ color: "hsl(var(--color-text-secondary))" }} />
@@ -109,11 +109,10 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
         animate={{ opacity: 1, y: 0 }}
         className="rounded-lg overflow-hidden"
         style={{
-          backgroundColor: "hsla(0, 0%, 100%, 0.65)",
-          backdropFilter: "blur(8px)",
-          WebkitBackdropFilter: "blur(8px)",
-          border: "none",
-          boxShadow: "0 2px 16px -4px rgba(60,42,77,0.10)",
+          backgroundColor: "hsla(0, 0%, 100%, 0.55)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          boxShadow: "0 1px 10px -3px rgba(60,42,77,0.08)",
         }}
       >
         {/* Collapsed bar — always visible */}
