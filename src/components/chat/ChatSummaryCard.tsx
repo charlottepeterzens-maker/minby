@@ -75,7 +75,9 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
         <div
           className="p-2.5 rounded-lg flex items-center gap-2"
           style={{
-            backgroundColor: "rgba(255,255,255,0.85)",
+            backgroundColor: "hsla(0, 0%, 100%, 0.7)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
             border: "none",
             boxShadow: "0 2px 12px -2px rgba(60,42,77,0.08)",
           }}
