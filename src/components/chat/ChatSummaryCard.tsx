@@ -17,11 +17,9 @@ interface SummaryData {
   planSuggestion: { title: string; dateText: string } | null;
 }
 
-const stickyClass = "sticky top-0 z-30 px-4 pt-2 pb-1";
-const stickyStyle = {
-  backgroundColor: "rgba(247, 243, 239, 0.82)",
-  backdropFilter: "blur(12px)",
-  WebkitBackdropFilter: "blur(12px)",
+const summaryClass = "px-4 pt-2 pb-1 z-30";
+const summaryStyle = {
+  backgroundColor: "hsl(var(--color-surface))",
 } as const;
 
 const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMessageCount }: ChatSummaryCardProps) => {
