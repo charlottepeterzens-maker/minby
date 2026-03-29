@@ -17,7 +17,7 @@ interface SummaryData {
   planSuggestion: { title: string; dateText: string } | null;
 }
 
-const summaryClass = "px-4 pt-2 pb-1 z-30 sticky top-0";
+const summaryClass = "pt-2 pb-1 z-30 -mx-4 px-4";
 const summaryStyle = {
   backgroundColor: "hsl(var(--color-surface))",
 } as const;
