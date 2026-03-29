@@ -547,7 +547,7 @@ const GroupChatPage = () => {
       {/* Timeline */}
       <div className="relative flex-1 min-h-0">
         <div className="h-full overflow-y-auto px-4 pb-2 space-y-3 relative">
-          <div className="sticky top-0 z-30 -mx-4 px-4">
+          <div className="-mx-4 px-4">
             <ChatSummaryCard
               messages={summaryMessages}
               members={members}
