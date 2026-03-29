@@ -546,8 +546,8 @@ const GroupChatPage = () => {
 
       {/* Timeline */}
       <div className="relative flex-1 min-h-0">
-        <div className="absolute inset-x-0 top-0 z-30 pointer-events-none px-4 pb-1">
-          <div className="pointer-events-auto">
+        <div className="h-full overflow-y-auto px-4 pb-2 space-y-3 relative">
+          <div className="sticky top-0 z-30 -mx-4 px-4">
             <ChatSummaryCard
               messages={summaryMessages}
               members={members}
@@ -556,9 +556,6 @@ const GroupChatPage = () => {
               totalMessageCount={messages.length}
             />
           </div>
-        </div>
-
-        <div className="h-full overflow-y-auto px-4 pt-12 pb-2 space-y-3 relative">
           {pastPlanForMemory && (
             <AfterEventCard
               planId={pastPlanForMemory.id}
