@@ -109,7 +109,7 @@ const Index = () => {
       <div className="min-h-screen bg-background pb-20">
         <nav className="sticky top-0 z-50 bg-background border-b border-border">
           <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
-            <span className="font-display text-[20px] font-medium text-foreground">Grupper</span>
+            <span className="font-display text-[20px] font-medium text-foreground">Sällskap</span>
             <CreateGroupDialog onGroupCreated={fetchGroups} />
           </div>
         </nav>
@@ -123,8 +123,8 @@ const Index = () => {
             </div>
           ) : groups.length === 0 ? (
             <div className="text-center py-20">
-              <p className="font-display text-lg text-muted-foreground">Inga grupper ännu</p>
-              <p className="text-sm text-muted-foreground mt-2">Skapa din första grupp för att börja planera!</p>
+              <p className="font-display text-lg text-muted-foreground">Inga sällskap ännu</p>
+              <p className="text-sm text-muted-foreground mt-2">Starta ditt första sällskap för att börja planera!</p>
             </div>
           ) : (
             <div className="space-y-2">
