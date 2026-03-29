@@ -585,7 +585,7 @@ const ProfilePage = () => {
         </div>
 
         {/* ===== (7) TIPS & FAVORITES ===== */}
-        {targetUserId && <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} />}
+        {targetUserId && <TipsFavorites userId={targetUserId} isOwner={isOwnProfile} displayName={profile?.display_name} />}
       </main>
       <ScrollToTopButton />
       <BottomNav />
