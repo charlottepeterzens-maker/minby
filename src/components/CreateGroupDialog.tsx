@@ -190,8 +190,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                     "1px solid #C9B8D8" :
                     "1px solid transparent"
                   }}>
-                  
-                      
+                      <span className="text-xl">{preset.emoji}</span>
                       <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
                         {preset.label}
                       </span>
@@ -219,7 +218,10 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                   Du har ingen i kretsen att bjuda in ännu.
                 </p> :
 
-            <div className="space-y-1.5 max-h-60 overflow-y-auto">
+            <div
+              className="space-y-1.5 max-h-60 overflow-y-auto overscroll-contain"
+              onPointerDown={(e) => e.stopPropagation()}
+            >
                   {friends.map((f) => {
                 const selected = selectedFriends.includes(f.user_id);
                 return (
@@ -251,7 +253,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 </div>
             }
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 pt-2">
                 <button
                 onClick={() => setStep(1)}
                 className="flex-1 py-2.5 text-sm font-medium rounded-lg"
@@ -268,11 +270,11 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 disabled={loading}
                 className="flex-1 py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
                 style={{
-                  backgroundColor: "hsl(var(--color-text-primary))",
+                  backgroundColor: "#3C2A4D",
                   borderRadius: 8
                 }}>
                 
-                  {selectedFriends.length > 0 ?
+                  {loading ? "Startar..." : selectedFriends.length > 0 ?
                 `Starta (${selectedFriends.length} valda)` :
                 "Starta utan krets"}
                 </button>
