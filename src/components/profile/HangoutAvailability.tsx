@@ -502,7 +502,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             const addBtnWidth = isOwner ? 56 : 0;
             const totalWidth = carouselItems.length * (cardWidth + gap) + (isOwner ? addBtnWidth + gap : 0) - gap;
             const cw = containerWidth || scrollRef.current?.clientWidth || 9999;
-            const needsScroll = totalWidth > containerWidth;
+            const needsScroll = totalWidth > cw;
             if (!needsScroll || totalCards <= 1) return null;
             return (
               <div className="flex justify-center gap-1 mt-2">
