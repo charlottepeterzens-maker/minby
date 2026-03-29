@@ -53,7 +53,7 @@ const AuthPage = () => {
   const { t } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [view, setView] = useState<"welcome" | "signup" | "login">("welcome");
+  const [view, setView] = useState<"welcome" | "signup" | "login" | "forgot">("welcome");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
