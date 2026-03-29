@@ -73,6 +73,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const [sheetOpen, setSheetOpen] = useState(false);
   const [confirmedCounts, setConfirmedCounts] = useState<Map<string, number>>(new Map());
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [containerWidth, setContainerWidth] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activityGroupMap, setActivityGroupMap] = useState<Map<string, AvailabilityEntry[]>>(new Map());
   const [prefillActivityName, setPrefillActivityName] = useState<string | undefined>();
@@ -115,6 +116,14 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   }, [userId]);
 
   useEffect(() => { fetchEntries(); }, [fetchEntries]);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => setContainerWidth(entry.contentRect.width));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [entries]);
 
   useEffect(() => {
     if (openEntryId && entries.length > 0) {
@@ -487,21 +496,30 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             {isOwner && renderAddButton()}
           </div>
 
-          {totalCards > 1 && (
-            <div className="flex justify-center gap-1 mt-2">
-              {Array.from({ length: totalCards }).map((_, i) => (
-                <div
-                  key={i}
-                  className="rounded-full transition-all"
-                  style={{
-                    width: i === currentIndex ? 16 : 6,
-                    height: 6,
-                    backgroundColor: i === currentIndex ? "#3C2A4D" : "#C9B8D8",
-                  }}
-                />
-              ))}
-            </div>
-          )}
+          {(() => {
+            const cardWidth = 148;
+            const gap = 8;
+            const addBtnWidth = isOwner ? 56 : 0;
+            const totalWidth = carouselItems.length * (cardWidth + gap) + (isOwner ? addBtnWidth + gap : 0) - gap;
+            const cw = containerWidth || scrollRef.current?.clientWidth || 9999;
+            const needsScroll = totalWidth > cw;
+            if (!needsScroll || totalCards <= 1) return null;
+            return (
+              <div className="flex justify-center gap-1 mt-2">
+                {Array.from({ length: totalCards }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="rounded-full transition-all"
+                    style={{
+                      width: i === currentIndex ? 16 : 6,
+                      height: 6,
+                      backgroundColor: i === currentIndex ? "#3C2A4D" : "#C9B8D8",
+                    }}
+                  />
+                ))}
+              </div>
+            );
+          })()}
         </>
       )}
 
