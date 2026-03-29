@@ -54,21 +54,17 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
     }
   }, [loading, messages, members, groupName, totalMessageCount]);
 
-  // No summary yet — show compact pill
+  // Auto-fetch on mount
+  useEffect(() => {
+    if (!summary && !loading && messages.length >= 3) {
+      fetchSummary();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // No summary yet — show compact loading or nothing
   if (!summary && !loading) {
-    return (
-      <div className={summaryClass} style={summaryStyle}>
-        <button
-          onClick={fetchSummary}
-          disabled={messages.length < 3}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-medium transition-opacity disabled:opacity-30"
-          style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
-        >
-          <Sparkles className="w-3 h-3" />
-          Sammanfatta
-        </button>
-      </div>
-    );
+    return null;
   }
 
   if (loading) {
