@@ -773,6 +773,13 @@ const GroupChatPage = () => {
         existingMemberIds={members.map((m) => m.user_id)}
         onMembersAdded={fetchGroupInfo}
       />
+      <input
+        ref={avatarInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleGroupAvatarUpload}
+      />
     </div>
   );
 };
