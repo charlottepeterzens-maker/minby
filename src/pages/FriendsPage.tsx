@@ -56,6 +56,7 @@ interface GroupRow {
   name: string;
   emoji: string;
   owner_id: string;
+  avatar_url: string | null;
   member_names: string[];
   last_message: string | null;
   last_message_at: string | null;
@@ -814,12 +815,24 @@ const FriendsPage = () => {
                     borderLeft: g.has_unread ? "3px solid #3C2A4D" : "3px solid transparent",
                   }}
                 >
-                  <div
-                    className="shrink-0 flex items-center justify-center"
-                    style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: "hsl(var(--color-surface))" }}
-                  >
-                    <span className="text-lg">{g.emoji}</span>
-                  </div>
+                  {g.avatar_url ? (
+                    <img
+                      src={(() => {
+                        const { data } = supabase.storage.from("group-avatars").getPublicUrl(g.avatar_url!);
+                        return data?.publicUrl || "";
+                      })()}
+                      alt={g.name}
+                      className="shrink-0 object-cover"
+                      style={{ width: 42, height: 42, borderRadius: 8 }}
+                    />
+                  ) : (
+                    <div
+                      className="shrink-0 flex items-center justify-center"
+                      style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: "hsl(var(--color-surface))" }}
+                    >
+                      <span className="text-lg">{g.emoji}</span>
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
                       {g.name}

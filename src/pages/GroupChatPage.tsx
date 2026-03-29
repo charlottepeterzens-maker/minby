@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo, Fragment } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, SendHorizontal, Plus, EllipsisVertical, UserPlus, ArrowUpFromLine, LogOut, Reply, X, SmilePlus } from "lucide-react";
+import { ChevronLeft, SendHorizontal, Plus, Ellipsis, UserPlus, ArrowUpFromLine, LogOut, Reply, X, SmilePlus, Camera } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { format } from "date-fns";
@@ -113,6 +113,7 @@ const GroupChatPage = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [groupName, setGroupName] = useState("");
+  const [groupAvatarUrl, setGroupAvatarUrl] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [polls, setPolls] = useState<Poll[]>([]);
@@ -131,6 +132,7 @@ const GroupChatPage = () => {
   const [reactionPickerMsgId, setReactionPickerMsgId] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   // Typing indicator
   const myProfile = members.find((m) => m.user_id === user?.id);
@@ -148,8 +150,16 @@ const GroupChatPage = () => {
   const fetchGroupInfo = useCallback(async () => {
     if (!groupId) return;
     const { data: group } = await supabase
-      .from("friend_groups").select("name").eq("id", groupId).single();
-    if (group) setGroupName(group.name);
+      .from("friend_groups").select("name, avatar_url").eq("id", groupId).single();
+    if (group) {
+      setGroupName(group.name);
+      if (group.avatar_url) {
+        const { data: urlData } = supabase.storage.from("group-avatars").getPublicUrl(group.avatar_url);
+        setGroupAvatarUrl(urlData?.publicUrl || null);
+      } else {
+        setGroupAvatarUrl(null);
+      }
+    }
 
     const { data: memberships } = await supabase
       .from("group_memberships").select("user_id").eq("group_id", groupId);
@@ -166,6 +176,22 @@ const GroupChatPage = () => {
       );
     }
   }, [groupId]);
+
+  const handleGroupAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !groupId || !user) return;
+    const ext = file.name.split(".").pop() || "jpg";
+    const filePath = `${groupId}/${Date.now()}.${ext}`;
+    const { error: uploadError } = await supabase.storage
+      .from("group-avatars").upload(filePath, file, { upsert: true });
+    if (uploadError) { toast.error("Kunde inte ladda upp bild"); return; }
+    const { error: updateError } = await supabase
+      .from("friend_groups").update({ avatar_url: filePath }).eq("id", groupId);
+    if (updateError) { toast.error("Kunde inte spara bild"); return; }
+    toast.success("Profilbild uppdaterad");
+    fetchGroupInfo();
+    if (avatarInputRef.current) avatarInputRef.current.value = "";
+  };
 
   const fetchMessages = useCallback(async () => {
     if (!groupId) return;
@@ -457,29 +483,39 @@ const GroupChatPage = () => {
               />
             )}
           </div>
-          <div className="shrink-0 flex items-center -space-x-2">
-            {members.slice(0, 4).map((m) => (
-              <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
-                style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderColor: "hsl(var(--color-text-primary))" }}>
-                {m.initial}
-              </div>
-            ))}
-            {members.length > 4 && (
-              <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
-                style={{ backgroundColor: "#655675", color: "#F7F3EF", borderColor: "hsl(var(--color-text-primary))" }}>
-                +{members.length - 4}
-              </div>
-            )}
-          </div>
+          {groupAvatarUrl ? (
+            <img src={groupAvatarUrl} alt={groupName} className="w-8 h-8 rounded-full object-cover shrink-0 border-2" style={{ borderColor: "hsl(var(--color-text-primary))" }} />
+          ) : (
+            <div className="shrink-0 flex items-center -space-x-2">
+              {members.slice(0, 4).map((m) => (
+                <div key={m.user_id} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-medium border-2"
+                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderColor: "hsl(var(--color-text-primary))" }}>
+                  {m.initial}
+                </div>
+              ))}
+              {members.length > 4 && (
+                <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-medium border-2"
+                  style={{ backgroundColor: "#655675", color: "#F7F3EF", borderColor: "hsl(var(--color-text-primary))" }}>
+                  +{members.length - 4}
+                </div>
+              )}
+            </div>
+          )}
           <div className="shrink-0 relative">
             <button onClick={() => setMenuOpen((v) => !v)} className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Sällskapsinställningar">
-              <EllipsisVertical className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
+              <Ellipsis className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
             </button>
             {menuOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
                 <div className="absolute right-0 top-full mt-1 z-50 py-1.5 rounded-lg shadow-lg min-w-[180px]"
                   style={{ backgroundColor: "hsl(var(--color-surface-card))", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}>
+                  <button onClick={() => { setMenuOpen(false); avatarInputRef.current?.click(); }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80 min-h-[44px]"
+                    style={{ color: "hsl(var(--color-text-primary))" }}>
+                    <Camera className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
+                    Byt profilbild
+                  </button>
                   <button onClick={() => { setMenuOpen(false); setAddMemberOpen(true); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80 min-h-[44px]"
                     style={{ color: "hsl(var(--color-text-primary))" }}>
@@ -736,6 +772,13 @@ const GroupChatPage = () => {
         groupName={groupName}
         existingMemberIds={members.map((m) => m.user_id)}
         onMembersAdded={fetchGroupInfo}
+      />
+      <input
+        ref={avatarInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleGroupAvatarUpload}
       />
     </div>
   );
