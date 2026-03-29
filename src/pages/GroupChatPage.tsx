@@ -470,17 +470,17 @@ const GroupChatPage = () => {
                 <div className="absolute right-0 top-full mt-1 z-50 py-1.5 rounded-lg shadow-lg min-w-[180px]"
                   style={{ backgroundColor: "hsl(var(--color-surface-card))", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}>
                   <button onClick={() => { setMenuOpen(false); setAddMemberOpen(true); }}
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80 min-h-[44px]"
                     style={{ color: "hsl(var(--color-text-primary))" }}>
                     <UserPlus className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
-                    Bjud in till sällskapet
+                    Lägg till från kretsen
                   </button>
                   <InviteFriendDialog trigger={
                     <button onClick={() => setMenuOpen(false)}
-                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80"
+                      className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-[13px] font-medium hover:opacity-80 min-h-[44px]"
                       style={{ color: "hsl(var(--color-text-primary))" }}>
                       <ArrowUpFromLine className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
-                      Bjud in till sällskapet
+                      Bjud in via länk
                     </button>
                   } />
                   <div className="mx-3 my-1" style={{ borderTop: "1px solid hsl(var(--color-border-subtle))" }} />
@@ -497,15 +497,17 @@ const GroupChatPage = () => {
         </div>
       </header>
 
-      {/* Timeline with sticky summary */}
+      {/* Sticky AI summary — outside scroll container */}
+      <ChatSummaryCard
+        messages={summaryMessages}
+        members={members}
+        groupName={groupName}
+        onCreatePlan={handleSummaryCreatePlan}
+        totalMessageCount={messages.length}
+      />
+
+      {/* Timeline */}
       <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3 relative">
-        <ChatSummaryCard
-          messages={summaryMessages}
-          members={members}
-          groupName={groupName}
-          onCreatePlan={handleSummaryCreatePlan}
-          totalMessageCount={messages.length}
-        />
 
         {pastPlanForMemory && (
           <AfterEventCard
@@ -539,9 +541,9 @@ const GroupChatPage = () => {
             const msgReactions = messageReactions.filter((r) => r.message_id === msg.id);
             const showPicker = reactionPickerMsgId === msg.id;
             return (
-              <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"} group`}>
+              <div key={msg.id} className={`flex flex-col ${isOwn ? "items-end" : "items-start"}`}>
                 {repliedMsg && (
-                  <div className="flex items-center gap-1 px-2 mb-0.5" style={{ maxWidth: 200 }}>
+                  <div className="flex items-center gap-1 px-2 mb-0.5" style={{ maxWidth: "75%" }}>
                     <Reply className="w-3 h-3 shrink-0" style={{ color: "hsl(var(--color-text-muted))", transform: "scaleX(-1)" }} />
                     <span className="text-[10px] truncate" style={{ color: "hsl(var(--color-text-muted))" }}>
                       {repliedMember?.display_name || "Anonym"}: {repliedMsg.content}
@@ -553,15 +555,17 @@ const GroupChatPage = () => {
                     <>
                       <button
                         onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
-                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
                         style={{ color: "hsl(var(--color-text-muted))" }}
+                        aria-label="Reagera på meddelande"
                       >
                         <SmilePlus className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
                         style={{ color: "hsl(var(--color-text-muted))" }}
+                        aria-label="Svara på meddelande"
                       >
                         <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
                       </button>
@@ -569,14 +573,13 @@ const GroupChatPage = () => {
                   )}
                   <div
                     onDoubleClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
-                    className="px-3 py-2 select-none"
+                    className="px-3.5 py-2.5 select-none"
                     style={{
-                      maxWidth: 200,
-                      borderRadius: isOwn ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
-                      backgroundColor: isOwn ? "#3C2A4D" : "#FFFFFF",
-                      color: isOwn ? "#FFFFFF" : "#3C2A4D",
-                      border: isOwn ? "none" : "none",
-                      fontSize: 13, lineHeight: "18px",
+                      maxWidth: "75vw",
+                      borderRadius: isOwn ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+                      backgroundColor: isOwn ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-card))",
+                      color: isOwn ? "#FFFFFF" : "hsl(var(--color-text-primary))",
+                      fontSize: 14, lineHeight: "20px",
                     }}
                   >
                     {msg.content}
@@ -585,15 +588,17 @@ const GroupChatPage = () => {
                     <>
                       <button
                         onClick={() => { setReplyTo(msg); inputRef.current?.focus(); }}
-                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
                         style={{ color: "hsl(var(--color-text-muted))" }}
+                        aria-label="Svara på meddelande"
                       >
                         <Reply className="w-3.5 h-3.5" style={{ transform: "scaleX(-1)" }} />
                       </button>
                       <button
                         onClick={() => setReactionPickerMsgId(showPicker ? null : msg.id)}
-                        className="opacity-0 group-hover:opacity-60 active:opacity-100 transition-opacity p-1 rounded-full"
+                        className="opacity-40 hover:opacity-80 active:opacity-100 transition-opacity p-1.5 rounded-full min-w-[28px] min-h-[28px] flex items-center justify-center"
                         style={{ color: "hsl(var(--color-text-muted))" }}
+                        aria-label="Reagera på meddelande"
                       >
                         <SmilePlus className="w-3.5 h-3.5" />
                       </button>
@@ -682,15 +687,19 @@ const GroupChatPage = () => {
           </div>
         )}
         <div className="flex items-center gap-2 px-4 py-2" style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}>
-          <button onClick={() => { setActionSheetPrefill(null); setActionSheetOpen(true); }} className="shrink-0 flex items-center justify-center">
+          <button onClick={() => { setActionSheetPrefill(null); setActionSheetOpen(true); }}
+            className="shrink-0 flex items-center justify-center min-w-[44px] min-h-[44px]"
+            aria-label="Skapa plan eller omröstning">
             <Plus className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
           </button>
           <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()} placeholder={replyTo ? "Svara..." : "Skriv något..."}
-            className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#6B5C78]" style={{ color: "hsl(var(--color-text-primary))" }} />
+            className="flex-1 bg-transparent text-[14px] outline-none" style={{ color: "hsl(var(--color-text-primary))" }}
+            aria-label="Skriv meddelande" />
           <button onClick={handleSend} disabled={!newMessage.trim() || sending}
-            className="shrink-0 flex items-center justify-center rounded-full disabled:opacity-40 transition-opacity"
-            style={{ width: 32, height: 32, backgroundColor: "hsl(var(--color-text-primary))" }}>
+            className="shrink-0 flex items-center justify-center rounded-full disabled:opacity-40 transition-opacity min-w-[44px] min-h-[44px]"
+            style={{ width: 36, height: 36, backgroundColor: "hsl(var(--color-text-primary))" }}
+            aria-label="Skicka meddelande">
             <SendHorizontal className="w-4 h-4" style={{ color: "#FFFFFF" }} />
           </button>
         </div>
