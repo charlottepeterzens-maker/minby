@@ -109,7 +109,9 @@ const ChatSummaryCard = ({ messages, members, groupName, onCreatePlan, totalMess
         animate={{ opacity: 1, y: 0 }}
         className="rounded-lg overflow-hidden"
         style={{
-          backgroundColor: "rgba(255,255,255,0.88)",
+          backgroundColor: "hsla(0, 0%, 100%, 0.65)",
+          backdropFilter: "blur(8px)",
+          WebkitBackdropFilter: "blur(8px)",
           border: "none",
           boxShadow: "0 2px 16px -4px rgba(60,42,77,0.10)",
         }}
