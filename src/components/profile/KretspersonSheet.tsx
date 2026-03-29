@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Heart, Calendar, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveAvatarUrl } from "@/utils/avatarUrl";
@@ -115,8 +116,16 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
             </div>
 
             {/* Header */}
-            <div className="flex items-center gap-3 mb-4">
-              <div
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05, type: "spring", stiffness: 300, damping: 24 }}
+              className="flex items-center gap-3 mb-4"
+            >
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.08, type: "spring", stiffness: 400, damping: 20 }}
                 className="w-[52px] h-[52px] rounded-full flex items-center justify-center shrink-0 overflow-hidden"
                 style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
               >
@@ -127,7 +136,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                     {person.initial}
                   </span>
                 )}
-              </div>
+              </motion.div>
               <div>
                 <div className="flex items-center gap-1.5">
                   <span className="font-display text-[15px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
@@ -139,52 +148,64 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                   {tierText} · senast aktiv {relativeTime(person.last_activity)}
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Hangout section */}
-            {hangout ? (
-              <div
-                className="mb-4 p-3 flex items-start gap-2.5"
-                style={{ backgroundColor: "#EAF2E8", borderRadius: 8 }}
-              >
-                <Calendar className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#1F4A2E" }} />
-                <div>
-                  <p className="text-[13px]" style={{ color: "#1F4A2E" }}>{hangoutText}</p>
-                  <p className="text-[11px] mt-0.5" style={{ color: "#4A7A5E" }}>{hangoutDate}</p>
-                </div>
-              </div>
-            ) : (
-              <div className="mb-4">
-                <p className="text-[13px]" style={{ color: "#B0A8B5" }}>
-                  {person.display_name} har inga planer – vill du föreslå något?
-                </p>
-                <button
-                  onClick={() => {
-                    onOpenChange(false);
-                    navigate(`/profile/${person.user_id}`);
-                  }}
-                  className="text-[13px] font-medium mt-1"
-                  style={{ color: "#3C2A4D" }}
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12, type: "spring", stiffness: 300, damping: 24 }}
+            >
+              {hangout ? (
+                <div
+                  className="mb-4 p-3 flex items-start gap-2.5"
+                  style={{ backgroundColor: "#EAF2E8", borderRadius: 8 }}
                 >
-                  Föreslå något →
-                </button>
-              </div>
-            )}
+                  <Calendar className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#1F4A2E" }} />
+                  <div>
+                    <p className="text-[13px]" style={{ color: "#1F4A2E" }}>{hangoutText}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: "#4A7A5E" }}>{hangoutDate}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-4">
+                  <p className="text-[13px]" style={{ color: "#B0A8B5" }}>
+                    {person.display_name} har inga planer – vill du föreslå något?
+                  </p>
+                  <button
+                    onClick={() => {
+                      onOpenChange(false);
+                      navigate(`/profile/${person.user_id}`);
+                    }}
+                    className="text-[13px] font-medium mt-1"
+                    style={{ color: "#3C2A4D" }}
+                  >
+                    Föreslå något →
+                  </button>
+                </div>
+              )}
+            </motion.div>
 
             {/* Actions */}
-            <div className="flex gap-2 mb-4">
-              <button
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.18, type: "spring", stiffness: 300, damping: 24 }}
+              className="flex gap-2 mb-4"
+            >
+              <motion.button
+                whileTap={{ scale: 0.96 }}
                 onClick={() => {
                   onOpenChange(false);
-                  // Navigate to create group with this person pre-selected
                   navigate("/friends");
                 }}
                 className="flex-1 py-2.5 text-[13px] font-medium text-white"
                 style={{ backgroundColor: "#3C2A4D", borderRadius: 99 }}
               >
                 Starta sällskap med {person.display_name.split(" ")[0]}
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.96 }}
                 onClick={() => {
                   onOpenChange(false);
                   navigate(`/profile/${person.user_id}`);
@@ -193,37 +214,45 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                 style={{ border: "1px solid #EDE8E0", borderRadius: 99, color: "hsl(var(--color-text-primary))", backgroundColor: "transparent" }}
               >
                 Föreslå en träff
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
 
             {/* Divider */}
             <div style={{ height: 1, backgroundColor: "#F7F3EF", margin: "8px 0 12px" }} />
 
             {/* Manage relation */}
-            <div className="space-y-1">
-              <button
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.24 }}
+              className="space-y-1"
+            >
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 onClick={handleToggleClose}
                 className="w-full text-left py-2.5 px-1 text-[13px] flex items-center gap-2"
                 style={{ color: "hsl(var(--color-text-primary))" }}
               >
                 <Heart className="w-3.5 h-3.5" style={{ color: isClose ? "#C9B8D8" : "#6B5C78" }} fill={isClose ? "#C9B8D8" : "none"} />
                 {isClose ? "Ta bort från närmaste krets" : "Lägg till i närmaste krets"}
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 onClick={() => onToggleMute(person.user_id)}
                 className="w-full text-left py-2.5 px-1 text-[13px]"
                 style={{ color: "hsl(var(--color-text-primary))" }}
               >
                 {isMuted ? `Sluta muta ${person.display_name}` : `Muta ${person.display_name}`}
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setRemoveConfirm(true)}
                 className="w-full text-left py-2.5 px-1 text-[13px]"
                 style={{ color: "#A32D2D" }}
               >
                 Ta bort från kretsen
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
           </div>
         </DrawerContent>
       </Drawer>
