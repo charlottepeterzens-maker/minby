@@ -307,7 +307,7 @@ const TipsFavorites = ({ userId, isOwner, displayName }: { userId: string; isOwn
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-fraunces font-normal text-[16px] mt-8 mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
-          {isOwner ? "Mina tips & rekommendationer" : `${displayName || "Deras"}s tips & rekommendationer`}
+          {isOwner ? "Mina tips & favoriter" : `${displayName || "Deras"}s tips & favoriter`}
         </h2>
         {isOwner && tips.length < MAX_TIPS && (
           <Sheet
