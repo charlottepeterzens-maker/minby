@@ -195,7 +195,15 @@ const HangoutDetailSheet = ({
   const handleRSVP = async (status: "yes" | "maybe") => {
     if (!user) return;
     const existing = taggedFriends.find(t => t.tagged_user_id === user.id);
-    if (!existing && status === "yes") {
+    if (existing) {
+      // Already responded – remove existing response first
+      await supabase.from("hangout_tagged_friends").delete().eq("id", existing.id);
+      setTaggedFriends(prev => prev.filter(t => t.id !== existing.id));
+      toast({ title: "Svar borttaget" });
+      await fetchDetails();
+      return;
+    }
+    if (status === "yes") {
       await supabase.from("hangout_tagged_friends").insert({ availability_id: entry.id, tagged_user_id: user.id, tagged_by: user.id });
     }
     if (entry.user_id !== user.id) {
@@ -481,21 +489,32 @@ const HangoutDetailSheet = ({
             {/* ── ACTIONS (non-owner) ── */}
             {!isOwner && (
               <div className="flex gap-2">
-                <button
-                  onClick={() => handleRSVP("yes")}
-                  disabled={isSelfTagged}
-                  className="flex-1 py-2.5 text-[14px] font-medium text-white disabled:opacity-60 transition-colors"
-                  style={{ backgroundColor: "#3C2A4D", borderRadius: 8 }}
-                >
-                  {isSelfTagged ? "Du är med!" : "Jag kan"}
-                </button>
-                <button
-                  onClick={() => handleRSVP("maybe")}
-                  className="flex-1 py-2.5 text-[14px] font-medium transition-colors"
-                  style={{ color: "#3C2A4D", backgroundColor: "#F7F3EF", border: "1px solid #EDE8E0", borderRadius: 8 }}
-                >
-                  Kanske
-                </button>
+                {isSelfTagged ? (
+                  <button
+                    onClick={() => handleRSVP("yes")}
+                    className="flex-1 py-2.5 text-[14px] font-medium transition-colors"
+                    style={{ color: "#3C2A4D", backgroundColor: "#F7F3EF", border: "1px solid #EDE8E0", borderRadius: 8 }}
+                  >
+                    Ångra svar
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleRSVP("yes")}
+                      className="flex-1 py-2.5 text-[14px] font-medium text-white transition-colors"
+                      style={{ backgroundColor: "#3C2A4D", borderRadius: 8 }}
+                    >
+                      Jag kan
+                    </button>
+                    <button
+                      onClick={() => handleRSVP("maybe")}
+                      className="flex-1 py-2.5 text-[14px] font-medium transition-colors"
+                      style={{ color: "#3C2A4D", backgroundColor: "#F7F3EF", border: "1px solid #EDE8E0", borderRadius: 8 }}
+                    >
+                      Kanske
+                    </button>
+                  </>
+                )}
               </div>
             )}
 
