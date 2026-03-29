@@ -72,7 +72,7 @@ const InvitePage = () => {
           .limit(1);
 
         if (existing && existing.length > 0) {
-          toast.info("Ni är redan vänner!");
+          toast.info("Ni är redan i varandras krets!");
           // Mark as used anyway
           await supabase
             .from("invite_links")

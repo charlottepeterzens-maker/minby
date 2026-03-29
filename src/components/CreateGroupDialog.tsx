@@ -123,7 +123,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
       }
     }
 
-    toast.success("Grupp skapad!");
+    toast.success("Sällskap startat!");
     onGroupCreated();
     resetState();
     setLoading(false);
@@ -152,7 +152,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
         
         <DrawerHeader className="pb-0">
           <DrawerTitle className="font-display text-xl text-center" style={{ color: "hsl(var(--color-text-primary))" }}>
-            {step === 1 ? "Skapa grupp" : "Bjud in vänner"}
+            {step === 1 ? "Starta sällskap" : "Bjud in från kretsen"}
           </DrawerTitle>
         </DrawerHeader>
 
@@ -161,7 +161,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
           <div className="space-y-4 pt-4">
               <div>
                 <Label htmlFor="gname" className="text-sm" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                  Gruppnamn
+                  Namn på sällskapet
                 </Label>
                 <Input
                 id="gname"
@@ -216,7 +216,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
           <div className="space-y-4 pt-4">
               {friends.length === 0 ?
             <p className="text-[13px] text-center py-6" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                  Du har inga vänner att bjuda in ännu.
+                  Du har ingen i kretsen att bjuda in ännu.
                 </p> :
 
             <div className="space-y-1.5 max-h-60 overflow-y-auto">
