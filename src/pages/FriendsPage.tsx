@@ -692,50 +692,59 @@ const FriendsPage = () => {
                   const hasActivity = hasRecentActivity(f.last_activity);
                   const status = statusText(f);
 
-                  return (
-                    <button
-                      key={f.user_id}
-                      onClick={() => setSelectedPerson(f)}
-                      className="flex flex-col items-center shrink-0"
-                      style={{ width: 64 }}
-                    >
-                      <div className="relative mb-1">
-                        <div
-                          className="w-[44px] h-[44px] rounded-full flex items-center justify-center overflow-hidden"
-                          style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-                        >
-                          {resolveAvatarUrl(f.avatar_url) ? (
-                            <img src={resolveAvatarUrl(f.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
-                          ) : (
-                            <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                              {f.initial}
-                            </span>
+                    return (
+                      <motion.button
+                        key={f.user_id}
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.04 * friends.indexOf(f), type: "spring", stiffness: 300, damping: 24 }}
+                        whileTap={{ scale: 0.92 }}
+                        onClick={() => setSelectedPerson(f)}
+                        className="flex flex-col items-center shrink-0"
+                        style={{ width: 64 }}
+                      >
+                        <div className="relative mb-1">
+                          <motion.div
+                            whileHover={{ scale: 1.08 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                            className="w-[44px] h-[44px] rounded-full flex items-center justify-center overflow-hidden"
+                            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                          >
+                            {resolveAvatarUrl(f.avatar_url) ? (
+                              <img src={resolveAvatarUrl(f.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
+                            ) : (
+                              <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                                {f.initial}
+                              </span>
+                            )}
+                          </motion.div>
+                          {hasActivity && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{ type: "spring", stiffness: 500, damping: 20, delay: 0.2 + 0.04 * friends.indexOf(f) }}
+                              className="absolute bottom-0 right-0 w-[11px] h-[11px] rounded-full"
+                              style={{ backgroundColor: "#C9503A", border: "2px solid #F7F3EF" }}
+                            />
                           )}
                         </div>
-                        {hasActivity && (
-                          <div
-                            className="absolute bottom-0 right-0 w-[11px] h-[11px] rounded-full"
-                            style={{ backgroundColor: "#C9503A", border: "2px solid #F7F3EF" }}
-                          />
+                        <div className="flex items-center gap-0.5 max-w-full">
+                          <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                            {f.display_name.split(" ")[0]}
+                          </span>
+                          {isClose && (
+                            <svg width="8" height="8" viewBox="0 0 8 8" fill="#C9B8D8" className="shrink-0">
+                              <path d="M4 7L1.17 4.17a2 2 0 112.83-2.83L4 1.34l.17-.17a2 2 0 012.83 2.83L4 7z" />
+                            </svg>
+                          )}
+                        </div>
+                        {status && (
+                          <span className="text-[10px] truncate max-w-full" style={{ color: "#B0A8B5" }}>
+                            {status}
+                          </span>
                         )}
-                      </div>
-                      <div className="flex items-center gap-0.5 max-w-full">
-                        <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
-                          {f.display_name.split(" ")[0]}
-                        </span>
-                        {isClose && (
-                          <svg width="8" height="8" viewBox="0 0 8 8" fill="#C9B8D8" className="shrink-0">
-                            <path d="M4 7L1.17 4.17a2 2 0 112.83-2.83L4 1.34l.17-.17a2 2 0 012.83 2.83L4 7z" />
-                          </svg>
-                        )}
-                      </div>
-                      {status && (
-                        <span className="text-[10px] truncate max-w-full" style={{ color: "#B0A8B5" }}>
-                          {status}
-                        </span>
-                      )}
-                    </button>
-                  );
+                      </motion.button>
+                    );
                 })}
 
                 {/* Invite + avatar */}
