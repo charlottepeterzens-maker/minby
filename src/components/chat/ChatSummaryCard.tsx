@@ -9,6 +9,7 @@ interface ChatSummaryCardProps {
   groupName: string;
   onCreatePlan?: (suggestion: { title: string; dateText: string }) => void;
   totalMessageCount: number;
+  onClose?: () => void;
 }
 
 interface SummaryData {
