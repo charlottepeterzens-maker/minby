@@ -207,13 +207,29 @@ const FeedPage = () => {
       });
     });
 
-    // hangouts
+    // hangouts – group activity-type entries by user+activity to avoid duplicates
+    const activityGroups = new Map<string, any[]>();
     hangoutsRes.data?.forEach((h: any) => {
       const prof = profileMap.get(h.user_id);
+      const enriched = { ...h, isMatch: myHangoutDates.has(h.date), display_name: prof?.display_name || null, avatar_url: prof?.avatar_url || null };
+      if (h.entry_type === "activity") {
+        const key = `${h.user_id}::${(h.activities || [])[0] || h.custom_note || ""}`;
+        const group = activityGroups.get(key) || [];
+        group.push(enriched);
+        activityGroups.set(key, group);
+      } else {
+        items.push({ type: "hangout", created_at: h.created_at, data: enriched });
+      }
+    });
+    // For each activity group, emit a single grouped card
+    activityGroups.forEach((entries) => {
+      const first = entries[0];
+      const dates = entries.map(e => e.date).sort();
+      const ids = entries.map(e => e.id);
       items.push({
         type: "hangout",
-        created_at: h.created_at,
-        data: { ...h, isMatch: myHangoutDates.has(h.date), display_name: prof?.display_name || null, avatar_url: prof?.avatar_url || null },
+        created_at: first.created_at,
+        data: { ...first, dates, ids },
       });
     });
 
