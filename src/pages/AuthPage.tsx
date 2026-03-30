@@ -158,7 +158,7 @@ const AuthPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="mt-1.5 rounded-lg bg-card border border-border"
+                className="mt-1.5 rounded-lg bg-card border-0"
                 autoComplete="email"
                 required
               />
