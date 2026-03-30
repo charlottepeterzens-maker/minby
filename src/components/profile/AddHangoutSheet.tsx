@@ -338,7 +338,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     onChange={(e) => setPlanName(e.target.value)}
                     placeholder="Vad ska ni göra?"
                     className="bg-white text-[13px]"
-                    style={{ borderColor: '#EDE8F4' }}
+                    style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)' }}
                     maxLength={100}
                   />
                 </div>
