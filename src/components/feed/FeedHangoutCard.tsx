@@ -37,6 +37,13 @@ const TYPE_PILL_LABEL: Record<string, string> = {
   activity: "sugen på",
 };
 
+const TYPE_BG_COLOR: Record<string, string> = {
+  open: "#F5F0E8",
+  available: "#F5F0E8",
+  confirmed: "#EDE8F4",
+  activity: "#E8F2EC",
+};
+
 function formatFeedDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
   const today = new Date();
