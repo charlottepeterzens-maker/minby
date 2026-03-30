@@ -405,18 +405,18 @@ const GroupedActivityCard = ({
       {!isOwn && (
         <div className="flex items-center gap-2">
           <button
-            className="flex-1 text-[13px] font-medium py-2 transition-colors"
-            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8 }}
+            className="text-[13px] font-medium transition-colors"
+            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
           >
             Jag kan
           </button>
           <button
-            className="flex-1 text-[13px] font-medium py-2 transition-colors"
+            className="text-[13px] font-medium transition-colors"
             style={{
-              backgroundColor: "#F7F3EF",
-              border: "1px solid #EDE8E0",
+              backgroundColor: "rgba(255,255,255,0.6)",
               color: "#3C2A4D",
               borderRadius: 8,
+              padding: "8px 16px",
             }}
           >
             Kanske
