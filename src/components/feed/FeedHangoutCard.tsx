@@ -101,8 +101,7 @@ const UnifiedHangoutCard = ({
     <div
       className="rounded-lg"
       style={{
-        backgroundColor: "#FFFFFF",
-        border: "1px solid #EDE8E0",
+        backgroundColor: TYPE_BG_COLOR[entryType] || "#F5F0E8",
         borderRadius: 8,
         padding: 16,
         overflow: "hidden",
