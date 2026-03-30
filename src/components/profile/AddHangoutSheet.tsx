@@ -256,7 +256,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                 onClick={() => selectType(opt.value)}
                 className="w-full text-left p-4 rounded-lg bg-white transition-all"
                 style={{
-                  border: '1px solid #EDE8F4',
+                  boxShadow: '0 1px 4px 0 rgba(0,0,0,0.05)',
                 }}
               >
                 <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>{opt.title}</p>
