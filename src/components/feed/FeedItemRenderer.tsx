@@ -41,7 +41,9 @@ export const FeedItemRenderer = ({ item }: { item: any }) => {
         <FeedHangoutCard
           hangout={{
             id: data.id,
+            ids: data.ids,
             date: data.date,
+            dates: data.dates,
             activities: data.activities || [],
             custom_note: data.custom_note,
             created_at: data.created_at,
