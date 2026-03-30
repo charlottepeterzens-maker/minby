@@ -794,6 +794,7 @@ const GroupChatPage = () => {
         className="hidden"
         onChange={handleGroupAvatarUpload}
       />
+      <BottomNav />
     </div>
   );
 };
