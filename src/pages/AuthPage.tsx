@@ -204,7 +204,7 @@ const AuthPage = () => {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder={t("howFriendsKnowYou")}
-                className="mt-1.5 rounded-lg bg-card border border-border"
+                className="mt-1.5 rounded-lg bg-card border-0"
                 required
               />
             </div>
