@@ -548,7 +548,7 @@ const GroupChatPage = () => {
 
       {/* Timeline */}
       <div className="relative flex-1 min-h-0">
-        <div className="h-full overflow-y-auto px-4 pb-2 space-y-3 relative">
+        <div className="h-full overflow-y-auto px-4 pb-24 space-y-3 relative">
           {pastPlanForMemory && (
             <AfterEventCard
               planId={pastPlanForMemory.id}
