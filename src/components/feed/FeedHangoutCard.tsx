@@ -37,6 +37,13 @@ const TYPE_PILL_LABEL: Record<string, string> = {
   activity: "sugen på",
 };
 
+const TYPE_BG_COLOR: Record<string, string> = {
+  open: "#F5F0E8",
+  available: "#F5F0E8",
+  confirmed: "#EDE8F4",
+  activity: "#E8F2EC",
+};
+
 function formatFeedDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
   const today = new Date();
@@ -94,8 +101,7 @@ const UnifiedHangoutCard = ({
     <div
       className="rounded-lg"
       style={{
-        backgroundColor: "#FFFFFF",
-        border: "1px solid #EDE8E0",
+        backgroundColor: TYPE_BG_COLOR[entryType] || "#F5F0E8",
         borderRadius: 8,
         padding: 16,
         overflow: "hidden",
@@ -173,19 +179,19 @@ const UnifiedHangoutCard = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setDetailOpen(true)}
-            className="flex-1 text-[13px] font-medium py-2 transition-colors"
-            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8 }}
+            className="text-[13px] font-medium transition-colors"
+            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
           >
             Jag kan
           </button>
           <button
             onClick={() => setDetailOpen(true)}
-            className="flex-1 text-[13px] font-medium py-2 transition-colors"
+            className="text-[13px] font-medium transition-colors"
             style={{
-              backgroundColor: "#F7F3EF",
-              border: "1px solid #EDE8E0",
+              backgroundColor: "rgba(255,255,255,0.6)",
               color: "#3C2A4D",
               borderRadius: 8,
+              padding: "8px 16px",
             }}
           >
             Kanske
@@ -303,8 +309,7 @@ const GroupedActivityCard = ({
     <div
       className="rounded-lg"
       style={{
-        backgroundColor: "#FFFFFF",
-        border: "1px solid #EDE8E0",
+        backgroundColor: "#E8F2EC",
         borderRadius: 8,
         padding: 16,
         overflow: "hidden",
@@ -400,18 +405,18 @@ const GroupedActivityCard = ({
       {!isOwn && (
         <div className="flex items-center gap-2">
           <button
-            className="flex-1 text-[13px] font-medium py-2 transition-colors"
-            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8 }}
+            className="text-[13px] font-medium transition-colors"
+            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
           >
             Jag kan
           </button>
           <button
-            className="flex-1 text-[13px] font-medium py-2 transition-colors"
+            className="text-[13px] font-medium transition-colors"
             style={{
-              backgroundColor: "#F7F3EF",
-              border: "1px solid #EDE8E0",
+              backgroundColor: "rgba(255,255,255,0.6)",
               color: "#3C2A4D",
               borderRadius: 8,
+              padding: "8px 16px",
             }}
           >
             Kanske

@@ -318,33 +318,52 @@ const HangoutDetailSheet = ({
                 {typeLabel}
               </p>
 
-              {/* Veckodag — sentence case */}
-              <p style={{ fontSize: 13, fontWeight: 300, color: "#7A6A85" }}>
-                {weekday}
-              </p>
+              {entryType === "activity" ? (
+                <>
+                  {/* Activity name prominent for "sugen på" */}
+                  {activityName && (
+                    <p style={{ fontFamily: "Georgia, serif", fontSize: 22, fontWeight: 500, color: "#3C2A4D", lineHeight: 1.2, marginTop: 4 }}>
+                      {activityName}
+                    </p>
+                  )}
+                  {/* Fritext as body text */}
+                  {description && !textsAreSimilar && (
+                    <p style={{ fontSize: 15, lineHeight: 1.6, color: "#3C2A4D", marginTop: 8 }}>
+                      {description}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* Veckodag — sentence case */}
+                  <p style={{ fontSize: 13, fontWeight: 300, color: "#7A6A85" }}>
+                    {weekday}
+                  </p>
 
-              {/* Datum: siffra + månad */}
-              <div className="flex items-baseline gap-2">
-                <span style={{ fontFamily: "Georgia, serif", fontSize: 36, color: "#3C2A4D", lineHeight: 1 }}>
-                  {dayNum}
-                </span>
-                <span style={{ fontSize: 16, fontWeight: 300, color: "#3C2A4D" }}>
-                  {month}
-                </span>
-              </div>
+                  {/* Datum: siffra + månad */}
+                  <div className="flex items-baseline gap-2">
+                    <span style={{ fontFamily: "Georgia, serif", fontSize: 36, color: "#3C2A4D", lineHeight: 1 }}>
+                      {dayNum}
+                    </span>
+                    <span style={{ fontSize: 16, fontWeight: 300, color: "#3C2A4D" }}>
+                      {month}
+                    </span>
+                  </div>
 
-              {/* Activity name (if not similar to description) */}
-              {!textsAreSimilar && activityName && (
-                <p style={{ fontSize: 14, fontWeight: 500, color: "#3C2A4D", marginTop: 4 }}>
-                  {activityName}
-                </p>
-              )}
+                  {/* Activity name (if not similar to description) */}
+                  {!textsAreSimilar && activityName && (
+                    <p style={{ fontSize: 14, fontWeight: 500, color: "#3C2A4D", marginTop: 4 }}>
+                      {activityName}
+                    </p>
+                  )}
 
-              {/* Fritext – full text, no truncation */}
-              {description && (
-                <p style={{ fontSize: 15, lineHeight: 1.6, color: "#3C2A4D", marginTop: 8 }}>
-                  {description}
-                </p>
+                  {/* Fritext */}
+                  {description && (
+                    <p style={{ fontSize: 15, lineHeight: 1.6, color: "#3C2A4D", marginTop: 8 }}>
+                      {description}
+                    </p>
+                  )}
+                </>
               )}
 
               {/* Owner name (viewing someone else's) */}
@@ -356,7 +375,7 @@ const HangoutDetailSheet = ({
             </div>
 
             {/* ── ACTIVITY GROUP: date chips ── */}
-            {entry.entry_type === "activity" && activityEntries.length > 1 && (
+            {entry.entry_type === "activity" && activityEntries.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {activityEntries.map(ae => {
                   const d = new Date(ae.date + "T00:00:00");

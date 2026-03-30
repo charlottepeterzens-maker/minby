@@ -290,7 +290,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
                 ref={inputRef}
                 value={text}
                 onChange={(e) => setText(e.target.value.slice(0, 200))}
-                placeholder="Skriv fritt... t.ex. 'Jag är ledig på fredag och vill fika med någon' AI sammanfattar!"
+                placeholder="T.ex. 'Ledig på fredag och vill fika' eller 'Sugen på spa i helgen'"
                 className="w-full text-[14px] rounded-lg bg-white px-4 py-3.5 placeholder:text-[#857A8F] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#C9B8D8] resize-none"
                 style={{ border: "1px solid #EDE8E0", color: "#3C2A4D", lineHeight: 1.5 }}
                 rows={3}
