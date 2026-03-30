@@ -155,7 +155,6 @@ const UnifiedHangoutCard = ({
           backgroundColor: "#F7F3EF",
           borderRadius: 99,
           padding: "2px 9px",
-          padding: "2px 9px",
           color: "#7A6A85",
         }}>
           {typePillLabel}
