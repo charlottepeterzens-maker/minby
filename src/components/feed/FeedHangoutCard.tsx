@@ -153,7 +153,6 @@ const UnifiedHangoutCard = ({
         <span style={{
           fontSize: 11,
           backgroundColor: "#F7F3EF",
-          border: "1px solid #EDE8E0",
           borderRadius: 99,
           padding: "2px 9px",
           color: "#7A6A85",
@@ -346,7 +345,7 @@ const GroupedActivityCard = ({
                 className="flex items-center gap-1 rounded-full transition-all shrink-0"
                 style={{
                   backgroundColor: isSelected ? "#3C2A4D" : "#F7F3EF",
-                  border: isSelected ? "none" : "1px solid #EDE8E0",
+                  border: "none",
                   padding: "2px 9px",
                   fontSize: 11,
                 }}
@@ -392,7 +391,6 @@ const GroupedActivityCard = ({
         <span style={{
           fontSize: 11,
           backgroundColor: "#F7F3EF",
-          border: "1px solid #EDE8E0",
           borderRadius: 99,
           padding: "2px 9px",
           color: "#7A6A85",

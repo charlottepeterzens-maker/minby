@@ -168,7 +168,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 placeholder="T.ex. Resegänget"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1.5 border-border/50"
+                className="mt-1.5 border-0"
                 style={{ backgroundColor: "hsl(var(--color-surface-card))" }} />
               
               </div>
@@ -185,10 +185,10 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                   style={{
                     backgroundColor:
                     selectedEmoji === preset.emoji ? "#E8D5DA" : "#FFFFFF",
-                    border:
+                    boxShadow:
                     selectedEmoji === preset.emoji ?
-                    "1px solid #C9B8D8" :
-                    "1px solid transparent"
+                    "0 0 0 1px #C9B8D8" :
+                    "none"
                   }}>
                       <span className="text-xl">{preset.emoji}</span>
                       <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
@@ -233,7 +233,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                     className="w-full flex items-center gap-3 rounded-lg p-2.5 text-left transition-colors"
                     style={{
                       backgroundColor: selected ? "#EAF2E8" : "#FFFFFF",
-                      border: `1px solid ${selected ? "#B5CCBF" : "#EDE8F4"}`
+                      boxShadow: selected ? "0 0 0 1px #B5CCBF" : "0 1px 3px 0 rgba(0,0,0,0.05)"
                     }}>
                     
                         <div
@@ -259,9 +259,9 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 onClick={() => setStep(1)}
                 className="flex-1 py-2.5 text-sm font-medium rounded-lg"
                 style={{
-                  border: "1px solid #EDE8F4",
                   color: "hsl(var(--color-text-primary))",
-                  backgroundColor: "hsl(var(--color-surface-card))"
+                  backgroundColor: "hsl(var(--color-surface-card))",
+                  boxShadow: "0 1px 3px 0 rgba(0,0,0,0.06)"
                 }}>
                 
                   Tillbaka

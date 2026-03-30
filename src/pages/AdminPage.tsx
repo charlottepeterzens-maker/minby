@@ -41,7 +41,7 @@ const AdminPage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-10">
+      <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-10" style={{ boxShadow: "0 1px 4px 0 rgba(0,0,0,0.04)" }}>
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-5 h-5" />
@@ -74,7 +74,7 @@ const AdminPage = () => {
           </TabsList>
 
           <TabsContent value="content" className="mt-6">
-            <div className="rounded-lg border border-border bg-card p-8 text-center">
+            <div className="rounded-lg bg-card p-8 text-center shadow-[0_1px_4px_0_hsl(0_0%_0%/0.05)]">
               <Users className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
               <h2 className="font-display text-lg text-foreground mb-1">Content Moderation</h2>
               <p className="text-sm text-muted-foreground">
@@ -89,7 +89,7 @@ const AdminPage = () => {
           </TabsContent>
 
           <TabsContent value="config" className="mt-6">
-            <div className="rounded-lg border border-border bg-card p-8 text-center">
+            <div className="rounded-lg bg-card p-8 text-center shadow-[0_1px_4px_0_hsl(0_0%_0%/0.05)]">
               <Settings className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
               <h2 className="font-display text-lg text-foreground mb-1">App Configuration</h2>
               <p className="text-sm text-muted-foreground">

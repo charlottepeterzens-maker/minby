@@ -256,7 +256,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                 onClick={() => selectType(opt.value)}
                 className="w-full text-left p-4 rounded-lg bg-white transition-all"
                 style={{
-                  border: '1px solid #EDE8F4',
+                  boxShadow: '0 1px 4px 0 rgba(0,0,0,0.05)',
                 }}
               >
                 <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>{opt.title}</p>
@@ -270,7 +270,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
             {/* Selected type indicator */}
             <div
               className="w-full text-left p-3 rounded-lg bg-white"
-              style={{ border: '2px solid #3C2A4D' }}
+              style={{ boxShadow: '0 0 0 2px #3C2A4D' }}
             >
               <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>
                 {TYPE_OPTIONS.find(o => o.value === entryType)?.title}
@@ -288,7 +288,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                   <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Datum</label>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white", !selectedDate && "text-muted-foreground")} style={{ borderColor: '#EDE8F4' }}>
+                      <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white border-0 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]", !selectedDate && "text-muted-foreground")}>
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {selectedDate ? formatDateChip(selectedDate) : "Välj datum"}
                       </Button>
@@ -306,7 +306,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
                     placeholder="Berätta lite mer..."
                     className="w-full text-[13px] rounded-lg bg-white px-3 py-2.5 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
-                    style={{ border: '1px solid #EDE8F4' }}
+                    style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)' }}
                     maxLength={150}
                     rows={2}
                   />
@@ -321,7 +321,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                   <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Datum</label>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white", !selectedDate && "text-muted-foreground")} style={{ borderColor: '#EDE8F4' }}>
+                      <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white border-0 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]", !selectedDate && "text-muted-foreground")}>
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {selectedDate ? formatDateChip(selectedDate) : "Välj datum"}
                       </Button>
@@ -338,7 +338,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     onChange={(e) => setPlanName(e.target.value)}
                     placeholder="Vad ska ni göra?"
                     className="bg-white text-[13px]"
-                    style={{ borderColor: '#EDE8F4' }}
+                    style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)' }}
                     maxLength={100}
                   />
                 </div>
@@ -350,7 +350,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       <span
                         key={f.user_id}
                         className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-full bg-white"
-                        style={{ border: '1px solid #EDE8F4', color: '#3C2A4D' }}
+                        style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)', color: '#3C2A4D' }}
                       >
                         {f.display_name}
                         <button onClick={() => removeFriend(f.user_id)} className="hover:opacity-70">
@@ -365,10 +365,10 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       onChange={(e) => searchFriends(e.target.value)}
                       placeholder="Sök och lägg till personer..."
                       className="bg-white text-[13px]"
-                      style={{ borderColor: '#EDE8F4' }}
+                      style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)' }}
                     />
                     {friendResults.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 z-20 bg-white rounded-lg shadow-lg mt-1 py-1" style={{ border: '1px solid #EDE8F4' }}>
+                      <div className="absolute top-full left-0 right-0 z-20 bg-white rounded-lg shadow-lg mt-1 py-1">
                         {friendResults.map((fr) => (
                           <button
                             key={fr.user_id}
@@ -396,7 +396,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     onChange={(e) => setActivityName(e.target.value)}
                     placeholder="Vad vill du göra?"
                     className="bg-white text-[13px]"
-                    style={{ borderColor: '#EDE8F4' }}
+                    style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)' }}
                     maxLength={100}
                   />
                 </div>
@@ -407,7 +407,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
                     placeholder="Berätta lite mer..."
                     className="w-full text-[13px] rounded-lg bg-white px-3 py-2.5 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
-                    style={{ border: '1px solid #EDE8F4' }}
+                    style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)' }}
                     maxLength={150}
                     rows={2}
                   />
@@ -421,7 +421,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       <span
                         key={i}
                         className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-lg bg-white"
-                        style={{ border: '1px solid #EDE8F4', color: '#3C2A4D' }}
+                        style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)', color: '#3C2A4D' }}
                       >
                         {formatDateChip(d)}
                         <button onClick={() => removeActivityDate(i)} className="hover:opacity-70">
@@ -433,7 +433,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                   {activityDates.length < 5 && (
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="bg-white text-[12px]" style={{ borderColor: '#EDE8F4' }}>
+                        <Button variant="outline" size="sm" className="bg-white text-[12px] border-0 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]">
                           <Plus className="w-3.5 h-3.5 mr-1.5" />
                           Lägg till datum
                         </Button>
@@ -474,7 +474,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                           : "bg-white text-foreground"
                       )}
                       style={{
-                        border: visibility === opt.value ? 'none' : '1px solid #EDE8F4',
+                        border: visibility === opt.value ? 'none' : 'none',
                         backgroundColor: visibility === opt.value ? '#3C2A4D' : undefined,
                       }}
                     >

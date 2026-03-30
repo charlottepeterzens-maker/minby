@@ -16,7 +16,7 @@ const BottomNav = () => {
   const { count: unreadCount } = useUnreadSallskap();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border pb-safe" aria-label="Huvudnavigering" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card pb-safe" aria-label="Huvudnavigering" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)", boxShadow: "0 -1px 6px 0 rgba(0,0,0,0.04)" }}>
       <div className="max-w-lg mx-auto flex items-center justify-around py-2" role="list">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;

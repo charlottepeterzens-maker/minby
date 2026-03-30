@@ -91,7 +91,7 @@ const ResetPasswordPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1.5 rounded-lg bg-card border border-border"
+              className="mt-1.5 rounded-lg bg-card border-0"
               autoComplete="new-password"
               minLength={6}
               required
@@ -105,7 +105,7 @@ const ResetPasswordPage = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1.5 rounded-lg bg-card border border-border"
+              className="mt-1.5 rounded-lg bg-card border-0"
               autoComplete="new-password"
               minLength={6}
               required

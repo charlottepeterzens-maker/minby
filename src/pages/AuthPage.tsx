@@ -158,7 +158,7 @@ const AuthPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="mt-1.5 rounded-lg bg-card border border-border"
+                className="mt-1.5 rounded-lg bg-card border-0"
                 autoComplete="email"
                 required
               />
@@ -204,7 +204,7 @@ const AuthPage = () => {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder={t("howFriendsKnowYou")}
-                className="mt-1.5 rounded-lg bg-card border border-border"
+                className="mt-1.5 rounded-lg bg-card border-0"
                 required
               />
             </div>
@@ -217,7 +217,7 @@ const AuthPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="mt-1.5 rounded-lg bg-card border border-border"
+               className="mt-1.5 rounded-lg bg-card border-0"
               required
             />
           </div>
@@ -229,7 +229,7 @@ const AuthPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1.5 rounded-lg bg-card border border-border"
+              className="mt-1.5 rounded-lg bg-card border-0"
               autoComplete={isSignUp ? "new-password" : "current-password"}
               minLength={6}
               required

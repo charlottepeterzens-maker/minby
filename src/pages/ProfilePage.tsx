@@ -544,7 +544,7 @@ const ProfilePage = () => {
                       minWidth: 72,
                       height: 56,
                       borderRadius: 8,
-                      border: expandedSection === section.id ? "none" : "1px solid #EDE8E0",
+                      boxShadow: expandedSection === section.id ? "none" : "0 1px 3px 0 rgba(0,0,0,0.06)",
                       cursor: "pointer",
                     }}
                   >

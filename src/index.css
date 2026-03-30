@@ -146,7 +146,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-transparent;
   }
 
   body {
