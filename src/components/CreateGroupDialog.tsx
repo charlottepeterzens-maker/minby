@@ -168,7 +168,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 placeholder="T.ex. Resegänget"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="mt-1.5 border-border/50"
+                className="mt-1.5 border-0"
                 style={{ backgroundColor: "hsl(var(--color-surface-card))" }} />
               
               </div>
