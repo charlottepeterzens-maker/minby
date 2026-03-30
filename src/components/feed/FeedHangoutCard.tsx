@@ -309,8 +309,7 @@ const GroupedActivityCard = ({
     <div
       className="rounded-lg"
       style={{
-        backgroundColor: "#FFFFFF",
-        border: "1px solid #EDE8E0",
+        backgroundColor: "#E8F2EC",
         borderRadius: 8,
         padding: 16,
         overflow: "hidden",
