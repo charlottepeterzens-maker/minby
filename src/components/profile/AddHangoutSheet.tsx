@@ -421,7 +421,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       <span
                         key={i}
                         className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-lg bg-white"
-                        style={{ border: '1px solid #EDE8F4', color: '#3C2A4D' }}
+                        style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)', color: '#3C2A4D' }}
                       >
                         {formatDateChip(d)}
                         <button onClick={() => removeActivityDate(i)} className="hover:opacity-70">
