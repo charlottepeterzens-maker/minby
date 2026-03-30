@@ -474,7 +474,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                           : "bg-white text-foreground"
                       )}
                       style={{
-                        border: visibility === opt.value ? 'none' : '1px solid #EDE8F4',
+                        border: visibility === opt.value ? 'none' : 'none',
                         backgroundColor: visibility === opt.value ? '#3C2A4D' : undefined,
                       }}
                     >

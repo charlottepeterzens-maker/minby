@@ -392,8 +392,8 @@ const GroupedActivityCard = ({
         <span style={{
           fontSize: 11,
           backgroundColor: "#F7F3EF",
-          border: "1px solid #EDE8E0",
           borderRadius: 99,
+          padding: "2px 9px",
           padding: "2px 9px",
           color: "#7A6A85",
         }}>
