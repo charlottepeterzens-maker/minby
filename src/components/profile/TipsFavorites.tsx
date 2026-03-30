@@ -270,7 +270,7 @@ const TipsFavorites = ({ userId, isOwner, displayName }: { userId: string; isOwn
         </div>
       )}
       {previewImage && !customImage && (
-        <div className="flex items-center gap-3 rounded-lg border border-border p-2">
+        <div className="flex items-center gap-3 rounded-lg p-2 shadow-[0_1px_4px_0_hsl(0_0%_0%/0.05)]">
           <img src={previewImage} alt="" loading="lazy" className="w-14 h-14 rounded-lg object-cover" />
           <p className="text-[11px] text-muted-foreground flex-1">Bild hittad från länken</p>
           <button onClick={() => setPreviewImage(null)} className="text-muted-foreground hover:text-foreground">

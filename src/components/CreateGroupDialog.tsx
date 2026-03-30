@@ -259,9 +259,9 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 onClick={() => setStep(1)}
                 className="flex-1 py-2.5 text-sm font-medium rounded-lg"
                 style={{
-                  border: "1px solid #EDE8F4",
                   color: "hsl(var(--color-text-primary))",
-                  backgroundColor: "hsl(var(--color-surface-card))"
+                  backgroundColor: "hsl(var(--color-surface-card))",
+                  boxShadow: "0 1px 3px 0 rgba(0,0,0,0.06)"
                 }}>
                 
                   Tillbaka

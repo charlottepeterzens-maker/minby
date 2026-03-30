@@ -229,7 +229,7 @@ const AuthPage = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="mt-1.5 rounded-lg bg-card border border-border"
+              className="mt-1.5 rounded-lg bg-card border-0"
               autoComplete={isSignUp ? "new-password" : "current-password"}
               minLength={6}
               required

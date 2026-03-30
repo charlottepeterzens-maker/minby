@@ -310,7 +310,7 @@ const SettingsPage = () => {
             ))}
 
             {/* Separator */}
-            <div className="border-t border-border pt-3">
+            <div className="pt-3">
               <div className="flex items-center justify-between">
                 <div>
                   <Label className="text-sm">Morgonrapport</Label>

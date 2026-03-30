@@ -89,7 +89,7 @@ const AdminPage = () => {
           </TabsContent>
 
           <TabsContent value="config" className="mt-6">
-            <div className="rounded-lg border border-border bg-card p-8 text-center">
+            <div className="rounded-lg bg-card p-8 text-center shadow-[0_1px_4px_0_hsl(0_0%_0%/0.05)]">
               <Settings className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
               <h2 className="font-display text-lg text-foreground mb-1">App Configuration</h2>
               <p className="text-sm text-muted-foreground">
