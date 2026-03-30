@@ -368,7 +368,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)' }}
                     />
                     {friendResults.length > 0 && (
-                      <div className="absolute top-full left-0 right-0 z-20 bg-white rounded-lg shadow-lg mt-1 py-1" style={{ border: '1px solid #EDE8F4' }}>
+                      <div className="absolute top-full left-0 right-0 z-20 bg-white rounded-lg shadow-lg mt-1 py-1">
                         {friendResults.map((fr) => (
                           <button
                             key={fr.user_id}
