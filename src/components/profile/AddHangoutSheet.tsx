@@ -270,7 +270,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
             {/* Selected type indicator */}
             <div
               className="w-full text-left p-3 rounded-lg bg-white"
-              style={{ border: '2px solid #3C2A4D' }}
+              style={{ boxShadow: '0 0 0 2px #3C2A4D' }}
             >
               <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>
                 {TYPE_OPTIONS.find(o => o.value === entryType)?.title}
