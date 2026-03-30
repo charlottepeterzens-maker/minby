@@ -375,7 +375,7 @@ const HangoutDetailSheet = ({
             </div>
 
             {/* ── ACTIVITY GROUP: date chips ── */}
-            {entry.entry_type === "activity" && activityEntries.length > 1 && (
+            {entry.entry_type === "activity" && activityEntries.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {activityEntries.map(ae => {
                   const d = new Date(ae.date + "T00:00:00");
