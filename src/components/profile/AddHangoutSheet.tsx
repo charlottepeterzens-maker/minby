@@ -288,7 +288,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                   <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Datum</label>
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white", !selectedDate && "text-muted-foreground")} style={{ borderColor: '#EDE8F4' }}>
+                      <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white border-0 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]", !selectedDate && "text-muted-foreground")}>
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {selectedDate ? formatDateChip(selectedDate) : "Välj datum"}
                       </Button>
