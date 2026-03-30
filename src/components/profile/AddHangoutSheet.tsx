@@ -350,7 +350,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                       <span
                         key={f.user_id}
                         className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-full bg-white"
-                        style={{ border: '1px solid #EDE8F4', color: '#3C2A4D' }}
+                        style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)', color: '#3C2A4D' }}
                       >
                         {f.display_name}
                         <button onClick={() => removeFriend(f.user_id)} className="hover:opacity-70">
