@@ -433,7 +433,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                   {activityDates.length < 5 && (
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="bg-white text-[12px]" style={{ borderColor: '#EDE8F4' }}>
+                        <Button variant="outline" size="sm" className="bg-white text-[12px] border-0 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]">
                           <Plus className="w-3.5 h-3.5 mr-1.5" />
                           Lägg till datum
                         </Button>
