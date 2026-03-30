@@ -21,6 +21,7 @@ import { useTypingBroadcast, TypingIndicator } from "@/components/chat/TypingInd
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
+import BottomNav from "@/components/BottomNav";
 
 interface MessageReaction {
   id: string;
