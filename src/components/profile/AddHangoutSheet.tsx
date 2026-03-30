@@ -306,7 +306,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
                     placeholder="Berätta lite mer..."
                     className="w-full text-[13px] rounded-lg bg-white px-3 py-2.5 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
-                    style={{ border: '1px solid #EDE8F4' }}
+                    style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)' }}
                     maxLength={150}
                     rows={2}
                   />
