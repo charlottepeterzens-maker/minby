@@ -469,7 +469,7 @@ const GroupChatPage = () => {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 px-4 py-3" style={{ backgroundColor: "hsl(var(--color-text-primary))" }}>
+      <header className="sticky top-0 z-50 px-4 py-3 pt-safe" style={{ backgroundColor: "hsl(var(--color-text-primary))", paddingTop: "max(env(safe-area-inset-top, 0px), 12px)" }}>
         <div className="flex items-center gap-3">
           <button onClick={() => navigate("/friends")} className="shrink-0 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Tillbaka till sällskap">
             <ChevronLeft className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
