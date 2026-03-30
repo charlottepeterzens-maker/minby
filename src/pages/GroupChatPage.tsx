@@ -21,6 +21,7 @@ import { useTypingBroadcast, TypingIndicator } from "@/components/chat/TypingInd
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
+import BottomNav from "@/components/BottomNav";
 
 interface MessageReaction {
   id: string;
@@ -468,7 +469,7 @@ const GroupChatPage = () => {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 px-4 py-3" style={{ backgroundColor: "hsl(var(--color-text-primary))" }}>
+      <header className="sticky top-0 z-50 px-4 py-3 pt-safe" style={{ backgroundColor: "hsl(var(--color-text-primary))", paddingTop: "max(env(safe-area-inset-top, 0px), 12px)" }}>
         <div className="flex items-center gap-3">
           <button onClick={() => navigate("/friends")} className="shrink-0 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Tillbaka till sällskap">
             <ChevronLeft className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
@@ -547,7 +548,7 @@ const GroupChatPage = () => {
 
       {/* Timeline */}
       <div className="relative flex-1 min-h-0">
-        <div className="h-full overflow-y-auto px-4 pb-2 space-y-3 relative">
+        <div className="h-full overflow-y-auto px-4 pb-24 space-y-3 relative">
           {pastPlanForMemory && (
             <AfterEventCard
               planId={pastPlanForMemory.id}
@@ -693,8 +694,8 @@ const GroupChatPage = () => {
         />
       )}
 
-      {/* Input field */}
-      <div className="sticky bottom-0 px-4 pb-3 pt-1 safe-area-bottom" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+      {/* Input field — sits above bottom nav */}
+      <div className="px-4 pb-1 pt-1" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <TypingIndicator typingUsers={typingUsers} />
         {/* Summary card sticky above input */}
         {summaryVisible && (
@@ -793,6 +794,7 @@ const GroupChatPage = () => {
         className="hidden"
         onChange={handleGroupAvatarUpload}
       />
+      <BottomNav />
     </div>
   );
 };
