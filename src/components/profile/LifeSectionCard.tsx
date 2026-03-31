@@ -194,9 +194,8 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="close">Nära</SelectItem>
-                <SelectItem value="inner">Vänner</SelectItem>
-                <SelectItem value="outer">Alla</SelectItem>
+                <SelectItem value="close">Närmaste krets</SelectItem>
+                <SelectItem value="outer">Alla i kretsen</SelectItem>
               </SelectContent>
             </Select>
             <button
