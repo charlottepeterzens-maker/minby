@@ -133,7 +133,7 @@ const PlanTimelineCard = ({
                 style={{
                   backgroundColor: isActive ? qr.bg : (userRsvp ? "#F7F3EF" : qr.bg),
                   color: isActive ? qr.color : (userRsvp ? "#6B5C78" : qr.color),
-                  border: isActive ? `1.5px solid ${qr.activeBorder}` : "1.5px solid transparent",
+                  border: "none",
                   opacity: userRsvp && !isActive ? 0.5 : 1,
                 }}
               >

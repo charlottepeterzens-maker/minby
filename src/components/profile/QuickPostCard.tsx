@@ -242,7 +242,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                       height: 26,
                       borderRadius: 8,
                       background: photoLayout === "small" ? "#3C2A4D" : "#fff",
-                      border: "1px solid #3C2A4D",
+                      border: "none",
                     }}
                   >
                     <LayoutList className="w-3 h-3" style={{ color: photoLayout === "small" ? "#fff" : "#3C2A4D" }} />
