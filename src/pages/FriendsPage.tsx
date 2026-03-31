@@ -757,7 +757,7 @@ const FriendsPage = () => {
                     <div className="flex flex-col items-center shrink-0" style={{ width: 64 }}>
                       <div
                         className="w-[44px] h-[44px] rounded-full flex items-center justify-center mb-1"
-                        style={{ border: "1.5px dashed #C9B8D8" }}
+                        style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                       >
                         <Plus className="w-4 h-4" style={{ color: "#C9B8D8" }} />
                       </div>

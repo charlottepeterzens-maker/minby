@@ -342,8 +342,8 @@ const TipsFavorites = ({ userId, isOwner, displayName }: { userId: string; isOwn
         isOwner ? (
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
-              <button className="w-full flex items-center gap-3 rounded-lg border border-dashed border-border p-4 text-left text-muted-foreground hover:text-foreground transition-colors">
-                <div className="shrink-0 flex items-center justify-center rounded-full w-9 h-9 border border-dashed border-current">
+              <button className="w-full flex items-center gap-3 rounded-lg p-4 text-left text-muted-foreground hover:text-foreground transition-colors" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
+                <div className="shrink-0 flex items-center justify-center rounded-full w-9 h-9" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
                   <Plus className="w-4 h-4" />
                 </div>
                 <div>
