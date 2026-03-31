@@ -26,6 +26,8 @@ const FeedPage = () => {
 
   const [persons, setPersons] = useState<PersonData[]>([]);
   const [currentUserName, setCurrentUserName] = useState("");
+  const [currentProfile, setCurrentProfile] = useState<{ display_name: string | null; avatar_url: string | null } | null>(null);
+  const [userSections, setUserSections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [showHangoutSheet, setShowHangoutSheet] = useState(false);
