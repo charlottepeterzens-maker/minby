@@ -10,6 +10,7 @@ import CurvedSeparator from "@/components/CurvedSeparator";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
+import QuickPostCard from "@/components/profile/QuickPostCard";
 
 import FeedGuidanceCard from "@/components/onboarding/FeedGuidanceCard";
 import PersonBlock, { type PersonData } from "@/components/feed/PersonBlock";
@@ -25,6 +26,8 @@ const FeedPage = () => {
 
   const [persons, setPersons] = useState<PersonData[]>([]);
   const [currentUserName, setCurrentUserName] = useState("");
+  const [currentProfile, setCurrentProfile] = useState<{ display_name: string | null; avatar_url: string | null } | null>(null);
+  const [userSections, setUserSections] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [showHangoutSheet, setShowHangoutSheet] = useState(false);
@@ -37,11 +40,22 @@ const FeedPage = () => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("display_name")
+      .select("display_name, avatar_url")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
-        if (data?.display_name) setCurrentUserName(data.display_name);
+        if (data) {
+          setCurrentUserName(data.display_name || "");
+          setCurrentProfile(data);
+        }
+      });
+    supabase
+      .from("life_sections")
+      .select("id, name, emoji, min_tier")
+      .eq("user_id", user.id)
+      .order("sort_order")
+      .then(({ data }) => {
+        if (data) setUserSections(data);
       });
   }, [user]);
 
@@ -342,6 +356,25 @@ const filteredItems = feedItems.filter((item) => {
       </nav>
 
       <Container className="py-5">
+        {/* Quick post card */}
+        {!loading && persons.length > 0 && filter === "all" && (
+          <div className="mb-3" style={{ borderRadius: 8, overflow: "hidden", boxShadow: "0 1px 4px 0 rgba(0,0,0,0.04)" }}>
+            <QuickPostCard
+              profile={currentProfile}
+              sections={userSections}
+              onPosted={() => fetchFeed()}
+              onSectionsChanged={() => {
+                supabase
+                  .from("life_sections")
+                  .select("id, name, emoji, min_tier")
+                  .eq("user_id", user!.id)
+                  .order("sort_order")
+                  .then(({ data }) => { if (data) setUserSections(data); });
+              }}
+            />
+          </div>
+        )}
+
         {/* Guidance card */}
         {(isFirstTime || inviteCompleted) && <FeedGuidanceCard />}
 
