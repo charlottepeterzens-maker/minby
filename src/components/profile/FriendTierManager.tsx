@@ -117,7 +117,6 @@ const FriendTierManager = () => {
               <SelectContent>
                 <SelectItem value="none" disabled>{t("setTier")}</SelectItem>
                 <SelectItem value="close">{t("close")}</SelectItem>
-                <SelectItem value="inner">{t("innerCircle")}</SelectItem>
                 <SelectItem value="outer">{t("everyone")}</SelectItem>
               </SelectContent>
             </Select>

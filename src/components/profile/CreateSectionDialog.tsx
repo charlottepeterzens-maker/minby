@@ -133,7 +133,6 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="close">{t("closeFriendsOnly")}</SelectItem>
-                <SelectItem value="inner">{t("innerCircleCloser")}</SelectItem>
                 <SelectItem value="outer">{t("allFriends")}</SelectItem>
               </SelectContent>
             </Select>
