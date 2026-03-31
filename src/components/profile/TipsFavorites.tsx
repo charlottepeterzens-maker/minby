@@ -282,7 +282,8 @@ const TipsFavorites = ({ userId, isOwner, displayName }: { userId: string; isOwn
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-dashed border-border text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-muted-foreground hover:text-foreground transition-colors"
+          style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
         >
           <Camera className="w-4 h-4" />
           {customImage ? "Byt bild" : "Lägg till bild"}
