@@ -40,11 +40,22 @@ const FeedPage = () => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("display_name")
+      .select("display_name, avatar_url")
       .eq("user_id", user.id)
       .single()
       .then(({ data }) => {
-        if (data?.display_name) setCurrentUserName(data.display_name);
+        if (data) {
+          setCurrentUserName(data.display_name || "");
+          setCurrentProfile(data);
+        }
+      });
+    supabase
+      .from("life_sections")
+      .select("id, name, emoji, min_tier")
+      .eq("user_id", user.id)
+      .order("sort_order")
+      .then(({ data }) => {
+        if (data) setUserSections(data);
       });
   }, [user]);
 
