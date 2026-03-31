@@ -266,7 +266,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                       padding: "4px 10px",
                       borderRadius: 99,
                       background: selectedSection === s.id ? "#EDE8F4" : "#F7F3EF",
-                      border: selectedSection === s.id ? "1.5px solid #3C2A4D" : "none",
+                      border: "none",
                       color: "hsl(var(--color-text-primary))",
                       cursor: "pointer",
                     }}
