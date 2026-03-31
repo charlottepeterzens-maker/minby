@@ -204,7 +204,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 4, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute left-0 bg-card border rounded-lg z-30 shadow-sm"
+            className="absolute left-0 bg-card rounded-lg z-30 shadow-sm"
             style={{
               top: "calc(100% + 6px)",
               borderColor: "hsl(var(--color-surface-raised))",
