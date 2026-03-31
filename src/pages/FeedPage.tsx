@@ -356,6 +356,25 @@ const filteredItems = feedItems.filter((item) => {
       </nav>
 
       <Container className="py-5">
+        {/* Quick post card */}
+        {!loading && persons.length > 0 && filter === "all" && (
+          <div className="mb-3" style={{ borderRadius: 8, overflow: "hidden", boxShadow: "0 1px 4px 0 rgba(0,0,0,0.04)" }}>
+            <QuickPostCard
+              profile={currentProfile}
+              sections={userSections}
+              onPosted={() => fetchFeed()}
+              onSectionsChanged={() => {
+                supabase
+                  .from("life_sections")
+                  .select("id, name, emoji, min_tier")
+                  .eq("user_id", user!.id)
+                  .order("sort_order")
+                  .then(({ data }) => { if (data) setUserSections(data); });
+              }}
+            />
+          </div>
+        )}
+
         {/* Guidance card */}
         {(isFirstTime || inviteCompleted) && <FeedGuidanceCard />}
 
