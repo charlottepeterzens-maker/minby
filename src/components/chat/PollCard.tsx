@@ -71,7 +71,8 @@ const PollCard = ({
                 className="w-full text-left relative overflow-hidden"
                 style={{
                   borderRadius: 8,
-                  boxShadow: isSelected ? "0 0 0 1.5px #3C2A4D" : "0 1px 3px 0 rgba(0,0,0,0.06)",
+                  boxShadow: "0 1px 3px 0 rgba(0,0,0,0.06)",
+                  backgroundColor: isSelected ? "hsl(var(--color-surface-raised))" : "transparent",
                   padding: "8px 10px",
                 }}
               >
