@@ -171,9 +171,9 @@ const GroupsPage = () => {
               trigger={
                 <button
                   className="w-full flex items-center gap-3 rounded-lg p-3 text-left transition-colors hover:opacity-80 outline-none focus:outline-none"
-                  style={{ border: "1.5px dashed hsl(var(--color-surface-raised))" }}>
+                  style={{ border: "none" }}>
                   <div className="shrink-0 flex items-center justify-center"
-                    style={{ width: 42, height: 42, borderRadius: 8, border: "0.5px dashed hsl(var(--color-surface-raised))" }}>
+                    style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: "hsl(var(--color-surface-raised))" }}>
                     <Plus className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
                   </div>
                   <span className="text-[12px] font-medium" style={{ color: "hsl(var(--color-text-secondary))" }}>

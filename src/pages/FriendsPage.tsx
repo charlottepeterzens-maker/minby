@@ -757,7 +757,7 @@ const FriendsPage = () => {
                     <div className="flex flex-col items-center shrink-0" style={{ width: 64 }}>
                       <div
                         className="w-[44px] h-[44px] rounded-full flex items-center justify-center mb-1"
-                        style={{ border: "1.5px dashed #C9B8D8" }}
+                        style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                       >
                         <Plus className="w-4 h-4" style={{ color: "#C9B8D8" }} />
                       </div>
@@ -855,7 +855,7 @@ const FriendsPage = () => {
               {groups.length === 0 && (
                 <div
                   className="p-4 text-center"
-                  style={{ border: "1.5px dashed #C9B8D8", borderRadius: 8 }}
+                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8 }}
                 >
                   <p className="text-[13px] mb-1" style={{ color: "hsl(var(--color-text-secondary))" }}>
                     Har ni en gruppchatt som planerar saker?

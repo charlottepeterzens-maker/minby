@@ -377,7 +377,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         width: 56,
         height: 160,
         borderRadius: 8,
-        border: "1px dashed #C9B8D8",
+        border: "none",
+        background: "hsl(var(--color-surface-raised))",
         backgroundColor: "transparent",
       }}
       aria-label="Lägg till hangout"

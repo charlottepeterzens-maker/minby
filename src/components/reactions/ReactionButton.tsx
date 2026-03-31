@@ -30,7 +30,7 @@ const ReactionButton = ({
       style={{
         padding: count > 0 ? "6px 12px" : "6px 8px",
         backgroundColor: active ? "#EDE8F4" : "transparent",
-        border: active ? "1px solid #C9B8D8" : "1px solid transparent",
+        border: "none",
         cursor: disabled ? "default" : "pointer",
         opacity: disabled ? 0.4 : 1,
       }}

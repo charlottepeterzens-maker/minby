@@ -157,7 +157,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                     padding: "4px 10px",
                     borderRadius: 99,
                     background: "hsl(var(--color-surface-raised))",
-                    border: "1px solid #C9B8D8",
+                    border: "none",
                     color: "hsl(var(--color-text-primary))",
                     cursor: "pointer",
                   }}
@@ -228,7 +228,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                       height: 26,
                       borderRadius: 8,
                       background: photoLayout === "large" ? "#3C2A4D" : "#fff",
-                      border: "1px solid #3C2A4D",
+                      border: "none",
                     }}
                   >
                     <RectangleHorizontal className="w-3 h-3" style={{ color: photoLayout === "large" ? "#fff" : "#3C2A4D" }} />
@@ -242,7 +242,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                       height: 26,
                       borderRadius: 8,
                       background: photoLayout === "small" ? "#3C2A4D" : "#fff",
-                      border: "1px solid #3C2A4D",
+                      border: "none",
                     }}
                   >
                     <LayoutList className="w-3 h-3" style={{ color: photoLayout === "small" ? "#fff" : "#3C2A4D" }} />
@@ -266,7 +266,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                       padding: "4px 10px",
                       borderRadius: 99,
                       background: selectedSection === s.id ? "#EDE8F4" : "#F7F3EF",
-                      border: selectedSection === s.id ? "1.5px solid #3C2A4D" : "none",
+                      border: "none",
                       color: "hsl(var(--color-text-primary))",
                       cursor: "pointer",
                     }}
@@ -282,8 +282,8 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                         fontSize: 11,
                         padding: "4px 10px",
                         borderRadius: 99,
-                        background: "transparent",
-                        border: "1px dashed hsl(var(--color-border-lavender))",
+                        background: "hsl(var(--color-surface-raised))",
+                        border: "none",
                         color: "hsl(var(--color-text-secondary))",
                         cursor: "pointer",
                       }}
