@@ -350,7 +350,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                         alignItems: "center",
                         justifyContent: "center",
                         background: photoLayout === "large" ? "#3C2A4D" : "#fff",
-                        border: "1px solid #3C2A4D",
+                        border: "none",
                         cursor: "pointer",
                       }}
                     >
