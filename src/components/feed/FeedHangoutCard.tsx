@@ -30,11 +30,18 @@ interface FeedHangoutCardProps {
   onMaybe?: () => void;
 }
 
-const TYPE_PILL_LABEL: Record<string, string> = {
-  open: "ledig",
-  available: "ledig",
-  confirmed: "häng med",
-  activity: "sugen på",
+const TYPE_LABEL: Record<string, string> = {
+  open: "LEDIG",
+  available: "LEDIG",
+  confirmed: "HÄNG MED",
+  activity: "SUGEN PÅ",
+};
+
+const TYPE_LABEL_COLOR: Record<string, string> = {
+  open: "#6B5A3E",
+  available: "#6B5A3E",
+  confirmed: "#5C4A7A",
+  activity: "#2A6645",
 };
 
 const TYPE_BG_COLOR: Record<string, string> = {
@@ -95,7 +102,8 @@ const UnifiedHangoutCard = ({
      activityText.toLowerCase().includes(noteText.toLowerCase()));
   const mainText = noteText || activityText;
 
-  const typePillLabel = TYPE_PILL_LABEL[entryType] || "ledig";
+  const typeLabel = TYPE_LABEL[entryType] || "LEDIG";
+  const typeLabelColor = TYPE_LABEL_COLOR[entryType] || "#6B5A3E";
 
   return (
     <div
@@ -151,20 +159,20 @@ const UnifiedHangoutCard = ({
         </button>
         <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
         <span style={{
-          fontSize: 11,
-          backgroundColor: "#F7F3EF",
-          borderRadius: 99,
-          padding: "2px 9px",
-          color: "#7A6A85",
+          fontSize: 9,
+          fontWeight: 500,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase" as const,
+          color: typeLabelColor,
         }}>
-          {typePillLabel}
+          {typeLabel}
         </span>
         {hangout.isMatch && !isOwn && (
           <span style={{
-            fontSize: 11,
-            backgroundColor: "#EDE8F4",
-            borderRadius: 99,
-            padding: "2px 9px",
+            fontSize: 9,
+            fontWeight: 500,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase" as const,
             color: "#5C4A7A",
             marginLeft: "auto",
           }}>
@@ -389,13 +397,13 @@ const GroupedActivityCard = ({
         </button>
         <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
         <span style={{
-          fontSize: 11,
-          backgroundColor: "#F7F3EF",
-          borderRadius: 99,
-          padding: "2px 9px",
-          color: "#7A6A85",
+          fontSize: 9,
+          fontWeight: 500,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase" as const,
+          color: "#2A6645",
         }}>
-          sugen på
+          SUGEN PÅ
         </span>
       </div>
 

@@ -63,6 +63,28 @@ interface GroupRow {
   has_unread: boolean;
 }
 
+function statusLabel(entryType: string): string {
+  if (entryType === "confirmed") return "HÄNG MED";
+  if (entryType === "activity") return "SUGEN PÅ";
+  return "LEDIG";
+}
+
+function statusLabelColor(entryType: string): string {
+  if (entryType === "confirmed") return "#5C4A7A";
+  if (entryType === "activity") return "#2A6645";
+  return "#6B5A3E";
+}
+
+function statusContent(f: FriendRow): string {
+  if (f.hangout_status) {
+    const h = f.hangout_status;
+    if (h.custom_note) return h.custom_note;
+    if (h.activities.length > 0) return h.activities[0];
+    return "";
+  }
+  return "";
+}
+
 function statusText(f: FriendRow): string {
   if (f.hangout_status) {
     const h = f.hangout_status;
@@ -742,11 +764,21 @@ const FriendsPage = () => {
                             </svg>
                           )}
                         </div>
-                        {status && (
+                        {f.hangout_status ? (
+                          <span className="truncate max-w-full" style={{
+                            fontSize: 9,
+                            fontWeight: 500,
+                            letterSpacing: "0.12em",
+                            textTransform: "uppercase",
+                            color: statusLabelColor(f.hangout_status.entry_type),
+                          }}>
+                            {statusLabel(f.hangout_status.entry_type)}
+                          </span>
+                        ) : status ? (
                           <span className="text-[10px] truncate max-w-full" style={{ color: "#B0A8B5" }}>
                             {status}
                           </span>
-                        )}
+                        ) : null}
                       </motion.button>
                     );
                 })}

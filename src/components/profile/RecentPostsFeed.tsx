@@ -41,14 +41,7 @@ interface Props {
   showFade?: boolean;
 }
 
-const PILL_COLORS = [
-  { bg: "#EDE8F4", text: "#3C2A4D" },
-  { bg: "#EAF2E8", text: "#1F4A1A" },
-  { bg: "#FCF0F3", text: "#4B1528" },
-  { bg: "#FCF0F3", text: "#993556" },
-  { bg: "#EDE8F4", text: "#3C2A4D" },
-  { bg: "#EAF2E8", text: "#1F4A1A" },
-];
+// Post section badge uses dark background for photo overlay readability
 
 const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }: Props) => {
   const { user } = useAuth();
@@ -138,17 +131,18 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
     if (!sectionId) return null;
     const idx = sections.findIndex((s) => s.id === sectionId);
     if (idx === -1) return null;
-    const colors = PILL_COLORS[idx % PILL_COLORS.length];
     return (
       <span
         className="absolute top-2 right-10 z-[5]"
         style={{
-          fontSize: 8,
-          padding: "2px 8px",
+          fontSize: 9,
+          padding: "3px 10px",
           borderRadius: 99,
-          background: colors.bg,
-          color: colors.text,
+          background: "#2E1F3E",
+          color: "#F0EAE2",
           fontWeight: 500,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase",
         }}
       >
         {sections[idx].name}
