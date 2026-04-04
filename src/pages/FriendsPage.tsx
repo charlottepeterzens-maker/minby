@@ -764,7 +764,17 @@ const FriendsPage = () => {
                             </svg>
                           )}
                         </div>
-                        {status && (
+                        {f.hangout_status ? (
+                          <span className="truncate max-w-full" style={{
+                            fontSize: 9,
+                            fontWeight: 500,
+                            letterSpacing: "0.12em",
+                            textTransform: "uppercase",
+                            color: statusLabelColor(f.hangout_status.entry_type),
+                          }}>
+                            {statusLabel(f.hangout_status.entry_type)}
+                          </span>
+                        ) : status ? (
                           <span className="text-[10px] truncate max-w-full" style={{ color: "#B0A8B5" }}>
                             {status}
                           </span>
