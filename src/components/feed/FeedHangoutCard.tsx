@@ -102,7 +102,8 @@ const UnifiedHangoutCard = ({
      activityText.toLowerCase().includes(noteText.toLowerCase()));
   const mainText = noteText || activityText;
 
-  const typePillLabel = TYPE_PILL_LABEL[entryType] || "ledig";
+  const typeLabel = TYPE_LABEL[entryType] || "LEDIG";
+  const typeLabelColor = TYPE_LABEL_COLOR[entryType] || "#6B5A3E";
 
   return (
     <div
