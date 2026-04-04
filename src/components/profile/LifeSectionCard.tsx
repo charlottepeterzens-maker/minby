@@ -289,9 +289,10 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
             <div
               style={{
                 background: "#fff",
-                border: "1px solid hsl(var(--color-border-subtle))",
+                border: "none",
                 borderRadius: 8,
                 padding: 12,
+                boxShadow: "0 1px 4px 0 rgba(0,0,0,0.05)",
                 display: "flex",
                 flexDirection: "column",
                 gap: 8,
