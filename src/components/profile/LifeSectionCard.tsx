@@ -420,9 +420,10 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               key={post.id}
               style={{
                 background: "#fff",
-                border: "1px solid hsl(var(--color-border-subtle))",
+                border: "none",
                 borderRadius: 8,
                 overflow: "hidden",
+                boxShadow: "0 1px 4px 0 rgba(0,0,0,0.05)",
                 position: "relative",
               }}
             >
