@@ -290,7 +290,7 @@ const ProfilePage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Top nav */}
-      <nav className="sticky top-0 z-50 bg-background">
+      <nav className="sticky top-0 z-50 bg-background pt-safe">
         <Container className="px-2 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button

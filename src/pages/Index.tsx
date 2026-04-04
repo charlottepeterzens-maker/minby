@@ -107,7 +107,7 @@ const Index = () => {
   if (!selectedGroup) {
     return (
       <div className="min-h-screen bg-background pb-20">
-        <nav className="sticky top-0 z-50 bg-background" style={{ boxShadow: "0 1px 4px 0 rgba(0,0,0,0.04)" }}>
+        <nav className="sticky top-0 z-50 bg-background pt-safe" style={{ boxShadow: "0 1px 4px 0 rgba(0,0,0,0.04)" }}>
           <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
             <span className="font-display text-[20px] font-medium text-foreground">Sällskap</span>
             <CreateGroupDialog onGroupCreated={fetchGroups} />
@@ -154,7 +154,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background border-b border-border">
+      <nav className="sticky top-0 z-50 bg-background pt-safe border-b border-border">
         <div className="max-w-2xl mx-auto px-5 py-4 flex items-center justify-between">
           <button onClick={() => setSelectedGroup(null)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-150">
             <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
