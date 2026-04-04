@@ -383,7 +383,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
                   placeholder="Klistra in en lank..."
-                  style={{ flex: 1, height: 28, fontSize: 11, background: "hsl(var(--color-surface))", border: "1px solid hsl(var(--color-border-subtle))" }}
+                  style={{ flex: 1, height: 28, fontSize: 11, background: "hsl(var(--color-surface))", border: "none" }}
                 />
                 <button
                   onClick={handlePost}
