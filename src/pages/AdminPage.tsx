@@ -41,7 +41,7 @@ const AdminPage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-10" style={{ boxShadow: "0 1px 4px 0 rgba(0,0,0,0.04)" }}>
+      <header className="bg-card/50 backdrop-blur-sm sticky top-0 z-10 pt-safe" style={{ boxShadow: "0 1px 4px 0 rgba(0,0,0,0.04)" }}>
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-5 h-5" />

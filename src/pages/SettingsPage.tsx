@@ -194,7 +194,7 @@ const SettingsPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background">
+      <nav className="sticky top-0 z-50 bg-background pt-safe">
         <Container className="py-4 flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}

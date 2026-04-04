@@ -84,7 +84,7 @@ const NotificationsPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background">
+      <nav className="sticky top-0 z-50 bg-background pt-safe">
         <Container className="py-4 flex items-center justify-between">
           <span className="font-display text-[20px] font-medium text-foreground">{t("notifications")}</span>
           {unreadCount > 0 && (

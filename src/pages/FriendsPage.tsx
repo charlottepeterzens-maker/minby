@@ -495,7 +495,7 @@ const FriendsPage = () => {
   return (
     <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       {/* Header */}
-      <nav className="sticky top-0 z-50" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+      <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="py-4 flex items-center justify-between">
           <span className="font-display text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))", fontFamily: "Georgia, serif" }}>
             Sällskap
