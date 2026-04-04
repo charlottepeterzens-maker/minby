@@ -449,7 +449,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="end"
-                      style={{ minWidth: 150, borderRadius: 8, border: "1px solid hsl(var(--color-border-subtle))" }}
+                      style={{ minWidth: 150, borderRadius: 8 }}
                     >
                       <DropdownMenuItem
                         onClick={() => handleEditPost(post)}
