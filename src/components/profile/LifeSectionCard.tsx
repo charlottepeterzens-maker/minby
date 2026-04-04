@@ -569,7 +569,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 minHeight: 100,
                 fontSize: 13,
                 background: "#fff",
-                border: "1px solid hsl(var(--color-border-subtle))",
+                border: "none",
                 borderRadius: 8,
                 resize: "none",
               }}
