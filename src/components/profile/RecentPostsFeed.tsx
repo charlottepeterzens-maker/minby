@@ -41,14 +41,7 @@ interface Props {
   showFade?: boolean;
 }
 
-const PILL_COLORS = [
-  { bg: "#EDE8F4", text: "#3C2A4D" },
-  { bg: "#EAF2E8", text: "#1F4A1A" },
-  { bg: "#FCF0F3", text: "#4B1528" },
-  { bg: "#FCF0F3", text: "#993556" },
-  { bg: "#EDE8F4", text: "#3C2A4D" },
-  { bg: "#EAF2E8", text: "#1F4A1A" },
-];
+// Post section badge uses dark background for photo overlay readability
 
 const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }: Props) => {
   const { user } = useAuth();
