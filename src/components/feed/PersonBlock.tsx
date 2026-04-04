@@ -256,8 +256,13 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                       </span>
                       {post.sectionName && (
                         <span
-                          className="text-[8px] px-2 py-0.5 rounded-full"
-                          style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
+                          style={{
+                            fontSize: 9,
+                            fontWeight: 500,
+                            letterSpacing: "0.12em",
+                            textTransform: "uppercase",
+                            color: "#7A6A85",
+                          }}
                         >
                           {post.sectionName}
                         </span>

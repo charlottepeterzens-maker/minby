@@ -778,7 +778,7 @@ const FriendsPage = () => {
                           <span className="text-[10px] truncate max-w-full" style={{ color: "#B0A8B5" }}>
                             {status}
                           </span>
-                        )}
+                        ) : null}
                       </motion.button>
                     );
                 })}
