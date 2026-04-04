@@ -306,7 +306,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   fontSize: 13,
                   minHeight: 60,
                   background: "hsl(var(--color-surface))",
-                  border: "1px solid hsl(var(--color-border-subtle))",
+                  border: "none",
                   borderRadius: 8,
                   resize: "none",
                 }}
@@ -327,7 +327,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       fontSize: 11,
                       padding: "4px 10px",
                       borderRadius: 99,
-                      border: "1px solid hsl(var(--color-border-subtle))",
+                      border: "none",
                       background: imageFile ? "#EDE8F4" : "#F7F3EF",
                       color: imageFile ? "#3C2A4D" : "#655675",
                       cursor: "pointer",
