@@ -248,7 +248,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     fontWeight: 500,
                     color: "hsl(var(--color-text-secondary))",
                     background: "hsl(var(--color-surface))",
-                    border: "1px solid hsl(var(--color-border-subtle))",
+                    border: "none",
                     borderRadius: 99,
                     padding: "4px 10px",
                     cursor: "pointer",
@@ -289,9 +289,10 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
             <div
               style={{
                 background: "#fff",
-                border: "1px solid hsl(var(--color-border-subtle))",
+                border: "none",
                 borderRadius: 8,
                 padding: 12,
+                boxShadow: "0 1px 4px 0 rgba(0,0,0,0.05)",
                 display: "flex",
                 flexDirection: "column",
                 gap: 8,
@@ -305,7 +306,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   fontSize: 13,
                   minHeight: 60,
                   background: "hsl(var(--color-surface))",
-                  border: "1px solid hsl(var(--color-border-subtle))",
+                  border: "none",
                   borderRadius: 8,
                   resize: "none",
                 }}
@@ -326,7 +327,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       fontSize: 11,
                       padding: "4px 10px",
                       borderRadius: 99,
-                      border: "1px solid hsl(var(--color-border-subtle))",
+                      border: "none",
                       background: imageFile ? "#EDE8F4" : "#F7F3EF",
                       color: imageFile ? "#3C2A4D" : "#655675",
                       cursor: "pointer",
@@ -349,7 +350,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                         alignItems: "center",
                         justifyContent: "center",
                         background: photoLayout === "large" ? "#3C2A4D" : "#fff",
-                        border: "1px solid #3C2A4D",
+                        border: "none",
                         cursor: "pointer",
                       }}
                     >
@@ -368,7 +369,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                         alignItems: "center",
                         justifyContent: "center",
                         background: photoLayout === "small" ? "#3C2A4D" : "#fff",
-                        border: "1px solid #3C2A4D",
+                        border: "none",
                         cursor: "pointer",
                       }}
                     >
@@ -382,7 +383,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
                   placeholder="Klistra in en lank..."
-                  style={{ flex: 1, height: 28, fontSize: 11, background: "hsl(var(--color-surface))", border: "1px solid hsl(var(--color-border-subtle))" }}
+                  style={{ flex: 1, height: 28, fontSize: 11, background: "hsl(var(--color-surface))", border: "none" }}
                 />
                 <button
                   onClick={handlePost}
@@ -419,9 +420,10 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               key={post.id}
               style={{
                 background: "#fff",
-                border: "1px solid hsl(var(--color-border-subtle))",
+                border: "none",
                 borderRadius: 8,
                 overflow: "hidden",
+                boxShadow: "0 1px 4px 0 rgba(0,0,0,0.05)",
                 position: "relative",
               }}
             >
@@ -435,7 +437,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                           height: 28,
                           borderRadius: "50%",
                           background: "hsl(var(--color-surface) / 0.9)",
-                          border: "1px solid hsl(var(--color-border-subtle))",
+                          border: "none",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -447,7 +449,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="end"
-                      style={{ minWidth: 150, borderRadius: 8, border: "1px solid hsl(var(--color-border-subtle))" }}
+                      style={{ minWidth: 150, borderRadius: 8 }}
                     >
                       <DropdownMenuItem
                         onClick={() => handleEditPost(post)}
@@ -567,7 +569,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 minHeight: 100,
                 fontSize: 13,
                 background: "#fff",
-                border: "1px solid hsl(var(--color-border-subtle))",
+                border: "none",
                 borderRadius: 8,
                 resize: "none",
               }}
