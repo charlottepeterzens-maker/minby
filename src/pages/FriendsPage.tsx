@@ -63,6 +63,28 @@ interface GroupRow {
   has_unread: boolean;
 }
 
+function statusLabel(entryType: string): string {
+  if (entryType === "confirmed") return "HÄNG MED";
+  if (entryType === "activity") return "SUGEN PÅ";
+  return "LEDIG";
+}
+
+function statusLabelColor(entryType: string): string {
+  if (entryType === "confirmed") return "#5C4A7A";
+  if (entryType === "activity") return "#2A6645";
+  return "#6B5A3E";
+}
+
+function statusContent(f: FriendRow): string {
+  if (f.hangout_status) {
+    const h = f.hangout_status;
+    if (h.custom_note) return h.custom_note;
+    if (h.activities.length > 0) return h.activities[0];
+    return "";
+  }
+  return "";
+}
+
 function statusText(f: FriendRow): string {
   if (f.hangout_status) {
     const h = f.hangout_status;
