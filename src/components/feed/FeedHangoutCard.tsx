@@ -30,11 +30,18 @@ interface FeedHangoutCardProps {
   onMaybe?: () => void;
 }
 
-const TYPE_PILL_LABEL: Record<string, string> = {
-  open: "ledig",
-  available: "ledig",
-  confirmed: "häng med",
-  activity: "sugen på",
+const TYPE_LABEL: Record<string, string> = {
+  open: "LEDIG",
+  available: "LEDIG",
+  confirmed: "HÄNG MED",
+  activity: "SUGEN PÅ",
+};
+
+const TYPE_LABEL_COLOR: Record<string, string> = {
+  open: "#6B5A3E",
+  available: "#6B5A3E",
+  confirmed: "#5C4A7A",
+  activity: "#2A6645",
 };
 
 const TYPE_BG_COLOR: Record<string, string> = {
