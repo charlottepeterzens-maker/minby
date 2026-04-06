@@ -41,7 +41,7 @@ const BottomNav = () => {
                 <item.icon
                   className="w-5 h-5 transition-colors duration-200"
                   strokeWidth={isActive ? 2 : 1.5}
-                  style={{ color: isActive ? "#3C2A4D" : "#6B5C78" }}
+                  style={{ color: isActive ? "#C4522A" : "#6B5C78" }}
                 />
                 {showBadge && (
                   <motion.span
