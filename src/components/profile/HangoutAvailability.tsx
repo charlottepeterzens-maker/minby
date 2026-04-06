@@ -68,6 +68,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const { user } = useAuth();
   const { t } = useLanguage();
   const [entries, setEntries] = useState<AvailabilityEntry[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<AvailabilityEntry | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
