@@ -54,9 +54,22 @@ const FeedTipCard = ({ tip, profile, onProfileClick }: FeedTipCardProps) => {
           >
             {profile.display_name || "Någon"}
           </button>
-          <p className="text-[11px] leading-tight" style={{ color: "hsl(var(--color-text-secondary))" }}>
-            delade ett tips · {timeAgo}
-          </p>
+          <div className="flex items-center gap-1.5 leading-tight">
+            {tip.category && (
+              <span style={{
+                fontSize: 9,
+                fontWeight: 500,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#7A6A85",
+              }}>
+                {tip.category}
+              </span>
+            )}
+            <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
+              {tip.category ? `· ${timeAgo}` : `delade ett tips · ${timeAgo}`}
+            </span>
+          </div>
         </div>
       </div>
 
