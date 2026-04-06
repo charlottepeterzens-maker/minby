@@ -338,6 +338,38 @@ export type Database = {
           },
         ]
       }
+      hangout_responses: {
+        Row: {
+          availability_id: string
+          created_at: string
+          id: string
+          response: string
+          user_id: string
+        }
+        Insert: {
+          availability_id: string
+          created_at?: string
+          id?: string
+          response: string
+          user_id: string
+        }
+        Update: {
+          availability_id?: string
+          created_at?: string
+          id?: string
+          response?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hangout_responses_availability_id_fkey"
+            columns: ["availability_id"]
+            isOneToOne: false
+            referencedRelation: "hangout_availability"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hangout_tagged_friends: {
         Row: {
           availability_id: string
