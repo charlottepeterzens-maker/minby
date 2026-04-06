@@ -49,7 +49,7 @@ const BottomNav = () => {
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 500, damping: 20 }}
                     className="absolute -top-1.5 -right-2 min-w-[16px] h-4 flex items-center justify-center rounded-full text-[9px] font-bold text-white px-1"
-                    style={{ backgroundColor: "#C9503A" }}
+                    style={{ backgroundColor: "#C4522A" }}
                   >
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </motion.span>
