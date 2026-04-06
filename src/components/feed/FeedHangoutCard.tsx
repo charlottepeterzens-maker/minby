@@ -325,7 +325,7 @@ const GroupedActivityCard = ({
       {/* 1. ACTIVITY — Georgia serif */}
       <p
         style={{
-          fontFamily: "Georgia, serif",
+          fontFamily: "'Fraunces', serif",
           fontSize: 22,
           fontWeight: 500,
           color: "#3C2A4D",
