@@ -90,6 +90,8 @@ const HangoutDetailSheet = ({
   const [deleteAllConfirm, setDeleteAllConfirm] = useState(false);
   const [ownerProfile, setOwnerProfile] = useState<{ display_name: string | null; avatar_url: string | null } | null>(null);
   const [creatingGroup, setCreatingGroup] = useState(false);
+  const [addingDate, setAddingDate] = useState(false);
+  const [newDateValue, setNewDateValue] = useState("");
   const { subscribe: subscribePush, subscribed: pushSubscribed, permission: pushPermission, isSupported: pushSupported } = usePushNotifications();
 
   const fetchDetails = useCallback(async () => {
@@ -395,14 +397,60 @@ const HangoutDetailSheet = ({
                     </span>
                   );
                 })}
-                {isOwner && onAddActivityDate && (
-                  <button
-                    onClick={() => { onOpenChange(false); onAddActivityDate(activityGroupName); }}
-                    className="inline-flex items-center gap-1 text-[11px]"
-                    style={{ backgroundColor: "#F7F3EF", borderRadius: 8, padding: "4px 10px", color: "#7A6A85" }}
-                  >
-                    <Plus className="w-3 h-3" /> Lägg till
-                  </button>
+                {isOwner && (
+                  addingDate ? (
+                    <span className="inline-flex items-center gap-1" style={{ borderRadius: 8 }}>
+                      <input
+                        type="date"
+                        value={newDateValue}
+                        onChange={(e) => setNewDateValue(e.target.value)}
+                        className="text-[11px] px-2 py-1 rounded-lg bg-white focus-visible:outline-none"
+                        style={{ color: "#3C2A4D", width: 130 }}
+                        min={format(new Date(), "yyyy-MM-dd")}
+                        autoFocus
+                      />
+                      <button
+                        disabled={!newDateValue}
+                        onClick={async () => {
+                          if (!newDateValue || !user) return;
+                          // Insert a new row copying the existing entry's activity/note/type
+                          await supabase.from("hangout_availability").insert({
+                            user_id: user.id,
+                            date: newDateValue,
+                            activities: entry.activities,
+                            custom_note: entry.custom_note,
+                            entry_type: entry.entry_type,
+                            visibility: "all",
+                          });
+                          setAddingDate(false);
+                          setNewDateValue("");
+                          toast({ title: "Datum tillagt" });
+                          onRefresh?.();
+                          // Re-fetch to update grouped entries
+                          fetchDetails();
+                        }}
+                        className="text-[11px] font-medium px-2 py-1 rounded-lg text-white disabled:opacity-40"
+                        style={{ backgroundColor: "#3C2A4D" }}
+                      >
+                        OK
+                      </button>
+                      <button
+                        onClick={() => { setAddingDate(false); setNewDateValue(""); }}
+                        className="text-[11px] px-1 py-1"
+                        style={{ color: "#7A6A85" }}
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setAddingDate(true)}
+                      className="inline-flex items-center gap-1 text-[11px]"
+                      style={{ backgroundColor: "#F7F3EF", borderRadius: 8, padding: "4px 10px", color: "#7A6A85" }}
+                    >
+                      <Plus className="w-3 h-3" /> Lägg till
+                    </button>
+                  )
                 )}
               </div>
             )}
