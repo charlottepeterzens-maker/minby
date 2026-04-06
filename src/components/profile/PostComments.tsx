@@ -249,10 +249,10 @@ const PostComments = ({ postId, isOwner }: Props) => {
             onClick={handlePost}
             disabled={posting}
             style={{
-              width: 26,
-              height: 26,
-              borderRadius: "50%",
-              background: "#3C2A4D",
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: "hsl(var(--color-text-primary))",
               border: "none",
               display: "flex",
               alignItems: "center",
@@ -262,7 +262,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
               opacity: posting ? 0.6 : 1,
             }}
           >
-            <Send style={{ width: 11, height: 11, color: "#F7F3EF" }} />
+            <Send style={{ width: 13, height: 13, color: "#FFFFFF" }} />
           </button>
         )}
       </div>
