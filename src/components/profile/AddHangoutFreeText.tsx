@@ -136,16 +136,21 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
     setSaving(true);
 
     try {
-      const dateStr = parsed.date || format(new Date(), "yyyy-MM-dd");
+      // Build rows for all dates (or a single row with today if no dates)
+      const allDates = parsed.dates && parsed.dates.length > 0
+        ? parsed.dates
+        : [parsed.date || format(new Date(), "yyyy-MM-dd")];
 
-      const { error } = await supabase.from("hangout_availability").insert({
+      const rows = allDates.map(dateStr => ({
         user_id: user.id,
         date: dateStr,
         activities: parsed.activity ? [parsed.activity] : [],
         custom_note: parsed.description,
         entry_type: parsed.entry_type,
         visibility: "all",
-      });
+      }));
+
+      const { error } = await supabase.from("hangout_availability").insert(rows);
 
       if (error) throw error;
 
