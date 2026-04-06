@@ -36,16 +36,17 @@ Dagens datum: ${todayStr} (${dayName}).
 Analysera texten och extrahera:
 1. intent: en kort, personlig fras i första person som fångar känslan (t.ex. "Jag är ledig", "Jag vill ses", "Jag vill göra något", "Jag har en plan"). Max 5 ord. Naturlig ton, inga utropstecken.
 2. activity: om en specifik aktivitet nämns (spa, lunch, promenad, fika, middag, etc). Annars null.
-3. date: om ett datum eller tid nämns, returnera ISO-format (YYYY-MM-DD). Tolka "idag", "imorgon", "fredag", "helgen" relativt till dagens datum. Om inget datum nämns, returnera null.
-4. date_display: en mänskligt läsbar version av datumet på svenska (t.ex. "fre 7 februari", "imorgon", "i helgen"). Om inget datum, returnera null.
+3. dates: en array av ALLA datum som nämns i texten, i ISO-format (YYYY-MM-DD). Tolka "idag", "imorgon", "fredag", "helgen" relativt till dagens datum. Om flera datum nämns (t.ex. "kan 27/5, 3/6 eller 14/6"), returnera ALLA som separata element i arrayen. Om inget datum nämns, returnera en tom array [].
+4. date_display: en mänskligt läsbar version av det FÖRSTA datumet på svenska (t.ex. "fre 7 februari", "imorgon", "i helgen"). Om inget datum, returnera null.
 5. description: användarens text, lätt justerad för läsbarhet men bevarad i anda. Max 100 tecken.
 6. entry_type: "available" (ledig/vill ses), "confirmed" (har en plan), eller "activity" (vill göra specifik sak).
 
 VIKTIGT:
+- Extrahera ALLA datum som nämns, inte bara det första
 - Gissa hellre än att lämna tomt
 - Behåll användarens röst och ton
 - Inga generiska systemformuleringar
-- Om inget datum: date=null, date_display=null
+- Om inget datum: dates=[], date_display=null
 - Om ingen aktivitet: activity=null`;
 
     const response = await fetch(
@@ -82,15 +83,16 @@ VIKTIGT:
                       description:
                         "Specific activity if mentioned, e.g. lunch, spa, promenad. null if none.",
                     },
-                    date: {
-                      type: ["string", "null"],
+                    dates: {
+                      type: "array",
+                      items: { type: "string" },
                       description:
-                        "ISO date YYYY-MM-DD if a date/time is mentioned. null if none.",
+                        "Array of ALL mentioned dates in ISO format YYYY-MM-DD. Empty array if no dates mentioned.",
                     },
                     date_display: {
                       type: ["string", "null"],
                       description:
-                        'Human-readable Swedish date, e.g. "fre 7 februari". null if none.',
+                        'Human-readable Swedish date for the first date, e.g. "fre 7 februari". null if none.',
                     },
                     description: {
                       type: "string",
@@ -106,7 +108,7 @@ VIKTIGT:
                   required: [
                     "intent",
                     "activity",
-                    "date",
+                    "dates",
                     "date_display",
                     "description",
                     "entry_type",
@@ -155,6 +157,16 @@ VIKTIGT:
     }
 
     const parsed = JSON.parse(toolCall.function.arguments);
+
+    // Backwards compatibility: also provide single `date` field from first element
+    if (parsed.dates && parsed.dates.length > 0) {
+      parsed.date = parsed.dates[0];
+    } else if (!parsed.dates) {
+      // If AI returned old format with single date, convert
+      parsed.dates = parsed.date ? [parsed.date] : [];
+    } else {
+      parsed.date = null;
+    }
 
     return new Response(JSON.stringify(parsed), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },

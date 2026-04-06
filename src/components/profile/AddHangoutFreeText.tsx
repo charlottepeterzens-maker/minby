@@ -12,6 +12,7 @@ interface ParsedHangout {
   intent: string;
   activity: string | null;
   date: string | null;
+  dates: string[];
   date_display: string | null;
   description: string;
   entry_type: "available" | "confirmed" | "activity";
