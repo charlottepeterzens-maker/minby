@@ -111,7 +111,7 @@ serve(async (req) => {
   }
 
   try {
-    // Authenticate the caller
+    // Authenticate the caller — supports both user JWT and service role key
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -120,22 +120,28 @@ serve(async (req) => {
       });
     }
 
-    const userSupabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
     const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: authError } = await userSupabase.auth.getClaims(token);
-    if (authError || !claimsData?.claims) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const isServiceRole = token === serviceRoleKey;
 
-    const callerUserId = claimsData.claims.sub;
+    let callerUserId: string | null = null;
+
+    if (!isServiceRole) {
+      const userSupabase = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        { global: { headers: { Authorization: authHeader } } }
+      );
+
+      const { data: claimsData, error: authError } = await userSupabase.auth.getClaims(token);
+      if (authError || !claimsData?.claims) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      callerUserId = claimsData.claims.sub;
+    }
 
     const serviceSupabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -144,8 +150,8 @@ serve(async (req) => {
 
     const { recipientUserId, fromUserId, type, referenceId, message } = await req.json();
 
-    // Validate that fromUserId matches the authenticated user
-    if (fromUserId && fromUserId !== callerUserId) {
+    // Validate that fromUserId matches the authenticated user (skip for service role / null sender)
+    if (!isServiceRole && fromUserId && fromUserId !== callerUserId) {
       return new Response(JSON.stringify({ error: "Cannot spoof sender identity" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -267,6 +273,9 @@ serve(async (req) => {
         case "hangout_yes":
         case "hangout_maybe":
         case "hangout_comment":
+        case "nudge":
+        case "nudge_first_post":
+        case "nudge_hangout":
           targetUrl = "/";
           break;
         case "life_comment":
