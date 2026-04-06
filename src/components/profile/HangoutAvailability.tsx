@@ -80,15 +80,16 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const [prefillActivityName, setPrefillActivityName] = useState<string | undefined>();
 
   const fetchEntries = useCallback(async () => {
-    const today = format(new Date(), "yyyy-MM-dd");
-    const { data } = await supabase
-      .from("hangout_availability")
-      .select("*")
-      .eq("user_id", userId)
-      .gte("date", today)
-      .order("date", { ascending: true });
-    if (data) {
-      const typedData = data as AvailabilityEntry[];
+    setLoading(true);
+    try {
+      const today = format(new Date(), "yyyy-MM-dd");
+      const { data } = await supabase
+        .from("hangout_availability")
+        .select("*")
+        .eq("user_id", userId)
+        .gte("date", today)
+        .order("date", { ascending: true });
+      const typedData = (data || []) as AvailabilityEntry[];
       setEntries(typedData);
 
       const groupMap = new Map<string, AvailabilityEntry[]>();
@@ -113,6 +114,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         });
         setConfirmedCounts(counts);
       }
+    } finally {
+      setLoading(false);
     }
   }, [userId]);
 
