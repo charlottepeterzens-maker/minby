@@ -13,26 +13,26 @@
   :root {
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
-    /* Minby — Scandinavian warmth with muted purple */
-    --background: 30 33% 95%;
-    --foreground: 270 30% 23%;
+    /* Minby — warmer linen + deeper purple */
+    --background: 30 28% 92%;
+    --foreground: 270 33% 18%;
 
     --card: 0 0% 100%;
-    --card-foreground: 270 30% 23%;
+    --card-foreground: 270 33% 18%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 270 30% 23%;
+    --popover-foreground: 270 33% 18%;
 
-    --primary: 270 30% 23%;
-    --primary-foreground: 30 25% 95%;
+    --primary: 270 33% 18%;
+    --primary-foreground: 30 28% 92%;
 
     --secondary: 270 25% 78%;
-    --secondary-foreground: 270 30% 23%;
+    --secondary-foreground: 270 33% 18%;
 
-    --accent: 145 18% 75%;
-    --accent-foreground: 150 30% 15%;
+    --accent: 16 65% 46%;
+    --accent-foreground: 0 0% 100%;
 
-    --muted: 30 15% 92%;
+    --muted: 30 15% 89%;
     --muted-foreground: 270 14% 38%;
 
     --destructive: 0 0% 55%;
@@ -40,7 +40,7 @@
 
     --border: 265 30% 93%;
     --input: 0 0% 100%;
-    --ring: 270 30% 23%;
+    --ring: 270 33% 18%;
 
     --radius: 0.5rem;
 
@@ -53,30 +53,33 @@
     --lavender-bg: 270 20% 94%;
 
     /* Branded colors (dark-mode-aware) */
-    --color-surface: 30 33% 95%;           /* #F7F3EF */
+    --color-surface: 30 28% 92%;           /* #F0EAE2 */
     --color-surface-card: 0 0% 100%;       /* #FFFFFF */
     --color-surface-raised: 270 20% 94%;   /* #EDE8F4 */
     --color-surface-rose: 340 30% 97%;     /* #FCF0F3 */
     --color-surface-sage: 145 20% 93%;     /* #EAF2E8 */
-    --color-text-primary: 270 30% 23%;     /* #3C2A4D */
+    --color-text-primary: 270 33% 18%;     /* #2E1F3E */
     --color-text-secondary: 270 14% 38%;   /* #655675 */
     --color-text-muted: 270 12% 45%;       /* #6B5C78 */
     --color-text-faint: 270 10% 52%;       /* #857A8F */
     --color-border-subtle: 30 15% 89%;     /* #EDE8E0 */
     --color-border-lavender: 270 25% 78%;  /* #C9B8D8 */
     --color-accent-red: 0 55% 49%;         /* #A32D2D */
-    --color-accent-terra: 10 55% 50%;      /* #C9503A */
+    --color-accent-terra: 16 65% 46%;      /* #C4522A */
     --color-accent-sage-text: 140 42% 20%; /* #1F4A1A */
     --color-badge: 330 40% 35%;            /* #993556 */
 
+    /* Korall accent */
+    --terrakotta: 16 65% 46%;              /* #C4522A */
+
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 270 30% 23%;
-    --sidebar-primary: 270 30% 23%;
-    --sidebar-primary-foreground: 30 25% 95%;
+    --sidebar-foreground: 270 33% 18%;
+    --sidebar-primary: 270 33% 18%;
+    --sidebar-primary-foreground: 30 28% 92%;
     --sidebar-accent: 270 20% 94%;
-    --sidebar-accent-foreground: 270 30% 23%;
+    --sidebar-accent-foreground: 270 33% 18%;
     --sidebar-border: 30 15% 85%;
-    --sidebar-ring: 270 30% 23%;
+    --sidebar-ring: 270 33% 18%;
 
     --font-display: 'Lexend', sans-serif;
     --font-body: 'Lexend', sans-serif;
@@ -98,8 +101,8 @@
     --secondary: 270 15% 25%;
     --secondary-foreground: 270 25% 78%;
 
-    --accent: 145 15% 25%;
-    --accent-foreground: 145 18% 75%;
+    --accent: 16 55% 60%;
+    --accent-foreground: 0 0% 100%;
 
     --muted: 270 10% 18%;
     --muted-foreground: 270 10% 65%;
@@ -131,9 +134,11 @@
     --color-border-subtle: 270 10% 20%;
     --color-border-lavender: 270 20% 40%;
     --color-accent-red: 0 50% 55%;
-    --color-accent-terra: 10 50% 55%;
+    --color-accent-terra: 16 55% 60%;
     --color-accent-sage-text: 140 30% 65%;
     --color-badge: 330 35% 45%;
+
+    --terrakotta: 16 55% 60%;
 
     --sidebar-background: 270 15% 12%;
     --sidebar-foreground: 30 15% 90%;

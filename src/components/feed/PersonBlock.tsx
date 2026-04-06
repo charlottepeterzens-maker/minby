@@ -150,7 +150,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
     <div
       style={{
         backgroundColor: "hsl(var(--color-surface-card))",
-        border: expanded ? "1.5px solid #C9B8D8" : "none",
+        border: "none",
         borderRadius: 8,
         opacity: person.isQuiet && !expanded ? 0.7 : 1,
         transition: "all 0.2s ease",
@@ -173,7 +173,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
             <button
               onClick={() => navigate(`/profile/${person.userId}`)}
               className="font-medium text-[13px] hover:underline"
-              style={{ color: "hsl(var(--color-text-primary))", fontFamily: "Lexend" }}
+              style={{ color: "hsl(var(--color-text-primary))", fontFamily: "'Fraunces', serif" }}
             >
               {person.displayName}
             </button>
@@ -216,7 +216,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               padding: "5px 12px",
               fontSize: 10,
               fontWeight: 500,
-              color: thinkingSent ? "#1F4A1A" : "#3C2A4D",
+              color: thinkingSent ? "#1F4A1A" : "#C4522A",
               transition: "background-color 0.2s ease",
             }}
           >
@@ -288,7 +288,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                       padding: "5px 12px",
                       fontSize: 10,
                       fontWeight: 500,
-                      color: thinkingSent ? "#1F4A1A" : "#3C2A4D",
+                      color: thinkingSent ? "#1F4A1A" : "#C4522A",
                       transition: "background-color 0.2s ease",
                     }}
                   >
@@ -313,7 +313,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
 
       {/* Hangout inline card */}
       {person.activeHangout && (
-        <div style={{ borderTop: "1px solid hsl(var(--color-border-subtle))", padding: "10px 14px" }}>
+        <div style={{ borderTop: "none", padding: "10px 14px" }}>
           <div className="flex items-center gap-1.5 mb-1">
             <Calendar size={11} style={{ color: "hsl(var(--color-text-secondary))" }} />
             <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
@@ -355,7 +355,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
       {person.latestTip && !person.activeHangout && (
         <div
           className="flex items-center gap-1"
-          style={{ borderTop: "1px solid hsl(var(--color-border-subtle))", padding: "8px 14px", fontSize: 10, color: "hsl(var(--color-text-secondary))" }}
+          style={{ borderTop: "none", padding: "8px 14px", fontSize: 10, color: "hsl(var(--color-text-secondary))" }}
         >
           <Heart size={10} />
           {person.latestTip.title.slice(0, 30)}

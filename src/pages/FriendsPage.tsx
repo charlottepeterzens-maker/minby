@@ -520,7 +520,7 @@ const FriendsPage = () => {
       {/* Header */}
       <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="py-4 flex items-center justify-between">
-          <span className="font-display text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))", fontFamily: "Georgia, serif" }}>
+          <span className="font-fraunces text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
             Sällskap
           </span>
           <div className="flex items-center gap-2">
@@ -632,7 +632,7 @@ const FriendsPage = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.06 * i, type: "spring", stiffness: 300, damping: 24 }}
                 className="flex items-center gap-3 p-3"
-                style={{ backgroundColor: "#EDE8F4", border: "1px solid #C9B8D8", borderRadius: 8 }}
+                style={{ backgroundColor: "#EDE8F4", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 8 }}
               >
                 <button
                   onClick={() => navigate(`/profile/${r.from_user_id}`)}
@@ -751,12 +751,12 @@ const FriendsPage = () => {
                               animate={{ scale: 1 }}
                               transition={{ type: "spring", stiffness: 500, damping: 20, delay: 0.2 + 0.04 * friends.indexOf(f) }}
                               className="absolute bottom-0 right-0 w-[11px] h-[11px] rounded-full"
-                              style={{ backgroundColor: "#C9503A", border: "2px solid #F7F3EF" }}
+                              style={{ backgroundColor: "#C4522A", border: "2px solid #F0EAE2" }}
                             />
                           )}
                         </div>
                         <div className="flex items-center gap-0.5 max-w-full">
-                          <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                          <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-primary))", fontFamily: "'Fraunces', serif" }}>
                             {f.display_name.split(" ")[0]}
                           </span>
                           {isClose && (
@@ -879,7 +879,7 @@ const FriendsPage = () => {
                       {g.last_message_at ? formatTime(g.last_message_at) : "–"}
                     </span>
                     {g.has_unread && (
-                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#C9503A" }} />
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#C4522A" }} />
                     )}
                   </div>
                 </button>

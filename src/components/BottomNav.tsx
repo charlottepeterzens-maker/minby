@@ -41,7 +41,7 @@ const BottomNav = () => {
                 <item.icon
                   className="w-5 h-5 transition-colors duration-200"
                   strokeWidth={isActive ? 2 : 1.5}
-                  style={{ color: isActive ? "#3C2A4D" : "#6B5C78" }}
+                  style={{ color: isActive ? "#C4522A" : "#6B5C78" }}
                 />
                 {showBadge && (
                   <motion.span
@@ -49,7 +49,7 @@ const BottomNav = () => {
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 500, damping: 20 }}
                     className="absolute -top-1.5 -right-2 min-w-[16px] h-4 flex items-center justify-center rounded-full text-[9px] font-bold text-white px-1"
-                    style={{ backgroundColor: "#C9503A" }}
+                    style={{ backgroundColor: "#C4522A" }}
                   >
                     {unreadCount > 9 ? "9+" : unreadCount}
                   </motion.span>
@@ -59,7 +59,7 @@ const BottomNav = () => {
                 <motion.span
                   layoutId="nav-dot"
                   className="absolute bottom-0.5 w-1 h-1 rounded-full"
-                  style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
+                  style={{ backgroundColor: "#C4522A" }}
                   transition={{ type: "spring", stiffness: 400, damping: 30 }}
                 />
               )}

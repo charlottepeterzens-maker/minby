@@ -29,7 +29,7 @@ const ReactionButton = ({
       className="inline-flex items-center gap-1 rounded-full transition-colors"
       style={{
         padding: count > 0 ? "6px 12px" : "6px 8px",
-        backgroundColor: active ? "#EDE8F4" : "transparent",
+        backgroundColor: active ? "#FDF0EB" : "#F5F0EA",
         border: "none",
         cursor: disabled ? "default" : "pointer",
         opacity: disabled ? 0.4 : 1,
@@ -39,8 +39,8 @@ const ReactionButton = ({
         size={17}
         strokeWidth={1.8}
         style={{
-          stroke: active ? "#3C2A4D" : "#C9B8D8",
-          fill: active ? "#EDE8F4" : "none",
+          stroke: active ? "#C4522A" : "#C9B8D8",
+          fill: active ? "#FDF0EB" : "none",
         }}
       />
       {count > 0 && (
@@ -51,7 +51,7 @@ const ReactionButton = ({
           style={{
             fontSize: 11,
             fontWeight: 500,
-            color: active ? "#3C2A4D" : "#6B5C78",
+            color: active ? "#C4522A" : "#6B5C78",
           }}
         >
           {count}
