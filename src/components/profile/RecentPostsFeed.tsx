@@ -127,27 +127,11 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
     return date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
   };
 
-  const getSectionPill = (sectionId: string | null) => {
+  const getSectionName = (sectionId: string | null) => {
     if (!sectionId) return null;
     const idx = sections.findIndex((s) => s.id === sectionId);
     if (idx === -1) return null;
-    return (
-      <span
-        className="absolute top-2 right-10 z-[5]"
-        style={{
-          fontSize: 9,
-          padding: "3px 10px",
-          borderRadius: 99,
-          background: "#2E1F3E",
-          color: "#F0EAE2",
-          fontWeight: 500,
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-        }}
-      >
-        {sections[idx].name}
-      </span>
-    );
+    return sections[idx].name;
   };
 
   if (posts.length === 0) return null;
