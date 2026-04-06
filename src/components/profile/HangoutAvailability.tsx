@@ -235,17 +235,17 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
       >
         {/* Top row: date block left, type label right */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 4, marginBottom: 8 }}>
-          <div>
+          <div style={{ minWidth: 0, flex: 1 }}>
             {/* Veckodag */}
             <p style={{ fontSize: 11, fontWeight: 300, color: "#9A8FA3", marginBottom: 2 }}>
               {weekday}
             </p>
             {/* Siffra + månad */}
-            <div className="flex items-baseline gap-1.5">
-              <span style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 400, color: "#3C2A4D", lineHeight: 1 }}>
+            <div className="flex items-baseline gap-1">
+              <span style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 400, color: "#3C2A4D", lineHeight: 1 }}>
                 {dayNum}
               </span>
-              <span style={{ fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 400, color: "#3C2A4D", lineHeight: 1 }}>
+              <span style={{ fontFamily: "'Fraunces', serif", fontSize: 15, fontWeight: 400, color: "#3C2A4D", lineHeight: 1 }}>
                 {month}
               </span>
             </div>
