@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, ChevronDown, Heart, Check, Calendar, Headphones } from "lucide-react";
+import { ChevronRight, ChevronDown, Heart, Check, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import LazyImage from "@/components/LazyImage";
