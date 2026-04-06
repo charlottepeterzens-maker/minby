@@ -2,6 +2,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
+/**
+ * VAPID public key — this is a publishable key, safe to embed in client code.
+ * It MUST match the VAPID_PUBLIC_KEY secret configured in the backend.
+ * If you rotate VAPID keys, update this value AND the backend secret simultaneously.
+ */
+const VAPID_PUBLIC_KEY = "Hasselblad#20";
+
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -18,16 +25,6 @@ export const usePushNotifications = () => {
   const subscribingRef = useRef(false);
 
   const isSupported = typeof window !== "undefined" && "serviceWorker" in navigator && "PushManager" in window;
-
-  const getVapidPublicKey = useCallback(async (): Promise<string | null> => {
-    try {
-      const { data, error } = await supabase.functions.invoke("generate-vapid-keys");
-      if (error || !data?.publicKey) return null;
-      return data.publicKey;
-    } catch {
-      return null;
-    }
-  }, []);
 
   const subscribe = useCallback(async () => {
     if (!isSupported || !user || subscribingRef.current) return false;
