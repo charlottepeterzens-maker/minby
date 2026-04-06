@@ -487,26 +487,26 @@ const HangoutDetailSheet = ({
             {/* ── RESPONSES ── */}
             <div className="space-y-1.5">
               <p style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#B0A8B5", fontWeight: 500 }}>
-                svar
+                svar {totalResponses > 0 && <span style={{ fontWeight: 400 }}>· {yesCount > 0 ? `${yesCount} kan` : ""}{yesCount > 0 && maybeCount > 0 ? " · " : ""}{maybeCount > 0 ? `${maybeCount} kanske` : ""}</span>}
               </p>
               {totalResponses > 0 ? (
-                taggedFriends.map(tf => (
-                  <div key={tf.id} className="flex items-center gap-2 py-0.5">
+                responses.map(r => (
+                  <div key={r.id} className="flex items-center gap-2 py-0.5">
                     <Avatar className="w-5 h-5">
-                      {resolveAvatarUrl(tf.profile?.avatar_url ?? null) && (
-                        <AvatarImage src={resolveAvatarUrl(tf.profile?.avatar_url ?? null)!} alt={tf.profile?.display_name || ""} className="object-cover" />
+                      {resolveAvatarUrl(r.profile?.avatar_url ?? null) && (
+                        <AvatarImage src={resolveAvatarUrl(r.profile?.avatar_url ?? null)!} alt={r.profile?.display_name || ""} className="object-cover" />
                       )}
                       <AvatarFallback style={{ backgroundColor: "#F7F3EF", color: "#3C2A4D" }} className="text-[8px] font-medium">
-                        {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
+                        {r.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                       </AvatarFallback>
                     </Avatar>
                     <span className="text-[12px] flex-1" style={{ color: "#7A6A85" }}>
-                      {tf.profile?.display_name || "Okänd"} kan
+                      {r.profile?.display_name || "Okänd"} {r.response === "yes" ? "kan" : "kanske"}
                     </span>
                     {isOwner && (
                       <button onClick={async () => {
-                        await supabase.from("hangout_tagged_friends").delete().eq("id", tf.id);
-                        setTaggedFriends(prev => prev.filter(t => t.id !== tf.id));
+                        await supabase.from("hangout_responses").delete().eq("id", r.id);
+                        setResponses(prev => prev.filter(x => x.id !== r.id));
                       }} className="text-muted-foreground/30 hover:text-destructive" aria-label="Ta bort svar">
                         <Trash2 className="w-3 h-3" />
                       </button>
