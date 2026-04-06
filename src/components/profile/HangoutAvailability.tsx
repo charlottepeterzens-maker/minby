@@ -68,6 +68,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const { user } = useAuth();
   const { t } = useLanguage();
   const [entries, setEntries] = useState<AvailabilityEntry[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<AvailabilityEntry | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -79,15 +80,16 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const [prefillActivityName, setPrefillActivityName] = useState<string | undefined>();
 
   const fetchEntries = useCallback(async () => {
-    const today = format(new Date(), "yyyy-MM-dd");
-    const { data } = await supabase
-      .from("hangout_availability")
-      .select("*")
-      .eq("user_id", userId)
-      .gte("date", today)
-      .order("date", { ascending: true });
-    if (data) {
-      const typedData = data as AvailabilityEntry[];
+    setLoading(true);
+    try {
+      const today = format(new Date(), "yyyy-MM-dd");
+      const { data } = await supabase
+        .from("hangout_availability")
+        .select("*")
+        .eq("user_id", userId)
+        .gte("date", today)
+        .order("date", { ascending: true });
+      const typedData = (data || []) as AvailabilityEntry[];
       setEntries(typedData);
 
       const groupMap = new Map<string, AvailabilityEntry[]>();
@@ -112,6 +114,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         });
         setConfirmedCounts(counts);
       }
+    } finally {
+      setLoading(false);
     }
   }, [userId]);
 
@@ -410,7 +414,11 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         onCreated={fetchEntries}
       />
 
-      {entries.length === 0 && !isOwner ? (
+      {loading ? (
+        <div className="flex justify-center py-6">
+          <div className="w-5 h-5 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "hsl(var(--color-border-lavender))", borderTopColor: "transparent" }} />
+        </div>
+      ) : entries.length === 0 && !isOwner ? (
         <motion.div
           className="flex flex-col items-center py-5"
           initial={{ opacity: 0, y: 10 }}
