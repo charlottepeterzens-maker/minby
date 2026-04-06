@@ -62,7 +62,7 @@ const ProfilePage = () => {
   const [editingBio, setEditingBio] = useState(false);
   const [bioText, setBioText] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [reordering, setReordering] = useState(false);
+  
   const [recentRefreshKey, setRecentRefreshKey] = useState(0);
   const [showAllPosts, setShowAllPosts] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
