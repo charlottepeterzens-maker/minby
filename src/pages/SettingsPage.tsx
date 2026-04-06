@@ -365,7 +365,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Dev tools - only for charlotte */}
-        {user?.email?.includes("charlotte.peterzens") && (
+        {isAdmin && (
           <Card className="rounded-lg">
             <CardHeader className="pb-2">
               <CardTitle className="text-xs text-muted-foreground font-body font-medium">Utvecklarverktyg</CardTitle>

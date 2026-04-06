@@ -406,7 +406,18 @@ const filteredItems = feedItems.filter((item) => {
     ))}
   </div>
 ) : (
-  <ContentFeed items={filteredItems} />
+  <ContentFeed
+    items={filteredItems}
+    emptyMessage={
+      filter === "hangout"
+        ? "Inga planerade träffar just nu"
+        : filter === "tips"
+        ? "Inga tips att visa just nu"
+        : filter === "posts"
+        ? "Inga inlägg att visa just nu"
+        : undefined
+    }
+  />
 )}
       </Container>
 
