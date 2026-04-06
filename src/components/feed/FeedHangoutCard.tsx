@@ -235,8 +235,10 @@ const GroupedActivityCard = ({
   profile,
   isOwn,
   onProfileClick,
+  onRefresh,
 }: FeedHangoutCardProps) => {
   const { user } = useAuth();
+  const [detailOpen, setDetailOpen] = useState(false);
   const activityName =
     hangout.activities.length > 0
       ? hangout.activities[0]
