@@ -167,7 +167,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
   const totalCount = Object.values(counts).reduce((sum, r) => sum + r.count, 0);
 
   return (
-    <div style={{ marginTop: 10, position: "relative" }}>
+    <div style={{ position: "relative" }}>
       <div className="flex items-center gap-1.5 flex-wrap">
         {REACTIONS.map(({ key, icon }) => {
           const r = counts[key];

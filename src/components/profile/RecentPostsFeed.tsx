@@ -445,10 +445,12 @@ const PostCard = ({
       </div>
 
       {/* Row 4–6 – reactions + comments */}
-      <div className="px-3 pb-3">
-        <PostReactions postId={post.id} />
-        <PostComments postId={post.id} isOwner={true} />
-      </div>
+        <div className="px-3 pb-3" style={{ marginTop: 12 }}>
+          <PostReactions postId={post.id} />
+          <div style={{ marginTop: 4 }}>
+            <PostComments postId={post.id} isOwner={true} />
+          </div>
+        </div>
     </div>
   );
 };
