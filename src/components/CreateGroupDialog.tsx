@@ -151,7 +151,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
         style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: "20px 20px 0 0" }}>
         
         <DrawerHeader className="pb-0">
-          <DrawerTitle className="font-display text-xl text-center" style={{ color: "hsl(var(--color-text-primary))" }}>
+          <DrawerTitle className="font-fraunces text-xl text-center font-normal" style={{ color: "hsl(var(--color-text-primary))" }}>
             {step === 1 ? "Starta sällskap" : "Bjud in från kretsen"}
           </DrawerTitle>
         </DrawerHeader>
@@ -170,44 +170,25 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 onChange={(e) => setName(e.target.value)}
                 className="mt-1.5 border-0"
                 style={{ backgroundColor: "hsl(var(--color-surface-card))" }} />
-              
-              </div>
-
-              <div>
-                <Label className="text-sm" style={{ color: "hsl(var(--color-text-secondary))" }}>Välj syfte</Label>
-                <div className="flex gap-2 mt-2">
-                  {emojiPresets.map((preset) =>
-                <button
-                  key={preset.emoji}
-                  type="button"
-                  onClick={() => setSelectedEmoji(preset.emoji)}
-                  className="flex flex-col items-center gap-1 rounded-lg p-2 transition-colors"
-                  style={{
-                    backgroundColor:
-                    selectedEmoji === preset.emoji ? "#E8D5DA" : "#FFFFFF",
-                    boxShadow:
-                    selectedEmoji === preset.emoji ?
-                    "0 0 0 1px #C9B8D8" :
-                    "none"
-                  }}>
-                      <span className="text-xl">{preset.emoji}</span>
-                      <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                        {preset.label}
-                      </span>
-                    </button>
-                )}
-                </div>
               </div>
 
               <button
               onClick={() => setStep(2)}
               disabled={!name}
-              className="w-full py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
               style={{
-                backgroundColor: "hsl(var(--color-text-primary))",
-                borderRadius: 8
+                width: "100%",
+                padding: "10px 0",
+                fontSize: 13,
+                fontWeight: 500,
+                border: "none",
+                borderRadius: 8,
+                cursor: name ? "pointer" : "default",
+                background: name ? "#2E1F3E" : "#EDE8E0",
+                color: name ? "#F0EAE2" : "#B0A8B5",
+                opacity: !name ? 1 : undefined,
+                transition: "all 0.2s ease",
+                WebkitAppearance: "none" as any,
               }}>
-              
                 Nästa
               </button>
             </div> :
@@ -261,20 +242,27 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 style={{
                   color: "hsl(var(--color-text-primary))",
                   backgroundColor: "hsl(var(--color-surface-card))",
-                  boxShadow: "0 1px 3px 0 rgba(0,0,0,0.06)"
+                  border: "none",
+                  borderRadius: 8,
                 }}>
-                
                   Tillbaka
                 </button>
                 <button
                 onClick={handleCreate}
                 disabled={loading}
-                className="flex-1 py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
                 style={{
-                  backgroundColor: "#3C2A4D",
-                  borderRadius: 8
+                  flex: 1,
+                  padding: "10px 0",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  border: "none",
+                  borderRadius: 8,
+                  background: "#2E1F3E",
+                  color: "#F0EAE2",
+                  opacity: loading ? 0.5 : 1,
+                  cursor: loading ? "default" : "pointer",
+                  WebkitAppearance: "none" as any,
                 }}>
-                
                   {loading ? "Startar..." : selectedFriends.length > 0 ?
                 `Starta (${selectedFriends.length} valda)` :
                 "Starta utan krets"}
