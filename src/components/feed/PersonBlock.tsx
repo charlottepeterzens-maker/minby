@@ -173,7 +173,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
             <button
               onClick={() => navigate(`/profile/${person.userId}`)}
               className="font-medium text-[13px] hover:underline"
-              style={{ color: "hsl(var(--color-text-primary))", fontFamily: "Lexend" }}
+              style={{ color: "hsl(var(--color-text-primary))", fontFamily: "'Fraunces', serif" }}
             >
               {person.displayName}
             </button>
