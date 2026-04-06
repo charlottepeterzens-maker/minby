@@ -425,8 +425,8 @@ const translations = {
     planShared: "Plan delad!",
 
     // Create section dialog
-    addSection: "Lägg till sektion",
-    addLifeSection: "Lägg till en livssektion",
+    addSection: "Lägg till en del",
+    addLifeSection: "Lägg till en del",
     name: "Namn",
     sectionNamePlaceholder: "t.ex. Min trädgård",
     whoCanSee: "Vem kan se detta?",
