@@ -424,27 +424,29 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 borderRadius: 8,
                 overflow: "hidden",
                 boxShadow: "0 1px 4px 0 rgba(0,0,0,0.05)",
-                position: "relative",
               }}
             >
-              {isOwner && (
-                <div style={{ position: "absolute", top: 8, right: 8, zIndex: 10 }}>
+              {/* Row 1 – section label + menu */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px 0" }}>
+                <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
+                  {section.name}
+                </span>
+                {isOwner && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button
                         style={{
-                          width: 28,
-                          height: 28,
-                          borderRadius: "50%",
-                          background: "hsl(var(--color-surface) / 0.9)",
+                          background: "none",
                           border: "none",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
+                          padding: 0,
                           cursor: "pointer",
+                          fontSize: 16,
+                          letterSpacing: 2,
+                          color: "#B0A8B5",
+                          lineHeight: 1,
                         }}
                       >
-                        <MoreHorizontal style={{ width: 14, height: 14, color: "hsl(var(--color-text-muted))" }} />
+                        ···
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
@@ -455,40 +457,43 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                         onClick={() => handleEditPost(post)}
                         style={{ fontSize: 12, gap: 8, cursor: "pointer" }}
                       >
-                        <Pencil style={{ width: 13, height: 13 }} /> Redigera inlagg
+                        <Pencil style={{ width: 13, height: 13 }} /> Redigera inlägg
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => setDeletePostId(post.id)}
                         style={{ fontSize: 12, gap: 8, color: "hsl(var(--color-accent-red))", cursor: "pointer" }}
                       >
-                        <Trash2 style={{ width: 13, height: 13 }} /> Ta bort inlagg
+                        <Trash2 style={{ width: 13, height: 13 }} /> Ta bort inlägg
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </div>
-              )}
+                )}
+              </div>
 
-              {post.image_url && post.photo_layout !== "small" && (
-                <SignedImage
-                  imageRef={post.image_url}
-                  onClick={() => setExpandedImage(post.image_url)}
-                  className="w-full cursor-pointer hover:opacity-90 transition-opacity"
-                  imgClassName="w-full max-h-72 object-cover"
-                />
-              )}
-
-              <div style={{ padding: "10px 12px 0px", display: "flex", gap: 10 }}>
+              {/* Row 2 – content */}
+              <div style={{ padding: "8px 12px 0", display: "flex", gap: 12 }}>
                 {post.image_url && post.photo_layout === "small" && (
                   <SignedImage
                     imageRef={post.image_url}
                     onClick={() => setExpandedImage(post.image_url)}
                     className="shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-                    imgClassName="w-16 h-16 object-cover rounded-lg"
+                    imgClassName="object-cover rounded-md w-[72px] h-[72px]"
                   />
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   {post.content && (
-                    <p style={{ fontSize: 13, color: "hsl(var(--color-text-primary))", lineHeight: 1.55, marginBottom: 2 }}>{post.content}</p>
+                    <p style={{
+                      fontFamily: "'Fraunces', serif",
+                      fontSize: 15,
+                      fontWeight: 500,
+                      color: "#2E1F3E",
+                      lineHeight: 1.4,
+                      marginBottom: 2,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}>{post.content}</p>
                   )}
                   {post.link_url && (
                     <a
@@ -508,10 +513,27 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       {post.link_url.slice(0, 40)}...
                     </a>
                   )}
-                  <p style={{ fontSize: 10, color: "hsl(var(--color-text-faint))", marginTop: 4 }}>{formatRelativeDate(post.created_at)}</p>
                 </div>
               </div>
 
+              {/* Large image below content */}
+              {post.image_url && post.photo_layout !== "small" && (
+                <div style={{ padding: "8px 12px 0" }}>
+                  <SignedImage
+                    imageRef={post.image_url}
+                    onClick={() => setExpandedImage(post.image_url)}
+                    className="w-full cursor-pointer hover:opacity-90 transition-opacity"
+                    imgClassName="w-full max-h-72 object-cover rounded-md"
+                  />
+                </div>
+              )}
+
+              {/* Row 3 – date */}
+              <div style={{ padding: "6px 12px 0" }}>
+                <span style={{ fontSize: 12, fontWeight: 300, color: "#B0A8B5" }}>{formatRelativeDate(post.created_at)}</span>
+              </div>
+
+              {/* Row 4–6 – reactions + comments */}
               <div style={{ padding: "0 12px 12px" }}>
                 <PostReactions postId={post.id} />
                 <PostComments postId={post.id} isOwner={isOwner} />

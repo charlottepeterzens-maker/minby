@@ -127,27 +127,11 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
     return date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
   };
 
-  const getSectionPill = (sectionId: string | null) => {
+  const getSectionName = (sectionId: string | null) => {
     if (!sectionId) return null;
     const idx = sections.findIndex((s) => s.id === sectionId);
     if (idx === -1) return null;
-    return (
-      <span
-        className="absolute top-2 right-10 z-[5]"
-        style={{
-          fontSize: 9,
-          padding: "3px 10px",
-          borderRadius: 99,
-          background: "#2E1F3E",
-          color: "#F0EAE2",
-          fontWeight: 500,
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-        }}
-      >
-        {sections[idx].name}
-      </span>
-    );
+    return sections[idx].name;
   };
 
   if (posts.length === 0) return null;
@@ -164,7 +148,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
           >
             <PostCard
               post={post}
-              sectionPill={getSectionPill(post.section_id)}
+              sectionName={getSectionName(post.section_id)}
               dateStr={formatRelativeDate(post.created_at)}
               onEdit={() => {
                 setEditingPost(post);
@@ -360,14 +344,14 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
 /* Individual post card */
 const PostCard = ({
   post,
-  sectionPill,
+  sectionName,
   dateStr,
   onEdit,
   onDelete,
   onImageClick,
 }: {
   post: LifePost;
-  sectionPill: React.ReactNode;
+  sectionName: string | null;
   dateStr: string;
   onEdit: () => void;
   onDelete: () => void;
@@ -377,27 +361,36 @@ const PostCard = ({
     <div
       style={{
         background: "#FFFFFF",
-        border: "1px solid hsl(var(--color-border-subtle))",
         borderRadius: 8,
         overflow: "hidden",
-        position: "relative",
+        boxShadow: "0 1px 4px 0 rgba(0,0,0,0.05)",
       }}
     >
-      {/* Category pill */}
-      {sectionPill}
-
-      {/* Menu */}
-      <div className="absolute top-2 right-2 z-10">
+      {/* Row 1 – section label + menu */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px 0" }}>
+        {sectionName ? (
+          <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
+            {sectionName}
+          </span>
+        ) : <span />}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="w-7 h-7 rounded-full flex items-center justify-center"
-              style={{ background: "hsl(var(--color-surface) / 0.9)", border: "1px solid hsl(var(--color-border-subtle))" }}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                fontSize: 16,
+                letterSpacing: 2,
+                color: "#B0A8B5",
+                lineHeight: 1,
+              }}
             >
-              <MoreHorizontal className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
+              ···
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-[150px]" style={{ borderRadius: 8, border: "1px solid hsl(var(--color-border-subtle))" }}>
+          <DropdownMenuContent align="end" className="min-w-[150px]" style={{ borderRadius: 8 }}>
             <DropdownMenuItem onClick={onEdit} className="text-xs gap-2 cursor-pointer">
               <Pencil className="w-3.5 h-3.5" /> Redigera inlägg
             </DropdownMenuItem>
@@ -408,53 +401,50 @@ const PostCard = ({
         </DropdownMenu>
       </div>
 
-      {/* Large image */}
-      {post.image_url && post.photo_layout !== "small" && (
-        <div className="relative overflow-hidden" style={{ borderRadius: "8px 8px 0 0" }}>
+      {/* Row 2 – content */}
+      <div className="p-3 flex gap-3">
+        {post.image_url && post.photo_layout === "small" && (
           <SignedImg
             imageRef={post.image_url}
-            className="w-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
+            className="w-[72px] h-[72px] object-cover rounded-md shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={() => onImageClick(post.image_url!)}
+          />
+        )}
+        <div className="flex-1 min-w-0">
+          {post.content && (
+            <p style={{
+              fontFamily: "'Fraunces', serif",
+              fontSize: 15,
+              fontWeight: 500,
+              color: "#2E1F3E",
+              lineHeight: 1.4,
+              display: "-webkit-box",
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}>{post.content}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Large image */}
+      {post.image_url && post.photo_layout !== "small" && (
+        <div style={{ padding: "0 12px" }}>
+          <SignedImg
+            imageRef={post.image_url}
+            className="w-full object-cover cursor-pointer hover:opacity-90 transition-opacity rounded-md"
             style={{ maxHeight: 280, minHeight: 140 }}
             onClick={() => onImageClick(post.image_url!)}
           />
-          {post.content && (
-            <div
-              className="absolute bottom-0 left-0 right-0 p-3"
-              style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5), transparent)" }}
-            >
-              <p className="text-[13px] leading-relaxed text-white">{post.content}</p>
-            </div>
-          )}
         </div>
       )}
 
-      {/* Text-only or small image */}
-      {(!post.image_url || post.photo_layout === "small") && (
-        <div className="p-3 flex gap-2.5">
-          {post.image_url && post.photo_layout === "small" && (
-            <SignedImg
-              imageRef={post.image_url}
-              className="w-[60px] h-[60px] object-cover rounded-md shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => onImageClick(post.image_url!)}
-            />
-          )}
-          <div className="flex-1 min-w-0">
-            {post.content && (
-              <p className="text-[13px] leading-relaxed" style={{ color: "hsl(var(--color-text-primary))" }}>{post.content}</p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Large image with content already shown in overlay — show date row */}
-      {post.image_url && post.photo_layout !== "small" && !post.content && (
-        <div className="p-3" />
-      )}
-
-      {/* Date + reactions */}
-      <div className="px-3 pb-1">
-        <span className="text-[10px]" style={{ color: "hsl(var(--color-text-faint))" }}>{dateStr}</span>
+      {/* Row 3 – date */}
+      <div className="px-3 pt-1.5">
+        <span style={{ fontSize: 12, fontWeight: 300, color: "#B0A8B5" }}>{dateStr}</span>
       </div>
+
+      {/* Row 4–6 – reactions + comments */}
       <div className="px-3 pb-3">
         <PostReactions postId={post.id} />
         <PostComments postId={post.id} isOwner={true} />

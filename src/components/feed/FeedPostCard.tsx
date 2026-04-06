@@ -40,7 +40,14 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
         padding: 16,
       }}
     >
-      {/* Header */}
+      {/* Row 1 – section label */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+        <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
+          {post.sectionName}
+        </span>
+      </div>
+
+      {/* Header – avatar + name */}
       <div className="flex items-center gap-2.5 mb-3">
         <FeedAvatar
           avatarUrl={profile.avatar_url}
@@ -56,38 +63,62 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
             {isOwn ? "Du" : profile.display_name || "Någon"}
           </button>
           <p className="text-[11px] text-muted-foreground leading-tight">
-            {isOwn ? "Du delade något" : `Från ${post.sectionName.toLowerCase()}`} · {timeAgo}
+            {timeAgo}
           </p>
         </div>
       </div>
 
-      {/* Stor bild */}
-      {signedUrl && post.photo_layout !== "small" && (
-        <img
-          src={signedUrl}
-          alt=""
-          style={{ width: "100%", marginBottom: 10, maxHeight: 280, objectFit: "cover", borderRadius: 8 }}
-        />
-      )}
-
-      {/* Liten bild + text */}
+      {/* Content – small image + text */}
       {signedUrl && post.photo_layout === "small" ? (
         <div style={{ display: "flex", gap: 12, marginBottom: 10 }}>
           <img
             src={signedUrl}
             alt=""
-            style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 8, flexShrink: 0 }}
+            style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 6, flexShrink: 0 }}
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             {post.content && (
-              <p style={{ fontSize: 13, color: "hsl(var(--color-text-primary))", margin: 0, lineHeight: 1.55 }}>{post.content}</p>
+              <p style={{
+                fontFamily: "'Fraunces', serif",
+                fontSize: 15,
+                fontWeight: 500,
+                color: "#2E1F3E",
+                lineHeight: 1.4,
+                margin: 0,
+                display: "-webkit-box",
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}>{post.content}</p>
             )}
           </div>
         </div>
       ) : (
-        post.content && (
-          <p style={{ fontSize: 13, color: "hsl(var(--color-text-primary))", margin: "0 0 10px", lineHeight: 1.55 }}>{post.content}</p>
-        )
+        <>
+          {post.content && (
+            <p style={{
+              fontFamily: "'Fraunces', serif",
+              fontSize: 15,
+              fontWeight: 500,
+              color: "#2E1F3E",
+              lineHeight: 1.4,
+              margin: "0 0 10px",
+              display: "-webkit-box",
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}>{post.content}</p>
+          )}
+        </>
+      )}
+
+      {/* Large image */}
+      {signedUrl && post.photo_layout !== "small" && (
+        <img
+          src={signedUrl}
+          alt=""
+          style={{ width: "100%", marginBottom: 10, maxHeight: 280, objectFit: "cover", borderRadius: 6 }}
+        />
       )}
 
       {/* Reaktioner */}
