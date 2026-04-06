@@ -148,7 +148,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
           >
             <PostCard
               post={post}
-              sectionPill={getSectionPill(post.section_id)}
+              sectionName={getSectionName(post.section_id)}
               dateStr={formatRelativeDate(post.created_at)}
               onEdit={() => {
                 setEditingPost(post);
