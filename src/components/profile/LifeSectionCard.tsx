@@ -534,9 +534,11 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               </div>
 
               {/* Row 4–6 – reactions + comments */}
-              <div style={{ padding: "0 12px 12px" }}>
+              <div style={{ padding: "12px 12px 12px" }}>
                 <PostReactions postId={post.id} />
-                <PostComments postId={post.id} isOwner={isOwner} />
+                <div style={{ marginTop: 4 }}>
+                  <PostComments postId={post.id} isOwner={isOwner} />
+                </div>
               </div>
             </div>
           ))}
