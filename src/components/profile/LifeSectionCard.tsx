@@ -41,6 +41,7 @@ interface LifePost {
   link_title: string | null;
   created_at: string;
   photo_layout: string;
+  section_id: string | null;
 }
 
 interface Props {
