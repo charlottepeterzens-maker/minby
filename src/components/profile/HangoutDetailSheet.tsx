@@ -561,7 +561,7 @@ const HangoutDetailSheet = ({
                   <button
                     onClick={() => handleRSVP("yes")}
                     className="flex-1 py-2.5 text-[14px] font-medium transition-colors"
-                    style={{ color: "#3C2A4D", backgroundColor: "#F7F3EF", border: "1px solid #EDE8E0", borderRadius: 8 }}
+                    style={{ color: "#3C2A4D", backgroundColor: "hsl(var(--color-surface-raised))", border: "none", borderRadius: 8 }}
                   >
                     Ångra svar
                   </button>
