@@ -751,7 +751,7 @@ const FriendsPage = () => {
                               animate={{ scale: 1 }}
                               transition={{ type: "spring", stiffness: 500, damping: 20, delay: 0.2 + 0.04 * friends.indexOf(f) }}
                               className="absolute bottom-0 right-0 w-[11px] h-[11px] rounded-full"
-                              style={{ backgroundColor: "#C9503A", border: "2px solid #F7F3EF" }}
+                              style={{ backgroundColor: "#C4522A", border: "2px solid #F0EAE2" }}
                             />
                           )}
                         </div>
