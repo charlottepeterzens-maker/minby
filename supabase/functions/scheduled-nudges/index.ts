@@ -23,7 +23,6 @@ serve(async (req) => {
 
     // ===== TRIGGER 1: No post within 48h of registration =====
     const cutoff48h = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
-    // Find users who registered between 48h and 72h ago (window to avoid re-checking old users)
     const cutoff72h = new Date(now.getTime() - 72 * 60 * 60 * 1000).toISOString();
 
     const { data: newUsers } = await supabase
@@ -34,7 +33,7 @@ serve(async (req) => {
 
     if (newUsers && newUsers.length > 0) {
       for (const u of newUsers) {
-        // Check if already sent this nudge
+        // Check if already sent this nudge (one-time)
         const { data: existing } = await supabase
           .from("notifications")
           .select("id")
@@ -65,9 +64,8 @@ serve(async (req) => {
             body: "Vad hände i din vardag idag? Dela något med din krets.",
           });
 
-          // Send push via the existing function
           try {
-            await sendPush(supabase, u.user_id, "Din by väntar", "Vad hände i din vardag idag? Dela något med din krets.");
+            await sendPush(supabase, u.user_id, "Din by väntar", "Vad hände i din vardag idag? Dela något med din krets.", "/");
           } catch { /* best effort */ }
 
           results.trigger1++;
@@ -75,9 +73,9 @@ serve(async (req) => {
       }
     }
 
-    // ===== TRIGGER 2: No hangout activity in 7 days =====
+    // ===== TRIGGER 2: No hangout activity in 7 days (repeatable) =====
     const cutoff7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
-    // Only check users who have been registered for at least 7 days
+
     const { data: olderUsers } = await supabase
       .from("profiles")
       .select("user_id")
@@ -85,17 +83,18 @@ serve(async (req) => {
 
     if (olderUsers && olderUsers.length > 0) {
       for (const u of olderUsers) {
-        // Check if already sent this nudge
-        const { data: existing } = await supabase
+        // Check if a nudge was sent within the last 7 days (allow re-sending after 7d)
+        const { data: recentNudge } = await supabase
           .from("notifications")
           .select("id")
           .eq("user_id", u.user_id)
           .eq("type", "nudge_hangout")
+          .gte("created_at", cutoff7d)
           .limit(1);
 
-        if (existing && existing.length > 0) continue;
+        if (recentNudge && recentNudge.length > 0) continue;
 
-        // Check if user or any of their friends created a hangout in last 7 days
+        // Check if user created a hangout in last 7 days
         const { count: ownHangouts } = await supabase
           .from("hangout_availability")
           .select("*", { count: "exact", head: true })
@@ -133,7 +132,7 @@ serve(async (req) => {
           });
 
           try {
-            await sendPush(supabase, u.user_id, "Ni sa 'vi måste ses'", "Vill du föreslå något den här veckan? Det tar bara en minut.");
+            await sendPush(supabase, u.user_id, "Ni sa 'vi måste ses'", "Vill du föreslå något den här veckan? Det tar bara en minut.", "/");
           } catch { /* best effort */ }
 
           results.trigger2++;
@@ -153,8 +152,8 @@ serve(async (req) => {
   }
 });
 
-/** Send web push directly to a user's subscriptions */
-async function sendPush(supabase: any, userId: string, title: string, body: string) {
+/** Send web push directly using VAPID keys – does NOT call send-push-notification */
+async function sendPush(supabase: any, userId: string, title: string, body: string, url: string) {
   const vapidPublicKey = Deno.env.get("VAPID_PUBLIC_KEY");
   const vapidPrivateKey = Deno.env.get("VAPID_PRIVATE_KEY");
   if (!vapidPublicKey || !vapidPrivateKey) return;
@@ -171,12 +170,14 @@ async function sendPush(supabase: any, userId: string, title: string, body: stri
     body,
     icon: "/pwa-icon-192.png",
     badge: "/pwa-icon-192.png",
-    data: { url: "/feed" },
+    tag: `minby-nudge-${userId.slice(0, 8)}-${Date.now()}`,
+    data: { url },
   });
 
-  // Import crypto helpers inline for push encryption
-  // For scheduled nudges, we call the send-push-notification function instead
-  // to reuse the existing VAPID/encryption logic
+  // We need the VAPID signing and encryption helpers from send-push-notification.
+  // For nudges, call send-push-notification internally with service role key.
+  // Since send-push-notification validates JWT auth, we instead call it via
+  // internal fetch with the service role key and a null fromUserId (which skips spoof check).
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
