@@ -18,15 +18,17 @@ interface Comment {
 interface Props {
   postId: string;
   isOwner: boolean;
+  collapsedInput?: boolean;
 }
 
-const PostComments = ({ postId, isOwner }: Props) => {
+const PostComments = ({ postId, isOwner, collapsedInput = false }: Props) => {
   const { user } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [text, setText] = useState("");
   const [posting, setPosting] = useState(false);
   const [focused, setFocused] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [showInput, setShowInput] = useState(!collapsedInput);
   const [myInitials, setMyInitials] = useState("?");
   const [myAvatarUrl, setMyAvatarUrl] = useState<string | null>(null);
 
@@ -200,72 +202,86 @@ const PostComments = ({ postId, isOwner }: Props) => {
         </div>
       )}
 
-      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-        <div
-          style={{
-            width: 24,
-            height: 24,
-            borderRadius: "50%",
-            background: "hsl(var(--color-surface-raised))",
-            flexShrink: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            overflow: "hidden",
-          }}
+      {collapsedInput && !showInput ? (
+        <button
+          onClick={() => setShowInput(true)}
+          style={{ fontSize: 11, color: "hsl(var(--color-text-faint))", marginTop: comments.length > 0 ? 4 : 0 }}
+          className="hover:underline"
         >
-          {resolveAvatarUrl(myAvatarUrl) ? (
-            <img src={resolveAvatarUrl(myAvatarUrl)!} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          ) : (
-            <span style={{ fontSize: 9, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}>{myInitials}</span>
-          )}
-        </div>
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onFocus={() => {
-            setFocused(true);
-            if (!expanded && comments.length > 0) setExpanded(true);
-          }}
-          onBlur={() => {
-            if (!text.trim()) setFocused(false);
-          }}
-          onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handlePost()}
-          placeholder="Skriv en kommentar…"
-          style={{
-            flex: 1,
-            height: 36,
-            background: "hsl(var(--color-surface))",
-            border: "none",
-            borderRadius: 8,
-            padding: "0 12px",
-            fontSize: 13,
-            color: "hsl(var(--color-text-primary))",
-            outline: "none",
-          }}
-        />
-        {text.trim().length > 0 && (
-          <button
-            onClick={handlePost}
-            disabled={posting}
+          Kommentera…
+        </button>
+      ) : (
+        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          <div
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              background: "hsl(var(--color-text-primary))",
-              border: "none",
+              width: 24,
+              height: 24,
+              borderRadius: "50%",
+              background: "hsl(var(--color-surface-raised))",
+              flexShrink: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              cursor: "pointer",
-              flexShrink: 0,
-              opacity: posting ? 0.6 : 1,
+              overflow: "hidden",
             }}
           >
-            <Send style={{ width: 13, height: 13, color: "#FFFFFF" }} />
-          </button>
-        )}
-      </div>
+            {resolveAvatarUrl(myAvatarUrl) ? (
+              <img src={resolveAvatarUrl(myAvatarUrl)!} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <span style={{ fontSize: 9, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}>{myInitials}</span>
+            )}
+          </div>
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onFocus={() => {
+              setFocused(true);
+              if (!expanded && comments.length > 0) setExpanded(true);
+            }}
+            onBlur={() => {
+              if (!text.trim()) {
+                setFocused(false);
+                if (collapsedInput) setShowInput(false);
+              }
+            }}
+            onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handlePost()}
+            placeholder="Skriv en kommentar…"
+            autoFocus={collapsedInput}
+            style={{
+              flex: 1,
+              height: 36,
+              background: "hsl(var(--color-surface))",
+              border: "none",
+              borderRadius: 8,
+              padding: "0 12px",
+              fontSize: 13,
+              color: "hsl(var(--color-text-primary))",
+              outline: "none",
+            }}
+          />
+          {text.trim().length > 0 && (
+            <button
+              onClick={handlePost}
+              disabled={posting}
+              style={{
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                background: "hsl(var(--color-text-primary))",
+                border: "none",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                flexShrink: 0,
+                opacity: posting ? 0.6 : 1,
+              }}
+            >
+              <Send style={{ width: 13, height: 13, color: "#FFFFFF" }} />
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
