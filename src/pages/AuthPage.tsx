@@ -9,33 +9,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 
-const usePwaHint = () => {
-  const [show, setShow] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
-
-  useEffect(() => {
-    const dismissed = localStorage.getItem("pwa-install-dismissed");
-    if (dismissed) return;
-    const isStandalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      (navigator as any).standalone === true;
-    if (isStandalone) return;
-
-    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    setIsIOS(ios);
-    setShow(true);
-  }, []);
-
-  const dismiss = () => {
-    setShow(false);
-    localStorage.setItem("pwa-install-dismissed", "true");
-  };
-
-  return { show, isIOS, dismiss };
-};
-
 const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; onLogin: () => void }) => {
-  const pwa = usePwaHint();
 
   return (
     <div
