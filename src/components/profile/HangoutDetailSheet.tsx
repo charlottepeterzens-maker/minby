@@ -209,18 +209,28 @@ const HangoutDetailSheet = ({
 
   const handleRSVP = async (status: "yes" | "maybe") => {
     if (!user) return;
-    const existing = taggedFriends.find(t => t.tagged_user_id === user.id);
-    if (existing) {
-      // Already responded – remove existing response first
-      await supabase.from("hangout_tagged_friends").delete().eq("id", existing.id);
-      setTaggedFriends(prev => prev.filter(t => t.id !== existing.id));
-      toast({ title: "Svar borttaget" });
-      await fetchDetails();
-      return;
+    const existingResponse = responses.find(r => r.user_id === user.id);
+    if (existingResponse) {
+      if (existingResponse.response === status) {
+        // Same response — remove it (toggle off)
+        await supabase.from("hangout_responses").delete().eq("id", existingResponse.id);
+        toast({ title: "Svar borttaget" });
+        await fetchDetails();
+        onRefresh?.();
+        return;
+      } else {
+        // Different response — update it
+        await supabase.from("hangout_responses").update({ response: status }).eq("id", existingResponse.id);
+      }
+    } else {
+      // New response
+      await supabase.from("hangout_responses").insert({
+        availability_id: entry.id,
+        user_id: user.id,
+        response: status,
+      });
     }
-    if (status === "yes") {
-      await supabase.from("hangout_tagged_friends").insert({ availability_id: entry.id, tagged_user_id: user.id, tagged_by: user.id });
-    }
+    // Send notification
     if (entry.user_id !== user.id) {
       const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
       const name = myProfile?.display_name || "Någon";
@@ -239,6 +249,7 @@ const HangoutDetailSheet = ({
     if (pushSupported && pushPermission === "default" && !pushSubscribed) subscribePush();
     toast({ title: status === "yes" ? "Du är med!" : "Kanske – vi ser!" });
     await fetchDetails();
+    onRefresh?.();
   };
 
   const handleDelete = async () => {
