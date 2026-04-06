@@ -68,7 +68,9 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const [saving, setSaving] = useState(false);
   const [editingPost, setEditingPost] = useState<LifePost | null>(null);
   const [editPostContent, setEditPostContent] = useState("");
+  const [editPostSectionId, setEditPostSectionId] = useState<string | null>(null);
   const [savingPost, setSavingPost] = useState(false);
+  const [allSections, setAllSections] = useState<{ id: string; name: string }[]>([]);
 
   const formatRelativeDate = (dateStr: string) => {
     const date = new Date(dateStr);
