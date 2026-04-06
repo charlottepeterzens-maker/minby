@@ -614,7 +614,7 @@ const TipCard = ({
         <SheetContent
           side="bottom"
           className="rounded-t-[20px]"
-          style={{ backgroundColor: "hsl(var(--color-surface))", padding: 0, maxHeight: "85vh" }}
+          style={{ backgroundColor: "#FFFFFF", padding: 0, maxHeight: "85vh" }}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           {signedUrl && (
