@@ -200,7 +200,7 @@ const FeedPage = () => {
         activeHangout: hangout
           ? { date: hangout.date, activities: (hangout as any).activities || [], custom_note: hangout.custom_note }
           : null,
-        latestTip: tip ? { title: tip.title } : null,
+        latestTip: tip ? { title: tip.title, created_at: tip.created_at } : null,
         lastActivityAt,
         isQuiet,
       };
