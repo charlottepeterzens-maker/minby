@@ -273,6 +273,9 @@ serve(async (req) => {
         case "hangout_yes":
         case "hangout_maybe":
         case "hangout_comment":
+        case "nudge":
+        case "nudge_first_post":
+        case "nudge_hangout":
           targetUrl = "/";
           break;
         case "life_comment":
