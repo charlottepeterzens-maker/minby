@@ -456,6 +456,7 @@ const filteredItems = feedItems.filter((item) => {
 
       <BottomNav />
     </PageTransition>
+    </div>
   );
 };
 
