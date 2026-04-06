@@ -396,7 +396,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
               <button
                 onClick={() => setEditing(false)}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[13px] font-medium"
-                style={{ color: "#7A6A85", borderRadius: 8, border: "1px solid #EDE8E0" }}
+                style={{ color: "#7A6A85", borderRadius: 8, border: "none", backgroundColor: "hsl(var(--color-surface-raised))" }}
               >
                 <X className="w-3.5 h-3.5" />
                 Avbryt

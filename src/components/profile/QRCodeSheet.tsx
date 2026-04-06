@@ -89,11 +89,11 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
             <button
               key={t}
               onClick={() => setTab(t)}
-              className="flex-1 py-2 rounded-full text-[13px] font-medium transition-colors"
+              className="flex-1 py-2 rounded-lg text-[13px] font-medium transition-colors"
               style={{
-                backgroundColor: tab === t ? "#3C2A4D" : "#FFFFFF",
+                backgroundColor: tab === t ? "#3C2A4D" : "hsl(var(--color-surface-raised))",
                 color: tab === t ? "#FFFFFF" : "#3C2A4D",
-                border: "2px solid #3C2A4D",
+                border: "none",
               }}
             >
               {t === "my" ? "Min kod" : "Skanna"}

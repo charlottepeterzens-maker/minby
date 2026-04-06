@@ -596,7 +596,7 @@ const HangoutDetailSheet = ({
                   onClick={handleCreateGroup}
                   disabled={creatingGroup}
                   className="w-full flex items-center justify-center gap-2 py-2.5 text-[13px] font-medium transition-colors disabled:opacity-60"
-                  style={{ color: "#3C2A4D", backgroundColor: "#F7F3EF", border: "1px solid #EDE8E0", borderRadius: 8 }}
+                  style={{ color: "#3C2A4D", backgroundColor: "hsl(var(--color-surface-raised))", border: "none", borderRadius: 8 }}
                 >
                   <Users className="w-3.5 h-3.5" />
                   Starta sällskap att chatta i
