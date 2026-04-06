@@ -18,7 +18,6 @@ const REACTIONS: ReactionDef[] = [
   { key: "love", icon: Heart, toast: "Du skickade kärlek" },
   { key: "laugh", icon: Smile, toast: "Du skrattade" },
   { key: "sparkle", icon: Sparkles, toast: "Du tyckte det var magiskt" },
-  { key: "thanks", icon: HeartHandshake, toast: "Du tackade" },
 ];
 
 const REACTION_KEYS = REACTIONS.map((r) => r.key);
