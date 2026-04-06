@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Check, UserCheck } from "lucide-react";
+import { Check, UserCheck, Heart, CalendarDays, MessageCircle, Bell, Users, Sparkles } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { sv } from "date-fns/locale";
 
@@ -34,6 +34,16 @@ interface Notification {
   read: boolean;
   created_at: string;
 }
+
+const NOTIF_ICON: Record<string, React.ReactNode> = {
+  friend_request: <Users className="w-4 h-4" style={{ color: "#5C4A7A" }} />,
+  hangout_match: <CalendarDays className="w-4 h-4" style={{ color: "#2A6645" }} />,
+  hangout_nudge: <CalendarDays className="w-4 h-4" style={{ color: "#6B5A3E" }} />,
+  reaction: <Heart className="w-4 h-4" style={{ color: "#C4727F" }} />,
+  comment: <MessageCircle className="w-4 h-4" style={{ color: "#5C4A7A" }} />,
+  thinking_of_you: <Sparkles className="w-4 h-4" style={{ color: "#5C4A7A" }} />,
+  group_invite: <Users className="w-4 h-4" style={{ color: "#5C4A7A" }} />,
+};
 
 const NotificationsPage = () => {
   const { user } = useAuth();
@@ -132,6 +142,12 @@ const NotificationsPage = () => {
                 }`}
               >
                 <div className="flex items-start gap-3">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                    style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                  >
+                    {NOTIF_ICON[n.type] || <Bell className="w-4 h-4" style={{ color: "hsl(var(--color-text-muted))" }} />}
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm font-medium ${n.read ? "text-muted-foreground" : "text-foreground"}`}>
                       {n.title}
@@ -144,7 +160,7 @@ const NotificationsPage = () => {
                   {n.type === "friend_request" && !n.read && n.from_user_id && (
                     <Button
                       size="sm"
-                      className="text-xs h-7 gap-1 shrink-0 rounded-lg bg-salvia-bg text-accent-foreground border border-accent hover:bg-accent"
+                      className="text-xs h-7 gap-1 shrink-0 rounded-lg bg-salvia-bg text-accent-foreground hover:bg-accent"
                       variant="outline"
                       onClick={(e) => { e.stopPropagation(); acceptFriendRequest(n); }}
                     >

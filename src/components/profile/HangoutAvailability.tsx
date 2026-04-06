@@ -490,16 +490,26 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         </motion.div>
       ) : (
         <>
-          <div
-            ref={scrollRef}
-            onScroll={handleScroll}
-            className="flex gap-2 overflow-x-scroll pb-2 scrollbar-hide"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {carouselItems.map((item) =>
-              isGrouped(item) ? renderActivityCard(item) : renderDateCard(item)
+          <div className="relative">
+            <div
+              ref={scrollRef}
+              onScroll={handleScroll}
+              className="flex gap-2 overflow-x-scroll pb-2 scrollbar-hide"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {carouselItems.map((item) =>
+                isGrouped(item) ? renderActivityCard(item) : renderDateCard(item)
+              )}
+              {isOwner && renderAddButton()}
+            </div>
+            {totalCards > 2 && (
+              <div
+                className="pointer-events-none absolute top-0 right-0 h-full w-8"
+                style={{
+                  background: "linear-gradient(to right, transparent, hsl(var(--background)))",
+                }}
+              />
             )}
-            {isOwner && renderAddButton()}
           </div>
 
           {(() => {
