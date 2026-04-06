@@ -393,7 +393,7 @@ const GroupedActivityCard = ({
           className="text-[12px] font-medium hover:underline leading-tight"
           style={{ color: "#7A6A85" }}
         >
-          {profile.display_name || "Någon"}
+          {profile.display_name || "Vän"}
         </button>
         <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
         <span style={{
