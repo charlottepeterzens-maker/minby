@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { usePullToRefresh } from "@/hooks/usePullToRefresh";
 import PageTransition from "@/components/PageTransition";
 import { UserPlus, PenLine, CalendarDays } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -278,6 +279,9 @@ const FeedPage = () => {
     fetchFeed();
   }, [fetchFeed]);
 
+  const { containerRef: pullRef, pullDistance, refreshing, progress, handlers: pullHandlers } = usePullToRefresh({
+    onRefresh: fetchFeed,
+  });
   // Filter
   const filtered = persons.filter((p) => {
     if (filter === "all") return true;
@@ -318,7 +322,23 @@ const filteredItems = feedItems.filter((item) => {
   ];
 
   return (
-    <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+    <div ref={pullRef} className="overflow-auto" {...pullHandlers}>
+      {/* Pull-to-refresh indicator */}
+      <div
+        className="flex items-center justify-center overflow-hidden transition-all"
+        style={{ height: pullDistance > 0 ? pullDistance : 0, opacity: progress }}
+      >
+        <motion.div
+          animate={{ rotate: refreshing ? 360 : progress * 270 }}
+          transition={refreshing ? { repeat: Infinity, duration: 0.8, ease: "linear" } : { duration: 0 }}
+          className="w-5 h-5 rounded-full border-2 border-t-transparent"
+          style={{ borderColor: "#B0A8B5", borderTopColor: "transparent" }}
+        />
+      </div>
+    <PageTransition
+      className="min-h-screen pb-20"
+      style={{ backgroundColor: "hsl(var(--color-surface))" }}
+    >
       <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="pt-5 pb-2">
           <h1 className="font-fraunces text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
@@ -436,6 +456,7 @@ const filteredItems = feedItems.filter((item) => {
 
       <BottomNav />
     </PageTransition>
+    </div>
   );
 };
 
