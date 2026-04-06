@@ -88,6 +88,7 @@ const SettingsPage = () => {
   const { signOut, user } = useAuth();
   const { t, lang, setLang } = useLanguage();
   const { toast } = useToast();
+  const { isAdmin } = useAdminRole();
 
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [newPassword, setNewPassword] = useState("");
