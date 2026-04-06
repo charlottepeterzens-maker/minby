@@ -182,7 +182,7 @@ const SettingsPage = () => {
   const NOTIF_TOGGLES: { key: keyof NotificationSettings; label: string }[] = [
     { key: "hangout_yes", label: "Någon vill hänga med" },
     { key: "hangout_maybe", label: "Någon kanske hänger med" },
-    { key: "hangout_comment", label: "Kommentarer på dina dejter" },
+    { key: "hangout_comment", label: "Kommentarer på dina Ses vi" },
     { key: "hangout_new", label: "Någon i kretsen är ledig" },
     { key: "group_invite", label: "Sällskapsinbjudningar" },
     { key: "group_message", label: "Sällskapsmeddelanden" },

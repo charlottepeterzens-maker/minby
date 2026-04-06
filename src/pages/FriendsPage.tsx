@@ -817,7 +817,7 @@ const FriendsPage = () => {
               trigger={
                 <button
                   className="px-3 py-1 text-[11px] font-medium text-white"
-                  style={{ backgroundColor: "#3C2A4D", borderRadius: 99 }}
+                  style={{ backgroundColor: "#3C2A4D", borderRadius: 8 }}
                 >
                   + Nytt
                 </button>
