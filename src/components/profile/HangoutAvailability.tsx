@@ -242,10 +242,10 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             </p>
             {/* Siffra + månad */}
             <div className="flex items-baseline gap-1.5">
-              <span style={{ fontFamily: "Georgia, serif", fontSize: 28, color: "#3C2A4D", lineHeight: 1 }}>
+              <span style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 400, color: "#3C2A4D", lineHeight: 1 }}>
                 {dayNum}
               </span>
-              <span style={{ fontSize: 13, fontWeight: 300, color: "#3C2A4D" }}>
+              <span style={{ fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 400, color: "#3C2A4D", lineHeight: 1 }}>
                 {month}
               </span>
             </div>
