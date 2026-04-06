@@ -879,7 +879,7 @@ const FriendsPage = () => {
                       {g.last_message_at ? formatTime(g.last_message_at) : "–"}
                     </span>
                     {g.has_unread && (
-                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#C9503A" }} />
+                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#C4522A" }} />
                     )}
                   </div>
                 </button>
