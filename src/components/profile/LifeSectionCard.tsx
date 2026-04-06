@@ -177,9 +177,13 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const handleSavePost = async () => {
     if (!editingPost) return;
     setSavingPost(true);
+    const updates: Record<string, unknown> = { content: editPostContent.trim() || null };
+    if (editPostSectionId !== editingPost.section_id) {
+      updates.section_id = editPostSectionId;
+    }
     const { error } = await supabase
       .from("life_posts")
-      .update({ content: editPostContent.trim() || null })
+      .update(updates)
       .eq("id", editingPost.id);
     if (error) {
       toast.error("Kunde inte uppdatera");
