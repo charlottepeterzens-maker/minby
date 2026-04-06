@@ -548,10 +548,10 @@ const translations = {
 
     // Hangout sections
     hangoutAvailable: "Ledig",
-    hangoutConfirmed: "Bekräftad dejt",
-    hangoutConfirmedLabel: "Planerade dejter",
+    hangoutConfirmed: "Bekräftad träff",
+    hangoutConfirmedLabel: "Planerade träffar",
     hangoutAvailableLabel: "Ledig & vill ses",
-    hangoutNoConfirmed: "Inga bekräftade dejter än",
+    hangoutNoConfirmed: "Inga bekräftade träffar än",
     hangoutNoAvailable: "Inga lediga datum än",
   },
 } as const;
