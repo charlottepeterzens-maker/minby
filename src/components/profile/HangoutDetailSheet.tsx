@@ -90,6 +90,8 @@ const HangoutDetailSheet = ({
   const [deleteAllConfirm, setDeleteAllConfirm] = useState(false);
   const [ownerProfile, setOwnerProfile] = useState<{ display_name: string | null; avatar_url: string | null } | null>(null);
   const [creatingGroup, setCreatingGroup] = useState(false);
+  const [addingDate, setAddingDate] = useState(false);
+  const [newDateValue, setNewDateValue] = useState("");
   const { subscribe: subscribePush, subscribed: pushSubscribed, permission: pushPermission, isSupported: pushSupported } = usePushNotifications();
 
   const fetchDetails = useCallback(async () => {
