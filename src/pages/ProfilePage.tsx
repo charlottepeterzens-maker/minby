@@ -491,97 +491,115 @@ const ProfilePage = () => {
             {showAllPosts ? "Visa färre" : "Visa alla inlägg →"}
           </button>
 
-          {/* Delar av min vardag */}
+          {/* Delar av min vardag – 2-col grid */}
           <div className="flex items-center justify-between mt-6 mb-3">
             <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "hsl(var(--color-text-faint))" }}>
               {isOwnProfile ? "Delar av min vardag" : `Delar av ${profile?.display_name || "deras"}s vardag`}
             </span>
-            {isOwnProfile && (
-              <CreateSectionDialog
-                onCreated={fetchSections}
-                trigger={
-                  <button
-                    className="w-6 h-6 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-                  >
-                    <Plus className="w-3 h-3" style={{ color: "hsl(var(--color-text-primary))" }} />
-                  </button>
-                }
-              />
-            )}
           </div>
 
-          {/* Horizontal sections scroll */}
           {loading ? (
             <div className="text-center py-4 text-muted-foreground text-xs">{t("loading")}</div>
-          ) : sections.length === 0 ? (
-            <p className="text-[11px] text-center py-4" style={{ color: "hsl(var(--color-text-faint))" }}>
-              {isOwnProfile ? "Lägg till en del av din vardag" : t("nothingSharedYet")}
-            </p>
           ) : (
-            <div className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 6,
+              }}
+            >
               {sections.map((section, i) => {
-                const colors = [
-                  { bg: "#EDE8F4" },
-                  { bg: "#EAF2E8" },
-                  { bg: "#FCF0F3" },
-                  { bg: "#EDE8F4" },
-                  { bg: "#EAF2E8" },
-                  { bg: "#FCF0F3" },
-                ];
-                const color = colors[i % colors.length];
+                const isActive = expandedSection === section.id;
                 return (
-                  <motion.button
+                  <div
                     key={section.id}
-                    onClick={() => toggleSection(section.id)}
-                    whileTap={{ scale: 0.93 }}
-                    animate={{
-                      background: expandedSection === section.id ? "#3C2A4D" : color.bg,
-                    }}
-                    transition={{ duration: 0.2 }}
-                    className="shrink-0 flex flex-col items-center justify-center"
+                    id={`section-${section.id}`}
                     style={{
-                      minWidth: 72,
-                      height: 56,
-                      borderRadius: 8,
-                      boxShadow: expandedSection === section.id ? "none" : "0 1px 3px 0 rgba(0,0,0,0.06)",
-                      cursor: "pointer",
+                      gridColumn: isActive ? "1 / -1" : "auto",
+                      transition: "grid-column 0.3s ease",
                     }}
                   >
-                    <motion.span
-                      className="text-[9px] font-medium"
-                      animate={{ color: expandedSection === section.id ? "#F7F3EF" : "#2A1A3C" }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {section.name}
-                    </motion.span>
-                  </motion.button>
+                    <SectionGridCard
+                      section={section}
+                      isOwner={isOwnProfile}
+                      isExpanded={isActive}
+                      onClick={() => toggleSection(section.id)}
+                      onDeleted={fetchSections}
+                      onRenamed={fetchSections}
+                      index={i}
+                    />
+
+                    {/* Expanded content */}
+                    <AnimatePresence>
+                      {isActive && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          style={{ overflow: "hidden" }}
+                        >
+                          <div style={{ paddingTop: 8 }}>
+                            {/* Close button */}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                              <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
+                                {section.name}
+                              </span>
+                              <button
+                                onClick={() => setExpandedSection(null)}
+                                style={{
+                                  background: "none",
+                                  border: "none",
+                                  fontSize: 18,
+                                  color: "#B0A8B5",
+                                  cursor: "pointer",
+                                  padding: "0 4px",
+                                  lineHeight: 1,
+                                }}
+                              >
+                                ×
+                              </button>
+                            </div>
+                            {section.section_type === "workout" ? (
+                              <WorkoutTracker section={section} isOwner={isOwnProfile} />
+                            ) : (
+                              <LifeSectionCard section={section} isOwner={isOwnProfile} onUpdated={fetchSections} />
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 );
               })}
+
+              {/* Add card */}
+              {isOwnProfile && (
+                <CreateSectionDialog
+                  onCreated={fetchSections}
+                  trigger={
+                    <button
+                      style={{
+                        width: "100%",
+                        height: 100,
+                        border: "1px dashed #C9B8D8",
+                        borderRadius: 8,
+                        background: "transparent",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        fontSize: 20,
+                        color: "#C9B8D8",
+                      }}
+                    >
+                      +
+                    </button>
+                  }
+                />
+              )}
             </div>
           )}
-
-          {/* Expanded section content */}
-          <AnimatePresence mode="wait">
-            {expandedSection && (
-              <motion.div
-                key={expandedSection}
-                id={`section-${expandedSection}`}
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.25, ease: "easeInOut" }}
-                className="overflow-hidden mt-3"
-              >
-                {(() => {
-                  const sec = sections.find((s) => s.id === expandedSection);
-                  if (!sec) return null;
-                  if (sec.section_type === "workout") return <WorkoutTracker section={sec} isOwner={isOwnProfile} />;
-                  return <LifeSectionCard section={sec} isOwner={isOwnProfile} onUpdated={fetchSections} />;
-                })()}
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
         {/* ===== (7) TIPS & FAVORITES ===== */}
