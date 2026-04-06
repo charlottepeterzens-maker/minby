@@ -79,7 +79,7 @@ export const usePushNotifications = () => {
       subscribingRef.current = false;
       return false;
     }
-  }, [isSupported, user, getVapidPublicKey]);
+  }, [isSupported, user]);
 
   // Check if already subscribed on mount
   useEffect(() => {
