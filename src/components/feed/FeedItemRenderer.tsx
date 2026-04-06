@@ -49,9 +49,11 @@ export const FeedItemRenderer = ({ item, onRefresh }: { item: any; onRefresh?: (
             created_at: data.created_at,
             entry_type: data.entry_type,
             isMatch: data.isMatch,
+            user_id: data.user_id,
           }}
           profile={profile}
           onProfileClick={onProfileClick}
+          onRefresh={onRefresh}
         />
       );
 
