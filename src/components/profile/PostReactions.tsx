@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart, Smile, Sparkles, HeartHandshake } from "lucide-react";
+import { Heart, Smile, Sparkles } from "lucide-react";
 import ReactionButton from "@/components/reactions/ReactionButton";
 import type { LucideIcon } from "lucide-react";
 
