@@ -333,9 +333,9 @@ const translations = {
 
     // Profile
     profileTitle: "Min sida",
-    sections: "Sektioner",
-    noSectionsYet: "Inga sektioner ännu",
-    addFirstSection: "Lägg till din första livssektion",
+    sections: "Delar",
+    noSectionsYet: "Inga delar ännu",
+    addFirstSection: "Lägg till din första del",
     nothingSharedYet: "Inget delat ännu",
     shareLifeHint: "Dela dina barn, träning, graviditet, hobbyer & mer",
     lifeUpdates: "Livsuppdateringar",
@@ -383,8 +383,8 @@ const translations = {
     shareWithCircles: "Dela med dina cirklar",
     suggestMeeting: "Föreslå träff",
     gatherFriends: "Samla din krets",
-    section: "Sektion",
-    chooseSection: "Välj en livssektion",
+    section: "Del",
+    chooseSection: "Välj en del",
     whatsNew: "Vad händer i din vardag?",
     shareUpdatePlaceholder: "Skriv något…",
     back: "Tillbaka",
@@ -425,8 +425,8 @@ const translations = {
     planShared: "Plan delad!",
 
     // Create section dialog
-    addSection: "Lägg till sektion",
-    addLifeSection: "Lägg till en livssektion",
+    addSection: "Lägg till en del",
+    addLifeSection: "Lägg till en del",
     name: "Namn",
     sectionNamePlaceholder: "t.ex. Min trädgård",
     whoCanSee: "Vem kan se detta?",
@@ -434,8 +434,8 @@ const translations = {
     innerCircleCloser: "Inre cirkel & närmare",
     allFriends: "Hela kretsen",
     creating: "Skapar...",
-    createSection: "Skapa sektion",
-    couldNotCreateSection: "Kunde inte skapa sektion",
+    createSection: "Skapa del",
+    couldNotCreateSection: "Kunde inte skapa del",
 
     // Friend tier manager
     joinGroupsFirst: "Gå med i grupper först för att hantera åtkomstnivåer",
@@ -477,8 +477,8 @@ const translations = {
     pasteLink: "Klistra in en länk...",
     noUpdatesYet: "Inga uppdateringar ännu",
     couldNotPost: "Kunde inte publicera",
-    couldNotUpdateSection: "Kunde inte uppdatera sektion",
-    sectionUpdated: "Sektion uppdaterad",
+    couldNotUpdateSection: "Kunde inte uppdatera del",
+    sectionUpdated: "Del uppdaterad",
     hangoutAvailability: "Jag vill ses!",
     addAvailability: "Lägg till ett datum",
     selectDate: "Välj ett datum",
