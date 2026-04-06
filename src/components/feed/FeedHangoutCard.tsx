@@ -118,7 +118,7 @@ const UnifiedHangoutCard = ({
       {/* 1. DATE — Georgia serif */}
       {hangout.date && (
         <p style={{
-          fontFamily: "Georgia, serif",
+          fontFamily: "'Fraunces', serif",
           fontSize: 22,
           fontWeight: 500,
           color: "#3C2A4D",
