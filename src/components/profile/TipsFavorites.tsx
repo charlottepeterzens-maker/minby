@@ -598,12 +598,11 @@ const TipCard = ({
           </div>
           <span
             style={{
-              borderRadius: 8,
               fontSize: 9,
-              padding: "2px 7px",
-              background: cat.bg,
-              color: cat.color,
               fontWeight: 500,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase" as const,
+              color: "#7A6A85",
             }}
           >
             {cat.label}
