@@ -355,7 +355,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
       {person.latestTip && !person.activeHangout && (
         <div
           className="flex items-center gap-1"
-          style={{ borderTop: "1px solid hsl(var(--color-border-subtle))", padding: "8px 14px", fontSize: 10, color: "hsl(var(--color-text-secondary))" }}
+          style={{ borderTop: "none", padding: "8px 14px", fontSize: 10, color: "hsl(var(--color-text-secondary))" }}
         >
           <Heart size={10} />
           {person.latestTip.title.slice(0, 30)}
