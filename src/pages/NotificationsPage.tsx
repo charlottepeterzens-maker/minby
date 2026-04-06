@@ -160,7 +160,7 @@ const NotificationsPage = () => {
                   {n.type === "friend_request" && !n.read && n.from_user_id && (
                     <Button
                       size="sm"
-                      className="text-xs h-7 gap-1 shrink-0 rounded-lg bg-salvia-bg text-accent-foreground border border-accent hover:bg-accent"
+                      className="text-xs h-7 gap-1 shrink-0 rounded-lg bg-salvia-bg text-accent-foreground hover:bg-accent"
                       variant="outline"
                       onClick={(e) => { e.stopPropagation(); acceptFriendRequest(n); }}
                     >
