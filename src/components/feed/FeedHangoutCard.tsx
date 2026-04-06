@@ -249,25 +249,45 @@ const UnifiedHangoutCard = ({
       {/* 4. ACTIONS */}
       {!isOwn && (
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setDetailOpen(true)}
-            className="text-[13px] font-medium transition-colors"
-            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
-          >
-            Jag kan
-          </button>
-          <button
-            onClick={() => setDetailOpen(true)}
-            className="text-[13px] font-medium transition-colors"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.6)",
-              color: "#3C2A4D",
-              borderRadius: 8,
-              padding: "8px 16px",
-            }}
-          >
-            Kanske
-          </button>
+          {myResponse ? (
+            <button
+              onClick={() => handleQuickRSVP(myResponse as "yes" | "maybe")}
+              disabled={saving}
+              className="text-[13px] font-medium transition-colors disabled:opacity-60"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.6)",
+                color: "#3C2A4D",
+                borderRadius: 8,
+                padding: "8px 16px",
+              }}
+            >
+              Ångra svar
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => handleQuickRSVP("yes")}
+                disabled={saving}
+                className="text-[13px] font-medium transition-colors disabled:opacity-60"
+                style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
+              >
+                Jag kan
+              </button>
+              <button
+                onClick={() => handleQuickRSVP("maybe")}
+                disabled={saving}
+                className="text-[13px] font-medium transition-colors disabled:opacity-60"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.6)",
+                  color: "#3C2A4D",
+                  borderRadius: 8,
+                  padding: "8px 16px",
+                }}
+              >
+                Kanske
+              </button>
+            </>
+          )}
           <button
             onClick={() => setDetailOpen(true)}
             className="text-[12px] font-medium"
