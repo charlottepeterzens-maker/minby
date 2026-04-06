@@ -94,15 +94,18 @@ const HangoutDetailSheet = ({
   const [newDateValue, setNewDateValue] = useState("");
   const { subscribe: subscribePush, subscribed: pushSubscribed, permission: pushPermission, isSupported: pushSupported } = usePushNotifications();
 
+  const [responses, setResponses] = useState<Array<{ id: string; user_id: string; response: string; profile?: { display_name: string | null; avatar_url: string | null } }>>([]);
+
   const fetchDetails = useCallback(async () => {
     if (!entry) return;
     const entryIds = entry.entry_type === "activity" && groupedEntries && groupedEntries.length > 0
       ? groupedEntries.map(e => e.id)
       : [entry.id];
 
-    const [commentsRes, tagsRes] = await Promise.all([
+    const [commentsRes, tagsRes, responsesRes] = await Promise.all([
       supabase.from("hangout_comments").select("*").in("availability_id", entryIds).order("created_at", { ascending: true }),
       supabase.from("hangout_tagged_friends").select("*").in("availability_id", entryIds),
+      supabase.from("hangout_responses").select("*").in("availability_id", entryIds),
     ]);
 
     if (commentsRes.data) {
@@ -131,6 +134,16 @@ const HangoutDetailSheet = ({
       } else {
         setTaggedFriends([]);
       }
+    }
+
+    // Process responses
+    if (responsesRes.data && responsesRes.data.length > 0) {
+      const rUids = [...new Set(responsesRes.data.map((r: any) => r.user_id))];
+      const { data: profiles } = await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", rUids);
+      const pm = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+      setResponses(responsesRes.data.map((r: any) => ({ ...r, profile: pm.get(r.user_id) })));
+    } else {
+      setResponses([]);
     }
 
     if (!isOwner && entry.user_id) {
