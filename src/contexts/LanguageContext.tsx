@@ -386,7 +386,7 @@ const translations = {
     section: "Sektion",
     chooseSection: "Välj en livssektion",
     whatsNew: "Vad händer i din vardag?",
-    shareUpdatePlaceholder: "Dela något med dina nära...",
+    shareUpdatePlaceholder: "Skriv något…",
     back: "Tillbaka",
     couldntPost: "Kunde inte publicera",
     updateShared: "Uppdatering delad!",

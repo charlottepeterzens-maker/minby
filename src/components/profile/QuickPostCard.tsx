@@ -182,7 +182,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
             <Textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Dela något med din krets..."
+              placeholder="Skriv något…"
               autoFocus
               className="w-full border-none outline-none shadow-none focus-visible:ring-0 resize-none p-0"
               style={{
