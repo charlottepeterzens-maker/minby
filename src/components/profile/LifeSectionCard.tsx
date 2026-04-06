@@ -602,12 +602,14 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
           style={{ backgroundColor: "hsl(var(--color-surface))", padding: "24px 16px" }}
         >
           <SheetHeader>
-            <SheetTitle style={{ fontSize: 15, fontWeight: 500 }}>Redigera inlagg</SheetTitle>
+            <SheetTitle style={{ fontSize: 15, fontWeight: 500 }}>Redigera inlägg</SheetTitle>
           </SheetHeader>
           <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 12 }}>
             <Textarea
               value={editPostContent}
               onChange={(e) => setEditPostContent(e.target.value)}
+              placeholder="Skriv något…"
+              className="focus-visible:ring-0 focus-visible:ring-offset-0"
               style={{
                 minHeight: 100,
                 fontSize: 13,
@@ -615,17 +617,39 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 border: "none",
                 borderRadius: 8,
                 resize: "none",
+                outline: "none",
+                boxShadow: "none",
               }}
               autoFocus
             />
+            {/* Category selector */}
+            {allSections.length > 0 && (
+              <Select
+                value={editPostSectionId || "none"}
+                onValueChange={(v) => setEditPostSectionId(v === "none" ? null : v)}
+              >
+                <SelectTrigger
+                  className="focus:ring-0 focus:ring-offset-0"
+                  style={{ height: 36, fontSize: 12, background: "#fff", border: "none", borderRadius: 8 }}
+                >
+                  <SelectValue placeholder="Välj kategori" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Ingen kategori</SelectItem>
+                  {allSections.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             <button
               onClick={handleSavePost}
               disabled={savingPost}
               style={{
                 width: "100%",
                 padding: "10px",
-                background: "#3C2A4D",
-                color: "#F7F3EF",
+                background: "#2E1F3E",
+                color: "#F0EAE2",
                 borderRadius: 8,
                 border: "none",
                 fontSize: 13,
