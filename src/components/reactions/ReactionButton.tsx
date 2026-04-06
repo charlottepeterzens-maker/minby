@@ -51,7 +51,7 @@ const ReactionButton = ({
           style={{
             fontSize: 11,
             fontWeight: 500,
-            color: active ? "#3C2A4D" : "#6B5C78",
+            color: active ? "#C4522A" : "#6B5C78",
           }}
         >
           {count}
