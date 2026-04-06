@@ -313,7 +313,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
 
       {/* Hangout inline card */}
       {person.activeHangout && (
-        <div style={{ borderTop: "1px solid hsl(var(--color-border-subtle))", padding: "10px 14px" }}>
+        <div style={{ borderTop: "none", padding: "10px 14px" }}>
           <div className="flex items-center gap-1.5 mb-1">
             <Calendar size={11} style={{ color: "hsl(var(--color-text-secondary))" }} />
             <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
