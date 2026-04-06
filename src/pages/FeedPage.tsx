@@ -439,6 +439,11 @@ const filteredItems = feedItems.filter((item) => {
         ? "Inga inlägg att visa just nu"
         : undefined
     }
+    emptyAction={
+      filter === "hangout"
+        ? { label: "Föreslå något →", to: "/profile" }
+        : undefined
+    }
   />
 )}
       </Container>

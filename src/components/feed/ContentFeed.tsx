@@ -1,14 +1,18 @@
 import { FeedItemRenderer } from "./FeedItemRenderer";
 import { motion } from "framer-motion";
 import { CalendarDays } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   items: any[];
   emptyMessage?: string;
+  emptyAction?: { label: string; to: string };
   onRefresh?: () => void;
 };
 
-export const ContentFeed = ({ items, emptyMessage, onRefresh }: Props) => {
+export const ContentFeed = ({ items, emptyMessage, emptyAction, onRefresh }: Props) => {
+  const navigate = useNavigate();
+
   if (items.length === 0 && emptyMessage) {
     return (
       <motion.div
@@ -35,6 +39,14 @@ export const ContentFeed = ({ items, emptyMessage, onRefresh }: Props) => {
         >
           Här dyker det upp när någon i din krets vill ses
         </p>
+        {emptyAction && (
+          <button
+            onClick={() => navigate(emptyAction.to)}
+            style={{ fontSize: 14, fontWeight: 500, color: "#C4522A", background: "none", border: "none", cursor: "pointer", marginTop: 12 }}
+          >
+            {emptyAction.label}
+          </button>
+        )}
       </motion.div>
     );
   }
