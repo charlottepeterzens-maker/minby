@@ -5,6 +5,7 @@ import { CalendarDays } from "lucide-react";
 type Props = {
   items: any[];
   emptyMessage?: string;
+  onRefresh?: () => void;
 };
 
 export const ContentFeed = ({ items, emptyMessage }: Props) => {
