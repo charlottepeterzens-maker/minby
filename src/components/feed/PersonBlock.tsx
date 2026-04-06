@@ -288,7 +288,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                       padding: "5px 12px",
                       fontSize: 10,
                       fontWeight: 500,
-                      color: thinkingSent ? "#1F4A1A" : "#3C2A4D",
+                      color: thinkingSent ? "#1F4A1A" : "#C4522A",
                       transition: "background-color 0.2s ease",
                     }}
                   >
