@@ -100,6 +100,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
         intent: "Jag är ledig",
         activity: null,
         date: null,
+        dates: [],
         date_display: null,
         description: text.trim().slice(0, 100),
         entry_type: "available",
