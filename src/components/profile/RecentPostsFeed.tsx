@@ -54,6 +54,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
   const [editRemoveImage, setEditRemoveImage] = useState(false);
   const [editPhotoLayout, setEditPhotoLayout] = useState<"large" | "small">("large");
   const [savingPost, setSavingPost] = useState(false);
+  const [editPostSectionId, setEditPostSectionId] = useState<string | null>(null);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
   const fetchPosts = useCallback(async () => {
