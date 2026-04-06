@@ -65,7 +65,8 @@ const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
         <button
           onClick={generateLink}
           disabled={loading}
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs transition-colors"
+          style={{ color: "#C4522A" }}
         >
           <UserPlus className="w-3.5 h-3.5" />
           <span>{loading ? "Skapar länk..." : "Bjud in någon till din vardag"}</span>
