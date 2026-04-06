@@ -142,6 +142,12 @@ const NotificationsPage = () => {
                 }`}
               >
                 <div className="flex items-start gap-3">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+                    style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                  >
+                    {NOTIF_ICON[n.type] || <Bell className="w-4 h-4" style={{ color: "hsl(var(--color-text-muted))" }} />}
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm font-medium ${n.read ? "text-muted-foreground" : "text-foreground"}`}>
                       {n.title}
