@@ -150,7 +150,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
     <div
       style={{
         backgroundColor: "hsl(var(--color-surface-card))",
-        border: expanded ? "1.5px solid #C9B8D8" : "none",
+        border: "none",
         borderRadius: 8,
         opacity: person.isQuiet && !expanded ? 0.7 : 1,
         transition: "all 0.2s ease",
