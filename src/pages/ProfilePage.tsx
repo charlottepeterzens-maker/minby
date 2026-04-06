@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, Plus, Camera, Pencil, Check, X, GripVertical } from "lucide-react";
+import { ChevronLeft, Plus, Camera, Pencil, Check, X } from "lucide-react";
 import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
