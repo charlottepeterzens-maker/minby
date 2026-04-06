@@ -285,6 +285,7 @@ const SettingsPage = () => {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="new-password"
                 className="mt-1 rounded-lg border"
               />
             </div>
