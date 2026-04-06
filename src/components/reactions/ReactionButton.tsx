@@ -39,8 +39,8 @@ const ReactionButton = ({
         size={17}
         strokeWidth={1.8}
         style={{
-          stroke: active ? "#3C2A4D" : "#C9B8D8",
-          fill: active ? "#EDE8F4" : "none",
+          stroke: active ? "#C4522A" : "#C9B8D8",
+          fill: active ? "#FDF0EB" : "none",
         }}
       />
       {count > 0 && (
