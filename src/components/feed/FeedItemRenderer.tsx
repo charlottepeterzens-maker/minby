@@ -3,7 +3,7 @@ import FeedPostCard from "./FeedPostCard";
 import FeedHangoutCard from "./FeedHangoutCard";
 import FeedTipCard from "./FeedTipCard";
 
-export const FeedItemRenderer = ({ item }: { item: any }) => {
+export const FeedItemRenderer = ({ item, onRefresh }: { item: any; onRefresh?: () => void }) => {
   const navigate = useNavigate();
   const data = item.data;
   const userId = data.user_id;
@@ -49,9 +49,11 @@ export const FeedItemRenderer = ({ item }: { item: any }) => {
             created_at: data.created_at,
             entry_type: data.entry_type,
             isMatch: data.isMatch,
+            user_id: data.user_id,
           }}
           profile={profile}
           onProfileClick={onProfileClick}
+          onRefresh={onRefresh}
         />
       );
 

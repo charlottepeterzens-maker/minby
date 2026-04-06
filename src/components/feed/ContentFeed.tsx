@@ -5,9 +5,10 @@ import { CalendarDays } from "lucide-react";
 type Props = {
   items: any[];
   emptyMessage?: string;
+  onRefresh?: () => void;
 };
 
-export const ContentFeed = ({ items, emptyMessage }: Props) => {
+export const ContentFeed = ({ items, emptyMessage, onRefresh }: Props) => {
   if (items.length === 0 && emptyMessage) {
     return (
       <motion.div
@@ -41,7 +42,7 @@ export const ContentFeed = ({ items, emptyMessage }: Props) => {
   return (
     <div className="space-y-3">
       {items.map((item) => (
-        <FeedItemRenderer key={item.data.id} item={item} />
+        <FeedItemRenderer key={item.data.id} item={item} onRefresh={onRefresh} />
       ))}
     </div>
   );

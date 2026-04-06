@@ -18,6 +18,7 @@ interface FeedHangoutCardProps {
     created_at: string;
     entry_type?: string;
     isMatch?: boolean;
+    user_id?: string;
   };
   profile: {
     display_name: string | null;
@@ -28,6 +29,7 @@ interface FeedHangoutCardProps {
   onProfileClick: () => void;
   onJoin?: () => void;
   onMaybe?: () => void;
+  onRefresh?: () => void;
 }
 
 const TYPE_LABEL: Record<string, string> = {
@@ -78,6 +80,7 @@ const UnifiedHangoutCard = ({
   profile,
   isOwn,
   onProfileClick,
+  onRefresh,
 }: FeedHangoutCardProps) => {
   const [detailOpen, setDetailOpen] = useState(false);
   const hangoutId = hangout.id || "";
@@ -90,7 +93,7 @@ const UnifiedHangoutCard = ({
         activities: hangout.activities,
         custom_note: hangout.custom_note,
         entry_type: entryType,
-        user_id: "",
+        user_id: hangout.user_id || "",
       }
     : null;
 
@@ -219,6 +222,7 @@ const UnifiedHangoutCard = ({
           open={detailOpen}
           onOpenChange={setDetailOpen}
           isOwner={!!isOwn}
+          onRefresh={onRefresh}
         />
       )}
     </div>
@@ -231,8 +235,10 @@ const GroupedActivityCard = ({
   profile,
   isOwn,
   onProfileClick,
+  onRefresh,
 }: FeedHangoutCardProps) => {
   const { user } = useAuth();
+  const [detailOpen, setDetailOpen] = useState(false);
   const activityName =
     hangout.activities.length > 0
       ? hangout.activities[0]
@@ -428,6 +434,7 @@ const GroupedActivityCard = ({
             Kanske
           </button>
           <button
+            onClick={() => setDetailOpen(true)}
             className="text-[12px] font-medium"
             style={{ color: "#7A6A85", marginLeft: 4 }}
           >
@@ -435,6 +442,36 @@ const GroupedActivityCard = ({
           </button>
         </div>
       )}
+
+      {/* Detail sheet for grouped activity */}
+      {hangoutIds.length > 0 && (() => {
+        const primaryEntry = {
+          id: hangoutIds[0],
+          date: dates[0] || "",
+          activities: hangout.activities,
+          custom_note: hangout.custom_note,
+          entry_type: hangout.entry_type || "activity",
+          user_id: hangout.user_id || "",
+        };
+        const grouped = hangoutIds.map((hid, idx) => ({
+          id: hid,
+          date: dates[idx] || "",
+          activities: hangout.activities,
+          custom_note: hangout.custom_note,
+          entry_type: hangout.entry_type || "activity",
+          user_id: hangout.user_id || "",
+        }));
+        return (
+          <HangoutDetailSheet
+            entry={primaryEntry}
+            open={detailOpen}
+            onOpenChange={setDetailOpen}
+            isOwner={!!isOwn}
+            groupedEntries={grouped}
+            onRefresh={onRefresh}
+          />
+        );
+      })()}
     </div>
   );
 };
