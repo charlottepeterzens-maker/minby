@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, ChevronDown, Heart, Check, Calendar } from "lucide-react";
+import { ChevronRight, ChevronDown, Heart, Check, Calendar, Headphones } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import LazyImage from "@/components/LazyImage";
@@ -355,8 +355,9 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
       {/* Tip signal – only show tips from last 7 days */}
       {person.latestTip && !person.activeHangout &&
         Date.now() - new Date(person.latestTip.created_at).getTime() < 7 * 86400000 && (
-        <div
-          className="flex items-center gap-1.5"
+        <button
+          onClick={() => navigate(`/profile/${person.userId}`)}
+          className="flex items-center gap-1.5 w-full text-left"
           style={{ borderTop: "none", padding: "8px 14px" }}
         >
           <span
@@ -373,7 +374,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
           <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-secondary))" }}>
             {person.latestTip.title.slice(0, 40)}
           </span>
-        </div>
+        </button>
       )}
 
       {/* Hangout detail sheet */}
