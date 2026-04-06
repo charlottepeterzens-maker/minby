@@ -39,6 +39,7 @@ export interface PersonData {
   } | null;
   latestTip: {
     title: string;
+    created_at: string;
   } | null;
   lastActivityAt: string;
   isQuiet: boolean;
