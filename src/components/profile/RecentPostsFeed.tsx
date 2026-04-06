@@ -155,6 +155,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
               onEdit={() => {
                 setEditingPost(post);
                 setEditPostContent(post.content || "");
+                setEditPostSectionId(post.section_id);
               }}
               onDelete={() => setDeletePostId(post.id)}
               onImageClick={(url) => setExpandedImage(url)}
