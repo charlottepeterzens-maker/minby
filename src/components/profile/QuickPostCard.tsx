@@ -286,7 +286,9 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                     cursor: hasContent ? "pointer" : "default",
                     background: hasContent ? "#2E1F3E" : "#EDE8E0",
                     color: hasContent ? "#F0EAE2" : "#B0A8B5",
+                    opacity: posting ? 0.6 : 1,
                     transition: "all 0.2s ease",
+                    WebkitAppearance: "none",
                   }}
                 >
                   Dela
