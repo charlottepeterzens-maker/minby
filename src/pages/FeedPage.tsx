@@ -322,12 +322,7 @@ const filteredItems = feedItems.filter((item) => {
   ];
 
   return (
-    <PageTransition
-      ref={pullRef}
-      className="min-h-screen pb-20 overflow-auto"
-      style={{ backgroundColor: "hsl(var(--color-surface))" }}
-      {...pullHandlers}
-    >
+    <div ref={pullRef} className="overflow-auto" {...pullHandlers}>
       {/* Pull-to-refresh indicator */}
       <div
         className="flex items-center justify-center overflow-hidden transition-all"
@@ -340,6 +335,10 @@ const filteredItems = feedItems.filter((item) => {
           style={{ borderColor: "#B0A8B5", borderTopColor: "transparent" }}
         />
       </div>
+    <PageTransition
+      className="min-h-screen pb-20"
+      style={{ backgroundColor: "hsl(var(--color-surface))" }}
+    >
       <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="pt-5 pb-2">
           <h1 className="font-fraunces text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
