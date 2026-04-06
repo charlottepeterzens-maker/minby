@@ -625,13 +625,11 @@ const TipCard = ({
           <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
             <span
               style={{
-                borderRadius: 8,
-                fontSize: 10,
-                padding: "3px 10px",
-                background: cat.bg,
-                color: cat.color,
+                fontSize: 9,
                 fontWeight: 500,
-                alignSelf: "flex-start",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase" as const,
+                color: "#7A6A85",
               }}
             >
               {cat.label}
