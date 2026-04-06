@@ -41,11 +41,13 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
       }}
     >
       {/* Row 1 – section label */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-        <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
-          {post.sectionName}
-        </span>
-      </div>
+      {post.sectionName && (
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
+            {post.sectionName}
+          </span>
+        </div>
+      )}
 
       {/* Header – avatar + name */}
       <div className="flex items-center gap-2.5 mb-3">

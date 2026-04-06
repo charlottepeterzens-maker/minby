@@ -428,9 +428,11 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
             >
               {/* Row 1 – section label + menu */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px 0" }}>
-                <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
-                  {section.name}
-                </span>
+                {section.name && (
+                  <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
+                    {section.name}
+                  </span>
+                )}
                 {isOwner && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
