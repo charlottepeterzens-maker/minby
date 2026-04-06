@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminRole } from "@/hooks/useAdminRole";
 import BottomNav from "@/components/BottomNav";
 import CurvedSeparator from "@/components/CurvedSeparator";
 import ConfirmSheet from "@/components/ConfirmSheet";
