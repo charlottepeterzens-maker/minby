@@ -145,8 +145,8 @@ const FeedPage = () => {
     // 3. Build person data
     const personList: PersonData[] = friendIdArr.map((fid) => {
       const profile = profileMap.get(fid);
-      const name = profile?.display_name || "Någon";
-      const initials = name
+      const name = profile?.display_name || "Vän";
+      const initials = name === "Vän" ? "?" : name
         .split(" ")
         .map((w) => w[0])
         .join("")
