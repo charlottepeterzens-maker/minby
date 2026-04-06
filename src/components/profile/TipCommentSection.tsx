@@ -182,7 +182,7 @@ const TipCommentSection = ({
               fontSize: 13,
               fontFamily: "Lexend, sans-serif",
               outline: "none",
-              background: "hsl(var(--color-surface))",
+              background: "#FFFFFF",
               color: "hsl(var(--color-text-primary))",
             }}
           />
