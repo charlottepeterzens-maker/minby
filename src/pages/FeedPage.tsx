@@ -279,6 +279,9 @@ const FeedPage = () => {
     fetchFeed();
   }, [fetchFeed]);
 
+  const { containerRef: pullRef, pullDistance, refreshing, progress, handlers: pullHandlers } = usePullToRefresh({
+    onRefresh: fetchFeed,
+  });
   // Filter
   const filtered = persons.filter((p) => {
     if (filter === "all") return true;
