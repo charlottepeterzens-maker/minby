@@ -75,10 +75,6 @@ const ProfilePage = () => {
   const targetUserId = userId || user?.id;
   const isOwnProfile = !userId || userId === user?.id;
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
-  );
 
   const fetchProfile = useCallback(async () => {
     if (!targetUserId) return;
