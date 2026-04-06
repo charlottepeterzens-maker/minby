@@ -162,7 +162,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                     cursor: "pointer",
                   }}
                 >
-                  <Plus className="w-3 h-3" /> Lägg till en del
+                  <Plus className="w-3 h-3" /> Ny sektion
                 </button>
               }
             />

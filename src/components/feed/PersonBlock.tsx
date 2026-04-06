@@ -54,7 +54,7 @@ function formatRelativeTime(dateStr: string): string {
   if (hours < 24) return `${hours}h`;
   const days = Math.floor(hours / 24);
   if (days === 1) return "igår";
-  if (days > 21) return "Inte postat på länge";
+  if (days > 21) return `${Math.floor(days / 7)} veckor`;
   return `${days} dagar`;
 }
 
