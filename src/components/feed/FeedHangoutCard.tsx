@@ -331,27 +331,40 @@ const GroupedActivityCard = ({
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
   const [saving, setSaving] = useState(false);
+  const [totalYes, setTotalYes] = useState(0);
+  const [totalMaybe, setTotalMaybe] = useState(0);
+  const [myResponse, setMyResponse] = useState<string | null>(null);
 
   const fetchRsvps = useCallback(async () => {
     if (hangoutIds.length === 0) return;
+    // Fetch responses from new table
     const { data } = await supabase
-      .from("hangout_tagged_friends")
-      .select("availability_id, tagged_user_id")
+      .from("hangout_responses")
+      .select("availability_id, user_id, response")
       .in("availability_id", hangoutIds);
 
     if (data) {
       const counts: Record<string, number> = {};
-      let myDate: string | null = null;
+      let yes = 0, maybe = 0;
+      let myResp: string | null = null;
       data.forEach((r: any) => {
         const idx = hangoutIds.indexOf(r.availability_id);
         if (idx >= 0 && dates[idx]) {
           const d = dates[idx];
           counts[d] = (counts[d] || 0) + 1;
-          if (r.tagged_user_id === user?.id) myDate = d;
+        }
+        if (r.response === "yes") yes++;
+        else if (r.response === "maybe") maybe++;
+        if (r.user_id === user?.id) {
+          myResp = r.response;
+          const idx2 = hangoutIds.indexOf(r.availability_id);
+          if (idx2 >= 0 && dates[idx2]) setSelectedDate(dates[idx2]);
         }
       });
       setRsvpCounts(counts);
-      if (myDate) setSelectedDate(myDate);
+      setTotalYes(yes);
+      setTotalMaybe(maybe);
+      setMyResponse(myResp);
     }
   }, [hangoutIds, dates, user?.id]);
 
@@ -369,31 +382,25 @@ const GroupedActivityCard = ({
       return;
     }
 
-    if (selectedDate === dateStr) {
-      await supabase
-        .from("hangout_tagged_friends")
-        .delete()
-        .eq("availability_id", hangoutId)
-        .eq("tagged_user_id", user.id);
+    if (selectedDate === dateStr && myResponse) {
+      // Remove response
+      await supabase.from("hangout_responses").delete().eq("availability_id", hangoutId).eq("user_id", user.id);
       setSelectedDate(null);
+      setMyResponse(null);
       toast("Val borttaget");
     } else {
-      if (selectedDate) {
+      // Remove old response if switching date
+      if (selectedDate && myResponse) {
         const oldIdx = dates.indexOf(selectedDate);
         const oldId = hangoutIds[oldIdx];
-        if (oldId)
-          await supabase
-            .from("hangout_tagged_friends")
-            .delete()
-            .eq("availability_id", oldId)
-            .eq("tagged_user_id", user.id);
+        if (oldId) await supabase.from("hangout_responses").delete().eq("availability_id", oldId).eq("user_id", user.id);
       }
-      await supabase.from("hangout_tagged_friends").insert({
-        availability_id: hangoutId,
-        tagged_user_id: user.id,
-        tagged_by: user.id,
-      });
+      await supabase.from("hangout_responses").upsert(
+        { availability_id: hangoutId, user_id: user.id, response: "yes" },
+        { onConflict: "availability_id,user_id" }
+      );
       setSelectedDate(dateStr);
+      setMyResponse("yes");
       toast.success("Du är på!");
     }
     setSaving(false);
