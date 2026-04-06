@@ -213,7 +213,8 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
   // Build preview card matching feed style
   const renderPreviewCard = () => {
     if (!parsed) return null;
-    const dateDisplay = formatPreviewDate(parsed.date);
+    const dateDisplay = formatPreviewDate(parsed.dates?.[0] || parsed.date);
+    const extraDates = parsed.dates && parsed.dates.length > 1 ? parsed.dates.slice(1) : [];
     const typePillLabel = TYPE_PILL_LABEL[parsed.entry_type] || "ledig";
 
     return (
