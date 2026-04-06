@@ -108,7 +108,7 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
                 borderRadius: 8,
                 fontSize: 13,
                 padding: "6px 14px",
-                border: "1px solid #EDE8F4",
+                border: "none",
                 backgroundColor: selectedPreset === p.name ? "#3C2A4D" : "#FFFFFF",
                 color: selectedPreset === p.name ? "#FFFFFF" : "#3C2A4D",
               }}
