@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { X, Share, Download } from "lucide-react";
+import { X } from "lucide-react";
 
 const usePwaHint = () => {
   const [show, setShow] = useState(false);
