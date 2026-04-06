@@ -477,8 +477,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     imageRef={post.image_url}
                     onClick={() => setExpandedImage(post.image_url)}
                     className="shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-                    imgClassName="object-cover rounded-md"
-                    style={{ width: 72, height: 72 }}
+                    imgClassName="object-cover rounded-md w-[72px] h-[72px]"
                   />
                 )}
                 <div style={{ flex: 1, minWidth: 0 }}>
