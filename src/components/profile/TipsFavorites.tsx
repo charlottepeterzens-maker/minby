@@ -655,7 +655,7 @@ const TipCard = ({
                   textUnderlineOffset: 3,
                 }}
               >
-                Läs mer ↗
+                Följ länken till tipset
               </a>
             )}
             <TipCommentSection tipId={tip.id} tipOwnerId={tip.user_id} tipTitle={tip.title} />
