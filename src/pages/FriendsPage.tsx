@@ -632,7 +632,7 @@ const FriendsPage = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.06 * i, type: "spring", stiffness: 300, damping: 24 }}
                 className="flex items-center gap-3 p-3"
-                style={{ backgroundColor: "#EDE8F4", border: "1px solid #C9B8D8", borderRadius: 8 }}
+                style={{ backgroundColor: "#EDE8F4", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 8 }}
               >
                 <button
                   onClick={() => navigate(`/profile/${r.from_user_id}`)}
