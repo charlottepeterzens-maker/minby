@@ -141,6 +141,15 @@ const ProfilePage = () => {
     fetchNotifItems();
   }, [fetchProfile, fetchSections, fetchNotifItems]);
 
+  const handleRefresh = useCallback(async () => {
+    await Promise.all([fetchProfile(), fetchSections(), fetchNotifItems()]);
+    setRecentRefreshKey((k) => k + 1);
+  }, [fetchProfile, fetchSections, fetchNotifItems]);
+
+  const { containerRef, pullDistance, refreshing, progress, handlers } = usePullToRefresh({
+    onRefresh: handleRefresh,
+  });
+
   const toggleSection = (sectionId: string) => {
     setExpandedSection((prev) => (prev === sectionId ? null : sectionId));
     setTimeout(() => {
