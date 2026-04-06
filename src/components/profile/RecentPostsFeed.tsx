@@ -394,11 +394,11 @@ const PostCard = ({
     >
       {/* Row 1 – section label + menu */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px 0", ...(!sectionName ? { paddingBottom: 0 } : {}) }}>
-        {sectionName && (
+        {sectionName ? (
           <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
             {sectionName}
           </span>
-        )}
+        ) : <span />}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
