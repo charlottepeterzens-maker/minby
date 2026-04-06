@@ -249,7 +249,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     color: "hsl(var(--color-text-secondary))",
                     background: "hsl(var(--color-surface))",
                     border: "none",
-                    borderRadius: 99,
+                    borderRadius: 8,
                     padding: "4px 10px",
                     cursor: "pointer",
                   }}
