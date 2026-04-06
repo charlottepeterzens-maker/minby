@@ -47,7 +47,8 @@ VIKTIGT:
 - Behåll användarens röst och ton
 - Inga generiska systemformuleringar
 - Om inget datum: dates=[], date_display=null
-- Om ingen aktivitet: activity=null`;
+- Om ingen aktivitet: activity=null
+- Nämn INTE datumet i description-fältet — datumet visas redan separat i kortets UI`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
