@@ -409,6 +409,7 @@ const filteredItems = feedItems.filter((item) => {
 ) : (
   <ContentFeed
     items={filteredItems}
+    onRefresh={fetchFeed}
     emptyMessage={
       filter === "hangout"
         ? "Inga planerade träffar just nu"
