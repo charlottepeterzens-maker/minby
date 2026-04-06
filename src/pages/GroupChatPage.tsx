@@ -695,7 +695,7 @@ const GroupChatPage = () => {
       )}
 
       {/* Input field — sits above bottom nav */}
-      <div className="px-4 pb-1 pt-1" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+      <div className="px-4 pb-1 pt-1" style={{ backgroundColor: "hsl(var(--color-surface))", marginBottom: 72 }}>
         <TypingIndicator typingUsers={typingUsers} />
         {/* Summary card sticky above input */}
         {summaryVisible && (
