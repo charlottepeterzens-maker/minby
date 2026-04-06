@@ -29,7 +29,7 @@ const ReactionButton = ({
       className="inline-flex items-center gap-1 rounded-full transition-colors"
       style={{
         padding: count > 0 ? "6px 12px" : "6px 8px",
-        backgroundColor: active ? "#EDE8F4" : "transparent",
+        backgroundColor: active ? "#FDF0EB" : "#F5F0EA",
         border: "none",
         cursor: disabled ? "default" : "pointer",
         opacity: disabled ? 0.4 : 1,
