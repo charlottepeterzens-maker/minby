@@ -67,12 +67,12 @@ const ReconnectNudge = ({ friendIds, profiles }: ReconnectNudgeProps) => {
         <X className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-muted))" }} />
       </button>
       <p className="text-[13px] font-medium pr-6" style={{ color: "hsl(var(--color-text-primary))" }}>
-        Det var ett tag sedan du och {nudgeFriend.name} hördes
+        Längesen du och {nudgeFriend.name} hördes 💛
       </p>
       <div className="flex gap-2 mt-3">
         <button
           onClick={() => navigate(`/profile/${nudgeFriend.userId}`)}
-          className="px-4 py-1.5 rounded-full text-[12px] font-medium"
+          className="px-4 py-1.5 rounded-lg text-[12px] font-medium"
           style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#F7F3EF" }}
         >
           Säg hej
@@ -81,8 +81,8 @@ const ReconnectNudge = ({ friendIds, profiles }: ReconnectNudgeProps) => {
           onClick={() => {
             navigate(`/profile/${nudgeFriend.userId}`);
           }}
-          className="px-4 py-1.5 rounded-full text-[12px] font-medium"
-          style={{ backgroundColor: "hsl(var(--color-surface-card))", color: "hsl(var(--color-text-primary))", border: "1px solid #EDE8F4" }}
+          className="px-4 py-1.5 rounded-lg text-[12px] font-medium"
+          style={{ backgroundColor: "hsl(var(--color-surface-card))", color: "hsl(var(--color-text-primary))" }}
         >
           Ska ni ses?
         </button>
