@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { sendNotification } from "@/utils/notifications";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart, Smile, Sparkles, HeartHandshake } from "lucide-react";
+import { Heart, Smile, Sparkles } from "lucide-react";
 import ReactionButton from "@/components/reactions/ReactionButton";
 import type { LucideIcon } from "lucide-react";
 
@@ -18,7 +18,6 @@ const REACTIONS: ReactionDef[] = [
   { key: "love", icon: Heart, toast: "Du skickade kärlek" },
   { key: "laugh", icon: Smile, toast: "Du skrattade" },
   { key: "sparkle", icon: Sparkles, toast: "Du tyckte det var magiskt" },
-  { key: "thanks", icon: HeartHandshake, toast: "Du tackade" },
 ];
 
 const REACTION_KEYS = REACTIONS.map((r) => r.key);
@@ -29,7 +28,7 @@ const LEGACY_MAP: Record<string, string> = {
   "🥂": "love",
   "😂": "laugh",
   "😮": "sparkle",
-  "🙌": "thanks",
+  
   "🤗": "love",
 };
 
