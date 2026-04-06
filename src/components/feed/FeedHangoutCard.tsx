@@ -500,28 +500,67 @@ const GroupedActivityCard = ({
         }}>
           SUGEN PÅ
         </span>
+        {(totalYes > 0 || totalMaybe > 0) && (
+          <>
+            <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
+            <span style={{ fontSize: 11, color: "#7A6A85" }}>
+              {totalYes > 0 ? `${totalYes} kan` : ""}{totalYes > 0 && totalMaybe > 0 ? " · " : ""}{totalMaybe > 0 ? `${totalMaybe} kanske` : ""}
+            </span>
+          </>
+        )}
       </div>
 
       {/* 4. ACTIONS */}
       {!isOwn && (
         <div className="flex items-center gap-2">
-          <button
-            className="text-[13px] font-medium transition-colors"
-            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
-          >
-            Jag kan
-          </button>
-          <button
-            className="text-[13px] font-medium transition-colors"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.6)",
-              color: "#3C2A4D",
-              borderRadius: 8,
-              padding: "8px 16px",
-            }}
-          >
-            Kanske
-          </button>
+          {myResponse ? (
+            <button
+              onClick={async () => {
+                if (!user || saving) return;
+                setSaving(true);
+                for (const hid of hangoutIds) {
+                  await supabase.from("hangout_responses").delete().eq("availability_id", hid).eq("user_id", user.id);
+                }
+                setMyResponse(null);
+                setSelectedDate(null);
+                toast("Svar borttaget");
+                setSaving(false);
+                fetchRsvps();
+              }}
+              disabled={saving}
+              className="text-[13px] font-medium transition-colors disabled:opacity-60"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.6)",
+                color: "#3C2A4D",
+                borderRadius: 8,
+                padding: "8px 16px",
+              }}
+            >
+              Ångra svar
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => setDetailOpen(true)}
+                className="text-[13px] font-medium transition-colors"
+                style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
+              >
+                Jag kan
+              </button>
+              <button
+                onClick={() => setDetailOpen(true)}
+                className="text-[13px] font-medium transition-colors"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.6)",
+                  color: "#3C2A4D",
+                  borderRadius: 8,
+                  padding: "8px 16px",
+                }}
+              >
+                Kanske
+              </button>
+            </>
+          )}
           <button
             onClick={() => setDetailOpen(true)}
             className="text-[12px] font-medium"
