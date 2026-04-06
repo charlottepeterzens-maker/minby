@@ -80,6 +80,7 @@ const UnifiedHangoutCard = ({
   profile,
   isOwn,
   onProfileClick,
+  onRefresh,
 }: FeedHangoutCardProps) => {
   const [detailOpen, setDetailOpen] = useState(false);
   const hangoutId = hangout.id || "";
@@ -92,7 +93,7 @@ const UnifiedHangoutCard = ({
         activities: hangout.activities,
         custom_note: hangout.custom_note,
         entry_type: entryType,
-        user_id: "",
+        user_id: hangout.user_id || "",
       }
     : null;
 
