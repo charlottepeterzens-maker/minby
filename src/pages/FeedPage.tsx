@@ -395,7 +395,7 @@ const filteredItems = feedItems.filter((item) => {
       <div className="flex items-center gap-3 py-2">
         <div className="flex-1 h-px" style={{ backgroundColor: "hsl(var(--color-border-subtle))" }} />
         <span className="text-[9px] shrink-0" style={{ color: "hsl(var(--color-text-faint))" }}>
-          Inte hört av sig på ett tag
+          Har varit lite tyst
         </span>
         <div className="flex-1 h-px" style={{ backgroundColor: "hsl(var(--color-border-subtle))" }} />
       </div>
