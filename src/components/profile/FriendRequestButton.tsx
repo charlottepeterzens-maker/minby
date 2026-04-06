@@ -138,37 +138,60 @@ const FriendRequestButton = ({ targetUserId }: Props) => {
 
   if (status === "friends") {
     return (
-      <Button variant="ghost" size="sm" className="text-xs gap-1 text-primary" disabled>
-        <UserCheck className="w-3.5 h-3.5" /> {t("friendsStatus")}
-      </Button>
+      <span style={{
+        fontSize: 9,
+        fontWeight: 500,
+        letterSpacing: "0.12em",
+        textTransform: "uppercase",
+        color: "#7A6A85",
+      }}>
+        {t("friendsStatus")}
+      </span>
     );
   }
 
   if (status === "sent") {
     return (
-      <Button variant="ghost" size="sm" className="text-xs gap-1 text-muted-foreground" onClick={cancelRequest}>
-        <Clock className="w-3.5 h-3.5" /> {t("requestPending")}
-      </Button>
+      <span style={{
+        fontSize: 9,
+        fontWeight: 500,
+        letterSpacing: "0.12em",
+        textTransform: "uppercase",
+        color: "#B0A8B5",
+      }}>
+        <button onClick={cancelRequest} style={{ background: "none", border: "none", color: "inherit", font: "inherit", letterSpacing: "inherit", cursor: "pointer" }}>
+          {t("requestPending")}
+        </button>
+      </span>
     );
   }
 
   if (status === "received") {
     return (
-      <div className="flex gap-1">
-        <Button variant="default" size="sm" className="text-xs gap-1" onClick={acceptRequest}>
-          <UserCheck className="w-3.5 h-3.5" /> {t("accept")}
-        </Button>
-        <Button variant="ghost" size="sm" className="text-xs" onClick={cancelRequest}>
+      <div className="flex items-center gap-3">
+        <button
+          onClick={acceptRequest}
+          style={{ background: "none", border: "none", fontSize: 13, fontWeight: 500, color: "#C4522A", cursor: "pointer" }}
+        >
+          {t("accept")}
+        </button>
+        <button
+          onClick={cancelRequest}
+          style={{ background: "none", border: "none", fontSize: 11, color: "#B0A8B5", cursor: "pointer" }}
+        >
           <X className="w-3.5 h-3.5" />
-        </Button>
+        </button>
       </div>
     );
   }
 
   return (
-    <Button variant="outline" size="sm" className="text-xs gap-1" onClick={sendRequest}>
-      <UserPlus className="w-3.5 h-3.5" /> {t("addFriend")}
-    </Button>
+    <button
+      onClick={sendRequest}
+      style={{ background: "none", border: "none", fontSize: 13, fontWeight: 500, color: "#C4522A", cursor: "pointer" }}
+    >
+      {t("addFriend")}
+    </button>
   );
 };
 
