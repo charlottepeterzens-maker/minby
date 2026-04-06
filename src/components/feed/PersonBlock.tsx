@@ -46,8 +46,12 @@ export interface PersonData {
 }
 
 function formatRelativeTime(dateStr: string): string {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return "";
   const now = Date.now();
-  const diff = now - new Date(dateStr).getTime();
+  const diff = now - date.getTime();
+  if (diff < 0 || diff > 180 * 86400000) return ""; // future or >6 months
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return "nu";
   if (mins < 60) return `${mins} min`;
@@ -55,8 +59,10 @@ function formatRelativeTime(dateStr: string): string {
   if (hours < 24) return `${hours}h`;
   const days = Math.floor(hours / 24);
   if (days === 1) return "igår";
-  if (days > 21) return `${Math.floor(days / 7)} veckor`;
-  return `${days} dagar`;
+  if (days <= 21) return `${days} dagar`;
+  const weeks = Math.floor(days / 7);
+  if (weeks <= 12) return `${weeks} veckor`;
+  return "";
 }
 
 function formatDateSwedish(dateStr: string): string {
