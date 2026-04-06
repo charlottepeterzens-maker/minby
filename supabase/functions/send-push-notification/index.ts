@@ -252,12 +252,36 @@ serve(async (req) => {
 
     let pushSent = 0;
     if (subscriptions && subscriptions.length > 0) {
+      // Build URL based on notification type
+      let targetUrl = "/notifications";
+      switch (type) {
+        case "group_message":
+        case "group_invite":
+          if (referenceId) targetUrl = `/group/${referenceId}`;
+          break;
+        case "friend_request":
+          targetUrl = "/friends";
+          break;
+        case "hangout_match":
+        case "hangout_new":
+        case "hangout_yes":
+        case "hangout_maybe":
+        case "hangout_comment":
+          targetUrl = "/";
+          break;
+        case "life_comment":
+        case "life_reaction":
+          targetUrl = "/profile";
+          break;
+      }
+
       const pushPayload = JSON.stringify({
         title: "Minby",
         body: message,
         icon: "/pwa-icon-192.png",
         badge: "/pwa-icon-192.png",
-        data: { url: "/profile" },
+        tag: `minby-${type}-${referenceId || notificationId}`,
+        data: { url: targetUrl },
       });
 
       for (const sub of subscriptions) {

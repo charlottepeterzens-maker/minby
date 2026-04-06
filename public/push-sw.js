@@ -17,7 +17,7 @@ self.addEventListener("push", (event) => {
       badge: data.badge,
       data: data.data,
       vibrate: [200, 100, 200],
-      tag: "minby-hangout",
+      tag: data.tag || "minby-general",
       renotify: true,
     })
   );
