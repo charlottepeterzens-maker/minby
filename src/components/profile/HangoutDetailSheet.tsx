@@ -583,9 +583,9 @@ const HangoutDetailSheet = ({
             {/* ── ACTIONS (non-owner) ── */}
             {!isOwner && (
               <div className="flex gap-2">
-                {isSelfTagged ? (
+                {myResponse ? (
                   <button
-                    onClick={() => handleRSVP("yes")}
+                    onClick={() => handleRSVP(myResponse.response as "yes" | "maybe")}
                     className="flex-1 py-2.5 text-[14px] font-medium transition-colors"
                     style={{ color: "#3C2A4D", backgroundColor: "hsl(var(--color-surface-raised))", border: "none", borderRadius: 8 }}
                   >
