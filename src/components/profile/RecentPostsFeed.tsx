@@ -105,6 +105,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
         content: editPostContent.trim() || null,
         image_url: newImageUrl,
         photo_layout: newImageUrl ? editPhotoLayout : "large",
+        section_id: editPostSectionId,
       } as any)
       .eq("id", editingPost.id);
     if (error) {
