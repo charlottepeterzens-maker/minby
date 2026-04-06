@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, ChevronDown, Heart, Check, Calendar, Headphones } from "lucide-react";
+import { ChevronRight, ChevronDown, Heart, Check, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import LazyImage from "@/components/LazyImage";
@@ -39,6 +39,7 @@ export interface PersonData {
   } | null;
   latestTip: {
     title: string;
+    created_at: string;
   } | null;
   lastActivityAt: string;
   isQuiet: boolean;
@@ -351,14 +352,27 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
         </div>
       )}
 
-      {/* Tip signal */}
-      {person.latestTip && !person.activeHangout && (
+      {/* Tip signal – only show tips from last 7 days */}
+      {person.latestTip && !person.activeHangout &&
+        Date.now() - new Date(person.latestTip.created_at).getTime() < 7 * 86400000 && (
         <div
-          className="flex items-center gap-1"
-          style={{ borderTop: "none", padding: "8px 14px", fontSize: 10, color: "hsl(var(--color-text-secondary))" }}
+          className="flex items-center gap-1.5"
+          style={{ borderTop: "none", padding: "8px 14px" }}
         >
-          <Heart size={10} />
-          {person.latestTip.title.slice(0, 30)}
+          <span
+            style={{
+              fontSize: 9,
+              fontWeight: 500,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase" as const,
+              color: "#7A6A85",
+            }}
+          >
+            TIPS
+          </span>
+          <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-secondary))" }}>
+            {person.latestTip.title.slice(0, 40)}
+          </span>
         </div>
       )}
 
