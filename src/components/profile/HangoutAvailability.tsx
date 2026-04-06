@@ -414,7 +414,11 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         onCreated={fetchEntries}
       />
 
-      {entries.length === 0 && !isOwner ? (
+      {loading ? (
+        <div className="flex justify-center py-6">
+          <div className="w-5 h-5 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "hsl(var(--color-border-lavender))", borderTopColor: "transparent" }} />
+        </div>
+      ) : entries.length === 0 && !isOwner ? (
         <motion.div
           className="flex flex-col items-center py-5"
           initial={{ opacity: 0, y: 10 }}
