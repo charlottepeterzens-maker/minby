@@ -18,6 +18,7 @@ interface Comment {
 interface Props {
   postId: string;
   isOwner: boolean;
+  collapsedInput?: boolean;
 }
 
 const PostComments = ({ postId, isOwner }: Props) => {
