@@ -35,6 +35,16 @@ interface Notification {
   created_at: string;
 }
 
+const NOTIF_ICON: Record<string, React.ReactNode> = {
+  friend_request: <Users className="w-4 h-4" style={{ color: "#5C4A7A" }} />,
+  hangout_match: <CalendarDays className="w-4 h-4" style={{ color: "#2A6645" }} />,
+  hangout_nudge: <CalendarDays className="w-4 h-4" style={{ color: "#6B5A3E" }} />,
+  reaction: <Heart className="w-4 h-4" style={{ color: "#C4727F" }} />,
+  comment: <MessageCircle className="w-4 h-4" style={{ color: "#5C4A7A" }} />,
+  thinking_of_you: <Sparkles className="w-4 h-4" style={{ color: "#5C4A7A" }} />,
+  group_invite: <Users className="w-4 h-4" style={{ color: "#5C4A7A" }} />,
+};
+
 const NotificationsPage = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
