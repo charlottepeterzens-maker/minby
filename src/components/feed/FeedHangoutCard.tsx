@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import FeedAvatar from "@/components/feed/FeedAvatar";
 import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
+import { sendNotification } from "@/utils/notifications";
 
 interface FeedHangoutCardProps {
   hangout: {
@@ -82,7 +83,12 @@ const UnifiedHangoutCard = ({
   onProfileClick,
   onRefresh,
 }: FeedHangoutCardProps) => {
+  const { user } = useAuth();
   const [detailOpen, setDetailOpen] = useState(false);
+  const [yesCount, setYesCount] = useState(0);
+  const [maybeCount, setMaybeCount] = useState(0);
+  const [myResponse, setMyResponse] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const hangoutId = hangout.id || "";
   const entryType = hangout.entry_type || "available";
 
@@ -96,6 +102,54 @@ const UnifiedHangoutCard = ({
         user_id: hangout.user_id || "",
       }
     : null;
+
+  const fetchResponses = useCallback(async () => {
+    if (!hangoutId) return;
+    const { data } = await supabase
+      .from("hangout_responses")
+      .select("user_id, response")
+      .eq("availability_id", hangoutId);
+    if (data) {
+      setYesCount(data.filter(r => r.response === "yes").length);
+      setMaybeCount(data.filter(r => r.response === "maybe").length);
+      const mine = data.find(r => r.user_id === user?.id);
+      setMyResponse(mine?.response || null);
+    }
+  }, [hangoutId, user?.id]);
+
+  useEffect(() => { fetchResponses(); }, [fetchResponses]);
+
+  const handleQuickRSVP = async (status: "yes" | "maybe") => {
+    if (!user || !hangoutId || saving) return;
+    setSaving(true);
+    if (myResponse === status) {
+      await supabase.from("hangout_responses").delete().eq("availability_id", hangoutId).eq("user_id", user.id);
+      setMyResponse(null);
+      toast("Svar borttaget");
+    } else {
+      await supabase.from("hangout_responses").upsert(
+        { availability_id: hangoutId, user_id: user.id, response: status },
+        { onConflict: "availability_id,user_id" }
+      );
+      setMyResponse(status);
+      toast.success(status === "yes" ? "Du är med!" : "Kanske – vi ser!");
+      if (hangout.user_id && hangout.user_id !== user.id) {
+        const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+        const name = myProfile?.display_name || "Någon";
+        const label = hangout.custom_note || (hangout.activities[0]) || "häng";
+        await sendNotification({
+          recipientUserId: hangout.user_id,
+          fromUserId: user.id,
+          type: status === "yes" ? "hangout_yes" : "hangout_maybe",
+          referenceId: hangoutId,
+          message: status === "yes" ? `${name} vill hänga med på ${label}!` : `${name} kanske hänger med på ${label}`,
+        });
+      }
+    }
+    setSaving(false);
+    fetchResponses();
+    onRefresh?.();
+  };
 
   const activityText = hangout.activities.length > 0 ? hangout.activities[0] : null;
   const noteText = hangout.custom_note || null;
@@ -170,6 +224,14 @@ const UnifiedHangoutCard = ({
         }}>
           {typeLabel}
         </span>
+        {(yesCount > 0 || maybeCount > 0) && (
+          <>
+            <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
+            <span style={{ fontSize: 11, color: "#7A6A85" }}>
+              {yesCount > 0 ? `${yesCount} kan` : ""}{yesCount > 0 && maybeCount > 0 ? " · " : ""}{maybeCount > 0 ? `${maybeCount} kanske` : ""}
+            </span>
+          </>
+        )}
         {hangout.isMatch && !isOwn && (
           <span style={{
             fontSize: 9,
@@ -187,25 +249,45 @@ const UnifiedHangoutCard = ({
       {/* 4. ACTIONS */}
       {!isOwn && (
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setDetailOpen(true)}
-            className="text-[13px] font-medium transition-colors"
-            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
-          >
-            Jag kan
-          </button>
-          <button
-            onClick={() => setDetailOpen(true)}
-            className="text-[13px] font-medium transition-colors"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.6)",
-              color: "#3C2A4D",
-              borderRadius: 8,
-              padding: "8px 16px",
-            }}
-          >
-            Kanske
-          </button>
+          {myResponse ? (
+            <button
+              onClick={() => handleQuickRSVP(myResponse as "yes" | "maybe")}
+              disabled={saving}
+              className="text-[13px] font-medium transition-colors disabled:opacity-60"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.6)",
+                color: "#3C2A4D",
+                borderRadius: 8,
+                padding: "8px 16px",
+              }}
+            >
+              Ångra svar
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => handleQuickRSVP("yes")}
+                disabled={saving}
+                className="text-[13px] font-medium transition-colors disabled:opacity-60"
+                style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
+              >
+                Jag kan
+              </button>
+              <button
+                onClick={() => handleQuickRSVP("maybe")}
+                disabled={saving}
+                className="text-[13px] font-medium transition-colors disabled:opacity-60"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.6)",
+                  color: "#3C2A4D",
+                  borderRadius: 8,
+                  padding: "8px 16px",
+                }}
+              >
+                Kanske
+              </button>
+            </>
+          )}
           <button
             onClick={() => setDetailOpen(true)}
             className="text-[12px] font-medium"
@@ -249,27 +331,40 @@ const GroupedActivityCard = ({
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [rsvpCounts, setRsvpCounts] = useState<Record<string, number>>({});
   const [saving, setSaving] = useState(false);
+  const [totalYes, setTotalYes] = useState(0);
+  const [totalMaybe, setTotalMaybe] = useState(0);
+  const [myResponse, setMyResponse] = useState<string | null>(null);
 
   const fetchRsvps = useCallback(async () => {
     if (hangoutIds.length === 0) return;
+    // Fetch responses from new table
     const { data } = await supabase
-      .from("hangout_tagged_friends")
-      .select("availability_id, tagged_user_id")
+      .from("hangout_responses")
+      .select("availability_id, user_id, response")
       .in("availability_id", hangoutIds);
 
     if (data) {
       const counts: Record<string, number> = {};
-      let myDate: string | null = null;
+      let yes = 0, maybe = 0;
+      let myResp: string | null = null;
       data.forEach((r: any) => {
         const idx = hangoutIds.indexOf(r.availability_id);
         if (idx >= 0 && dates[idx]) {
           const d = dates[idx];
           counts[d] = (counts[d] || 0) + 1;
-          if (r.tagged_user_id === user?.id) myDate = d;
+        }
+        if (r.response === "yes") yes++;
+        else if (r.response === "maybe") maybe++;
+        if (r.user_id === user?.id) {
+          myResp = r.response;
+          const idx2 = hangoutIds.indexOf(r.availability_id);
+          if (idx2 >= 0 && dates[idx2]) setSelectedDate(dates[idx2]);
         }
       });
       setRsvpCounts(counts);
-      if (myDate) setSelectedDate(myDate);
+      setTotalYes(yes);
+      setTotalMaybe(maybe);
+      setMyResponse(myResp);
     }
   }, [hangoutIds, dates, user?.id]);
 
@@ -287,31 +382,25 @@ const GroupedActivityCard = ({
       return;
     }
 
-    if (selectedDate === dateStr) {
-      await supabase
-        .from("hangout_tagged_friends")
-        .delete()
-        .eq("availability_id", hangoutId)
-        .eq("tagged_user_id", user.id);
+    if (selectedDate === dateStr && myResponse) {
+      // Remove response
+      await supabase.from("hangout_responses").delete().eq("availability_id", hangoutId).eq("user_id", user.id);
       setSelectedDate(null);
+      setMyResponse(null);
       toast("Val borttaget");
     } else {
-      if (selectedDate) {
+      // Remove old response if switching date
+      if (selectedDate && myResponse) {
         const oldIdx = dates.indexOf(selectedDate);
         const oldId = hangoutIds[oldIdx];
-        if (oldId)
-          await supabase
-            .from("hangout_tagged_friends")
-            .delete()
-            .eq("availability_id", oldId)
-            .eq("tagged_user_id", user.id);
+        if (oldId) await supabase.from("hangout_responses").delete().eq("availability_id", oldId).eq("user_id", user.id);
       }
-      await supabase.from("hangout_tagged_friends").insert({
-        availability_id: hangoutId,
-        tagged_user_id: user.id,
-        tagged_by: user.id,
-      });
+      await supabase.from("hangout_responses").upsert(
+        { availability_id: hangoutId, user_id: user.id, response: "yes" },
+        { onConflict: "availability_id,user_id" }
+      );
       setSelectedDate(dateStr);
+      setMyResponse("yes");
       toast.success("Du är på!");
     }
     setSaving(false);
@@ -411,28 +500,67 @@ const GroupedActivityCard = ({
         }}>
           SUGEN PÅ
         </span>
+        {(totalYes > 0 || totalMaybe > 0) && (
+          <>
+            <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
+            <span style={{ fontSize: 11, color: "#7A6A85" }}>
+              {totalYes > 0 ? `${totalYes} kan` : ""}{totalYes > 0 && totalMaybe > 0 ? " · " : ""}{totalMaybe > 0 ? `${totalMaybe} kanske` : ""}
+            </span>
+          </>
+        )}
       </div>
 
       {/* 4. ACTIONS */}
       {!isOwn && (
         <div className="flex items-center gap-2">
-          <button
-            className="text-[13px] font-medium transition-colors"
-            style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
-          >
-            Jag kan
-          </button>
-          <button
-            className="text-[13px] font-medium transition-colors"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.6)",
-              color: "#3C2A4D",
-              borderRadius: 8,
-              padding: "8px 16px",
-            }}
-          >
-            Kanske
-          </button>
+          {myResponse ? (
+            <button
+              onClick={async () => {
+                if (!user || saving) return;
+                setSaving(true);
+                for (const hid of hangoutIds) {
+                  await supabase.from("hangout_responses").delete().eq("availability_id", hid).eq("user_id", user.id);
+                }
+                setMyResponse(null);
+                setSelectedDate(null);
+                toast("Svar borttaget");
+                setSaving(false);
+                fetchRsvps();
+              }}
+              disabled={saving}
+              className="text-[13px] font-medium transition-colors disabled:opacity-60"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.6)",
+                color: "#3C2A4D",
+                borderRadius: 8,
+                padding: "8px 16px",
+              }}
+            >
+              Ångra svar
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => setDetailOpen(true)}
+                className="text-[13px] font-medium transition-colors"
+                style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
+              >
+                Jag kan
+              </button>
+              <button
+                onClick={() => setDetailOpen(true)}
+                className="text-[13px] font-medium transition-colors"
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.6)",
+                  color: "#3C2A4D",
+                  borderRadius: 8,
+                  padding: "8px 16px",
+                }}
+              >
+                Kanske
+              </button>
+            </>
+          )}
           <button
             onClick={() => setDetailOpen(true)}
             className="text-[12px] font-medium"

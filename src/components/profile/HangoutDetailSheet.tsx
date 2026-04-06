@@ -94,15 +94,18 @@ const HangoutDetailSheet = ({
   const [newDateValue, setNewDateValue] = useState("");
   const { subscribe: subscribePush, subscribed: pushSubscribed, permission: pushPermission, isSupported: pushSupported } = usePushNotifications();
 
+  const [responses, setResponses] = useState<Array<{ id: string; user_id: string; response: string; profile?: { display_name: string | null; avatar_url: string | null } }>>([]);
+
   const fetchDetails = useCallback(async () => {
     if (!entry) return;
     const entryIds = entry.entry_type === "activity" && groupedEntries && groupedEntries.length > 0
       ? groupedEntries.map(e => e.id)
       : [entry.id];
 
-    const [commentsRes, tagsRes] = await Promise.all([
+    const [commentsRes, tagsRes, responsesRes] = await Promise.all([
       supabase.from("hangout_comments").select("*").in("availability_id", entryIds).order("created_at", { ascending: true }),
       supabase.from("hangout_tagged_friends").select("*").in("availability_id", entryIds),
+      supabase.from("hangout_responses").select("*").in("availability_id", entryIds),
     ]);
 
     if (commentsRes.data) {
@@ -131,6 +134,16 @@ const HangoutDetailSheet = ({
       } else {
         setTaggedFriends([]);
       }
+    }
+
+    // Process responses
+    if (responsesRes.data && responsesRes.data.length > 0) {
+      const rUids = [...new Set(responsesRes.data.map((r: any) => r.user_id))];
+      const { data: profiles } = await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", rUids);
+      const pm = new Map((profiles || []).map((p: any) => [p.user_id, p]));
+      setResponses(responsesRes.data.map((r: any) => ({ ...r, profile: pm.get(r.user_id) })));
+    } else {
+      setResponses([]);
     }
 
     if (!isOwner && entry.user_id) {
@@ -196,18 +209,28 @@ const HangoutDetailSheet = ({
 
   const handleRSVP = async (status: "yes" | "maybe") => {
     if (!user) return;
-    const existing = taggedFriends.find(t => t.tagged_user_id === user.id);
-    if (existing) {
-      // Already responded – remove existing response first
-      await supabase.from("hangout_tagged_friends").delete().eq("id", existing.id);
-      setTaggedFriends(prev => prev.filter(t => t.id !== existing.id));
-      toast({ title: "Svar borttaget" });
-      await fetchDetails();
-      return;
+    const existingResponse = responses.find(r => r.user_id === user.id);
+    if (existingResponse) {
+      if (existingResponse.response === status) {
+        // Same response — remove it (toggle off)
+        await supabase.from("hangout_responses").delete().eq("id", existingResponse.id);
+        toast({ title: "Svar borttaget" });
+        await fetchDetails();
+        onRefresh?.();
+        return;
+      } else {
+        // Different response — update it
+        await supabase.from("hangout_responses").update({ response: status }).eq("id", existingResponse.id);
+      }
+    } else {
+      // New response
+      await supabase.from("hangout_responses").insert({
+        availability_id: entry.id,
+        user_id: user.id,
+        response: status,
+      });
     }
-    if (status === "yes") {
-      await supabase.from("hangout_tagged_friends").insert({ availability_id: entry.id, tagged_user_id: user.id, tagged_by: user.id });
-    }
+    // Send notification
     if (entry.user_id !== user.id) {
       const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
       const name = myProfile?.display_name || "Någon";
@@ -226,6 +249,7 @@ const HangoutDetailSheet = ({
     if (pushSupported && pushPermission === "default" && !pushSubscribed) subscribePush();
     toast({ title: status === "yes" ? "Du är med!" : "Kanske – vi ser!" });
     await fetchDetails();
+    onRefresh?.();
   };
 
   const handleDelete = async () => {
@@ -279,9 +303,11 @@ const HangoutDetailSheet = ({
     setCreatingGroup(false);
   };
 
-  const isSelfTagged = taggedFriends.some(t => t.tagged_user_id === user?.id);
-  const totalResponses = taggedFriends.length;
-  const canCreateGroup = totalResponses >= 2;
+  const myResponse = responses.find(r => r.user_id === user?.id);
+  const yesCount = responses.filter(r => r.response === "yes").length;
+  const maybeCount = responses.filter(r => r.response === "maybe").length;
+  const totalResponses = responses.length;
+  const canCreateGroup = yesCount >= 2;
 
   return (
     <>
@@ -461,26 +487,26 @@ const HangoutDetailSheet = ({
             {/* ── RESPONSES ── */}
             <div className="space-y-1.5">
               <p style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#B0A8B5", fontWeight: 500 }}>
-                svar
+                svar {totalResponses > 0 && <span style={{ fontWeight: 400 }}>· {yesCount > 0 ? `${yesCount} kan` : ""}{yesCount > 0 && maybeCount > 0 ? " · " : ""}{maybeCount > 0 ? `${maybeCount} kanske` : ""}</span>}
               </p>
               {totalResponses > 0 ? (
-                taggedFriends.map(tf => (
-                  <div key={tf.id} className="flex items-center gap-2 py-0.5">
+                responses.map(r => (
+                  <div key={r.id} className="flex items-center gap-2 py-0.5">
                     <Avatar className="w-5 h-5">
-                      {resolveAvatarUrl(tf.profile?.avatar_url ?? null) && (
-                        <AvatarImage src={resolveAvatarUrl(tf.profile?.avatar_url ?? null)!} alt={tf.profile?.display_name || ""} className="object-cover" />
+                      {resolveAvatarUrl(r.profile?.avatar_url ?? null) && (
+                        <AvatarImage src={resolveAvatarUrl(r.profile?.avatar_url ?? null)!} alt={r.profile?.display_name || ""} className="object-cover" />
                       )}
                       <AvatarFallback style={{ backgroundColor: "#F7F3EF", color: "#3C2A4D" }} className="text-[8px] font-medium">
-                        {tf.profile?.display_name?.charAt(0).toUpperCase() || "?"}
+                        {r.profile?.display_name?.charAt(0).toUpperCase() || "?"}
                       </AvatarFallback>
                     </Avatar>
                     <span className="text-[12px] flex-1" style={{ color: "#7A6A85" }}>
-                      {tf.profile?.display_name || "Okänd"} kan
+                      {r.profile?.display_name || "Okänd"} {r.response === "yes" ? "kan" : "kanske"}
                     </span>
                     {isOwner && (
                       <button onClick={async () => {
-                        await supabase.from("hangout_tagged_friends").delete().eq("id", tf.id);
-                        setTaggedFriends(prev => prev.filter(t => t.id !== tf.id));
+                        await supabase.from("hangout_responses").delete().eq("id", r.id);
+                        setResponses(prev => prev.filter(x => x.id !== r.id));
                       }} className="text-muted-foreground/30 hover:text-destructive" aria-label="Ta bort svar">
                         <Trash2 className="w-3 h-3" />
                       </button>
@@ -557,9 +583,9 @@ const HangoutDetailSheet = ({
             {/* ── ACTIONS (non-owner) ── */}
             {!isOwner && (
               <div className="flex gap-2">
-                {isSelfTagged ? (
+                {myResponse ? (
                   <button
-                    onClick={() => handleRSVP("yes")}
+                    onClick={() => handleRSVP(myResponse.response as "yes" | "maybe")}
                     className="flex-1 py-2.5 text-[14px] font-medium transition-colors"
                     style={{ color: "#3C2A4D", backgroundColor: "hsl(var(--color-surface-raised))", border: "none", borderRadius: 8 }}
                   >
