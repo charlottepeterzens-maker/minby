@@ -116,7 +116,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
                     <input value={opt} onChange={(e) => updateOption(i, e.target.value)}
                       placeholder={`Alternativ ${i + 1}`} className="flex-1 px-3 py-2.5 text-[13px] rounded-lg border outline-none" style={inputStyle} />
                     {options.length > 2 && (
-                      <button onClick={() => removeOption(i)} className="shrink-0 w-7 h-7 rounded-full flex items-center justify-center" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
+                      <button onClick={() => removeOption(i)} className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}>
                         <X className="w-3.5 h-3.5" style={{ color: "hsl(var(--color-text-secondary))" }} />
                       </button>
                     )}

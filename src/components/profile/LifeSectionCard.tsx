@@ -204,7 +204,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               style={{
                 width: 28,
                 height: 28,
-                borderRadius: "50%",
+                borderRadius: 8,
                 background: "#3C2A4D",
                 border: "none",
                 display: "flex",
@@ -224,7 +224,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               style={{
                 width: 28,
                 height: 28,
-                borderRadius: "50%",
+                borderRadius: 8,
                 background: "hsl(var(--color-surface-raised))",
                 border: "none",
                 display: "flex",
@@ -249,7 +249,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     color: "hsl(var(--color-text-secondary))",
                     background: "hsl(var(--color-surface))",
                     border: "none",
-                    borderRadius: 99,
+                    borderRadius: 8,
                     padding: "4px 10px",
                     cursor: "pointer",
                   }}
@@ -261,7 +261,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   style={{
                     width: 24,
                     height: 24,
-                    borderRadius: "50%",
+                    borderRadius: 8,
                     background: "#3C2A4D",
                     border: "none",
                     display: "flex",
@@ -326,7 +326,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       gap: 4,
                       fontSize: 11,
                       padding: "4px 10px",
-                      borderRadius: 99,
+                      borderRadius: 8,
                       border: "none",
                       background: imageFile ? "#EDE8F4" : "#F7F3EF",
                       color: imageFile ? "#3C2A4D" : "#655675",
@@ -391,7 +391,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   style={{
                     width: 28,
                     height: 28,
-                    borderRadius: "50%",
+                    borderRadius: 8,
                     background: "#3C2A4D",
                     border: "none",
                     display: "flex",

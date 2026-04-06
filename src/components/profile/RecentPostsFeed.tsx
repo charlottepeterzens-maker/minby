@@ -263,8 +263,8 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
                     style={{
                       fontSize: 11,
                       padding: "4px 10px",
-                      borderRadius: 99,
-                      border: "1px solid hsl(var(--color-border-subtle))",
+                      borderRadius: 8,
+                      border: "none",
                       background: "hsl(var(--color-surface))",
                       color: "hsl(var(--color-text-secondary))",
                       cursor: "pointer",

@@ -48,7 +48,7 @@ const NotificationList = ({ notifications, onClick, onMarkAllRead }: Props) => {
         className="mb-4 rounded-lg p-3"
         style={{
           backgroundColor: "hsl(var(--color-surface-card))",
-          border: "1px solid #EDE8F4",
+          boxShadow: "0 1px 4px 0 hsl(0 0% 0% / 0.05)",
         }}
       >
         {/* Header */}

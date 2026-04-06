@@ -108,8 +108,8 @@ const CreateSectionDialog = ({ onCreated, trigger }: Props) => {
                 borderRadius: 8,
                 fontSize: 13,
                 padding: "6px 14px",
-                border: "1px solid #EDE8F4",
-                backgroundColor: selectedPreset === p.name ? "#3C2A4D" : "#FFFFFF",
+                border: "none",
+                backgroundColor: selectedPreset === p.name ? "#3C2A4D" : "hsl(var(--color-surface-raised))",
                 color: selectedPreset === p.name ? "#FFFFFF" : "#3C2A4D",
               }}
               className="font-medium transition-all"
