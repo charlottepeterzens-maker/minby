@@ -81,53 +81,6 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
 
       {/* Lower zone – always at bottom */}
       <div style={{ paddingBottom: "env(safe-area-inset-bottom, 24px)", paddingTop: 16 }}>
-        {/* PWA hint */}
-        {pwa.show && (
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 8,
-              padding: 14,
-              marginBottom: 16,
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 12,
-            }}
-          >
-            <div
-              style={{
-                background: "#2E1F3E",
-                borderRadius: 8,
-                width: 36,
-                height: 36,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              {pwa.isIOS ? (
-                <Share style={{ width: 16, height: 16, color: "#C9B8D8" }} />
-              ) : (
-                <Download style={{ width: 16, height: 16, color: "#C9B8D8" }} />
-              )}
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: 13, fontWeight: 500, color: "#2E1F3E", margin: 0 }}>
-                Lägg Minby på hemskärmen
-              </p>
-              <p style={{ fontSize: 12, fontWeight: 300, color: "#9B8BA5", margin: "4px 0 0" }}>
-                Tryck på ↑ Dela → Lägg till på hemskärmen
-              </p>
-            </div>
-            <button
-              onClick={pwa.dismiss}
-              style={{ background: "none", border: "none", padding: 4, cursor: "pointer", flexShrink: 0 }}
-            >
-              <X style={{ width: 16, height: 16, color: "#B0A8B5" }} />
-            </button>
-          </div>
-        )}
 
         {/* Primary button */}
         <button

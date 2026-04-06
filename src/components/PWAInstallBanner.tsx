@@ -7,45 +7,41 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+const DISMISS_KEY = "pwa-install-dismissed";
+const DELAY_MS = 10_000; // Show after 10 seconds in the app
+
 const PWAInstallBanner = () => {
   const [show, setShow] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
-    const dismissed = localStorage.getItem("pwa-install-dismissed");
-    if (dismissed) return;
+    // Never show if already dismissed or already installed
+    if (localStorage.getItem(DISMISS_KEY)) return;
 
-    // Already installed
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
       (navigator as any).standalone === true;
     if (isStandalone) return;
 
+    // Capture beforeinstallprompt (Android/Chrome)
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setShow(true);
     };
-
     window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
 
-  // iOS fallback – beforeinstallprompt doesn't fire on iOS
-  useEffect(() => {
-    const dismissed = localStorage.getItem("pwa-install-dismissed");
-    if (dismissed) return;
+    // Delay showing to let user settle in
+    const timer = setTimeout(() => {
+      const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      setIsIOS(ios);
+      setShow(true);
+    }, DELAY_MS);
 
-    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    const isStandalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      (navigator as any).standalone === true;
-
-    if (ios && !isStandalone) {
-      setIsIOS(true);
-      setTimeout(() => setShow(true), 2500);
-    }
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler);
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleInstall = async () => {
@@ -58,13 +54,12 @@ const PWAInstallBanner = () => {
       setDeferredPrompt(null);
       return;
     }
-    // iOS – just dismiss since we show instructions
     dismiss();
   };
 
   const dismiss = () => {
     setShow(false);
-    localStorage.setItem("pwa-install-dismissed", "true");
+    localStorage.setItem(DISMISS_KEY, "true");
   };
 
   return (
@@ -92,7 +87,7 @@ const PWAInstallBanner = () => {
 
             <div className="flex-1 min-w-0">
               <p className="text-[13px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                Lägg Minby på hemskärmen – öppna som en app
+                Lägg Minby på hemskärmen
               </p>
               {isIOS && (
                 <p className="text-[11px] mt-1 leading-snug" style={{ color: "hsl(var(--color-text-secondary))" }}>
