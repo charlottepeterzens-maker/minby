@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import FeedAvatar from "@/components/feed/FeedAvatar";
 import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
+import { sendNotification } from "@/utils/notifications";
 
 interface FeedHangoutCardProps {
   hangout: {
