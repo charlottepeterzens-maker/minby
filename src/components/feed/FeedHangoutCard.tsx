@@ -352,7 +352,7 @@ const GroupedActivityCard = ({
                 disabled={isOwn || saving}
                 className="flex items-center gap-1 rounded-full transition-all shrink-0"
                 style={{
-                  backgroundColor: isSelected ? "#3C2A4D" : "#F7F3EF",
+                  backgroundColor: isSelected ? "#3C2A4D" : "#F0EAE2",
                   border: "none",
                   padding: "2px 9px",
                   fontSize: 11,

@@ -167,7 +167,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
           className="absolute bottom-0 left-0 right-0 pointer-events-none"
           style={{
             height: 80,
-            background: "linear-gradient(to bottom, transparent, #F7F3EF)",
+            background: "linear-gradient(to bottom, transparent, #F0EAE2)",
           }}
         />
       )}
