@@ -7,47 +7,195 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { X, Share, Download } from "lucide-react";
 
-const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; onLogin: () => void }) => (
-  <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
-    <div className="w-full max-w-sm text-center">
-      <span
-        className="block font-display lowercase mb-8"
-        style={{ fontWeight: 300, fontSize: "26px", letterSpacing: "-0.5px", color: "hsl(var(--color-text-primary))" }}
-      >
-        minby
-      </span>
+const usePwaHint = () => {
+  const [show, setShow] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
 
-      <div className="space-y-3 mb-10">
-        <p style={{ fontSize: "13px", color: "hsl(var(--color-text-secondary))", lineHeight: 1.6 }}>
-          Du scrollar i timmar och vet ändå inte hur din bästa vän egentligen mår.
-        </p>
-        <p style={{ fontSize: "13px", color: "hsl(var(--color-text-primary))", fontWeight: 500, lineHeight: 1.6 }}>
+  useEffect(() => {
+    const dismissed = localStorage.getItem("pwa-install-dismissed");
+    if (dismissed) return;
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (navigator as any).standalone === true;
+    if (isStandalone) return;
+
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    setIsIOS(ios);
+    setShow(true);
+  }, []);
+
+  const dismiss = () => {
+    setShow(false);
+    localStorage.setItem("pwa-install-dismissed", "true");
+  };
+
+  return { show, isIOS, dismiss };
+};
+
+const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; onLogin: () => void }) => {
+  const pwa = usePwaHint();
+
+  return (
+    <div
+      style={{
+        backgroundColor: "#F0EAE2",
+        padding: "0 24px",
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
+      {/* Upper zone – centered vertically */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+        {/* Logo */}
+        <span
+          style={{
+            fontFamily: "'Lexend', sans-serif",
+            fontSize: 13,
+            fontWeight: 400,
+            color: "#C4522A",
+            letterSpacing: "0.2em",
+            textTransform: "lowercase",
+            marginBottom: 48,
+          }}
+        >
+          minby
+        </span>
+
+        {/* Headline */}
+        <h1
+          style={{
+            fontFamily: "'Fraunces', serif",
+            fontSize: 32,
+            fontWeight: 400,
+            color: "#2E1F3E",
+            lineHeight: 1.25,
+            marginBottom: 24,
+          }}
+        >
+          Du scrollar i timmar och vet ändå inte hur din bästa vän{" "}
+          <em style={{ fontStyle: "italic", color: "#C4522A" }}>egentligen</em> mår.
+        </h1>
+
+        {/* Subheading */}
+        <p
+          style={{
+            fontSize: 15,
+            fontWeight: 300,
+            color: "#2E1F3E",
+            lineHeight: 1.6,
+            marginBottom: 8,
+          }}
+        >
           Minby är din slutna krets – de närmaste, de som faktiskt vill veta.
         </p>
-        <p style={{ fontSize: "13px", color: "hsl(var(--color-text-secondary))", lineHeight: 1.6 }}>
-          Dela din dag, planera något, ses på riktigt.
+
+        {/* Description */}
+        <p
+          style={{
+            fontSize: 13,
+            fontWeight: 300,
+            color: "#9B8BA5",
+            lineHeight: 1.6,
+          }}
+        >
+          Dela din dag. Planera något. Ses på riktigt.
         </p>
       </div>
 
-      <Button
-        onClick={onGetStarted}
-        className="w-full text-[13px] font-normal"
-        style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#fff", borderRadius: "20px", height: "48px" }}
-      >
-        Kom igång
-      </Button>
+      {/* Lower zone – always at bottom */}
+      <div style={{ paddingBottom: "env(safe-area-inset-bottom, 24px)", paddingTop: 16 }}>
+        {/* PWA hint */}
+        {pwa.show && (
+          <div
+            style={{
+              background: "#fff",
+              borderRadius: 8,
+              padding: 14,
+              marginBottom: 16,
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 12,
+            }}
+          >
+            <div
+              style={{
+                background: "#2E1F3E",
+                borderRadius: 8,
+                width: 36,
+                height: 36,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              {pwa.isIOS ? (
+                <Share style={{ width: 16, height: 16, color: "#C9B8D8" }} />
+              ) : (
+                <Download style={{ width: 16, height: 16, color: "#C9B8D8" }} />
+              )}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: 13, fontWeight: 500, color: "#2E1F3E", margin: 0 }}>
+                Lägg Minby på hemskärmen
+              </p>
+              <p style={{ fontSize: 12, fontWeight: 300, color: "#9B8BA5", margin: "4px 0 0" }}>
+                Tryck på ↑ Dela → Lägg till på hemskärmen
+              </p>
+            </div>
+            <button
+              onClick={pwa.dismiss}
+              style={{ background: "none", border: "none", padding: 4, cursor: "pointer", flexShrink: 0 }}
+            >
+              <X style={{ width: 16, height: 16, color: "#B0A8B5" }} />
+            </button>
+          </div>
+        )}
 
-      <button
-        onClick={onLogin}
-        className="mt-4 text-[13px] hover:underline"
-        style={{ color: "hsl(var(--color-text-secondary))" }}
-      >
-        Har du redan ett konto? <span style={{ color: "hsl(var(--color-text-primary))", fontWeight: 500 }}>Logga in</span>
-      </button>
+        {/* Primary button */}
+        <button
+          onClick={onGetStarted}
+          style={{
+            background: "#2E1F3E",
+            color: "#F0EAE2",
+            border: "none",
+            borderRadius: 8,
+            padding: 16,
+            fontSize: 15,
+            fontWeight: 500,
+            width: "100%",
+            marginBottom: 14,
+            cursor: "pointer",
+          }}
+        >
+          Kom igång
+        </button>
+
+        {/* Login link */}
+        <p
+          style={{
+            textAlign: "center",
+            fontSize: 14,
+            fontWeight: 300,
+            color: "#9B8BA5",
+            margin: "0 0 16px",
+          }}
+        >
+          Har du redan ett konto?{" "}
+          <span
+            onClick={onLogin}
+            style={{ color: "#2E1F3E", fontWeight: 500, cursor: "pointer" }}
+          >
+            Logga in
+          </span>
+        </p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const AuthPage = () => {
   const { t } = useLanguage();
