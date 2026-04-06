@@ -714,7 +714,7 @@ const GroupChatPage = () => {
         {messages.length >= 4 && !summaryVisible && (
           <button
             onClick={() => setSummaryVisible(true)}
-            className="mb-1.5 px-4 py-2 rounded-full text-[12px] font-medium transition-opacity hover:opacity-80"
+            className="mb-1.5 px-4 py-2 rounded-lg text-[12px] font-medium transition-opacity hover:opacity-80"
             style={{ backgroundColor: "#3C2A4D", color: "#F7F3EF" }}
           >
             ✨ Sammanfatta

@@ -494,7 +494,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
             <div
               ref={scrollRef}
               onScroll={handleScroll}
-              className="flex gap-2 overflow-x-scroll pb-2 scrollbar-hide"
+              className="flex gap-2 overflow-x-scroll pb-2 pr-8 scrollbar-hide"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {carouselItems.map((item) =>
