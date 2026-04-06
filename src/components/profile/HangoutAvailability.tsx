@@ -300,45 +300,50 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
           height: 160,
           borderRadius: 8,
           padding: 14,
-          backgroundColor: TYPE_COLORS.activity,
+          backgroundColor: "#E2EDE5",
           border: "none",
           overflow: "hidden",
         }}
       >
-        {/* Top row: activity text left, type label right */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 4, marginBottom: 8 }}>
-          <p
-            style={{
-              fontFamily: "Georgia, serif",
-              fontSize: 14,
-              fontWeight: 500,
-              color: "#3C2A4D",
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical" as any,
-              overflow: "hidden",
-              flex: 1,
-            }}
-          >
-            {item.activityName}
-          </p>
+        {/* Rad 1: empty left, label right */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 2 }}>
+          <span />
           <span style={{
             fontSize: 9,
             fontWeight: 500,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
-            textAlign: "right",
             whiteSpace: "nowrap",
-            paddingTop: 3,
             color: "#2A6645",
           }}>
             SUGEN PÅ
           </span>
         </div>
 
-        {/* Datum-förslag chips at bottom */}
+        {/* Rad 2: activity name */}
+        <p
+          style={{
+            fontFamily: "'Fraunces', serif",
+            fontSize: 20,
+            fontWeight: 500,
+            color: "#1F4A2E",
+            lineHeight: 1.2,
+            marginBottom: 8,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical" as any,
+            overflow: "hidden",
+          }}
+        >
+          {item.activityName}
+        </p>
+
+        {/* Spacer */}
+        <div style={{ flex: 1 }} />
+
+        {/* Datum-sektion – alltid i botten */}
         {item.dates.length > 0 && (
-          <div style={{ marginTop: "auto" }}>
+          <div style={{ marginTop: "auto", paddingTop: 8 }}>
             <p style={{ fontSize: 10, color: "#4A7A5E", marginBottom: 4 }}>
               förslag på datum
             </p>
@@ -354,7 +359,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
                       borderRadius: 99,
                       padding: "2px 7px",
                       fontSize: 10,
-                      color: "#3C2A4D",
+                      color: "#1F4A2E",
                     }}
                   >
                     {label}
