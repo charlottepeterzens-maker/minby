@@ -227,7 +227,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
           overflow: "hidden",
         }}
       >
-        {/* Date */}
+        {/* Date(s) */}
         {dateDisplay && (
           <p style={{
             fontFamily: "Georgia, serif",
@@ -235,10 +235,28 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
             fontWeight: 500,
             color: "#3C2A4D",
             lineHeight: 1.2,
-            marginBottom: 6,
+            marginBottom: extraDates.length > 0 ? 4 : 6,
           }}>
             {dateDisplay}
           </p>
+        )}
+        {extraDates.length > 0 && (
+          <div className="flex flex-wrap gap-1.5" style={{ marginBottom: 8 }}>
+            {extraDates.map((d) => (
+              <span
+                key={d}
+                style={{
+                  fontSize: 11,
+                  backgroundColor: "#F0EAE2",
+                  borderRadius: 999,
+                  padding: "2px 9px",
+                  color: "#3C2A4D",
+                }}
+              >
+                {formatPreviewDate(d)}
+              </span>
+            ))}
+          </div>
         )}
 
         {/* Description */}
