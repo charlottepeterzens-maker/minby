@@ -434,8 +434,8 @@ const translations = {
     innerCircleCloser: "Inre cirkel & närmare",
     allFriends: "Hela kretsen",
     creating: "Skapar...",
-    createSection: "Skapa sektion",
-    couldNotCreateSection: "Kunde inte skapa sektion",
+    createSection: "Skapa del",
+    couldNotCreateSection: "Kunde inte skapa del",
 
     // Friend tier manager
     joinGroupsFirst: "Gå med i grupper först för att hantera åtkomstnivåer",
