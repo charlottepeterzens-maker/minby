@@ -188,3 +188,12 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
+
+/* Fix yellow autofill background in Chrome/iOS */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px hsl(var(--color-surface-card)) inset;
+  -webkit-text-fill-color: hsl(var(--color-text-primary));
+  transition: background-color 5000s ease-in-out 0s;
+}
