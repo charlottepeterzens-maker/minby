@@ -83,7 +83,12 @@ const UnifiedHangoutCard = ({
   onProfileClick,
   onRefresh,
 }: FeedHangoutCardProps) => {
+  const { user } = useAuth();
   const [detailOpen, setDetailOpen] = useState(false);
+  const [yesCount, setYesCount] = useState(0);
+  const [maybeCount, setMaybeCount] = useState(0);
+  const [myResponse, setMyResponse] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
   const hangoutId = hangout.id || "";
   const entryType = hangout.entry_type || "available";
 
@@ -97,6 +102,54 @@ const UnifiedHangoutCard = ({
         user_id: hangout.user_id || "",
       }
     : null;
+
+  const fetchResponses = useCallback(async () => {
+    if (!hangoutId) return;
+    const { data } = await supabase
+      .from("hangout_responses")
+      .select("user_id, response")
+      .eq("availability_id", hangoutId);
+    if (data) {
+      setYesCount(data.filter(r => r.response === "yes").length);
+      setMaybeCount(data.filter(r => r.response === "maybe").length);
+      const mine = data.find(r => r.user_id === user?.id);
+      setMyResponse(mine?.response || null);
+    }
+  }, [hangoutId, user?.id]);
+
+  useEffect(() => { fetchResponses(); }, [fetchResponses]);
+
+  const handleQuickRSVP = async (status: "yes" | "maybe") => {
+    if (!user || !hangoutId || saving) return;
+    setSaving(true);
+    if (myResponse === status) {
+      await supabase.from("hangout_responses").delete().eq("availability_id", hangoutId).eq("user_id", user.id);
+      setMyResponse(null);
+      toast("Svar borttaget");
+    } else {
+      await supabase.from("hangout_responses").upsert(
+        { availability_id: hangoutId, user_id: user.id, response: status },
+        { onConflict: "availability_id,user_id" }
+      );
+      setMyResponse(status);
+      toast.success(status === "yes" ? "Du är med!" : "Kanske – vi ser!");
+      if (hangout.user_id && hangout.user_id !== user.id) {
+        const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+        const name = myProfile?.display_name || "Någon";
+        const label = hangout.custom_note || (hangout.activities[0]) || "häng";
+        await sendNotification({
+          recipientUserId: hangout.user_id,
+          fromUserId: user.id,
+          type: status === "yes" ? "hangout_yes" : "hangout_maybe",
+          referenceId: hangoutId,
+          message: status === "yes" ? `${name} vill hänga med på ${label}!` : `${name} kanske hänger med på ${label}`,
+        });
+      }
+    }
+    setSaving(false);
+    fetchResponses();
+    onRefresh?.();
+  };
 
   const activityText = hangout.activities.length > 0 ? hangout.activities[0] : null;
   const noteText = hangout.custom_note || null;
