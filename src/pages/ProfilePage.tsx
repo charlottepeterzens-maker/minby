@@ -213,7 +213,27 @@ const ProfilePage = () => {
   const initial = profile?.display_name?.charAt(0).toUpperCase() || "?";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div
+      ref={containerRef}
+      className="min-h-screen bg-background overflow-auto"
+      {...handlers}
+    >
+      {/* Pull-to-refresh indicator */}
+      <div
+        className="flex items-center justify-center overflow-hidden transition-all"
+        style={{
+          height: pullDistance > 0 ? pullDistance : 0,
+          opacity: progress,
+        }}
+      >
+        <motion.div
+          animate={{ rotate: refreshing ? 360 : progress * 270 }}
+          transition={refreshing ? { repeat: Infinity, duration: 0.8, ease: "linear" } : { duration: 0 }}
+          className="w-5 h-5 rounded-full border-2 border-t-transparent"
+          style={{ borderColor: "#B0A8B5", borderTopColor: "transparent" }}
+        />
+      </div>
+
       {/* Top nav */}
       <nav className="sticky top-0 z-50 bg-background pt-safe">
         <Container className="px-2 py-4 flex items-center justify-between">
