@@ -520,7 +520,7 @@ const FriendsPage = () => {
       {/* Header */}
       <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="py-4 flex items-center justify-between">
-          <span className="font-display text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))", fontFamily: "Georgia, serif" }}>
+          <span className="font-fraunces text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
             Sällskap
           </span>
           <div className="flex items-center gap-2">
