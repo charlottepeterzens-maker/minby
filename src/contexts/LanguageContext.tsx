@@ -333,9 +333,9 @@ const translations = {
 
     // Profile
     profileTitle: "Min sida",
-    sections: "Sektioner",
-    noSectionsYet: "Inga sektioner ännu",
-    addFirstSection: "Lägg till din första livssektion",
+    sections: "Delar",
+    noSectionsYet: "Inga delar ännu",
+    addFirstSection: "Lägg till din första del",
     nothingSharedYet: "Inget delat ännu",
     shareLifeHint: "Dela dina barn, träning, graviditet, hobbyer & mer",
     lifeUpdates: "Livsuppdateringar",
