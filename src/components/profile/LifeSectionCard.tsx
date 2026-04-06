@@ -159,9 +159,19 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
     fetchPosts();
   };
 
-  const handleEditPost = (post: LifePost) => {
+  const handleEditPost = async (post: LifePost) => {
     setEditingPost(post);
     setEditPostContent(post.content || "");
+    setEditPostSectionId(post.section_id);
+    // Fetch all sections for the user
+    if (user) {
+      const { data } = await supabase
+        .from("life_sections")
+        .select("id, name")
+        .eq("user_id", user.id)
+        .order("sort_order", { ascending: true });
+      if (data) setAllSections(data);
+    }
   };
 
   const handleSavePost = async () => {
