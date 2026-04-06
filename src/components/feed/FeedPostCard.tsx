@@ -146,7 +146,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
       )}
 
       {/* Kommentarer */}
-      <PostComments postId={post.id} isOwner={!!isOwn} />
+      <PostComments postId={post.id} isOwner={!!isOwn} collapsedInput />
     </div>
   );
 };
