@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
@@ -22,44 +22,48 @@ interface Props {
   index: number;
 }
 
-const BG_COLORS = ["#EDE8F4", "#EAF2E8", "#FCF0F3", "#FCF0F3", "#EDE8F4", "#EAF2E8"];
-
-const TEXT_COLORS = ["#3C2A4D", "#1F4A1A", "#4B1528", "##4B1528", "#3C2A4D", "#1F4A1A"];
-
-const SUBTEXT_COLORS = ["#993556", "#3B6D11", "#993556", "#993556", "#7993556", "#3B6D11"];
 const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onRenamed, index }: Props) => {
-  const [postCount, setPostCount] = useState<number>(0);
   const [latestImageRef, setLatestImageRef] = useState<string | null>(null);
+  const [previewText, setPreviewText] = useState<string | null>(null);
+  const [postCount, setPostCount] = useState(0);
   const [showDelete, setShowDelete] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editName, setEditName] = useState(section.name);
-  const bgColor = BG_COLORS[index % BG_COLORS.length];
 
-  // Fetch post count and latest image
   useEffect(() => {
-    const fetch = async () => {
+    const load = async () => {
+      // Get count
       const { count } = await supabase
         .from("life_posts")
         .select("id", { count: "exact", head: true })
         .eq("section_id", section.id);
       setPostCount(count || 0);
 
-      // Get latest post with an image
-      const { data } = await supabase
+      // Get latest post with image
+      const { data: imgData } = await supabase
         .from("life_posts")
         .select("image_url")
         .eq("section_id", section.id)
         .not("image_url", "is", null)
         .order("created_at", { ascending: false })
         .limit(1);
-      if (data?.[0]?.image_url) {
-        setLatestImageRef(data[0].image_url);
-      }
+      if (imgData?.[0]?.image_url) setLatestImageRef(imgData[0].image_url);
+
+      // Get latest post content for preview
+      const { data: textData } = await supabase
+        .from("life_posts")
+        .select("content")
+        .eq("section_id", section.id)
+        .not("content", "is", null)
+        .order("created_at", { ascending: false })
+        .limit(1);
+      if (textData?.[0]?.content) setPreviewText(textData[0].content);
     };
-    fetch();
+    load();
   }, [section.id]);
 
   const signedUrl = useSignedImageUrl(latestImageRef);
+  const hasImage = !!signedUrl;
 
   const handleRename = async () => {
     if (!editName.trim() || editName.trim() === section.name) {
@@ -81,80 +85,165 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
 
   if (editing) {
     return (
-      <div className="w-full flex items-center gap-2 bg-card rounded-lg border border-primary/30 p-2.5">
+      <div
+        style={{
+          height: 100,
+          borderRadius: 8,
+          background: "#EDE8F4",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "0 12px",
+        }}
+      >
         <Input
           value={editName}
           onChange={(e) => setEditName(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleRename();
-            if (e.key === "Escape") {
-              setEditing(false);
-              setEditName(section.name);
-            }
+            if (e.key === "Escape") { setEditing(false); setEditName(section.name); }
           }}
           className="h-7 text-[12px]"
           autoFocus
+          style={{ flex: 1, border: "none", background: "rgba(255,255,255,0.6)" }}
         />
-        <button onClick={handleRename} className="text-[11px] font-medium text-primary shrink-0">
+        <button onClick={handleRename} style={{ fontSize: 11, fontWeight: 500, color: "#2E1F3E", background: "none", border: "none", cursor: "pointer" }}>
           Spara
         </button>
       </div>
     );
   }
 
-  const hasImage = !!signedUrl;
-
   return (
     <>
       <div className="relative w-full">
         <button
           onClick={onClick}
-          className={`group relative w-full aspect-[4/5] rounded-lg overflow-hidden border border-border text-left transition-all active:scale-[0.97] ${
-            isExpanded ? "ring-1 ring-primary/20" : ""
-          }`}
+          style={{
+            width: "100%",
+            height: 100,
+            borderRadius: 8,
+            overflow: "hidden",
+            position: "relative",
+            cursor: "pointer",
+            border: "none",
+            padding: 0,
+            display: "block",
+            textAlign: "left",
+            transition: "transform 0.15s ease",
+          }}
+          className="active:scale-[0.97]"
         >
-          {/* Background: image or color */}
+          {/* Background */}
           {hasImage ? (
-            <img src={signedUrl!} alt={section.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+            <img
+              src={signedUrl!}
+              alt={section.name}
+              loading="lazy"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
           ) : (
-            <div className="absolute inset-0" style={{ backgroundColor: bgColor }} />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundColor: "#EDE8F4",
+              }}
+            />
           )}
 
-          {/* Gradient overlay */}
-          {hasImage && <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />}
+          {/* Gradient overlay for images */}
+          {hasImage && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(transparent, rgba(46,31,62,0.7))",
+              }}
+            />
+          )}
 
-          {/* Text content (bottom) */}
-          <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
+          {/* Text content */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: "10px 12px",
+              zIndex: 1,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: postCount === 0 && !hasImage ? "center" : "flex-end",
+              ...(postCount === 0 && !hasImage ? { top: 0, alignItems: "center" } : {}),
+            }}
+          >
             <p
-              className="text-[13px] font-medium leading-tight truncate"
-              style={{ color: hasImage ? "#ffffff" : TEXT_COLORS[index % TEXT_COLORS.length] }}
+              style={{
+                fontSize: 9,
+                fontWeight: 500,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: hasImage ? "#F0EAE2" : postCount === 0 ? "#7A6A85" : "#2E1F3E",
+                margin: 0,
+                lineHeight: 1.3,
+              }}
             >
               {section.name}
             </p>
-            <p
-              className="text-[11px] leading-tight mt-0.5"
-              style={{ color: hasImage ? "rgba(255,255,255,0.7)" : SUBTEXT_COLORS[index % SUBTEXT_COLORS.length] }}
-            >
-              {postCount} inlägg
-            </p>
+            {previewText && (
+              <p
+                style={{
+                  fontSize: 11,
+                  fontWeight: 300,
+                  color: hasImage ? "rgba(240,234,226,0.8)" : "rgba(46,31,62,0.6)",
+                  margin: "2px 0 0",
+                  lineHeight: 1.3,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {previewText}
+              </p>
+            )}
           </div>
         </button>
 
-        {/* Three-dot menu (top right) */}
+        {/* Three-dot menu */}
         {isOwner && (
-          <div className="absolute top-2 right-2 z-10" onClick={(e) => e.stopPropagation()}>
+          <div
+            style={{ position: "absolute", top: 6, right: 6, zIndex: 2 }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors">
-                  <MoreHorizontal className="w-3.5 h-3.5 text-white" />
+                <button
+                  style={{
+                    width: 24,
+                    height: 24,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: "50%",
+                    background: "rgba(0,0,0,0.25)",
+                    backdropFilter: "blur(4px)",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  <MoreHorizontal style={{ width: 13, height: 13, color: "#fff" }} />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-[140px]">
+              <DropdownMenuContent align="end" style={{ minWidth: 140 }}>
                 <DropdownMenuItem
-                  onClick={() => {
-                    setEditName(section.name);
-                    setEditing(true);
-                  }}
+                  onClick={() => { setEditName(section.name); setEditing(true); }}
                   className="gap-2 text-xs"
                 >
                   <Pencil className="w-3.5 h-3.5" />
