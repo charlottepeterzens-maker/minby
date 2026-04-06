@@ -313,42 +313,6 @@ const SettingsPage = () => {
               </div>
             ))}
 
-            {/* Separator */}
-            <div className="pt-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="text-sm">Morgonrapport</Label>
-                  <p className="text-[10px] mt-0.5" style={{ color: "hsl(var(--color-text-faint))" }}>
-                    Kommer snart
-                  </p>
-                </div>
-                <Switch
-                  checked={notifSettings.daily_digest_enabled}
-                  onCheckedChange={(v) => updateNotifSetting("daily_digest_enabled", v)}
-                />
-              </div>
-
-              {notifSettings.daily_digest_enabled && (
-                <div className="mt-3">
-                  <Label className="text-xs text-muted-foreground">Tid för morgonrapport</Label>
-                  <Select
-                    value={notifSettings.daily_digest_time}
-                    onValueChange={(v) => updateNotifSetting("daily_digest_time", v)}
-                  >
-                    <SelectTrigger className="w-full mt-1 rounded-lg">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TIME_OPTIONS.map((t) => (
-                        <SelectItem key={t} value={t}>
-                          {t}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </div>
           </CardContent>
         </Card>
 
