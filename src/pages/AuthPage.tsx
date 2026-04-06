@@ -261,13 +261,10 @@ const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
+          <span style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.2em", color: "#C4522A", textTransform: "uppercase" as const }}>minby</span>
           <h1 className="font-display font-medium text-[20px] text-foreground mt-4">
             {isSignUp ? t("joinMinby") : t("welcomeBack")}
           </h1>
-          <p className="text-muted-foreground mt-2 text-sm">
-            {isSignUp ? t("startPlanning") : t("yourFriendsWaiting")}
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
