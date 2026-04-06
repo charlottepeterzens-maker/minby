@@ -432,8 +432,8 @@ const PostCard = ({
         <div style={{ padding: "0 12px" }}>
           <SignedImg
             imageRef={post.image_url}
-            className="w-full object-cover cursor-pointer hover:opacity-90 transition-opacity rounded-md"
-            style={{ maxHeight: 280, minHeight: 140 }}
+            className="w-full cursor-pointer hover:opacity-90 transition-opacity rounded-md overflow-hidden"
+            style={{ aspectRatio: "4 / 3", maxHeight: 280, minHeight: 140 }}
             onClick={() => onImageClick(post.image_url!)}
           />
         </div>
@@ -471,8 +471,12 @@ const SignedImg = ({
   if (!url) return null;
   const Tag = onClick ? "button" : "div";
   return (
-    <Tag onClick={onClick} className={`block ${className || ""}`} style={style}>
-      <LazyImage src={url} alt="Inläggsbild" className="w-full h-full" style={{ borderRadius: "inherit" }} />
+    <Tag
+      onClick={onClick}
+      className={`block ${className || ""}`}
+      style={{ width: "100%", padding: 0, border: "none", background: "none", ...style }}
+    >
+      <LazyImage src={url} alt="Inläggsbild" className="w-full h-full" style={{ width: "100%", height: "100%", borderRadius: "inherit" }} />
     </Tag>
   );
 };
