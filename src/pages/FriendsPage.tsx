@@ -756,7 +756,7 @@ const FriendsPage = () => {
                           )}
                         </div>
                         <div className="flex items-center gap-0.5 max-w-full">
-                          <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                          <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-primary))", fontFamily: "'Fraunces', serif" }}>
                             {f.display_name.split(" ")[0]}
                           </span>
                           {isClose && (
