@@ -1,10 +1,12 @@
 import { FeedItemRenderer } from "./FeedItemRenderer";
 import { motion } from "framer-motion";
 import { CalendarDays } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   items: any[];
   emptyMessage?: string;
+  emptyAction?: { label: string; to: string };
   onRefresh?: () => void;
 };
 
