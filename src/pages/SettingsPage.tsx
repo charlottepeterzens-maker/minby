@@ -214,7 +214,7 @@ const SettingsPage = () => {
         {/* Dark mode */}
         <Card className="rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground font-body font-medium">{lang === "sv" ? "Utseende" : "Appearance"}</CardTitle>
+            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>{lang === "sv" ? "Utseende" : "Appearance"}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -246,7 +246,7 @@ const SettingsPage = () => {
         {/* Language */}
         <Card className="rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("language")}</CardTitle>
+            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>{t("language")}</CardTitle>
           </CardHeader>
           <CardContent>
             <Select value={lang} onValueChange={(v) => setLang(v as "en" | "sv")}>
@@ -264,7 +264,7 @@ const SettingsPage = () => {
         {/* Password */}
         <Card className="rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("changePassword")}</CardTitle>
+            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>{t("changePassword")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div>
@@ -303,7 +303,7 @@ const SettingsPage = () => {
         {/* Notifications */}
         <Card className="rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground font-body font-medium">Notiser</CardTitle>
+            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>Notiser</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {NOTIF_TOGGLES.map(({ key, label }) => (
@@ -319,7 +319,7 @@ const SettingsPage = () => {
         {/* Data & Privacy */}
         <Card className="rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle className="text-xs text-muted-foreground font-body font-medium">{t("howWeUseData")}</CardTitle>
+            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>{t("howWeUseData")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>{t("dataPrivacy1")}</p>
@@ -336,7 +336,7 @@ const SettingsPage = () => {
         {isAdmin && (
           <Card className="rounded-lg">
             <CardHeader className="pb-2">
-              <CardTitle className="text-xs text-muted-foreground font-body font-medium">Utvecklarverktyg</CardTitle>
+              <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>Utvecklarverktyg</CardTitle>
             </CardHeader>
             <CardContent>
               <SeedTestUsersButton />
