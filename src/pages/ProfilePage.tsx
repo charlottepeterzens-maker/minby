@@ -6,20 +6,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, Plus, Camera, Pencil, Check, X, GripVertical, UserPlus } from "lucide-react";
+import { ChevronLeft, Plus, Camera, Pencil, Check, X, GripVertical } from "lucide-react";
 import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
-import { SortableContext, rectSortingStrategy, useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import CurvedSeparator from "@/components/CurvedSeparator";
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
