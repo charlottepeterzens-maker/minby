@@ -48,57 +48,6 @@ interface Profile {
   bio: string | null;
 }
 
-// Sortable wrapper for grid cards
-const SortableGridCard = ({
-  section,
-  isOwner,
-  isExpanded,
-  onClick,
-  onDeleted,
-  onRenamed,
-  index,
-  reordering,
-}: {
-  section: LifeSection;
-  isOwner: boolean;
-  isExpanded: boolean;
-  onClick: () => void;
-  onDeleted?: () => void;
-  onRenamed?: () => void;
-  index: number;
-  reordering: boolean;
-}) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: section.id });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 50 : ("auto" as any),
-  };
-
-  return (
-    <div ref={setNodeRef} style={style} className="relative">
-      {reordering && (
-        <div
-          {...attributes}
-          {...listeners}
-          className="absolute top-1 right-1 z-10 w-6 h-6 rounded bg-background/80 flex items-center justify-center cursor-grab active:cursor-grabbing"
-        >
-          <GripVertical className="w-3.5 h-3.5 text-muted-foreground" />
-        </div>
-      )}
-      <SectionGridCard
-        section={section}
-        isOwner={isOwner}
-        isExpanded={isExpanded}
-        onClick={reordering ? () => {} : onClick}
-        onDeleted={onDeleted}
-        onRenamed={onRenamed}
-        index={index}
-      />
-    </div>
-  );
-};
 
 const ProfilePage = () => {
   const { userId } = useParams();
