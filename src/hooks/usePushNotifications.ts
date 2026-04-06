@@ -38,7 +38,7 @@ export const usePushNotifications = () => {
         return false;
       }
 
-      const vapidPublicKey = await getVapidPublicKey();
+      const vapidPublicKey = VAPID_PUBLIC_KEY;
       if (!vapidPublicKey) {
         subscribingRef.current = false;
         return false;
