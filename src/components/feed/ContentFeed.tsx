@@ -42,7 +42,7 @@ export const ContentFeed = ({ items, emptyMessage, onRefresh }: Props) => {
   return (
     <div className="space-y-3">
       {items.map((item) => (
-        <FeedItemRenderer key={item.data.id} item={item} />
+        <FeedItemRenderer key={item.data.id} item={item} onRefresh={onRefresh} />
       ))}
     </div>
   );
