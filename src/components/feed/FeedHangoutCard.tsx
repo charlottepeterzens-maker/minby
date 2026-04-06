@@ -224,6 +224,14 @@ const UnifiedHangoutCard = ({
         }}>
           {typeLabel}
         </span>
+        {(yesCount > 0 || maybeCount > 0) && (
+          <>
+            <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
+            <span style={{ fontSize: 11, color: "#7A6A85" }}>
+              {yesCount > 0 ? `${yesCount} kan` : ""}{yesCount > 0 && maybeCount > 0 ? " · " : ""}{maybeCount > 0 ? `${maybeCount} kanske` : ""}
+            </span>
+          </>
+        )}
         {hangout.isMatch && !isOwn && (
           <span style={{
             fontSize: 9,
