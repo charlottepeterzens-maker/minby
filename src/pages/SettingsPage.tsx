@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronLeft, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminRole } from "@/hooks/useAdminRole";
 import BottomNav from "@/components/BottomNav";
 import CurvedSeparator from "@/components/CurvedSeparator";
 import ConfirmSheet from "@/components/ConfirmSheet";
@@ -87,6 +88,7 @@ const SettingsPage = () => {
   const { signOut, user } = useAuth();
   const { t, lang, setLang } = useLanguage();
   const { toast } = useToast();
+  const { isAdmin } = useAdminRole();
 
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains("dark"));
   const [newPassword, setNewPassword] = useState("");
@@ -272,6 +274,7 @@ const SettingsPage = () => {
                 placeholder="••••••••"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
+                autoComplete="new-password"
                 className="mt-1 rounded-lg border"
               />
             </div>
@@ -282,6 +285,7 @@ const SettingsPage = () => {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="new-password"
                 className="mt-1 rounded-lg border"
               />
             </div>
@@ -365,7 +369,7 @@ const SettingsPage = () => {
         </Card>
 
         {/* Dev tools - only for charlotte */}
-        {user?.email?.includes("charlotte.peterzens") && (
+        {isAdmin && (
           <Card className="rounded-lg">
             <CardHeader className="pb-2">
               <CardTitle className="text-xs text-muted-foreground font-body font-medium">Utvecklarverktyg</CardTitle>

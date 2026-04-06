@@ -4,6 +4,20 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Check, UserCheck } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
+import { sv } from "date-fns/locale";
+
+const formatRelativeDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffDays === 0) return "idag";
+  if (diffDays === 1) return "igår";
+  if (diffDays < 7) return formatDistanceToNow(date, { locale: sv, addSuffix: true });
+  return date.toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
+};
 import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
 import { Container } from "@/components/layout";
@@ -124,7 +138,7 @@ const NotificationsPage = () => {
                     </p>
                     {n.body && <p className="text-xs text-muted-foreground mt-0.5">{n.body}</p>}
                     <p className="text-[10px] text-muted-foreground mt-1">
-                      {new Date(n.created_at).toLocaleDateString("sv-SE")}
+                      {formatRelativeDate(n.created_at)}
                     </p>
                   </div>
                   {n.type === "friend_request" && !n.read && n.from_user_id && (
