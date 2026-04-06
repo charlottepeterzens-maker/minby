@@ -222,6 +222,7 @@ const UnifiedHangoutCard = ({
           open={detailOpen}
           onOpenChange={setDetailOpen}
           isOwner={!!isOwn}
+          onRefresh={onRefresh}
         />
       )}
     </div>
