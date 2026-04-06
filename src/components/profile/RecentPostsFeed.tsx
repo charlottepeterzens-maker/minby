@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
@@ -53,6 +54,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
   const [editRemoveImage, setEditRemoveImage] = useState(false);
   const [editPhotoLayout, setEditPhotoLayout] = useState<"large" | "small">("large");
   const [savingPost, setSavingPost] = useState(false);
+  const [editPostSectionId, setEditPostSectionId] = useState<string | null>(null);
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
   const fetchPosts = useCallback(async () => {
@@ -103,6 +105,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
         content: editPostContent.trim() || null,
         image_url: newImageUrl,
         photo_layout: newImageUrl ? editPhotoLayout : "large",
+        section_id: editPostSectionId,
       } as any)
       .eq("id", editingPost.id);
     if (error) {
@@ -153,6 +156,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
               onEdit={() => {
                 setEditingPost(post);
                 setEditPostContent(post.content || "");
+                setEditPostSectionId(post.section_id);
               }}
               onDelete={() => setDeletePostId(post.id)}
               onImageClick={(url) => setExpandedImage(url)}
@@ -199,9 +203,31 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
             <Textarea
               value={editPostContent}
               onChange={(e) => setEditPostContent(e.target.value)}
-              className="min-h-[100px] text-[13px] bg-white border-[#EDE8E0] rounded-lg resize-none"
+              className="min-h-[100px] text-[13px] bg-white border-0 rounded-lg resize-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              style={{ boxShadow: "none" }}
               autoFocus
             />
+
+            {/* Category selector */}
+            {sections.length > 0 && (
+              <Select
+                value={editPostSectionId || "none"}
+                onValueChange={(v) => setEditPostSectionId(v === "none" ? null : v)}
+              >
+                <SelectTrigger
+                  className="focus:ring-0 focus:ring-offset-0"
+                  style={{ height: 36, fontSize: 12, background: "#fff", border: "none", borderRadius: 8 }}
+                >
+                  <SelectValue placeholder="Välj kategori" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Ingen kategori</SelectItem>
+                  {sections.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
 
             {/* Image editing */}
             <div>
@@ -284,12 +310,12 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
                       className="flex items-center justify-center"
                       style={{
                         width: 26, height: 26, borderRadius: 8,
-                        background: editPhotoLayout === "large" ? "#3C2A4D" : "#fff",
-                        border: "1px solid #3C2A4D",
+                        background: editPhotoLayout === "large" ? "#2E1F3E" : "#fff",
+                        border: "1px solid #2E1F3E",
                       }}
                       title="Stort foto"
                     >
-                      <RectangleHorizontal className="w-3 h-3" style={{ color: editPhotoLayout === "large" ? "#fff" : "#3C2A4D" }} />
+                      <RectangleHorizontal className="w-3 h-3" style={{ color: editPhotoLayout === "large" ? "#fff" : "#2E1F3E" }} />
                     </button>
                     <button
                       type="button"
@@ -297,12 +323,12 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
                       className="flex items-center justify-center"
                       style={{
                         width: 26, height: 26, borderRadius: 8,
-                        background: editPhotoLayout === "small" ? "#3C2A4D" : "#fff",
-                        border: "1px solid #3C2A4D",
+                        background: editPhotoLayout === "small" ? "#2E1F3E" : "#fff",
+                        border: "1px solid #2E1F3E",
                       }}
                       title="Liten thumbnail"
                     >
-                      <LayoutList className="w-3 h-3" style={{ color: editPhotoLayout === "small" ? "#fff" : "#3C2A4D" }} />
+                      <LayoutList className="w-3 h-3" style={{ color: editPhotoLayout === "small" ? "#fff" : "#2E1F3E" }} />
                     </button>
                   </div>
                 )}
@@ -315,8 +341,8 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
               style={{
                 width: "100%",
                 padding: 10,
-                background: "#3C2A4D",
-                color: "#F7F3EF",
+                background: "#2E1F3E",
+                color: "#F0EAE2",
                 borderRadius: 8,
                 border: "none",
                 fontSize: 13,
