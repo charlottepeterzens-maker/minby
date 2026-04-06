@@ -242,20 +242,27 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
                 style={{
                   color: "hsl(var(--color-text-primary))",
                   backgroundColor: "hsl(var(--color-surface-card))",
-                  boxShadow: "0 1px 3px 0 rgba(0,0,0,0.06)"
+                  border: "none",
+                  borderRadius: 8,
                 }}>
-                
                   Tillbaka
                 </button>
                 <button
                 onClick={handleCreate}
                 disabled={loading}
-                className="flex-1 py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
                 style={{
-                  backgroundColor: "#3C2A4D",
-                  borderRadius: 8
+                  flex: 1,
+                  padding: "10px 0",
+                  fontSize: 13,
+                  fontWeight: 500,
+                  border: "none",
+                  borderRadius: 8,
+                  background: "#2E1F3E",
+                  color: "#F0EAE2",
+                  opacity: loading ? 0.5 : 1,
+                  cursor: loading ? "default" : "pointer",
+                  WebkitAppearance: "none" as any,
                 }}>
-                
                   {loading ? "Startar..." : selectedFriends.length > 0 ?
                 `Starta (${selectedFriends.length} valda)` :
                 "Starta utan krets"}
