@@ -566,7 +566,7 @@ const TipCard = ({
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      borderRadius: "50%",
+                      borderRadius: 8,
                     }}
                   >
                     <MoreHorizontal style={{ width: 14, height: 14, color: "hsl(var(--color-border-lavender))" }} />

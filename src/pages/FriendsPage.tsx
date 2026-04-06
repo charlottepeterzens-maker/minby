@@ -535,7 +535,7 @@ const FriendsPage = () => {
             <button
               onClick={() => setQrOpen(true)}
               aria-label="Visa QR-kod"
-              className="w-11 h-11 rounded-full flex items-center justify-center"
+              className="w-11 h-11 rounded-lg flex items-center justify-center"
               style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
             >
               <QrCode className="w-4.5 h-4.5" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />

@@ -262,8 +262,8 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
           <span style={{
             fontSize: 11,
             backgroundColor: "#F7F3EF",
-            border: "1px solid #EDE8E0",
-            borderRadius: 99,
+            border: "none",
+            borderRadius: 8,
             padding: "2px 9px",
             color: "#7A6A85",
           }}>

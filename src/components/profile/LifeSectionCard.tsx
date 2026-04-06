@@ -391,7 +391,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                   style={{
                     width: 28,
                     height: 28,
-                    borderRadius: "50%",
+                    borderRadius: 8,
                     background: "#3C2A4D",
                     border: "none",
                     display: "flex",
