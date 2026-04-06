@@ -21,13 +21,14 @@ interface Props {
   collapsedInput?: boolean;
 }
 
-const PostComments = ({ postId, isOwner }: Props) => {
+const PostComments = ({ postId, isOwner, collapsedInput = false }: Props) => {
   const { user } = useAuth();
   const [comments, setComments] = useState<Comment[]>([]);
   const [text, setText] = useState("");
   const [posting, setPosting] = useState(false);
   const [focused, setFocused] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [showInput, setShowInput] = useState(!collapsedInput);
   const [myInitials, setMyInitials] = useState("?");
   const [myAvatarUrl, setMyAvatarUrl] = useState<string | null>(null);
 
