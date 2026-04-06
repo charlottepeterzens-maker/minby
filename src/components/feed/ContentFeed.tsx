@@ -8,7 +8,7 @@ type Props = {
   onRefresh?: () => void;
 };
 
-export const ContentFeed = ({ items, emptyMessage }: Props) => {
+export const ContentFeed = ({ items, emptyMessage, onRefresh }: Props) => {
   if (items.length === 0 && emptyMessage) {
     return (
       <motion.div
