@@ -303,9 +303,11 @@ const HangoutDetailSheet = ({
     setCreatingGroup(false);
   };
 
-  const isSelfTagged = taggedFriends.some(t => t.tagged_user_id === user?.id);
-  const totalResponses = taggedFriends.length;
-  const canCreateGroup = totalResponses >= 2;
+  const myResponse = responses.find(r => r.user_id === user?.id);
+  const yesCount = responses.filter(r => r.response === "yes").length;
+  const maybeCount = responses.filter(r => r.response === "maybe").length;
+  const totalResponses = responses.length;
+  const canCreateGroup = yesCount >= 2;
 
   return (
     <>
