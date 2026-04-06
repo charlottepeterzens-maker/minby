@@ -18,6 +18,7 @@ interface FeedHangoutCardProps {
     created_at: string;
     entry_type?: string;
     isMatch?: boolean;
+    user_id?: string;
   };
   profile: {
     display_name: string | null;
@@ -28,6 +29,7 @@ interface FeedHangoutCardProps {
   onProfileClick: () => void;
   onJoin?: () => void;
   onMaybe?: () => void;
+  onRefresh?: () => void;
 }
 
 const TYPE_LABEL: Record<string, string> = {
