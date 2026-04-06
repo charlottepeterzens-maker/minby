@@ -231,18 +231,17 @@ const PostComments = ({ postId, isOwner }: Props) => {
             if (!text.trim()) setFocused(false);
           }}
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handlePost()}
-          placeholder="Säg något till dem…"
+          placeholder="Skriv en kommentar…"
           style={{
             flex: 1,
-            height: 30,
+            height: 36,
             background: "hsl(var(--color-surface))",
-            border: focused ? "1px solid #C9B8D8" : "none",
-            borderRadius: 99,
+            border: "none",
+            borderRadius: 8,
             padding: "0 12px",
-            fontSize: 11,
+            fontSize: 13,
             color: "hsl(var(--color-text-primary))",
             outline: "none",
-            transition: "border 0.15s ease",
           }}
         />
         {text.trim().length > 0 && (
@@ -250,10 +249,10 @@ const PostComments = ({ postId, isOwner }: Props) => {
             onClick={handlePost}
             disabled={posting}
             style={{
-              width: 26,
-              height: 26,
-              borderRadius: "50%",
-              background: "#3C2A4D",
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              background: "hsl(var(--color-text-primary))",
               border: "none",
               display: "flex",
               alignItems: "center",
@@ -263,7 +262,7 @@ const PostComments = ({ postId, isOwner }: Props) => {
               opacity: posting ? 0.6 : 1,
             }}
           >
-            <Send style={{ width: 11, height: 11, color: "#F7F3EF" }} />
+            <Send style={{ width: 13, height: 13, color: "#FFFFFF" }} />
           </button>
         )}
       </div>

@@ -177,11 +177,12 @@ const TipCommentSection = ({
               flex: 1,
               border: "none",
               borderRadius: 8,
-              padding: "8px 12px",
-              fontSize: 12,
+              padding: "0 12px",
+              height: 36,
+              fontSize: 13,
               fontFamily: "Lexend, sans-serif",
               outline: "none",
-              background: "transparent",
+              background: "hsl(var(--color-surface))",
               color: "hsl(var(--color-text-primary))",
             }}
           />
@@ -191,8 +192,8 @@ const TipCommentSection = ({
             style={{
               width: 32,
               height: 32,
-              borderRadius: "50%",
-              background: newComment.trim() ? "#3C2A4D" : "#EDE8F4",
+              borderRadius: 8,
+              background: newComment.trim() ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-raised))",
               border: "none",
               display: "flex",
               alignItems: "center",
@@ -202,7 +203,7 @@ const TipCommentSection = ({
               transition: "background 0.2s",
             }}
           >
-            <Send style={{ width: 14, height: 14, color: newComment.trim() ? "#F7F3EF" : "#857A8F" }} />
+            <Send style={{ width: 13, height: 13, color: newComment.trim() ? "#FFFFFF" : "hsl(var(--color-text-faint))" }} />
           </button>
         </div>
       )}

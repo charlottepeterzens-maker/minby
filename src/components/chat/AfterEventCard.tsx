@@ -106,8 +106,8 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder="Skriv en rad..."
-          className="flex-1 px-3 py-2 text-[12px] rounded-lg border outline-none"
-          style={{ backgroundColor: "hsl(var(--color-surface))", borderColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))" }}
+          className="flex-1 px-3 h-9 text-[13px] rounded-lg outline-none"
+          style={{ backgroundColor: "hsl(var(--color-surface))", border: "none", color: "hsl(var(--color-text-primary))" }}
         />
         <button
           onClick={handleSave}

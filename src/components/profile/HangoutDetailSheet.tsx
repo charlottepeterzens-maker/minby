@@ -537,18 +537,19 @@ const HangoutDetailSheet = ({
                 <Input
                   value={commentText}
                   onChange={e => setCommentText(e.target.value)}
-                  placeholder="Skriv något till alla…"
-                  className="h-9 text-[13px] flex-1 bg-white border-border/30 rounded-lg px-4"
+                  placeholder="Skriv en kommentar…"
+                  className="h-9 text-[13px] flex-1 border-0 rounded-lg px-4"
+                  style={{ backgroundColor: "hsl(var(--color-surface))" }}
                   onKeyDown={e => e.key === "Enter" && !e.shiftKey && handleAddComment()}
                 />
                 <button
                   disabled={sending || !commentText.trim()}
                   onClick={handleAddComment}
-                  className="w-9 h-9 rounded-lg flex items-center justify-center disabled:opacity-40 transition-colors shrink-0"
-                  style={{ backgroundColor: "#3C2A4D" }}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center disabled:opacity-40 transition-colors shrink-0"
+                  style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
                   aria-label="Skicka kommentar"
                 >
-                  <Send className="w-3.5 h-3.5 text-white" />
+                  <Send className="w-3.5 h-3.5" style={{ color: "#FFFFFF" }} />
                 </button>
               </div>
             </div>
