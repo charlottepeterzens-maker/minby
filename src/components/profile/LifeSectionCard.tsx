@@ -525,7 +525,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     imageRef={post.image_url}
                     onClick={() => setExpandedImage(post.image_url)}
                     className="w-full cursor-pointer hover:opacity-90 transition-opacity"
-                    imgClassName="w-full max-h-72 object-cover rounded-md"
+                    imgClassName="block w-full max-h-72 object-cover rounded-md"
                   />
                 </div>
               )}
@@ -641,7 +641,7 @@ const SignedImage = ({
   if (!url) return null;
   const Tag = onClick ? "button" : "div";
   return (
-    <Tag onClick={onClick} className={className}>
+    <Tag onClick={onClick} className={className} style={{ width: "100%", display: "block", padding: 0, border: "none", background: "none" }}>
       <img src={url} alt="" className={imgClassName} />
     </Tag>
   );
