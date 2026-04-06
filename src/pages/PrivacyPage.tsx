@@ -6,7 +6,7 @@ const PrivacyPage = () => {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
-      <div className="max-w-[600px] mx-auto px-6 py-6">
+      <div className="max-w-[600px] mx-auto px-6 py-6 pt-safe">
         <button onClick={() => navigate(-1)} className="mb-6 flex items-center gap-1 text-[13px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
           <ChevronLeft className="w-4 h-4" strokeWidth={1.5} /> Tillbaka
         </button>

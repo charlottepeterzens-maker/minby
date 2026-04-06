@@ -11,6 +11,8 @@
 
 @layer base {
   :root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
     /* Minby — Scandinavian warmth with muted purple */
     --background: 30 33% 95%;
     --foreground: 270 30% 23%;
