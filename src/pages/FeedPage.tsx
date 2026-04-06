@@ -85,8 +85,9 @@ const FeedPage = () => {
     const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
     const todayStr = new Date().toISOString().split("T")[0];
 
+    const allUserIds = [...friendIdArr, user.id];
     const [profilesRes, postsRes, hangoutsRes, myHangoutsRes, tipsRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", friendIdArr),
+      supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", allUserIds),
       supabase
         .from("life_posts")
         .select("id, content, image_url, created_at, user_id, photo_layout, section_id, life_sections(name)")
@@ -144,8 +145,8 @@ const FeedPage = () => {
     // 3. Build person data
     const personList: PersonData[] = friendIdArr.map((fid) => {
       const profile = profileMap.get(fid);
-      const name = profile?.display_name || "Någon";
-      const initials = name
+      const name = profile?.display_name || "Vän";
+      const initials = name === "Vän" ? "?" : name
         .split(" ")
         .map((w) => w[0])
         .join("")
