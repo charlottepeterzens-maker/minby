@@ -648,18 +648,14 @@ const TipCard = ({
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: 6,
+                  gap: 4,
                   fontSize: 13,
-                  color: "hsl(var(--color-text-primary))",
-                  background: "hsl(var(--color-surface-raised))",
-                  borderRadius: 8,
-                  padding: "8px 12px",
-                  textDecoration: "none",
-                  fontWeight: 500,
+                  color: "hsl(var(--color-text-secondary))",
+                  textDecoration: "underline",
+                  textUnderlineOffset: 3,
                 }}
               >
-                <ExternalLink style={{ width: 14, height: 14 }} />
-                Öppna länk
+                Läs mer ↗
               </a>
             )}
             <TipCommentSection tipId={tip.id} tipOwnerId={tip.user_id} tipTitle={tip.title} />
