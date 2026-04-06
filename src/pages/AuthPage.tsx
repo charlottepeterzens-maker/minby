@@ -327,9 +327,13 @@ const AuthPage = () => {
 
           <Button
             type="submit"
-            className="w-full rounded-lg font-medium text-sm"
+            className="w-full font-medium text-sm"
             disabled={loading || (isSignUp && !consent)}
-            style={isSignUp && consent ? { backgroundColor: "hsl(var(--color-text-primary))", color: "#fff" } : undefined}
+            style={{
+              borderRadius: 8,
+              ...(isSignUp && consent ? { backgroundColor: "hsl(var(--color-text-primary))", color: "#fff" } : 
+                !isSignUp ? { backgroundColor: "hsl(var(--color-text-primary))", color: "#fff" } : {}),
+            }}
           >
             {loading ? "..." : isSignUp ? t("createAccount") : t("signIn")}
           </Button>
