@@ -95,9 +95,10 @@ function statusText(f: FriendRow): string {
   if (f.last_activity) {
     const days = Math.floor((Date.now() - new Date(f.last_activity).getTime()) / 86400000);
     if (days === 0) return "aktiv idag";
-    if (days === 1) return "1 d sedan";
-    if (days < 30) return `${days} d sedan`;
-    return "länge sedan";
+    if (days === 1) return "igår";
+    if (days < 7) return `${days} dagar`;
+    if (days < 30) return `${Math.floor(days / 7)} veckor`;
+    return "";
   }
   return "";
 }
@@ -816,7 +817,7 @@ const FriendsPage = () => {
               trigger={
                 <button
                   className="px-3 py-1 text-[11px] font-medium text-white"
-                  style={{ backgroundColor: "#3C2A4D", borderRadius: 99 }}
+                  style={{ backgroundColor: "#3C2A4D", borderRadius: 8 }}
                 >
                   + Nytt
                 </button>
