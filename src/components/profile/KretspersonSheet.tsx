@@ -177,7 +177,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                   <button
                     onClick={() => {
                       onOpenChange(false);
-                      navigate(`/profile/${person.user_id}`);
+                      setHangoutOpen(true);
                     }}
                     className="text-[13px] font-medium mt-1"
                     style={{ color: "#3C2A4D" }}
@@ -199,10 +199,10 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                 whileTap={{ scale: 0.96 }}
                 onClick={() => {
                   onOpenChange(false);
-                  navigate(`/profile/${person.user_id}`);
+                  setHangoutOpen(true);
                 }}
                 className="flex-1 py-2.5 text-[13px] font-medium"
-                style={{ backgroundColor: "#3C2A4D", borderRadius: 99, color: "#FFFFFF" }}
+                style={{ backgroundColor: "#2E1F3E", borderRadius: 8, color: "#F0EAE2" }}
               >
                 Föreslå en träff
               </motion.button>
@@ -210,10 +210,10 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                 whileTap={{ scale: 0.96 }}
                 onClick={() => {
                   onOpenChange(false);
-                  navigate("/friends");
+                  setGroupOpen(true);
                 }}
                 className="flex-1 py-2.5 text-[13px] font-medium"
-                style={{ borderRadius: 99, color: "hsl(var(--color-text-primary))", backgroundColor: "hsl(var(--color-surface-raised))" }}
+                style={{ borderRadius: 8, color: "#2E1F3E", backgroundColor: "#F5F0EA", border: "none" }}
               >
                 Starta sällskap
               </motion.button>
