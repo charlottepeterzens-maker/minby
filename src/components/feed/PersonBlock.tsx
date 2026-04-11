@@ -9,6 +9,7 @@ import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import FeedAvatar from "@/components/feed/FeedAvatar";
 import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
 import { toast } from "sonner";
+import { possessive } from "@/utils/possessive";
 
 export interface PersonData {
   userId: string;
