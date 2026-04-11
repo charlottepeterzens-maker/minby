@@ -437,9 +437,15 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
           >
             <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "hsl(var(--color-border-lavender))", opacity: 0.5 }} />
           </motion.div>
-          <p className="text-[12px] text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
-            Inga förslag just nu
+          <p className="text-[12px] text-center mb-1" style={{ color: "hsl(var(--color-text-muted))" }}>
+            {displayName ? `${displayName} har inga planer just nu` : "Din vän har inga planer just nu"}
           </p>
+          <button
+            onClick={() => setSuggestHangoutOpen(true)}
+            style={{ fontSize: 14, fontWeight: 400, color: "#C4522A", background: "none", border: "none", cursor: "pointer" }}
+          >
+            Föreslå något →
+          </button>
         </motion.div>
       ) : entries.length === 0 && isOwner ? (
         <motion.div
