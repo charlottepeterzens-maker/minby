@@ -207,10 +207,15 @@ const FeedPage = () => {
       };
     });
 
-    // Sort by last activity
-    personList.sort((a, b) => new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime());
+    // Filter out users with no activity (no posts, hangouts, or tips)
+    const activePersons = personList.filter(
+      (p) => p.latestPost || p.activeHangout || p.latestTip
+    );
 
-    setPersons(personList);
+    // Sort by last activity
+    activePersons.sort((a, b) => new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime());
+
+    setPersons(activePersons);
     const items: any[] = [];
 
     // posts
