@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
 import { sv } from "date-fns/locale";
 import { CalendarIcon, X, Plus } from "lucide-react";
@@ -82,11 +82,13 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
   };
 
   // Pre-populate tagged user when sheet opens with initialTaggedUser
-  const prevOpenRef = useState(false);
-  if (open && !prevOpenRef[0] && initialTaggedUser) {
-    setFriends([initialTaggedUser]);
-  }
-  prevOpenRef[1](open);
+  const prevOpenRef = useRef(false);
+  useEffect(() => {
+    if (open && !prevOpenRef.current && initialTaggedUser) {
+      setFriends([initialTaggedUser]);
+    }
+    prevOpenRef.current = open;
+  }, [open, initialTaggedUser]);
 
   const selectType = (type: EntryType) => {
     setEntryType(type);
