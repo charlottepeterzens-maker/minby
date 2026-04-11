@@ -18,6 +18,9 @@ import { sendNotification } from "@/utils/notifications";
 interface CreateGroupDialogProps {
   onGroupCreated: () => void;
   trigger?: ReactNode;
+  externalOpen?: boolean;
+  onExternalOpenChange?: (v: boolean) => void;
+  preselectedFriendIds?: string[];
 }
 
 interface Friend {
@@ -34,9 +37,15 @@ const emojiPresets = [
 { emoji: "💬", label: "Övrigt" }];
 
 
-const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) => {
+const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOpenChange, preselectedFriendIds }: CreateGroupDialogProps) => {
   const { user } = useAuth();
-  const [open, setOpen] = useState(false);
+  const isControlled = externalOpen !== undefined;
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = isControlled ? externalOpen : internalOpen;
+  const setOpen = (v: boolean) => {
+    if (isControlled && onExternalOpenChange) onExternalOpenChange(v);
+    else setInternalOpen(v);
+  };
   const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState("");
   const [selectedEmoji, setSelectedEmoji] = useState("💬");
