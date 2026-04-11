@@ -177,7 +177,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
   const handleSavePost = async () => {
     if (!editingPost) return;
     setSavingPost(true);
-    const updates: Record<string, unknown> = { content: editPostContent.trim() || null };
+    const updates: { content?: string | null; section_id?: string | null } = { content: editPostContent.trim() || null };
     if (editPostSectionId !== editingPost.section_id) {
       updates.section_id = editPostSectionId;
     }
