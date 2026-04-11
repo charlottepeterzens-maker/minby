@@ -81,6 +81,13 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
     onOpenChange(v);
   };
 
+  // Pre-populate tagged user when sheet opens with initialTaggedUser
+  const prevOpenRef = useState(false);
+  if (open && !prevOpenRef[0] && initialTaggedUser) {
+    setFriends([initialTaggedUser]);
+  }
+  prevOpenRef[1](open);
+
   const selectType = (type: EntryType) => {
     setEntryType(type);
     setStep("form");
