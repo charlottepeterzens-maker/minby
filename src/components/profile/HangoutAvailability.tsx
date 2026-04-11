@@ -567,6 +567,14 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
         onRefresh={fetchEntries}
         onAddActivityDate={handleAddActivityDate}
       />
+      {!isOwner && (
+        <AddHangoutSheet
+          open={suggestHangoutOpen}
+          onOpenChange={setSuggestHangoutOpen}
+          onCreated={fetchEntries}
+          initialTaggedUser={{ user_id: userId, display_name: displayName || "Vän" }}
+        />
+      )}
     </div>
   );
 };
