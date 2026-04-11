@@ -17,6 +17,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import ImageLightbox from "@/components/ImageLightbox";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { compressImage } from "@/utils/imageCompression";
@@ -362,11 +363,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false, u
       </Sheet>
 
       {/* Expanded image */}
-      <Dialog open={!!expandedImage} onOpenChange={() => setExpandedImage(null)}>
-        <DialogContent style={{ maxWidth: "90vw", maxHeight: "90vh", padding: 8, background: "#1A0A2E" }}>
-          {expandedImage && <SignedImg imageRef={expandedImage} className="w-full h-full object-contain rounded-lg" />}
-        </DialogContent>
-      </Dialog>
+      <ImageLightbox src={expandedImage} onClose={() => setExpandedImage(null)} />
     </div>
   );
 };
@@ -441,7 +438,7 @@ const PostCard = ({
           <SignedImg
             imageRef={post.image_url}
             className="w-[72px] h-[72px] object-cover rounded-md shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-            onClick={() => onImageClick(post.image_url!)}
+            onClick={(signedUrl) => onImageClick(signedUrl)}
           />
         )}
         <div className="flex-1 min-w-0">
@@ -468,7 +465,7 @@ const PostCard = ({
             imageRef={post.image_url}
             className="w-full cursor-pointer hover:opacity-90 transition-opacity rounded-md overflow-hidden"
             style={{ aspectRatio: "4 / 3", maxHeight: 280, minHeight: 140 }}
-            onClick={() => onImageClick(post.image_url!)}
+            onClick={(signedUrl) => onImageClick(signedUrl)}
           />
         </div>
       )}
@@ -499,14 +496,14 @@ const SignedImg = ({
   imageRef: string;
   className?: string;
   style?: React.CSSProperties;
-  onClick?: () => void;
+  onClick?: (signedUrl: string) => void;
 }) => {
   const url = useSignedImageUrl(imageRef);
   if (!url) return null;
   const Tag = onClick ? "button" : "div";
   return (
     <Tag
-      onClick={onClick}
+      onClick={onClick ? () => onClick(url) : undefined}
       className={`block ${className || ""}`}
       style={{ width: "100%", padding: 0, border: "none", background: "none", ...style }}
     >

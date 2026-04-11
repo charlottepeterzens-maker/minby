@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import ImageLightbox from "@/components/ImageLightbox";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import {
   DropdownMenu,
@@ -494,7 +495,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 {post.image_url && post.photo_layout === "small" && (
                   <SignedImage
                     imageRef={post.image_url}
-                    onClick={() => setExpandedImage(post.image_url)}
+                    onClick={(signedUrl) => setExpandedImage(signedUrl)}
                     className="shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
                     imgClassName="object-cover rounded-md w-[72px] h-[72px]"
                   />
@@ -540,7 +541,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 <div style={{ padding: "8px 12px 0" }}>
                   <SignedImage
                     imageRef={post.image_url}
-                    onClick={() => setExpandedImage(post.image_url)}
+                    onClick={(signedUrl) => setExpandedImage(signedUrl)}
                     className="w-full cursor-pointer hover:opacity-90 transition-opacity"
                     imgClassName="block w-full max-h-72 object-cover rounded-md"
                   />
@@ -564,17 +565,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
         </div>
       )}
 
-      <Dialog open={!!expandedImage} onOpenChange={() => setExpandedImage(null)}>
-        <DialogContent style={{ maxWidth: "90vw", maxHeight: "90vh", padding: 8, background: "#1A0A2E" }}>
-          {expandedImage && (
-            <SignedImage
-              imageRef={expandedImage}
-              className="w-full h-full"
-              imgClassName="w-full h-full object-contain rounded-lg"
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      <ImageLightbox src={expandedImage} onClose={() => setExpandedImage(null)} />
 
       <ConfirmSheet
         open={!!deletePostId}
@@ -674,7 +665,7 @@ const SignedImage = ({
   imgClassName,
 }: {
   imageRef: string;
-  onClick?: () => void;
+  onClick?: (signedUrl: string) => void;
   className?: string;
   imgClassName?: string;
 }) => {
@@ -682,7 +673,7 @@ const SignedImage = ({
   if (!url) return null;
   const Tag = onClick ? "button" : "div";
   return (
-    <Tag onClick={onClick} className={className} style={{ width: "100%", display: "block", padding: 0, border: "none", background: "none" }}>
+    <Tag onClick={onClick ? () => onClick(url) : undefined} className={className} style={{ width: "100%", display: "block", padding: 0, border: "none", background: "none" }}>
       <img src={url} alt="" className={imgClassName} />
     </Tag>
   );

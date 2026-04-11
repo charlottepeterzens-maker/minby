@@ -4,6 +4,7 @@ import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import FeedAvatar from "@/components/feed/FeedAvatar";
+import ImageLightbox from "@/components/ImageLightbox";
 
 interface FeedPostCardProps {
   post: {
@@ -30,6 +31,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
   const timeAgo = getTimeAgo(post.created_at);
   const [showReactions, setShowReactions] = useState(false);
   const signedUrl = useSignedImageUrl(post.image_url);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   return (
     <div
@@ -76,7 +78,8 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
           <img
             src={signedUrl}
             alt=""
-            style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 6, flexShrink: 0 }}
+            onClick={() => setLightboxUrl(signedUrl)}
+            style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 6, flexShrink: 0, cursor: "pointer" }}
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             {post.content && (
@@ -119,7 +122,8 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
         <img
           src={signedUrl}
           alt=""
-          style={{ width: "100%", marginBottom: 10, maxHeight: 280, objectFit: "cover", borderRadius: 6 }}
+          onClick={() => setLightboxUrl(signedUrl)}
+          style={{ width: "100%", marginBottom: 10, maxHeight: 280, objectFit: "cover", borderRadius: 6, cursor: "pointer" }}
         />
       )}
 
@@ -147,6 +151,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
 
       {/* Kommentarer */}
       <PostComments postId={post.id} isOwner={!!isOwn} collapsedInput />
+      <ImageLightbox src={lightboxUrl} onClose={() => setLightboxUrl(null)} />
     </div>
   );
 };

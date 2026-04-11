@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ImageLightbox from "@/components/ImageLightbox";
 import { ChevronRight, ChevronDown, Heart, Check, Calendar, Headphones } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -110,11 +111,15 @@ function formatHangoutDate(dateStr: string): string {
   return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
 }
 
-const PostImage = ({ imageUrl }: { imageUrl: string }) => {
+const PostImage = ({ imageUrl, onClick }: { imageUrl: string; onClick?: (url: string) => void }) => {
   const signedUrl = useSignedImageUrl(imageUrl);
   if (!signedUrl) return null;
   return (
-    <div className="relative w-full rounded-lg overflow-hidden" style={{ maxHeight: 120 }}>
+    <div
+      className="relative w-full rounded-lg overflow-hidden"
+      style={{ maxHeight: 120, cursor: onClick ? "pointer" : undefined }}
+      onClick={() => onClick?.(signedUrl)}
+    >
       <LazyImage src={signedUrl} alt="Inläggsbild" className="w-full h-full" style={{ maxHeight: 120 }} />
       <div className="absolute inset-0" style={{ background: "linear-gradient(transparent 40%, rgba(0,0,0,0.4))" }} />
     </div>
@@ -126,6 +131,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   const [thinkingSent, setThinkingSent] = useState(false);
   const [thinkingLoading, setThinkingLoading] = useState(false);
   const [hangoutSheetOpen, setHangoutSheetOpen] = useState(false);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -251,7 +257,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                     {idx > 0 && (
                       <div className="my-2.5" style={{ borderTop: "1px solid hsl(var(--color-border-subtle))" }} />
                     )}
-                    {post.image_url && <PostImage imageUrl={post.image_url} />}
+                    {post.image_url && <PostImage imageUrl={post.image_url} onClick={setLightboxUrl} />}
                     {post.content && (
                       <p className="text-[13px] mt-1" style={{ color: "hsl(var(--color-text-primary))" }}>
                         {post.content}
@@ -399,6 +405,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
           isOwner={false}
         />
       )}
+      <ImageLightbox src={lightboxUrl} onClose={() => setLightboxUrl(null)} />
     </div>
   );
 };
