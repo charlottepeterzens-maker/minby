@@ -78,7 +78,8 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
           <img
             src={signedUrl}
             alt=""
-            style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 6, flexShrink: 0 }}
+            onClick={() => setLightboxUrl(signedUrl)}
+            style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 6, flexShrink: 0, cursor: "pointer" }}
           />
           <div style={{ flex: 1, minWidth: 0 }}>
             {post.content && (
@@ -121,7 +122,8 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
         <img
           src={signedUrl}
           alt=""
-          style={{ width: "100%", marginBottom: 10, maxHeight: 280, objectFit: "cover", borderRadius: 6 }}
+          onClick={() => setLightboxUrl(signedUrl)}
+          style={{ width: "100%", marginBottom: 10, maxHeight: 280, objectFit: "cover", borderRadius: 6, cursor: "pointer" }}
         />
       )}
 
