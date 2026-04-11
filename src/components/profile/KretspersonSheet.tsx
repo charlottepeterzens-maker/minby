@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { Heart, Calendar, User } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Heart, Calendar } from "lucide-react";
+import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
 import ConfirmSheet from "@/components/ConfirmSheet";
+import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
+import CreateGroupDialog from "@/components/CreateGroupDialog";
 
 interface HangoutStatus {
   entry_type: string;
