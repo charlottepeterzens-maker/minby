@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { possessive } from "@/utils/possessive";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -308,7 +309,7 @@ const TipsFavorites = ({ userId, isOwner, displayName }: { userId: string; isOwn
     <div className="mb-6">
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-fraunces font-normal text-[16px] mt-8 mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
-          {isOwner ? "Mina tips & favoriter" : `${displayName || "Deras"}s tips & favoriter`}
+          {isOwner ? "Mina tips & favoriter" : `${possessive(displayName || "Deras")} tips & favoriter`}
         </h2>
         {isOwner && tips.length < MAX_TIPS && (
           <Sheet

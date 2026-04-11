@@ -10,6 +10,7 @@ import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import FeedAvatar from "@/components/feed/FeedAvatar";
 import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
 import { toast } from "sonner";
+import { possessive } from "@/utils/possessive";
 
 export interface PersonData {
   userId: string;
@@ -317,7 +318,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                 className="mt-3 text-[11px]"
                 style={{ color: "hsl(var(--color-text-secondary))" }}
               >
-                Se alla delar i {person.displayName}s vardag →
+                Se alla delar i {possessive(person.displayName)} vardag →
               </button>
             </div>
           </motion.div>
