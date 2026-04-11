@@ -14,7 +14,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
   const { user } = useAuth();
 
   const [step, setStep] = useState(0);
-  const [intent, setIntent] = useState<"meet" | "browse" | "unsure" | null>(null);
+  
 
   const [showInvite, setShowInvite] = useState(false);
   const [showQR, setShowQR] = useState(false);
@@ -62,93 +62,60 @@ const OnboardingFlow = ({ onComplete }: Props) => {
           {step === 0 && (
             <StepCard key="s0">
               <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
-                Du har sagt "vi måste ses" och menat det. Ändå gick månaderna.
+                Välkommen till Minby
               </h1>
 
               <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                Vi vet vad som händer i varandras liv, men stannar sällan upp. Vi vet – men vi är inte riktigt där.
+                Minby är inte en till social app. Det är ett litet, slutet ställe för dig och de som faktiskt betyder något. Din krets. Här finns inga algoritmer, inga likes och inga följare. Bara ni.
               </p>
 
-              <OnboardingButton onClick={next}>Ja, precis så →</OnboardingButton>
+              <OnboardingButton onClick={next}>Fortsätt →</OnboardingButton>
             </StepCard>
           )}
 
           {step === 1 && (
             <StepCard key="s1">
               <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
-                Minby är något annat.
+                Dela din vardag
               </h1>
 
               <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                En liten, sluten plats – bara för de du faktiskt håller av. Inget brus. Bara din närmaste krets.
+                Skriv något kort om vad som hänt. En bild från lunchen, något barnen sa, en seger på jobbet. Sånt som de som verkligen bryr sig vill veta.
               </p>
 
-              <OnboardingButton onClick={next}>Det låter rätt →</OnboardingButton>
+              <OnboardingButton onClick={next}>Fortsätt →</OnboardingButton>
             </StepCard>
           )}
 
           {step === 2 && (
             <StepCard key="s2">
               <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
-                Två enkla saker.
+                Ses vi?
               </h1>
 
               <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                Dela det som faktiskt händer. Och när du vill ses – säg till.
+                Är du ledig och vill hitta på något? Föreslå en träff eller berätta att du är sugen på spa men inte vet när. Dina närmaste svarar med "Jag kan" eller "Kanske".
               </p>
 
-              <OnboardingButton onClick={next}>Enkelt →</OnboardingButton>
+              <OnboardingButton onClick={next}>Fortsätt →</OnboardingButton>
             </StepCard>
           )}
 
           {step === 3 && (
             <StepCard key="s3">
               <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
-                Hur känns det just nu?
+                Sällskap & Tips
               </h1>
 
-              <div className="space-y-2 mb-6">
-                <button
-                  onClick={() => setIntent("meet")}
-                  className="w-full text-left"
-                  style={{
-                    backgroundColor: intent === "meet" ? "#EDE8F4" : "#FFFFFF",
-                    border: intent === "meet" ? "1.5px solid #3C2A4D" : "none",
-                    borderRadius: 8,
-                    padding: "14px 16px",
-                  }}
-                >
-                  Sugen på att ses
-                </button>
+              <p className="font-light text-[15px] leading-relaxed mb-4" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                En chatt utan reels och störningsmoment. Bara ni och det som faktiskt händer i era liv. Planera att ses, starta en bokklubb, rösta om vart ni ska äta. Låt AI sammanfatta vad ni kommit fram till.
+              </p>
 
-                <button
-                  onClick={() => setIntent("browse")}
-                  className="w-full text-left"
-                  style={{
-                    backgroundColor: intent === "browse" ? "#EDE8F4" : "#FFFFFF",
-                    border: intent === "browse" ? "1.5px solid #3C2A4D" : "none",
-                    borderRadius: 8,
-                    padding: "14px 16px",
-                  }}
-                >
-                  Vill mest kolla läget
-                </button>
+              <p className="font-light text-[15px] leading-relaxed mb-8" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                Dela dina vardagsfavoriter. Den nya ansiktskrämen, bästa vinstället i stan eller podden du lyssnar på varje morgon.
+              </p>
 
-                <button
-                  onClick={() => setIntent("unsure")}
-                  className="w-full text-left"
-                  style={{
-                    backgroundColor: intent === "unsure" ? "#EDE8F4" : "#FFFFFF",
-                    border: intent === "unsure" ? "1.5px solid #3C2A4D" : "none",
-                    borderRadius: 8,
-                    padding: "14px 16px",
-                  }}
-                >
-                  Vet inte riktigt
-                </button>
-              </div>
-
-              <OnboardingButton onClick={next} disabled={!intent}>
+              <OnboardingButton onClick={next}>
                 Fortsätt →
               </OnboardingButton>
             </StepCard>
@@ -157,13 +124,15 @@ const OnboardingFlow = ({ onComplete }: Props) => {
           {step === 4 && (
             <StepCard key="s4">
               <h1 className="font-fraunces text-[22px] font-medium leading-snug mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
-                {intent === "meet" ? "Vem hade du velat ses med?" : "Vem vill du ha i din by?"}
+                Bjud in din krets
               </h1>
 
+              <p className="font-light text-[15px] leading-relaxed mb-4" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                Minby är inte till för att samla följare eller visa upp sig. Det är till för att faktiskt hålla kontakten och faktiskt ses.
+              </p>
+
               <p className="font-light text-[15px] leading-relaxed mb-6" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                {intent === "meet"
-                  ? "Tänk på någon du skulle vilja träffa snart. Bjud in – det tar en minut."
-                  : "Bjud in en person du faktiskt vill hålla kontakten med. Det är där allt börjar."}
+                Bjud in en person du faktiskt vill hålla kontakten med. Det är där allt börjar.
               </p>
 
               <div className="space-y-3 mb-4">
