@@ -109,11 +109,19 @@ const InvitePage = () => {
 
         if (reqError) throw reqError;
 
-        // Create bidirectional friend_access_tiers with default 'outer'
-        await supabase.from("friend_access_tiers").insert([
-          { owner_id: inviterId, friend_user_id: user.id, tier: "outer" as const },
-          { owner_id: user.id, friend_user_id: inviterId, tier: "outer" as const },
-        ]);
+        // Create friend_access_tier for current user's side (RLS allows owner_id = auth.uid())
+        await supabase.from("friend_access_tiers").insert({
+          owner_id: user.id, friend_user_id: inviterId, tier: "outer" as const,
+        });
+        // The inviter's side will be created via an edge function or they can add manually
+        // For now, use a service-role edge function to create the inviter's tier
+        try {
+          await supabase.functions.invoke("accept-invite-friendship", {
+            body: { inviter_id: inviterId, invitee_id: user.id },
+          });
+        } catch {
+          // Non-critical: inviter can still add the tier manually
+        }
 
         // Mark invite as used
         await supabase
