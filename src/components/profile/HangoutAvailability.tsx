@@ -80,6 +80,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activityGroupMap, setActivityGroupMap] = useState<Map<string, AvailabilityEntry[]>>(new Map());
   const [prefillActivityName, setPrefillActivityName] = useState<string | undefined>();
+  const [suggestHangoutOpen, setSuggestHangoutOpen] = useState(false);
 
   const fetchEntries = useCallback(async () => {
     setLoading(true);
