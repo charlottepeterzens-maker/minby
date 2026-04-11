@@ -102,12 +102,18 @@ const InvitePage = () => {
           return;
         }
 
-        // Send friend request
+        // Create accepted friend request (invite = implicit acceptance)
         const { error: reqError } = await supabase
           .from("friend_requests")
-          .insert({ from_user_id: user.id, to_user_id: inviterId });
+          .insert({ from_user_id: inviterId, to_user_id: user.id, status: "accepted" });
 
         if (reqError) throw reqError;
+
+        // Create bidirectional friend_access_tiers with default 'outer'
+        await supabase.from("friend_access_tiers").insert([
+          { owner_id: inviterId, friend_user_id: user.id, tier: "outer" as const },
+          { owner_id: user.id, friend_user_id: inviterId, tier: "outer" as const },
+        ]);
 
         // Mark invite as used
         await supabase
@@ -115,7 +121,7 @@ const InvitePage = () => {
           .update({ used_by: user.id })
           .eq("id", invite.id);
 
-        // Send notification
+        // Send notification to inviter
         const { data: profile } = await supabase
           .from("profiles")
           .select("display_name")
@@ -125,12 +131,12 @@ const InvitePage = () => {
         await supabase.from("notifications").insert({
           user_id: inviterId,
           from_user_id: user.id,
-          type: "friend_request",
-          title: "Vill vara med i din vardag",
-          body: `${profile?.display_name || "Någon"} vill vara med i din vardag`,
+          type: "invite_accepted",
+          title: `${profile?.display_name || "Någon"} har gått med i din krets!`,
+          body: `${profile?.display_name || "Någon"} har gått med i din krets via din inbjudan`,
         });
 
-        toast.success("Skickat!");
+        toast.success("Ni är nu i varandras krets!");
         navigate("/friends", { replace: true });
       } catch (err) {
         console.error("Invite error:", err);
