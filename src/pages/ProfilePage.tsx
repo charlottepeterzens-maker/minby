@@ -245,7 +245,7 @@ const ProfilePage = () => {
             >
               <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </button>
-            <span className="font-fraunces text-[20px] font-medium text-foreground">Mitt</span>
+            <span className="font-fraunces text-[20px] font-medium text-foreground">{isOwnProfile ? "Mitt" : profile?.display_name || ""}</span>
           </div>
           <div className="flex items-center gap-1">{targetUserId && <ProfileShareDialog userId={targetUserId} />}</div>
         </Container>
@@ -418,6 +418,8 @@ const ProfilePage = () => {
             refreshKey={recentRefreshKey}
             limit={showAllPosts ? 50 : 3}
             showFade={!showAllPosts}
+            userId={targetUserId}
+            isOwner={isOwnProfile}
           />
 
           {/* View all link */}

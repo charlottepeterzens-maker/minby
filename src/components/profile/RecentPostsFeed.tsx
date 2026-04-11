@@ -40,12 +40,15 @@ interface Props {
   refreshKey: number;
   limit?: number;
   showFade?: boolean;
+  userId?: string;
+  isOwner?: boolean;
 }
 
 // Post section badge uses dark background for photo overlay readability
 
-const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }: Props) => {
+const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false, userId, isOwner = true }: Props) => {
   const { user } = useAuth();
+  const targetUserId = userId || user?.id;
   const [posts, setPosts] = useState<LifePost[]>([]);
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<LifePost | null>(null);
@@ -58,15 +61,15 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
   const fetchPosts = useCallback(async () => {
-    if (!user) return;
+    if (!targetUserId) return;
     const { data } = await supabase
       .from("life_posts")
       .select("id, content, image_url, photo_layout, created_at, section_id")
-      .eq("user_id", user.id)
+      .eq("user_id", targetUserId)
       .order("created_at", { ascending: false })
       .limit(limit);
     if (data) setPosts(data as LifePost[]);
-  }, [user, limit]);
+  }, [targetUserId, limit]);
 
   useEffect(() => {
     fetchPosts();
@@ -153,6 +156,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
               post={post}
               sectionName={getSectionName(post.section_id)}
               dateStr={formatRelativeDate(post.created_at)}
+              isOwner={isOwner}
               onEdit={() => {
                 setEditingPost(post);
                 setEditPostContent(post.content || "");
@@ -372,6 +376,7 @@ const PostCard = ({
   post,
   sectionName,
   dateStr,
+  isOwner = true,
   onEdit,
   onDelete,
   onImageClick,
@@ -379,6 +384,7 @@ const PostCard = ({
   post: LifePost;
   sectionName: string | null;
   dateStr: string;
+  isOwner?: boolean;
   onEdit: () => void;
   onDelete: () => void;
   onImageClick: (url: string) => void;
@@ -399,32 +405,34 @@ const PostCard = ({
             {sectionName}
           </span>
         ) : <span />}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                fontSize: 16,
-                letterSpacing: 2,
-                color: "#B0A8B5",
-                lineHeight: 1,
-              }}
-            >
-              ···
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-[150px]" style={{ borderRadius: 8 }}>
-            <DropdownMenuItem onClick={onEdit} className="text-xs gap-2 cursor-pointer">
-              <Pencil className="w-3.5 h-3.5" /> Redigera inlägg
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete} className="text-xs gap-2 cursor-pointer text-destructive">
-              <Trash2 className="w-3.5 h-3.5" /> Ta bort inlägg
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {isOwner && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  fontSize: 16,
+                  letterSpacing: 2,
+                  color: "#B0A8B5",
+                  lineHeight: 1,
+                }}
+              >
+                ···
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[150px]" style={{ borderRadius: 8 }}>
+              <DropdownMenuItem onClick={onEdit} className="text-xs gap-2 cursor-pointer">
+                <Pencil className="w-3.5 h-3.5" /> Redigera inlägg
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onDelete} className="text-xs gap-2 cursor-pointer text-destructive">
+                <Trash2 className="w-3.5 h-3.5" /> Ta bort inlägg
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       {/* Row 2 – content */}
