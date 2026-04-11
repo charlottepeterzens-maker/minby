@@ -386,6 +386,7 @@ const ProfilePage = () => {
               isOwner={isOwnProfile}
               openEntryId={notifHangoutId}
               onOpenedEntry={() => setNotifHangoutId(null)}
+              displayName={profile?.display_name}
             />
           </div>
         )}
