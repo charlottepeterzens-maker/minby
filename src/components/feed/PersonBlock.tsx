@@ -257,7 +257,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                     {idx > 0 && (
                       <div className="my-2.5" style={{ borderTop: "1px solid hsl(var(--color-border-subtle))" }} />
                     )}
-                    {post.image_url && <PostImage imageUrl={post.image_url} />}
+                    {post.image_url && <PostImage imageUrl={post.image_url} onClick={setLightboxUrl} />}
                     {post.content && (
                       <p className="text-[13px] mt-1" style={{ color: "hsl(var(--color-text-primary))" }}>
                         {post.content}
