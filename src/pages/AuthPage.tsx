@@ -248,7 +248,7 @@ const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <span style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.2em", color: "#C4522A", textTransform: "uppercase" as const }}>minby</span>
+          <span style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.2em", color: "#C4522A", textTransform: "lowercase" as const }}>minby</span>
           <h1 className="font-display font-medium text-[20px] text-foreground mt-4">
             {isSignUp ? t("joinMinby") : t("welcomeBack")}
           </h1>
@@ -264,8 +264,10 @@ const AuthPage = () => {
                 onChange={(e) => setDisplayName(e.target.value)}
                 placeholder={t("howFriendsKnowYou")}
                 className="mt-1.5 rounded-lg bg-card border-0"
+                style={{ color: "hsl(var(--color-text-primary))" }}
                 required
               />
+              <style>{`#name::placeholder { color: #B0A8B5 !important; opacity: 1; }`}</style>
             </div>
           )}
           <div>
@@ -275,10 +277,12 @@ const AuthPage = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-               className="mt-1.5 rounded-lg bg-card border-0"
+              placeholder="din@epost.se"
+              className="mt-1.5 rounded-lg bg-card border-0"
+              style={{ color: "hsl(var(--color-text-primary))" }}
               required
             />
+            <style>{`#email::placeholder { color: #B0A8B5 !important; opacity: 1; }`}</style>
           </div>
           <div>
             <Label htmlFor="password" className="text-xs text-muted-foreground">{t("password")}</Label>
@@ -289,10 +293,12 @@ const AuthPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               className="mt-1.5 rounded-lg bg-card border-0"
+              style={{ color: "#B0A8B5" }}
               autoComplete={isSignUp ? "new-password" : "current-password"}
               minLength={6}
               required
             />
+            <style>{`#password::placeholder { color: #B0A8B5 !important; opacity: 1; }`}</style>
           </div>
 
           {isSignUp && (
