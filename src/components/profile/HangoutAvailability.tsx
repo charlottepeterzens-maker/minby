@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "@/hooks/use-toast";
 import AddHangoutFreeText from "@/components/profile/AddHangoutFreeText";
+import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
 
 interface AvailabilityEntry {
@@ -35,6 +36,7 @@ interface Props {
   isOwner: boolean;
   openEntryId?: string | null;
   onOpenedEntry?: () => void;
+  displayName?: string | null;
 }
 
 const TYPE_COLORS: Record<string, string> = {
@@ -64,7 +66,7 @@ const getActivityName = (entry: AvailabilityEntry) => {
   return entry.activities.length > 0 ? getActivityLabel(entry.activities[0]) : entry.custom_note || "";
 };
 
-const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Props) => {
+const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, displayName }: Props) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [entries, setEntries] = useState<AvailabilityEntry[]>([]);
@@ -78,6 +80,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activityGroupMap, setActivityGroupMap] = useState<Map<string, AvailabilityEntry[]>>(new Map());
   const [prefillActivityName, setPrefillActivityName] = useState<string | undefined>();
+  const [suggestHangoutOpen, setSuggestHangoutOpen] = useState(false);
 
   const fetchEntries = useCallback(async () => {
     setLoading(true);
@@ -434,9 +437,15 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
           >
             <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "hsl(var(--color-border-lavender))", opacity: 0.5 }} />
           </motion.div>
-          <p className="text-[12px] text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
-            Inga förslag just nu
+          <p className="text-[12px] text-center mb-1" style={{ color: "hsl(var(--color-text-muted))" }}>
+            {displayName ? `${displayName} har inga planer just nu` : "Din vän har inga planer just nu"}
           </p>
+          <button
+            onClick={() => setSuggestHangoutOpen(true)}
+            style={{ fontSize: 14, fontWeight: 400, color: "#C4522A", background: "none", border: "none", cursor: "pointer" }}
+          >
+            Föreslå något →
+          </button>
         </motion.div>
       ) : entries.length === 0 && isOwner ? (
         <motion.div
@@ -558,6 +567,14 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Pr
         onRefresh={fetchEntries}
         onAddActivityDate={handleAddActivityDate}
       />
+      {!isOwner && (
+        <AddHangoutSheet
+          open={suggestHangoutOpen}
+          onOpenChange={setSuggestHangoutOpen}
+          onCreated={fetchEntries}
+          initialTaggedUser={{ user_id: userId, display_name: displayName || "Vän" }}
+        />
+      )}
     </div>
   );
 };
