@@ -418,6 +418,8 @@ const ProfilePage = () => {
             refreshKey={recentRefreshKey}
             limit={showAllPosts ? 50 : 3}
             showFade={!showAllPosts}
+            userId={targetUserId}
+            isOwner={isOwnProfile}
           />
 
           {/* View all link */}
