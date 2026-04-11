@@ -18,6 +18,9 @@ import { sendNotification } from "@/utils/notifications";
 interface CreateGroupDialogProps {
   onGroupCreated: () => void;
   trigger?: ReactNode;
+  externalOpen?: boolean;
+  onExternalOpenChange?: (v: boolean) => void;
+  preselectedFriendIds?: string[];
 }
 
 interface Friend {
@@ -34,9 +37,15 @@ const emojiPresets = [
 { emoji: "💬", label: "Övrigt" }];
 
 
-const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) => {
+const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOpenChange, preselectedFriendIds }: CreateGroupDialogProps) => {
   const { user } = useAuth();
-  const [open, setOpen] = useState(false);
+  const isControlled = externalOpen !== undefined;
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = isControlled ? externalOpen : internalOpen;
+  const setOpen = (v: boolean) => {
+    if (isControlled && onExternalOpenChange) onExternalOpenChange(v);
+    else setInternalOpen(v);
+  };
   const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState("");
   const [selectedEmoji, setSelectedEmoji] = useState("💬");
@@ -74,6 +83,16 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
     };
     fetchFriends();
   }, [open, user]);
+
+  // Pre-select friends when opened with preselectedFriendIds
+  useEffect(() => {
+    if (open && preselectedFriendIds?.length) {
+      setSelectedFriends(prev => {
+        const merged = new Set([...prev, ...preselectedFriendIds]);
+        return Array.from(merged);
+      });
+    }
+  }, [open, preselectedFriendIds]);
 
   const toggleFriend = (id: string) => {
     setSelectedFriends((prev) =>
@@ -139,13 +158,15 @@ const CreateGroupDialog = ({ onGroupCreated, trigger }: CreateGroupDialogProps) 
 
   return (
     <Drawer open={open} onOpenChange={(v) => {setOpen(v);if (!v) resetState();}}>
-      <DrawerTrigger asChild>
-        {trigger ||
-        <Button variant="ghost" size="sm" className="gap-1.5">
-            <Plus className="w-4 h-4" /> Nytt sällskap
-          </Button>
-        }
-      </DrawerTrigger>
+      {!isControlled && (
+        <DrawerTrigger asChild>
+          {trigger ||
+          <Button variant="ghost" size="sm" className="gap-1.5">
+              <Plus className="w-4 h-4" /> Nytt sällskap
+            </Button>
+          }
+        </DrawerTrigger>
+      )}
       <DrawerContent
         className="mx-auto max-w-lg border-0"
         style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: "20px 20px 0 0" }}>
