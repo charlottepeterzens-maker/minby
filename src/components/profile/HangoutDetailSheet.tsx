@@ -395,10 +395,17 @@ const HangoutDetailSheet = ({
               )}
 
               {/* Owner name (viewing someone else's) */}
-              {!isOwner && (
-                <p className="text-[12px] pt-1" style={{ color: "#7A6A85" }}>
+              {!isOwner && entry.user_id && (
+                <button
+                  onClick={() => {
+                    onOpenChange(false);
+                    navigate(`/profile/${entry.user_id}`);
+                  }}
+                  className="text-[12px] pt-1 hover:underline"
+                  style={{ color: "#7A6A85", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                >
                   {ownerName}
-                </p>
+                </button>
               )}
             </div>
 
