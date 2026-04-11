@@ -405,32 +405,34 @@ const PostCard = ({
             {sectionName}
           </span>
         ) : <span />}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                cursor: "pointer",
-                fontSize: 16,
-                letterSpacing: 2,
-                color: "#B0A8B5",
-                lineHeight: 1,
-              }}
-            >
-              ···
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-[150px]" style={{ borderRadius: 8 }}>
-            <DropdownMenuItem onClick={onEdit} className="text-xs gap-2 cursor-pointer">
-              <Pencil className="w-3.5 h-3.5" /> Redigera inlägg
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={onDelete} className="text-xs gap-2 cursor-pointer text-destructive">
-              <Trash2 className="w-3.5 h-3.5" /> Ta bort inlägg
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {isOwner && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  fontSize: 16,
+                  letterSpacing: 2,
+                  color: "#B0A8B5",
+                  lineHeight: 1,
+                }}
+              >
+                ···
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[150px]" style={{ borderRadius: 8 }}>
+              <DropdownMenuItem onClick={onEdit} className="text-xs gap-2 cursor-pointer">
+                <Pencil className="w-3.5 h-3.5" /> Redigera inlägg
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onDelete} className="text-xs gap-2 cursor-pointer text-destructive">
+                <Trash2 className="w-3.5 h-3.5" /> Ta bort inlägg
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       {/* Row 2 – content */}
