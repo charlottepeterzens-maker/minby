@@ -49,8 +49,8 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
             marginBottom: 24,
           }}
         >
-          Du scrollar i timmar och vet ändå inte hur din bästa vän{" "}
-          <em style={{ fontStyle: "italic", color: "#C4522A" }}>egentligen</em> mår.
+          Äntligen ett ställe{" "}
+          <em style={{ fontStyle: "italic", color: "#C4522A" }}>bara för er.</em>
         </h1>
 
         {/* Subheading */}
@@ -60,22 +60,9 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
             fontWeight: 300,
             color: "#2E1F3E",
             lineHeight: 1.6,
-            marginBottom: 8,
           }}
         >
-          Minby är din slutna krets – de närmaste, de som faktiskt vill veta.
-        </p>
-
-        {/* Description */}
-        <p
-          style={{
-            fontSize: 13,
-            fontWeight: 300,
-            color: "#9B8BA5",
-            lineHeight: 1.6,
-          }}
-        >
-          Dela din dag. Planera något. Ses på riktigt.
+          Minby är din slutna krets. Dela vardagen och ses på riktigt med de som betyder mest.
         </p>
       </div>
 
