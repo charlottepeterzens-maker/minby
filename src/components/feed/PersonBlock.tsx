@@ -405,6 +405,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
           isOwner={false}
         />
       )}
+      <ImageLightbox src={lightboxUrl} onClose={() => setLightboxUrl(null)} />
     </div>
   );
 };
