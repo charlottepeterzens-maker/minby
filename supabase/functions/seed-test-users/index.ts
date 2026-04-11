@@ -6,6 +6,12 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const TEST_EMAILS = [
+  "emma.lindgren.minby@gmail.com",
+  "sara.karlsson.minby@gmail.com",
+  "karin.nilsson.minby@gmail.com",
+];
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -20,7 +26,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Verify caller
     const anonClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_ANON_KEY")!,
@@ -36,17 +41,51 @@ Deno.serve(async (req) => {
     }
     const callerUserId = claimsData.claims.sub;
 
-    // Admin client for creating users
     const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    // --- CLEANUP: delete old test users completely ---
+    const { data: { users: allUsers } } = await adminClient.auth.admin.listUsers();
+    const oldTestUsers = allUsers?.filter((u) => TEST_EMAILS.includes(u.email ?? "")) ?? [];
+
+    for (const oldUser of oldTestUsers) {
+      const uid = oldUser.id;
+      // Delete from all public tables (order matters for FK)
+      await adminClient.from("hangout_responses").delete().eq("user_id", uid);
+      await adminClient.from("hangout_comments").delete().eq("user_id", uid);
+      await adminClient.from("hangout_tagged_friends").delete().or(`tagged_by.eq.${uid},tagged_user_id.eq.${uid}`);
+      await adminClient.from("hangout_availability").delete().eq("user_id", uid);
+      await adminClient.from("post_reactions").delete().eq("user_id", uid);
+      await adminClient.from("post_comments").delete().eq("user_id", uid);
+      await adminClient.from("tip_comments").delete().eq("user_id", uid);
+      await adminClient.from("saved_tips").delete().eq("user_id", uid);
+      await adminClient.from("user_tips").delete().eq("user_id", uid);
+      await adminClient.from("life_posts").delete().eq("user_id", uid);
+      await adminClient.from("life_sections").delete().eq("user_id", uid);
+      await adminClient.from("friend_access_tiers").delete().or(`owner_id.eq.${uid},friend_user_id.eq.${uid}`);
+      await adminClient.from("friend_requests").delete().or(`from_user_id.eq.${uid},to_user_id.eq.${uid}`);
+      await adminClient.from("notifications").delete().or(`user_id.eq.${uid},from_user_id.eq.${uid}`);
+      await adminClient.from("message_reactions").delete().eq("user_id", uid);
+      await adminClient.from("group_messages").delete().eq("user_id", uid);
+      await adminClient.from("group_memberships").delete().eq("user_id", uid);
+      await adminClient.from("group_memories").delete().eq("user_id", uid);
+      await adminClient.from("poll_votes").delete().eq("user_id", uid);
+      await adminClient.from("push_subscriptions").delete().eq("user_id", uid);
+      await adminClient.from("workout_entries").delete().eq("user_id", uid);
+      await adminClient.from("period_entries").delete().eq("user_id", uid);
+      await adminClient.from("profiles").delete().eq("user_id", uid);
+      // Delete the auth user
+      await adminClient.auth.admin.deleteUser(uid);
+    }
+
+    // --- CREATE new test users ---
     const now = new Date();
     const daysAgo = (d: number) => new Date(now.getTime() - d * 86400000).toISOString();
     const daysFromNow = (d: number) => {
       const date = new Date(now.getTime() + d * 86400000);
-      return date.toISOString().split("T")[0]; // date only for hangout
+      return date.toISOString().split("T")[0];
     };
 
     const testUsers = [
@@ -123,66 +162,30 @@ Deno.serve(async (req) => {
     const createdUserIds: string[] = [];
 
     for (const tu of testUsers) {
-      // Check if user already exists by looking up profile
-      const { data: existingProfile } = await adminClient
-        .from("profiles")
-        .select("user_id")
-        .eq("display_name", tu.display_name)
-        .ilike("bio", tu.bio.substring(0, 20) + "%")
-        .maybeSingle();
+      // Create auth user
+      const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
+        email: tu.email,
+        password: tu.password,
+        email_confirm: true,
+        user_metadata: { display_name: tu.display_name },
+      });
 
-      let userId: string;
-
-      if (existingProfile) {
-        userId = existingProfile.user_id;
-      } else {
-        // Create auth user
-        const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
-          email: tu.email,
-          password: tu.password,
-          email_confirm: true,
-          user_metadata: { display_name: tu.display_name },
-        });
-
-        if (authError) {
-          // User might exist in auth but not profile
-          if (authError.message?.includes("already been registered")) {
-            const { data: { users } } = await adminClient.auth.admin.listUsers();
-            const existing = users?.find((u) => u.email === tu.email);
-            if (!existing) throw new Error(`Cannot find existing user ${tu.email}`);
-            userId = existing.id;
-          } else {
-            throw authError;
-          }
-        } else {
-          userId = authData.user!.id;
-        }
-
-        // Update profile with bio
-        await adminClient
-          .from("profiles")
-          .update({ bio: tu.bio, display_name: tu.display_name })
-          .eq("user_id", userId);
-      }
-
+      if (authError) throw authError;
+      const userId = authData.user!.id;
       createdUserIds.push(userId);
 
-      // Friend requests (bidirectional)
-      const { data: existingFr } = await adminClient
-        .from("friend_requests")
-        .select("id")
-        .or(`and(from_user_id.eq.${callerUserId},to_user_id.eq.${userId}),and(from_user_id.eq.${userId},to_user_id.eq.${callerUserId})`)
-        .maybeSingle();
+      // Update profile
+      await adminClient
+        .from("profiles")
+        .update({ bio: tu.bio, display_name: tu.display_name })
+        .eq("user_id", userId);
 
-      if (!existingFr) {
-        await adminClient.from("friend_requests").insert({
-          from_user_id: callerUserId,
-          to_user_id: userId,
-          status: "accepted",
-        });
-      }
-
-      // Friend access tiers (both directions)
+      // Friend request + access tiers (bidirectional)
+      await adminClient.from("friend_requests").insert({
+        from_user_id: callerUserId,
+        to_user_id: userId,
+        status: "accepted",
+      });
       await adminClient.from("friend_access_tiers").upsert(
         { owner_id: callerUserId, friend_user_id: userId, tier: "outer" },
         { onConflict: "owner_id,friend_user_id" }
@@ -196,80 +199,45 @@ Deno.serve(async (req) => {
       const sectionIds: string[] = [];
       for (let i = 0; i < tu.sections.length; i++) {
         const sec = tu.sections[i];
-        const { data: existingSec } = await adminClient
+        const { data: newSec } = await adminClient
           .from("life_sections")
+          .insert({ user_id: userId, name: sec.name, emoji: sec.emoji, sort_order: i })
           .select("id")
-          .eq("user_id", userId)
-          .eq("name", sec.name)
-          .maybeSingle();
-
-        if (existingSec) {
-          sectionIds.push(existingSec.id);
-        } else {
-          const { data: newSec } = await adminClient
-            .from("life_sections")
-            .insert({ user_id: userId, name: sec.name, emoji: sec.emoji, sort_order: i })
-            .select("id")
-            .single();
-          sectionIds.push(newSec!.id);
-        }
+          .single();
+        sectionIds.push(newSec!.id);
       }
 
       // Life posts
-      const { data: existingPosts } = await adminClient
-        .from("life_posts")
-        .select("id")
-        .eq("user_id", userId)
-        .limit(1);
-
-      if (!existingPosts?.length) {
-        for (const post of tu.posts) {
-          await adminClient.from("life_posts").insert({
-            user_id: userId,
-            content: post.content,
-            section_id: sectionIds[post.sectionIdx],
-            created_at: daysAgo(post.daysAgo),
-          });
-        }
+      for (const post of tu.posts) {
+        await adminClient.from("life_posts").insert({
+          user_id: userId,
+          content: post.content,
+          section_id: sectionIds[post.sectionIdx],
+          created_at: daysAgo(post.daysAgo),
+        });
       }
 
       // Hangout availability
-      const { data: existingHangouts } = await adminClient
-        .from("hangout_availability")
-        .select("id")
-        .eq("user_id", userId)
-        .limit(1);
-
-      if (!existingHangouts?.length) {
-        for (const h of tu.hangouts) {
-          await adminClient.from("hangout_availability").insert({
-            user_id: userId,
-            entry_type: h.entry_type,
-            activities: h.activities,
-            custom_note: h.custom_note,
-            date: daysFromNow(h.daysFromNow),
-          });
-        }
+      for (const h of tu.hangouts) {
+        await adminClient.from("hangout_availability").insert({
+          user_id: userId,
+          entry_type: h.entry_type,
+          activities: h.activities,
+          custom_note: h.custom_note,
+          date: daysFromNow(h.daysFromNow),
+        });
       }
 
       // User tips
-      const { data: existingTips } = await adminClient
-        .from("user_tips")
-        .select("id")
-        .eq("user_id", userId)
-        .limit(1);
-
-      if (!existingTips?.length) {
-        for (let i = 0; i < tu.tips.length; i++) {
-          const tip = tu.tips[i];
-          await adminClient.from("user_tips").insert({
-            user_id: userId,
-            title: tip.title,
-            category: tip.category,
-            comment: tip.comment,
-            sort_order: i,
-          });
-        }
+      for (let i = 0; i < tu.tips.length; i++) {
+        const tip = tu.tips[i];
+        await adminClient.from("user_tips").insert({
+          user_id: userId,
+          title: tip.title,
+          category: tip.category,
+          comment: tip.comment,
+          sort_order: i,
+        });
       }
     }
 
