@@ -131,6 +131,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   const [thinkingSent, setThinkingSent] = useState(false);
   const [thinkingLoading, setThinkingLoading] = useState(false);
   const [hangoutSheetOpen, setHangoutSheetOpen] = useState(false);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
