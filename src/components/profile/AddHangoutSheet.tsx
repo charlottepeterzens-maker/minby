@@ -21,6 +21,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onCreated: () => void;
+  initialTaggedUser?: { user_id: string; display_name: string } | null;
 }
 
 const TYPE_OPTIONS: { value: EntryType; title: string; desc: string; hint: string }[] = [
@@ -40,7 +41,7 @@ const formatDateChip = (d: Date) => {
   return `${weekday} ${format(d, "d MMM", { locale: sv })}`;
 };
 
-const AddHangoutSheet = ({ open, onOpenChange, onCreated }: Props) => {
+const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: Props) => {
   const { user } = useAuth();
   const [step, setStep] = useState<"type" | "form">("type");
   const [entryType, setEntryType] = useState<EntryType>("available");
