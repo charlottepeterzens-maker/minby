@@ -442,7 +442,7 @@ const PostCard = ({
           <SignedImg
             imageRef={post.image_url}
             className="w-[72px] h-[72px] object-cover rounded-md shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
-            onClick={() => onImageClick(post.image_url!)}
+            onClick={(signedUrl) => onImageClick(signedUrl)}
           />
         )}
         <div className="flex-1 min-w-0">
@@ -469,7 +469,7 @@ const PostCard = ({
             imageRef={post.image_url}
             className="w-full cursor-pointer hover:opacity-90 transition-opacity rounded-md overflow-hidden"
             style={{ aspectRatio: "4 / 3", maxHeight: 280, minHeight: 140 }}
-            onClick={() => onImageClick(post.image_url!)}
+            onClick={(signedUrl) => onImageClick(signedUrl)}
           />
         </div>
       )}
