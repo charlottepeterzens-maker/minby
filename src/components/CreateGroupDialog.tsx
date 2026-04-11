@@ -84,6 +84,16 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
     fetchFriends();
   }, [open, user]);
 
+  // Pre-select friends when opened with preselectedFriendIds
+  useEffect(() => {
+    if (open && preselectedFriendIds?.length) {
+      setSelectedFriends(prev => {
+        const merged = new Set([...prev, ...preselectedFriendIds]);
+        return Array.from(merged);
+      });
+    }
+  }, [open, preselectedFriendIds]);
+
   const toggleFriend = (id: string) => {
     setSelectedFriends((prev) =>
     prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
