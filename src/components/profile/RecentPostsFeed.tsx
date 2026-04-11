@@ -40,12 +40,15 @@ interface Props {
   refreshKey: number;
   limit?: number;
   showFade?: boolean;
+  userId?: string;
+  isOwner?: boolean;
 }
 
 // Post section badge uses dark background for photo overlay readability
 
-const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }: Props) => {
+const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false, userId, isOwner = true }: Props) => {
   const { user } = useAuth();
+  const targetUserId = userId || user?.id;
   const [posts, setPosts] = useState<LifePost[]>([]);
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
   const [editingPost, setEditingPost] = useState<LifePost | null>(null);
@@ -58,15 +61,15 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false }:
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
   const fetchPosts = useCallback(async () => {
-    if (!user) return;
+    if (!targetUserId) return;
     const { data } = await supabase
       .from("life_posts")
       .select("id, content, image_url, photo_layout, created_at, section_id")
-      .eq("user_id", user.id)
+      .eq("user_id", targetUserId)
       .order("created_at", { ascending: false })
       .limit(limit);
     if (data) setPosts(data as LifePost[]);
-  }, [user, limit]);
+  }, [targetUserId, limit]);
 
   useEffect(() => {
     fetchPosts();
