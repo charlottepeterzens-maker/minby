@@ -49,8 +49,9 @@ function relativeTime(dateStr: string | null): string {
 
 const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, onToggleMute }: Props) => {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [removeConfirm, setRemoveConfirm] = useState(false);
+  const [hangoutOpen, setHangoutOpen] = useState(false);
+  const [groupOpen, setGroupOpen] = useState(false);
 
   const isClose = person.tier === "close";
   const isMuted = mutedUsers.includes(person.user_id);
