@@ -158,13 +158,15 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
 
   return (
     <Drawer open={open} onOpenChange={(v) => {setOpen(v);if (!v) resetState();}}>
-      <DrawerTrigger asChild>
-        {trigger ||
-        <Button variant="ghost" size="sm" className="gap-1.5">
-            <Plus className="w-4 h-4" /> Nytt sällskap
-          </Button>
-        }
-      </DrawerTrigger>
+      {!isControlled && (
+        <DrawerTrigger asChild>
+          {trigger ||
+          <Button variant="ghost" size="sm" className="gap-1.5">
+              <Plus className="w-4 h-4" /> Nytt sällskap
+            </Button>
+          }
+        </DrawerTrigger>
+      )}
       <DrawerContent
         className="mx-auto max-w-lg border-0"
         style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: "20px 20px 0 0" }}>
