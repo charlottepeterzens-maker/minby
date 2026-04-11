@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "@/hooks/use-toast";
 import AddHangoutFreeText from "@/components/profile/AddHangoutFreeText";
+import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
 
 interface AvailabilityEntry {
@@ -35,6 +36,7 @@ interface Props {
   isOwner: boolean;
   openEntryId?: string | null;
   onOpenedEntry?: () => void;
+  displayName?: string | null;
 }
 
 const TYPE_COLORS: Record<string, string> = {
@@ -64,7 +66,7 @@ const getActivityName = (entry: AvailabilityEntry) => {
   return entry.activities.length > 0 ? getActivityLabel(entry.activities[0]) : entry.custom_note || "";
 };
 
-const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry }: Props) => {
+const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, displayName }: Props) => {
   const { user } = useAuth();
   const { t } = useLanguage();
   const [entries, setEntries] = useState<AvailabilityEntry[]>([]);
