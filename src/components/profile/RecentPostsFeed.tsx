@@ -17,6 +17,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import ImageLightbox from "@/components/ImageLightbox";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { compressImage } from "@/utils/imageCompression";
@@ -499,14 +500,14 @@ const SignedImg = ({
   imageRef: string;
   className?: string;
   style?: React.CSSProperties;
-  onClick?: () => void;
+  onClick?: (signedUrl: string) => void;
 }) => {
   const url = useSignedImageUrl(imageRef);
   if (!url) return null;
   const Tag = onClick ? "button" : "div";
   return (
     <Tag
-      onClick={onClick}
+      onClick={onClick ? () => onClick(url) : undefined}
       className={`block ${className || ""}`}
       style={{ width: "100%", padding: 0, border: "none", background: "none", ...style }}
     >
