@@ -311,7 +311,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                 className="mt-3 text-[11px]"
                 style={{ color: "hsl(var(--color-text-secondary))" }}
               >
-                Se alla delar i {person.displayName}s vardag →
+                Se alla delar i {possessive(person.displayName)} vardag →
               </button>
             </div>
           </motion.div>
