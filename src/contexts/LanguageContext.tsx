@@ -87,7 +87,7 @@ const translations = {
     notificationsHint: "You'll see gathering invites, friend requests, and updates here",
 
     // Auth page
-    joinMinby: "Join MINBY",
+    joinMinby: "Create account",
     welcomeBack: "Sign in",
     startPlanning: "Start planning real moments with your people",
     yourFriendsWaiting: "Sign in to continue",
@@ -362,7 +362,7 @@ const translations = {
     notificationsHint: "Du ser träffinbjudningar, kretsförfrågningar och uppdateringar här",
 
     // Auth page
-    joinMinby: "Gå med i MINBY",
+    joinMinby: "Skapa konto",
     welcomeBack: "Logga in",
     startPlanning: "Börja planera riktiga stunder med dina nära",
     yourFriendsWaiting: "Logga in för att fortsätta",
