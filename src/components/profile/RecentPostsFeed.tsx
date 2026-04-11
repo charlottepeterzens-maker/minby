@@ -156,6 +156,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false, u
               post={post}
               sectionName={getSectionName(post.section_id)}
               dateStr={formatRelativeDate(post.created_at)}
+              isOwner={isOwner}
               onEdit={() => {
                 setEditingPost(post);
                 setEditPostContent(post.content || "");
@@ -375,6 +376,7 @@ const PostCard = ({
   post,
   sectionName,
   dateStr,
+  isOwner = true,
   onEdit,
   onDelete,
   onImageClick,
@@ -382,6 +384,7 @@ const PostCard = ({
   post: LifePost;
   sectionName: string | null;
   dateStr: string;
+  isOwner?: boolean;
   onEdit: () => void;
   onDelete: () => void;
   onImageClick: (url: string) => void;
