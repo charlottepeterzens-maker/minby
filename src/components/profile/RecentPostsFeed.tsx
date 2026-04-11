@@ -363,11 +363,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false, u
       </Sheet>
 
       {/* Expanded image */}
-      <Dialog open={!!expandedImage} onOpenChange={() => setExpandedImage(null)}>
-        <DialogContent style={{ maxWidth: "90vw", maxHeight: "90vh", padding: 8, background: "#1A0A2E" }}>
-          {expandedImage && <SignedImg imageRef={expandedImage} className="w-full h-full object-contain rounded-lg" />}
-        </DialogContent>
-      </Dialog>
+      <ImageLightbox src={expandedImage} onClose={() => setExpandedImage(null)} />
     </div>
   );
 };
