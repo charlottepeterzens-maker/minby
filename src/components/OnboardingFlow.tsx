@@ -14,7 +14,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
   const { user } = useAuth();
 
   const [step, setStep] = useState(0);
-  const [intent, setIntent] = useState<"meet" | "browse" | "unsure" | null>(null);
+  
 
   const [showInvite, setShowInvite] = useState(false);
   const [showQR, setShowQR] = useState(false);
