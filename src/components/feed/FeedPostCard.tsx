@@ -4,6 +4,7 @@ import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
 import FeedAvatar from "@/components/feed/FeedAvatar";
+import ImageLightbox from "@/components/ImageLightbox";
 
 interface FeedPostCardProps {
   post: {
@@ -30,6 +31,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
   const timeAgo = getTimeAgo(post.created_at);
   const [showReactions, setShowReactions] = useState(false);
   const signedUrl = useSignedImageUrl(post.image_url);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   return (
     <div
