@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -237,9 +237,11 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
     }
   };
 
-  if (open && !link && !loading) {
-    generate();
-  }
+  useEffect(() => {
+    if (open && !link && !loading) {
+      generate();
+    }
+  }, [open]);
 
   const handleCopy = async () => {
     if (!link) return;
