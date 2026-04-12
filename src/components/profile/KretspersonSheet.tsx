@@ -11,12 +11,15 @@ import { sv } from "date-fns/locale";
 import ConfirmSheet from "@/components/ConfirmSheet";
 import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
+import FeedHangoutCard from "@/components/feed/FeedHangoutCard";
 
 interface HangoutStatus {
+  id: string;
   entry_type: string;
   date: string;
   activities: string[];
   custom_note: string | null;
+  user_id: string;
 }
 
 interface Props {
@@ -100,19 +103,6 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
   };
 
   const hangout = person.hangout_status;
-  let hangoutText = "";
-  let hangoutDate = "";
-  if (hangout) {
-    const dateObj = new Date(hangout.date + "T00:00:00");
-    hangoutDate = format(dateObj, "EEEE d MMMM", { locale: sv });
-    if (hangout.custom_note) {
-      hangoutText = hangout.custom_note;
-    } else if (hangout.activities.length > 0) {
-      hangoutText = hangout.activities.join(", ");
-    } else {
-      hangoutText = hangout.entry_type === "confirmed" ? "häng med" : "ledig";
-    }
-  }
 
   return (
     <>
@@ -166,15 +156,26 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
               transition={{ delay: 0.12, type: "spring", stiffness: 300, damping: 24 }}
             >
               {hangout ? (
-                <div
-                  className="mb-4 p-3 flex items-start gap-2.5"
-                  style={{ backgroundColor: "#EAF2E8", borderRadius: 8 }}
-                >
-                  <Calendar className="w-4 h-4 shrink-0 mt-0.5" style={{ color: "#1F4A2E" }} />
-                  <div>
-                    <p className="text-[13px]" style={{ color: "#1F4A2E" }}>{hangoutText}</p>
-                    <p className="text-[11px] mt-0.5" style={{ color: "#4A7A5E" }}>{hangoutDate}</p>
-                  </div>
+                <div className="mb-4">
+                  <FeedHangoutCard
+                    hangout={{
+                      id: hangout.id,
+                      date: hangout.date,
+                      activities: hangout.activities,
+                      custom_note: hangout.custom_note,
+                      created_at: "",
+                      entry_type: hangout.entry_type,
+                      user_id: hangout.user_id,
+                    }}
+                    profile={{
+                      display_name: person.display_name,
+                      avatar_url: person.avatar_url,
+                      initials: person.initial,
+                    }}
+                    isOwn={false}
+                    onProfileClick={() => {}}
+                    onRefresh={onUpdate}
+                  />
                 </div>
               ) : (
                 <div className="mb-4">

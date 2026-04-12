@@ -18,10 +18,12 @@ import { Container } from "@/components/layout";
 import CreateGroupDialog from "@/components/CreateGroupDialog";
 
 interface HangoutStatus {
+  id: string;
   entry_type: string;
   date: string;
   activities: string[];
   custom_note: string | null;
+  user_id: string;
 }
 
 interface FriendRow {
@@ -220,7 +222,7 @@ const FriendsPage = () => {
           .order("created_at", { ascending: false }),
         supabase
           .from("hangout_availability")
-          .select("user_id, entry_type, date, activities, custom_note")
+          .select("id, user_id, entry_type, date, activities, custom_note")
           .in("user_id", friendIds)
           .gte("date", today)
           .order("date", { ascending: true }),
@@ -235,10 +237,12 @@ const FriendsPage = () => {
       hangouts?.forEach((h: any) => {
         if (!hangoutMap.has(h.user_id)) {
           hangoutMap.set(h.user_id, {
+            id: h.id,
             entry_type: h.entry_type || "available",
             date: h.date,
             activities: h.activities || [],
             custom_note: h.custom_note,
+            user_id: h.user_id,
           });
         }
       });
