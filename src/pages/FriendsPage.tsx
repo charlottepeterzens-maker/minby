@@ -912,16 +912,14 @@ const FriendsPage = () => {
       <ScrollToTopButton />
       <BottomNav />
 
-      {selectedPerson && (
-        <KretspersonSheet
-          open={!!selectedPerson}
-          onOpenChange={(v) => { if (!v) setSelectedPerson(null); }}
-          person={selectedPerson}
-          onUpdate={() => { fetchData(); setSelectedPerson(null); }}
-          mutedUsers={mutedUsers}
-          onToggleMute={(userId) => { handleToggleMute(userId); setSelectedPerson(null); }}
-        />
-      )}
+      <KretspersonSheet
+        open={!!selectedPerson}
+        onOpenChange={(v) => { if (!v) setSelectedPerson(null); }}
+        person={selectedPerson || { user_id: "", display_name: "", avatar_url: null, initial: "", tier: "outer", hangout_status: null, last_activity: null }}
+        onUpdate={() => { fetchData(); setSelectedPerson(null); }}
+        mutedUsers={mutedUsers}
+        onToggleMute={(userId) => { handleToggleMute(userId); setSelectedPerson(null); }}
+      />
     </PageTransition>
   );
 };
