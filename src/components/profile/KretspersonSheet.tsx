@@ -53,6 +53,13 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
   const [hangoutOpen, setHangoutOpen] = useState(false);
   const [groupOpen, setGroupOpen] = useState(false);
 
+  // Track the last person so we can keep rendering sheets after drawer closes
+  const [lastPerson, setLastPerson] = useState(person);
+  if (person && person.user_id !== lastPerson?.user_id) {
+    setLastPerson(person);
+  }
+  const activePerson = person || lastPerson;
+
   const isClose = person.tier === "close";
   const isMuted = mutedUsers.includes(person.user_id);
   const tierText = isClose ? "närmaste krets" : "din krets";
