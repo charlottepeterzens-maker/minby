@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ImageLightbox from "@/components/ImageLightbox";
-import { ChevronRight, ChevronDown, Heart, Check, Calendar, Headphones } from "lucide-react";
+import { ChevronRight, ChevronDown, Heart, Check, Headphones } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import LazyImage from "@/components/LazyImage";
@@ -329,7 +329,6 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
       {person.activeHangout && (
         <div style={{ borderTop: "none", padding: "10px 14px" }}>
           <div className="flex items-center gap-1.5 mb-1">
-            <Calendar size={11} style={{ color: "hsl(var(--color-text-secondary))" }} />
             <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
               {formatHangoutDate(person.activeHangout.date)}
             </span>
