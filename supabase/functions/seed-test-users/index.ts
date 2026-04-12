@@ -52,7 +52,6 @@ Deno.serve(async (req) => {
 
     for (const oldUser of oldTestUsers) {
       const uid = oldUser.id;
-      // Delete from all public tables (order matters for FK)
       await adminClient.from("hangout_responses").delete().eq("user_id", uid);
       await adminClient.from("hangout_comments").delete().eq("user_id", uid);
       await adminClient.from("hangout_tagged_friends").delete().or(`tagged_by.eq.${uid},tagged_user_id.eq.${uid}`);
@@ -75,8 +74,8 @@ Deno.serve(async (req) => {
       await adminClient.from("push_subscriptions").delete().eq("user_id", uid);
       await adminClient.from("workout_entries").delete().eq("user_id", uid);
       await adminClient.from("period_entries").delete().eq("user_id", uid);
+      await adminClient.from("rsvps").delete().eq("user_id", uid);
       await adminClient.from("profiles").delete().eq("user_id", uid);
-      // Delete the auth user
       await adminClient.auth.admin.deleteUser(uid);
     }
 
@@ -88,20 +87,37 @@ Deno.serve(async (req) => {
       return date.toISOString().split("T")[0];
     };
 
+    // Public placeholder images (Unsplash via picsum)
+    const avatars = [
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=256&h=256&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=256&h=256&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=256&h=256&fit=crop&crop=face",
+    ];
+
+    const postImages = [
+      "https://images.unsplash.com/photo-1516627145497-ae6968895b74?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1502904550040-7534597429ae?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1528164344885-47b1492d809b?w=600&h=400&fit=crop",
+    ];
+
     const testUsers = [
       {
         email: "emma.lindgren.minby@gmail.com",
         password: "minby123",
         display_name: "Emma",
         bio: "Mamma, löpare och evigt sugen på äventyr",
+        avatar_url: avatars[0],
         sections: [
           { name: "Barnen", emoji: "👶" },
           { name: "Löpning", emoji: "🏃" },
         ],
         posts: [
-          { content: "Sam tappade sin första tand idag! Tandfén kommer ikväll 🧚", sectionIdx: 0, daysAgo: 2 },
-          { content: "Sprang 8 km i morse utan att dö. Räknas det som framsteg?", sectionIdx: 1, daysAgo: 4 },
-          { content: "Midsommarklänningen är köpt. Nu är sommaren officiellt räddad.", sectionIdx: 0, daysAgo: 6 },
+          { content: "Sam tappade sin första tand idag! Tandfén kommer ikväll 🧚", sectionIdx: 0, daysAgo: 2, image_url: postImages[0] },
+          { content: "Sprang 8 km i morse utan att dö. Räknas det som framsteg?", sectionIdx: 1, daysAgo: 4, image_url: null },
+          { content: "Midsommarklänningen är köpt. Nu är sommaren officiellt räddad.", sectionIdx: 0, daysAgo: 6, image_url: postImages[1] },
         ],
         hangouts: [
           { entry_type: "activity", activities: ["Kallbada"], custom_note: "Om det är soligt!", daysFromNow: 3 },
@@ -109,8 +125,8 @@ Deno.serve(async (req) => {
           { entry_type: "activity", activities: ["Kallbada"], custom_note: "Om det är soligt!", daysFromNow: 10 },
         ],
         tips: [
-          { title: "Bovar och brott", category: "lyssna", comment: "Bästa podden för löprundan" },
-          { title: "Resan till Milen", category: "läsa", comment: "Grät på tunnelbanan" },
+          { title: "Bovar och brott", category: "lyssna", comment: "Bästa podden för löprundan", url: "https://open.spotify.com/show/2KNLPq8HBGJSy3ZGpP2yNS", image_url: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=400&fit=crop" },
+          { title: "Resan till Milen", category: "läsa", comment: "Grät på tunnelbanan", url: "https://www.adlibris.com", image_url: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop" },
         ],
       },
       {
@@ -118,21 +134,22 @@ Deno.serve(async (req) => {
         password: "minby123",
         display_name: "Sara",
         bio: "Jobbar för mycket men skrattar ännu mer",
+        avatar_url: avatars[1],
         sections: [
           { name: "Jobbet", emoji: "💼" },
           { name: "Familjen", emoji: "👨‍👩‍👧" },
         ],
         posts: [
-          { content: "Äntligen fick jag gehör för det projektet jag jobbat på i tre månader. Lagom stor seger för en tisdag.", sectionIdx: 0, daysAgo: 1 },
-          { content: "Middagen lyckades. Barnen åt grönsaker utan att klaga. Markera detta datum i historien.", sectionIdx: 1, daysAgo: 3 },
-          { content: "Hemma efter konferens. Sängen var aldrig godare.", sectionIdx: 0, daysAgo: 5 },
+          { content: "Äntligen fick jag gehör för det projektet jag jobbat på i tre månader. Lagom stor seger för en tisdag.", sectionIdx: 0, daysAgo: 1, image_url: null },
+          { content: "Middagen lyckades. Barnen åt grönsaker utan att klaga. Markera detta datum i historien.", sectionIdx: 1, daysAgo: 3, image_url: postImages[2] },
+          { content: "Hemma efter konferens. Sängen var aldrig godare.", sectionIdx: 0, daysAgo: 5, image_url: null, link_url: "https://www.ticnet.se", link_title: "Konferens & event" },
         ],
         hangouts: [
           { entry_type: "default", activities: [], custom_note: "Lunch eller fika?", daysFromNow: 5 },
         ],
         tips: [
-          { title: "The Bear", category: "titta", comment: "Ser ut som ett stresstest men är faktiskt underbart" },
-          { title: "Ottolenghi Simple", category: "mat", comment: "Halvtimme och middag klar" },
+          { title: "The Bear", category: "titta", comment: "Ser ut som ett stresstest men är faktiskt underbart", url: "https://www.disneyplus.com", image_url: "https://images.unsplash.com/photo-1574375927938-d5a98e8d6f20?w=400&h=400&fit=crop" },
+          { title: "Ottolenghi Simple", category: "mat", comment: "Halvtimme och middag klar", url: "https://www.adlibris.com", image_url: "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&h=400&fit=crop" },
         ],
       },
       {
@@ -140,21 +157,22 @@ Deno.serve(async (req) => {
         password: "minby123",
         display_name: "Karin",
         bio: "Älskar långsamma söndagar och snabba beslut",
+        avatar_url: avatars[2],
         sections: [
           { name: "Kärlek", emoji: "❤️" },
           { name: "Vardagen", emoji: "☀️" },
         ],
         posts: [
-          { content: "Tio år idag. Fortfarande den bäste.", sectionIdx: 0, daysAgo: 1 },
-          { content: "Hittade ett nytt café på Linnégatan. Kardemummabulle som förändrar livet.", sectionIdx: 1, daysAgo: 3 },
-          { content: "Sommarplaneringen är igång. Gotland eller Österlen?", sectionIdx: 1, daysAgo: 5 },
+          { content: "Tio år idag. Fortfarande den bäste.", sectionIdx: 0, daysAgo: 1, image_url: postImages[3] },
+          { content: "Hittade ett nytt café på Linnégatan. Kardemummabulle som förändrar livet.", sectionIdx: 1, daysAgo: 3, image_url: postImages[4] },
+          { content: "Sommarplaneringen är igång. Gotland eller Österlen?", sectionIdx: 1, daysAgo: 5, image_url: null, link_url: "https://www.gotland.com", link_title: "Destination Gotland" },
         ],
         hangouts: [
           { entry_type: "confirmed", activities: [], custom_note: "Middag hemma hos mig – ta med något att dricka", daysFromNow: 4 },
         ],
         tips: [
-          { title: "Aesop Resurrection", category: "vardagslyx", comment: "Dyrt men värt varje krona" },
-          { title: "Yellowface", category: "läsa", comment: "Läste ut på en natt" },
+          { title: "Aesop Resurrection", category: "vardagslyx", comment: "Dyrt men värt varje krona", url: "https://www.aesop.com", image_url: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=400&h=400&fit=crop" },
+          { title: "Yellowface", category: "läsa", comment: "Läste ut på en natt", url: "https://www.adlibris.com", image_url: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=400&fit=crop" },
         ],
       },
     ];
@@ -162,7 +180,6 @@ Deno.serve(async (req) => {
     const createdUserIds: string[] = [];
 
     for (const tu of testUsers) {
-      // Create auth user
       const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
         email: tu.email,
         password: tu.password,
@@ -174,10 +191,10 @@ Deno.serve(async (req) => {
       const userId = authData.user!.id;
       createdUserIds.push(userId);
 
-      // Update profile
+      // Update profile with avatar
       await adminClient
         .from("profiles")
-        .update({ bio: tu.bio, display_name: tu.display_name })
+        .update({ bio: tu.bio, display_name: tu.display_name, avatar_url: tu.avatar_url })
         .eq("user_id", userId);
 
       // Friend request + access tiers (bidirectional)
@@ -207,13 +224,16 @@ Deno.serve(async (req) => {
         sectionIds.push(newSec!.id);
       }
 
-      // Life posts
+      // Life posts (with optional images and links)
       for (const post of tu.posts) {
         await adminClient.from("life_posts").insert({
           user_id: userId,
           content: post.content,
           section_id: sectionIds[post.sectionIdx],
           created_at: daysAgo(post.daysAgo),
+          image_url: post.image_url || null,
+          link_url: (post as any).link_url || null,
+          link_title: (post as any).link_title || null,
         });
       }
 
@@ -228,7 +248,7 @@ Deno.serve(async (req) => {
         });
       }
 
-      // User tips
+      // User tips (with urls and images)
       for (let i = 0; i < tu.tips.length; i++) {
         const tip = tu.tips[i];
         await adminClient.from("user_tips").insert({
@@ -237,6 +257,8 @@ Deno.serve(async (req) => {
           category: tip.category,
           comment: tip.comment,
           sort_order: i,
+          url: tip.url || null,
+          image_url: tip.image_url || null,
         });
       }
     }
