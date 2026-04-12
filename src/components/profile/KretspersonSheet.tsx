@@ -279,19 +279,23 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
         }}
       />
 
-      <AddHangoutSheet
-        open={hangoutOpen}
-        onOpenChange={setHangoutOpen}
-        onCreated={onUpdate}
-        initialTaggedUser={{ user_id: person.user_id, display_name: person.display_name }}
-      />
+      {activePerson && (
+        <AddHangoutSheet
+          open={hangoutOpen}
+          onOpenChange={setHangoutOpen}
+          onCreated={onUpdate}
+          initialTaggedUser={{ user_id: activePerson.user_id, display_name: activePerson.display_name }}
+        />
+      )}
 
-      <CreateGroupDialog
-        onGroupCreated={onUpdate}
-        externalOpen={groupOpen}
-        onExternalOpenChange={setGroupOpen}
-        preselectedFriendIds={[person.user_id]}
-      />
+      {activePerson && (
+        <CreateGroupDialog
+          onGroupCreated={onUpdate}
+          externalOpen={groupOpen}
+          onExternalOpenChange={setGroupOpen}
+          preselectedFriendIds={[activePerson.user_id]}
+        />
+      )}
     </>
   );
 };
