@@ -177,7 +177,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                   <button
                     onClick={() => {
                       onOpenChange(false);
-                      setHangoutOpen(true);
+                      setTimeout(() => setHangoutOpen(true), 300);
                     }}
                     className="text-[13px] font-medium mt-1"
                     style={{ color: "#3C2A4D" }}
@@ -199,7 +199,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                 whileTap={{ scale: 0.96 }}
                 onClick={() => {
                   onOpenChange(false);
-                  setHangoutOpen(true);
+                  setTimeout(() => setHangoutOpen(true), 300);
                 }}
                 className="flex-1 py-2.5 text-[13px] font-medium"
                 style={{ backgroundColor: "#2E1F3E", borderRadius: 8, color: "#F0EAE2", border: "none" }}
@@ -210,7 +210,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                 whileTap={{ scale: 0.96 }}
                 onClick={() => {
                   onOpenChange(false);
-                  setGroupOpen(true);
+                  setTimeout(() => setGroupOpen(true), 300);
                 }}
                 className="flex-1 py-2.5 text-[13px] font-medium"
                 style={{ borderRadius: 8, color: "#2E1F3E", backgroundColor: "#F5F0EA", border: "none" }}
