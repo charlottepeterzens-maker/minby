@@ -202,7 +202,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                   setHangoutOpen(true);
                 }}
                 className="flex-1 py-2.5 text-[13px] font-medium"
-                style={{ backgroundColor: "#2E1F3E", borderRadius: 8, color: "#F0EAE2" }}
+                style={{ backgroundColor: "#2E1F3E", borderRadius: 8, color: "#F0EAE2", border: "none" }}
               >
                 Föreslå en träff
               </motion.button>
