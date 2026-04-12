@@ -53,6 +53,13 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
   const [hangoutOpen, setHangoutOpen] = useState(false);
   const [groupOpen, setGroupOpen] = useState(false);
 
+  // Track the last person so we can keep rendering sheets after drawer closes
+  const [lastPerson, setLastPerson] = useState(person);
+  if (person && person.user_id !== lastPerson?.user_id) {
+    setLastPerson(person);
+  }
+  const activePerson = person || lastPerson;
+
   const isClose = person.tier === "close";
   const isMuted = mutedUsers.includes(person.user_id);
   const tierText = isClose ? "närmaste krets" : "din krets";
@@ -177,7 +184,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                   <button
                     onClick={() => {
                       onOpenChange(false);
-                      setHangoutOpen(true);
+                      setTimeout(() => setHangoutOpen(true), 300);
                     }}
                     className="text-[13px] font-medium mt-1"
                     style={{ color: "#3C2A4D" }}
@@ -199,7 +206,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                 whileTap={{ scale: 0.96 }}
                 onClick={() => {
                   onOpenChange(false);
-                  setHangoutOpen(true);
+                  setTimeout(() => setHangoutOpen(true), 300);
                 }}
                 className="flex-1 py-2.5 text-[13px] font-medium"
                 style={{ backgroundColor: "#2E1F3E", borderRadius: 8, color: "#F0EAE2", border: "none" }}
@@ -210,7 +217,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                 whileTap={{ scale: 0.96 }}
                 onClick={() => {
                   onOpenChange(false);
-                  setGroupOpen(true);
+                  setTimeout(() => setGroupOpen(true), 300);
                 }}
                 className="flex-1 py-2.5 text-[13px] font-medium"
                 style={{ borderRadius: 8, color: "#2E1F3E", backgroundColor: "#F5F0EA", border: "none" }}
@@ -272,19 +279,23 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
         }}
       />
 
-      <AddHangoutSheet
-        open={hangoutOpen}
-        onOpenChange={setHangoutOpen}
-        onCreated={onUpdate}
-        initialTaggedUser={{ user_id: person.user_id, display_name: person.display_name }}
-      />
+      {activePerson && (
+        <AddHangoutSheet
+          open={hangoutOpen}
+          onOpenChange={setHangoutOpen}
+          onCreated={onUpdate}
+          initialTaggedUser={{ user_id: activePerson.user_id, display_name: activePerson.display_name }}
+        />
+      )}
 
-      <CreateGroupDialog
-        onGroupCreated={onUpdate}
-        externalOpen={groupOpen}
-        onExternalOpenChange={setGroupOpen}
-        preselectedFriendIds={[person.user_id]}
-      />
+      {activePerson && (
+        <CreateGroupDialog
+          onGroupCreated={onUpdate}
+          externalOpen={groupOpen}
+          onExternalOpenChange={setGroupOpen}
+          preselectedFriendIds={[activePerson.user_id]}
+        />
+      )}
     </>
   );
 };
