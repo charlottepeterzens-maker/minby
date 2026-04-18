@@ -168,16 +168,16 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
         </DrawerTrigger>
       )}
       <DrawerContent
-        className="mx-auto max-w-lg border-0"
+        className="mx-auto max-w-lg border-0 max-h-[85vh] flex flex-col"
         style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: "20px 20px 0 0" }}>
         
-        <DrawerHeader className="pb-0">
+        <DrawerHeader className="pb-0 shrink-0">
           <DrawerTitle className="font-fraunces text-xl text-center font-normal" style={{ color: "hsl(var(--color-text-primary))" }}>
             {step === 1 ? "Starta sällskap" : "Bjud in från kretsen"}
           </DrawerTitle>
         </DrawerHeader>
 
-        <div className="px-5 pb-6">
+        <div className="px-5 pb-6 flex-1 overflow-hidden flex flex-col min-h-0">
           {step === 1 ?
           <div className="space-y-4 pt-4">
               <div>
@@ -214,14 +214,14 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
               </button>
             </div> :
 
-          <div className="space-y-4 pt-4">
+          <div className="flex flex-col flex-1 min-h-0 pt-4">
               {friends.length === 0 ?
             <p className="text-[13px] text-center py-6" style={{ color: "hsl(var(--color-text-secondary))" }}>
                   Du har ingen i kretsen att bjuda in ännu.
                 </p> :
 
             <div
-              className="space-y-1.5 max-h-60 overflow-y-auto overscroll-contain touch-pan-y"
+              className="space-y-1.5 flex-1 min-h-0 overflow-y-auto overscroll-contain touch-pan-y pr-1"
               onPointerDown={(e) => e.stopPropagation()}
               onTouchMove={(e) => e.stopPropagation()}
             >
@@ -256,7 +256,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
                 </div>
             }
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2 pt-3 shrink-0">
                 <button
                 onClick={() => setStep(1)}
                 className="flex-1 py-2.5 text-sm font-medium rounded-lg"
