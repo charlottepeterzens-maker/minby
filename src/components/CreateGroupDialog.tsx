@@ -268,6 +268,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
                 }}>
                   Tillbaka
                 </button>
+                {selectedFriends.length > 0 && (
                 <button
                 onClick={handleCreate}
                 disabled={loading}
@@ -284,10 +285,9 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
                   cursor: loading ? "default" : "pointer",
                   WebkitAppearance: "none" as any,
                 }}>
-                  {loading ? "Startar..." : selectedFriends.length > 0 ?
-                `Starta (${selectedFriends.length} valda)` :
-                "Starta utan krets"}
+                  {loading ? "Startar..." : `Starta (${selectedFriends.length} valda)`}
                 </button>
+                )}
               </div>
             </div>
           }
