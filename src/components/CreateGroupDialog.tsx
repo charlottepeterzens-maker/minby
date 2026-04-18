@@ -214,14 +214,14 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
               </button>
             </div> :
 
-          <div className="space-y-4 pt-4">
+          <div className="flex flex-col flex-1 min-h-0 pt-4">
               {friends.length === 0 ?
             <p className="text-[13px] text-center py-6" style={{ color: "hsl(var(--color-text-secondary))" }}>
                   Du har ingen i kretsen att bjuda in ännu.
                 </p> :
 
             <div
-              className="space-y-1.5 max-h-60 overflow-y-auto overscroll-contain touch-pan-y"
+              className="space-y-1.5 flex-1 min-h-0 overflow-y-auto overscroll-contain touch-pan-y pr-1"
               onPointerDown={(e) => e.stopPropagation()}
               onTouchMove={(e) => e.stopPropagation()}
             >
