@@ -177,7 +177,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
           </DrawerTitle>
         </DrawerHeader>
 
-        <div className="px-5 pb-6">
+        <div className="px-5 pb-6 flex-1 overflow-hidden flex flex-col min-h-0">
           {step === 1 ?
           <div className="space-y-4 pt-4">
               <div>
