@@ -256,7 +256,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
                 </div>
             }
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2 pt-3 shrink-0">
                 <button
                 onClick={() => setStep(1)}
                 className="flex-1 py-2.5 text-sm font-medium rounded-lg"
