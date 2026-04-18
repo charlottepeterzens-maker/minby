@@ -168,10 +168,10 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
         </DrawerTrigger>
       )}
       <DrawerContent
-        className="mx-auto max-w-lg border-0"
+        className="mx-auto max-w-lg border-0 max-h-[85vh] flex flex-col"
         style={{ backgroundColor: "hsl(var(--color-surface))", borderRadius: "20px 20px 0 0" }}>
         
-        <DrawerHeader className="pb-0">
+        <DrawerHeader className="pb-0 shrink-0">
           <DrawerTitle className="font-fraunces text-xl text-center font-normal" style={{ color: "hsl(var(--color-text-primary))" }}>
             {step === 1 ? "Starta sällskap" : "Bjud in från kretsen"}
           </DrawerTitle>
