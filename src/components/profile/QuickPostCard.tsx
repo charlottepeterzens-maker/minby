@@ -152,26 +152,24 @@ const QuickPostCard = ({ profile, sections, onPosted }: Props) => {
         </div>
       )}
 
-      {/* Sections picker */}
-      {showSections && sections.length > 0 && (
-        <div className="px-4 pb-2 flex flex-wrap gap-1.5">
+      {/* Del-pills */}
+      {sections.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 px-4 pb-3">
           {sections.map((s) => {
             const active = selectedSection === s.id;
             return (
               <button
                 key={s.id}
                 type="button"
-                onClick={() => {
-                  setSelectedSection(active ? null : s.id);
-                  setShowSections(false);
-                }}
-                className="rounded-lg"
+                onClick={() => setSelectedSection(active ? null : s.id)}
+                className="text-[12px] rounded-lg"
                 style={{
-                  fontSize: 12,
-                  padding: "5px 10px",
+                  padding: "6px 12px",
                   border: "none",
-                  background: active ? "#D4E8F5" : "#F5F0EA",
-                  color: active ? "#561828" : "hsl(var(--color-text-secondary))",
+                  background: active ? "hsl(44, 65%, 93%)" : "hsl(var(--color-surface))",
+                  color: active ? "hsl(44, 65%, 28%)" : "hsl(20, 6%, 40%)",
+                  fontWeight: active ? 500 : 400,
+                  fontFamily: "inherit",
                   cursor: "pointer",
                 }}
               >
