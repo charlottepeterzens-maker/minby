@@ -93,6 +93,11 @@ const HangoutDetailSheet = ({
   const [creatingGroup, setCreatingGroup] = useState(false);
   const [addingDate, setAddingDate] = useState(false);
   const [newDateValue, setNewDateValue] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [editDate, setEditDate] = useState("");
+  const [editActivity, setEditActivity] = useState("");
+  const [editNote, setEditNote] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
   const { subscribe: subscribePush, subscribed: pushSubscribed, permission: pushPermission, isSupported: pushSupported } = usePushNotifications();
 
   const [responses, setResponses] = useState<Array<{ id: string; user_id: string; response: string; profile?: { display_name: string | null; avatar_url: string | null } }>>([]);
