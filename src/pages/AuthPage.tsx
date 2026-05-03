@@ -9,13 +9,14 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 import { lovable } from "@/integrations/lovable/index";
+import { motion } from "framer-motion";
 
 const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; onLogin: () => void }) => {
 
   return (
     <div
       style={{
-        backgroundColor: "#F0EAE2",
+        backgroundColor: "#F7F4F1",
         padding: "0 24px",
         display: "flex",
         flexDirection: "column",
@@ -27,7 +28,7 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
         {/* Logo */}
         <span
           style={{
-            fontFamily: "'Lexend', sans-serif",
+            fontFamily: "'Outfit', sans-serif",
             fontSize: 13,
             fontWeight: 400,
             color: "#C4522A",
@@ -42,10 +43,10 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
         {/* Headline */}
         <h1
           style={{
-            fontFamily: "'Fraunces', serif",
+            fontFamily: "'Outfit', sans-serif",
             fontSize: 32,
             fontWeight: 400,
-            color: "#2E1F3E",
+            color: "#1C1917",
             lineHeight: 1.25,
             marginBottom: 24,
           }}
@@ -59,7 +60,7 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
           style={{
             fontSize: 15,
             fontWeight: 300,
-            color: "#2E1F3E",
+            color: "#1C1917",
             lineHeight: 1.6,
           }}
         >
@@ -71,10 +72,11 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
       <div style={{ paddingBottom: "env(safe-area-inset-bottom, 24px)", paddingTop: 16 }}>
 
         {/* Primary button */}
-        <button
+        <motion.button
           onClick={onGetStarted}
+          whileTap={{ scale: 0.96 }}
           style={{
-            background: "#2E1F3E",
+            background: "#561828",
             color: "#F0EAE2",
             border: "none",
             borderRadius: 8,
@@ -87,7 +89,7 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
           }}
         >
           Kom igång
-        </button>
+        </motion.button>
 
         {/* Login link */}
         <p
@@ -102,7 +104,7 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
           Har du redan ett konto?{" "}
           <span
             onClick={onLogin}
-            style={{ color: "#2E1F3E", fontWeight: 500, cursor: "pointer" }}
+            style={{ color: "#1C1917", fontWeight: 500, cursor: "pointer" }}
           >
             Logga in
           </span>
@@ -230,7 +232,7 @@ const AuthPage = () => {
               type="submit"
               className="w-full rounded-lg font-medium text-sm"
               disabled={loading}
-              style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#fff" }}
+              style={{ backgroundColor: "#561828", color: "#fff" }}
             >
               {loading ? "..." : "Skicka återställningslänk"}
             </Button>
@@ -294,7 +296,7 @@ const AuthPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               className="mt-1.5 rounded-lg bg-card border-0"
-              style={{ color: "#B0A8B5" }}
+              style={{ color: "hsl(var(--color-text-faint))" }}
               autoComplete={isSignUp ? "new-password" : "current-password"}
               minLength={6}
               required
@@ -325,8 +327,8 @@ const AuthPage = () => {
             disabled={loading || (isSignUp && !consent)}
             style={{
               borderRadius: 8,
-              ...(isSignUp && consent ? { backgroundColor: "hsl(var(--color-text-primary))", color: "#fff" } : 
-                !isSignUp ? { backgroundColor: "hsl(var(--color-text-primary))", color: "#fff" } : {}),
+              ...(isSignUp && consent ? { backgroundColor: "#561828", color: "#fff" } : 
+                !isSignUp ? { backgroundColor: "#561828", color: "#fff" } : {}),
             }}
           >
             {loading ? "..." : isSignUp ? t("createAccount") : t("signIn")}

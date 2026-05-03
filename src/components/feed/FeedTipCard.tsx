@@ -56,13 +56,7 @@ const FeedTipCard = ({ tip, profile, onProfileClick }: FeedTipCardProps) => {
           </button>
           <div className="flex items-center gap-1.5 leading-tight">
             {tip.category && (
-              <span style={{
-                fontSize: 9,
-                fontWeight: 500,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: "#7A6A85",
-              }}>
+              <span style={{ fontSize: 11, color: "hsl(var(--color-text-secondary))" }}>
                 {tip.category}
               </span>
             )}

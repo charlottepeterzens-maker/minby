@@ -223,7 +223,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 width: 28,
                 height: 28,
                 borderRadius: 8,
-                background: "#3C2A4D",
+                background: "#561828",
                 border: "none",
                 display: "flex",
                 alignItems: "center",
@@ -280,7 +280,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     width: 24,
                     height: 24,
                     borderRadius: 8,
-                    background: "#3C2A4D",
+                    background: "#561828",
                     border: "none",
                     display: "flex",
                     alignItems: "center",
@@ -346,8 +346,8 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                       padding: "4px 10px",
                       borderRadius: 8,
                       border: "none",
-                      background: imageFile ? "#EDE8F4" : "#F7F3EF",
-                      color: imageFile ? "#3C2A4D" : "#655675",
+                      background: imageFile ? "#D4E8F5" : "#F7F3EF",
+                      color: imageFile ? "#561828" : "hsl(var(--color-text-secondary))",
                       cursor: "pointer",
                     }}
                   >
@@ -367,13 +367,13 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        background: photoLayout === "large" ? "#3C2A4D" : "#fff",
+                        background: photoLayout === "large" ? "#561828" : "#fff",
                         border: "none",
                         cursor: "pointer",
                       }}
                     >
                       <RectangleHorizontal
-                        style={{ width: 14, height: 14, color: photoLayout === "large" ? "#fff" : "#3C2A4D" }}
+                        style={{ width: 14, height: 14, color: photoLayout === "large" ? "#fff" : "#561828" }}
                       />
                     </button>
                     <button
@@ -386,13 +386,13 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        background: photoLayout === "small" ? "#3C2A4D" : "#fff",
+                        background: photoLayout === "small" ? "#561828" : "#fff",
                         border: "none",
                         cursor: "pointer",
                       }}
                     >
                       <LayoutList
-                        style={{ width: 14, height: 14, color: photoLayout === "small" ? "#fff" : "#3C2A4D" }}
+                        style={{ width: 14, height: 14, color: photoLayout === "small" ? "#fff" : "#561828" }}
                       />
                     </button>
                   </div>
@@ -410,7 +410,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                     width: 28,
                     height: 28,
                     borderRadius: 8,
-                    background: "#3C2A4D",
+                    background: "#561828",
                     border: "none",
                     display: "flex",
                     alignItems: "center",
@@ -447,7 +447,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               {/* Row 1 – section label + menu */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px 0" }}>
                 {section.name && (
-                  <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
+                  <span style={{ fontSize: 12, fontWeight: 400, color: "hsl(var(--color-text-faint))" }}>
                     {section.name}
                   </span>
                 )}
@@ -462,7 +462,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                           cursor: "pointer",
                           fontSize: 16,
                           letterSpacing: 2,
-                          color: "#B0A8B5",
+                          color: "hsl(var(--color-text-faint))",
                           lineHeight: 1,
                         }}
                       >
@@ -503,10 +503,10 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   {post.content && (
                     <p style={{
-                      fontFamily: "'Fraunces', serif",
+                      fontFamily: "'Outfit', sans-serif",
                       fontSize: 15,
                       fontWeight: 500,
-                      color: "#2E1F3E",
+                      color: "#1C1917",
                       lineHeight: 1.4,
                       marginBottom: 2,
                       display: "-webkit-box",
@@ -550,7 +550,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
 
               {/* Row 3 – date */}
               <div style={{ padding: "6px 12px 0" }}>
-                <span style={{ fontSize: 12, fontWeight: 300, color: "#B0A8B5" }}>{formatRelativeDate(post.created_at)}</span>
+                <span style={{ fontSize: 12, fontWeight: 400, color: "hsl(var(--color-text-faint))" }}>{formatRelativeDate(post.created_at)}</span>
               </div>
 
               {/* Row 4–6 – reactions + comments */}
@@ -639,7 +639,7 @@ const LifeSectionCard = ({ section, isOwner, onUpdated }: Props) => {
               style={{
                 width: "100%",
                 padding: "10px",
-                background: "#2E1F3E",
+                background: "#561828",
                 color: "#F0EAE2",
                 borderRadius: 8,
                 border: "none",

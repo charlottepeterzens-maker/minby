@@ -7,7 +7,6 @@ import { UserPlus, PenLine, CalendarDays } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import BottomNav from "@/components/BottomNav";
-import CurvedSeparator from "@/components/CurvedSeparator";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
 import AddHangoutSheet from "@/components/profile/AddHangoutSheet";
 import InviteFriendDialog from "@/components/profile/InviteFriendDialog";
@@ -337,20 +336,20 @@ const filteredItems = feedItems.filter((item) => {
           animate={{ rotate: refreshing ? 360 : progress * 270 }}
           transition={refreshing ? { repeat: Infinity, duration: 0.8, ease: "linear" } : { duration: 0 }}
           className="w-5 h-5 rounded-full border-2 border-t-transparent"
-          style={{ borderColor: "#B0A8B5", borderTopColor: "transparent" }}
+          style={{ borderColor: "hsl(var(--color-text-faint))", borderTopColor: "transparent" }}
         />
       </div>
     <PageTransition
       className="min-h-screen pb-20"
       style={{ backgroundColor: "hsl(var(--color-surface))" }}
     >
-      <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+      <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))", borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
         <Container className="pt-5 pb-2">
-          <h1 className="font-fraunces text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+          <h1 className="font-fraunces text-[18px] font-normal" style={{ color: "hsl(var(--color-text-primary))" }}>
             {getGreeting()}, {currentUserName || "du"}.
           </h1>
           {!loading && (
-            <p className="text-[12px] mt-1" style={{ color: "hsl(var(--color-text-secondary))" }}>
+            <p className="text-[13px] mt-1" style={{ color: "hsl(var(--color-text-secondary))" }}>
               {activeCount > 0
                 ? `${activeCount} ${activeCount === 1 ? "person har" : "personer har"} delat något`
                 : "Tyst i din by idag – kanske är det din tur?"}
@@ -358,33 +357,37 @@ const filteredItems = feedItems.filter((item) => {
           )}
           {/* Filters — inside sticky nav */}
           {!isFirstTime && persons.length > 0 && (
-            <div className="flex items-center gap-2 mt-3 overflow-x-auto pb-1">
-              {filters.map((f) => (
-                <button
-                  key={f.value}
-                  onClick={() => setFilter(f.value)}
-                  className="text-xs font-medium shrink-0"
-                  style={{
-                    padding: "6px 14px",
-                    borderRadius: 99,
-                    backgroundColor: filter === f.value ? "#3C2A4D" : "transparent",
-                    color: filter === f.value ? "#F7F3EF" : "#6B5C78",
-                    border: filter === f.value ? "none" : "none",
-                  }}
-                >
-                  {f.label}
-                </button>
-              ))}
+            <div className="flex items-center gap-5 mt-6 overflow-x-auto pb-1">
+              {filters.map((f) => {
+                const active = filter === f.value;
+                return (
+                  <button
+                    key={f.value}
+                    onClick={() => setFilter(f.value)}
+                    className="shrink-0"
+                    style={{
+                      fontSize: 13,
+                      fontWeight: active ? 500 : 400,
+                      color: active ? "hsl(var(--color-text-primary))" : "hsl(var(--color-text-faint))",
+                      background: "none",
+                      border: "none",
+                      outline: "none",
+                      padding: 0,
+                    }}
+                  >
+                    {f.label}
+                  </button>
+                );
+              })}
             </div>
           )}
         </Container>
-        <CurvedSeparator />
       </nav>
 
       <Container className="py-5">
         {/* Quick post card */}
         {!loading && persons.length > 0 && filter === "all" && (
-          <div className="mb-3" style={{ borderRadius: 8, overflow: "hidden", boxShadow: "0 1px 4px 0 rgba(0,0,0,0.04)" }}>
+          <div className="mb-4">
             <QuickPostCard
               profile={currentProfile}
               sections={userSections}
@@ -411,24 +414,29 @@ const filteredItems = feedItems.filter((item) => {
             onOpenInvite={() => setShowInviteDialog(true)}
           />
    ) : filter === "all" ? (
-  <div className="space-y-3">
-    {activePersons.map((p) => (
-      <PersonBlock key={p.userId} person={p} currentUserName={currentUserName} />
+  <div>
+    {activePersons.map((p, i) => (
+      <div key={p.userId}>
+        {i > 0 && <div style={{ height: 1, backgroundColor: "hsl(var(--color-border-subtle))" }} />}
+        <PersonBlock person={p} currentUserName={currentUserName} />
+      </div>
     ))}
 
-    {/* Separator */}
     {quietPersons.length > 0 && activePersons.length > 0 && (
-      <div className="flex items-center gap-3 py-2">
+      <div className="flex items-center gap-3 py-3 mt-2">
         <div className="flex-1 h-px" style={{ backgroundColor: "hsl(var(--color-border-subtle))" }} />
-        <span className="text-[9px] shrink-0" style={{ color: "hsl(var(--color-text-faint))" }}>
-          Har varit lite tyst
+        <span className="text-[11px] shrink-0" style={{ color: "hsl(var(--color-text-faint))" }}>
+          lite tyst ett tag
         </span>
         <div className="flex-1 h-px" style={{ backgroundColor: "hsl(var(--color-border-subtle))" }} />
       </div>
     )}
 
-    {quietPersons.map((p) => (
-      <PersonBlock key={p.userId} person={p} currentUserName={currentUserName} />
+    {quietPersons.map((p, i) => (
+      <div key={p.userId}>
+        {i > 0 && <div style={{ height: 1, backgroundColor: "hsl(var(--color-border-subtle))" }} />}
+        <PersonBlock person={p} currentUserName={currentUserName} />
+      </div>
     ))}
   </div>
 ) : (
@@ -473,9 +481,9 @@ const filteredItems = feedItems.filter((item) => {
 const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => void; onOpenInvite: () => void }) => {
   const navigate = useNavigate();
   const items = [
-    { onClick: onOpenInvite, bg: "#EDE8F4", icon: UserPlus, title: "Bjud in din närmaste krets", sub: "De du faktiskt vill hålla nära", cta: "Bjud in →", delay: 0.45 },
+    { onClick: onOpenInvite, bg: "#D4E8F5", icon: UserPlus, title: "Bjud in din närmaste krets", sub: "De du faktiskt vill hålla nära", cta: "Bjud in →", delay: 0.45 },
     { onClick: () => navigate("/profile"), bg: "#FCF0F3", icon: PenLine, title: "Dela från din vardag", sub: "Berätta vad som händer hos dig", cta: "Dela →", delay: 0.55 },
-    { onClick: onOpenHangout, bg: "#EAF2E8", icon: CalendarDays, title: "Föreslå en träff", sub: "Se när det passar att ses", cta: "Föreslå →", delay: 0.65 },
+    { onClick: onOpenHangout, bg: "#F8F0D8", icon: CalendarDays, title: "Föreslå en träff", sub: "Se när det passar att ses", cta: "Föreslå →", delay: 0.65 },
   ];
 
   return (
@@ -487,9 +495,9 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
     >
       <div className="relative mb-6" style={{ width: 140, height: 80 }}>
         {[
-          { left: 0, top: 8, bg: "#EDE8F4", delay: 0.15 },
+          { left: 0, top: 8, bg: "#D4E8F5", delay: 0.15 },
           { left: 40, top: 0, bg: "#FCF0F3", delay: 0.25 },
-          { left: 80, top: 12, bg: "#EAF2E8", delay: 0.35 },
+          { left: 80, top: 12, bg: "#F8F0D8", delay: 0.35 },
         ].map((c, i) => (
           <motion.div
             key={i}
@@ -543,7 +551,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
               <p className="text-[13px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>{item.title}</p>
               <p className="text-[11px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>{item.sub}</p>
             </div>
-            <span className="text-[11px] font-medium shrink-0" style={{ color: "#7A5AA6" }}>{item.cta}</span>
+            <span className="text-[11px] font-medium shrink-0" style={{ color: "#C4522A" }}>{item.cta}</span>
           </motion.button>
         ))}
       </div>

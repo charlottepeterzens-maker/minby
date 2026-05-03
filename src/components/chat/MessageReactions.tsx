@@ -61,8 +61,8 @@ const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange, pick
               onClick={() => handleReact(emoji)}
               className="flex items-center gap-0.5 rounded-full px-1.5 py-0.5 transition-all"
               style={{
-                backgroundColor: data.userReacted ? "#EDE8F4" : "#F7F3EF",
-                border: data.userReacted ? "1px solid #C9B8D8" : "none",
+                backgroundColor: data.userReacted ? "#D4E8F5" : "#F7F3EF",
+                border: data.userReacted ? "1px solid #D4E8F5" : "none",
               }}
             >
               <span style={{ fontSize: 11 }}>{emoji}</span>
@@ -103,7 +103,7 @@ const MessageReactions = ({ messageId, isOwn, reactions, onReactionsChange, pick
                     onClick={() => handleReact(emoji)}
                     className="w-8 h-8 flex items-center justify-center rounded-full transition-all hover:scale-110 active:scale-95"
                     style={{
-                      backgroundColor: isActive ? "#EDE8F4" : "transparent",
+                      backgroundColor: isActive ? "#D4E8F5" : "transparent",
                       fontSize: 18,
                     }}
                   >

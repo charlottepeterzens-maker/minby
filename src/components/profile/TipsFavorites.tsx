@@ -45,13 +45,13 @@ interface Tip {
 const MAX_TIPS = 6;
 
 const CATEGORIES = [
-  { key: "lyssna", label: "Lyssna", bg: "#EDE8F4", color: "hsl(var(--color-text-primary))" },
-  { key: "titta", label: "Titta", bg: "#3C2A4D", color: "#F7F3EF" },
+  { key: "lyssna", label: "Lyssna", bg: "#D4E8F5", color: "hsl(var(--color-text-primary))" },
+  { key: "titta", label: "Titta", bg: "#561828", color: "#F7F3EF" },
   { key: "läsa", label: "Läsa", bg: "#FCF0F3", color: "#4B1528" },
-  { key: "hälsa", label: "Hälsa", bg: "#EAF2E8", color: "hsl(var(--color-accent-sage-text))" },
+  { key: "hälsa", label: "Hälsa", bg: "#F8F0D8", color: "hsl(var(--color-accent-sage-text))" },
   { key: "mat", label: "Mat", bg: "#FAEEDA", color: "#633806" },
   { key: "shoppa", label: "Shoppa", bg: "#E8D5DA", color: "#4B1528" },
-  { key: "vardagslyx", label: "Vardagslyx", bg: "#EDE8F4", color: "hsl(var(--color-text-secondary))" },
+  { key: "vardagslyx", label: "Vardagslyx", bg: "#D4E8F5", color: "hsl(var(--color-text-secondary))" },
 ];
 
 const decodeTitle = (title: string) =>
@@ -238,7 +238,7 @@ const TipsFavorites = ({ userId, isOwner, displayName }: { userId: string; isOwn
             onClick={() => setCategory(cat.key)}
             className="px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
             style={{
-              background: category === cat.key ? "#3C2A4D" : cat.bg,
+              background: category === cat.key ? "#561828" : cat.bg,
               color: category === cat.key ? "#F7F3EF" : cat.color,
             }}
           >
@@ -599,11 +599,7 @@ const TipCard = ({
           </div>
           <span
             style={{
-              fontSize: 9,
-              fontWeight: 500,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase" as const,
-              color: "#7A6A85",
+              fontSize: 12, fontWeight: 400, color: "hsl(var(--color-text-secondary))",
             }}
           >
             {cat.label}
@@ -626,11 +622,7 @@ const TipCard = ({
           <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
             <span
               style={{
-                fontSize: 9,
-                fontWeight: 500,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase" as const,
-                color: "#7A6A85",
+                fontSize: 12, fontWeight: 400, color: "hsl(var(--color-text-secondary))",
               }}
             >
               {cat.label}

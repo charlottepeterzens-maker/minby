@@ -1,5 +1,5 @@
-import { format, parseISO } from "date-fns";
-import { sv } from "date-fns/locale";
+import { parseISO } from "date-fns";
+import { monthShort, weekdayShort } from "@/utils/months";
 
 interface DateSuggestionCardProps {
   startDate: string;
@@ -21,7 +21,7 @@ const DateSuggestionCard = ({
   onDismiss,
 }: DateSuggestionCardProps) => {
   const formatDate = (d: string) =>
-    format(parseISO(d), "EEE d MMM", { locale: sv }).replace(".", "");
+    (() => { const _d = parseISO(d); return `${weekdayShort(_d)} ${_d.getDate()} ${monthShort(_d)}`; })();
 
   const dateText = endDate
     ? `${formatDate(startDate)} – ${formatDate(endDate)}`
@@ -51,8 +51,8 @@ const DateSuggestionCard = ({
         <span
           className="text-[10px] font-medium px-2 py-0.5 rounded-full"
           style={{
-            backgroundColor: suggestedType === "confirmed" ? "#3C2A4D" : "#EDE8F4",
-            color: suggestedType === "confirmed" ? "#C9B8D8" : "#3C2A4D",
+            backgroundColor: suggestedType === "confirmed" ? "#561828" : "#D4E8F5",
+            color: suggestedType === "confirmed" ? "#D4E8F5" : "#561828",
           }}
         >
           {typeLabel}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ImageLightbox from "@/components/ImageLightbox";
-import { ChevronRight, ChevronDown, Heart, Check, Headphones } from "lucide-react";
+import { Heart, Check, ChevronRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import LazyImage from "@/components/LazyImage";
@@ -11,6 +11,7 @@ import FeedAvatar from "@/components/feed/FeedAvatar";
 import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
 import { toast } from "sonner";
 import { possessive } from "@/utils/possessive";
+import { MONTHS_SHORT, monthShort } from "@/utils/months";
 
 export interface PersonData {
   userId: string;
@@ -74,42 +75,14 @@ function formatDateSwedish(dateStr: string): string {
   if (diffDays === 0) return "idag";
   if (diffDays === 1) return "igår";
   if (diffDays < 7) return `för ${diffDays} dagar sedan`;
-  const weekdays = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
-  const months = [
-    "januari",
-    "februari",
-    "mars",
-    "april",
-    "maj",
-    "juni",
-    "juli",
-    "augusti",
-    "september",
-    "oktober",
-    "november",
-    "december",
-  ];
-  return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+  const weekdays = ["sön", "mån", "tis", "ons", "tor", "fre", "lör"];
+  return `${weekdays[d.getDay()]} ${d.getDate()} ${monthShort(d)}`;
 }
 
 function formatHangoutDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
   const weekdays = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
-  const months = [
-    "januari",
-    "februari",
-    "mars",
-    "april",
-    "maj",
-    "juni",
-    "juli",
-    "augusti",
-    "september",
-    "oktober",
-    "november",
-    "december",
-  ];
-  return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+  return `${weekdays[d.getDay()]} ${d.getDate()} ${monthShort(d)}`;
 }
 
 const PostImage = ({ imageUrl, onClick }: { imageUrl: string; onClick?: (url: string) => void }) => {
@@ -160,20 +133,20 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
 
   const preview = person.latestPost?.content?.slice(0, 80) || (person.activeHangout ? "Vill ses" : "");
 
+  const timeStr = formatRelativeTime(person.lastActivityAt);
+
   return (
     <div
       style={{
-        backgroundColor: "hsl(var(--color-surface-card))",
-        border: "none",
-        borderRadius: 8,
-        opacity: person.isQuiet && !expanded ? 0.7 : 1,
-        transition: "all 0.2s ease",
+        opacity: person.isQuiet && !expanded ? 0.65 : 1,
+        transition: "opacity 0.2s ease",
       }}
     >
-      {/* Collapsed header – always visible */}
+      {/* Collapsed header – tap anywhere to expand */}
       <div
-        className="w-full flex items-center gap-3 text-left"
-        style={{ padding: "12px 14px" }}
+        className="flex items-center gap-[14px] cursor-pointer"
+        style={{ padding: "13px 14px" }}
+        onClick={() => setExpanded(!expanded)}
       >
         <FeedAvatar
           avatarUrl={person.avatarUrl}
@@ -183,62 +156,35 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
           onClick={() => navigate(`/profile/${person.userId}`)}
         />
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(`/profile/${person.userId}`)}
-              className="font-medium text-[13px] hover:underline"
-              style={{ color: "hsl(var(--color-text-primary))", fontFamily: "'Fraunces', serif" }}
-            >
-              {person.displayName}
-            </button>
-            <span className="text-[10px]" style={{ color: "hsl(var(--color-text-faint))" }}>
-              {formatRelativeTime(person.lastActivityAt)}
-            </span>
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>{person.displayName}</span>
+            {timeStr && (
+              <span className="text-[12px] shrink-0" style={{ color: "hsl(var(--color-text-faint))" }}>{timeStr}</span>
+            )}
           </div>
           {preview && (
-            <p
-              className="text-[11px] truncate mt-0.5 cursor-pointer"
-              style={{ color: "hsl(var(--color-text-secondary))" }}
-              onClick={() => setExpanded(!expanded)}
-            >
+            <p className="text-[13px] truncate mt-0.5" style={{ color: "hsl(var(--color-text-secondary))" }}>
               {preview}
             </p>
           )}
-        </div>
-        <button onClick={() => setExpanded(!expanded)} className="shrink-0 p-1">
-          {expanded ? (
-            <ChevronDown size={16} style={{ color: "hsl(var(--color-text-faint))" }} />
-          ) : (
-            <ChevronRight size={16} style={{ color: "hsl(var(--color-text-faint))" }} />
+          {person.isQuiet && !expanded && (
+            <motion.button
+              onClick={(e) => { e.stopPropagation(); handleThinkingOfYou(e); }}
+              disabled={thinkingLoading}
+              whileTap={{ scale: 0.95 }}
+              className="mt-1.5 flex items-center gap-1"
+              style={{ fontSize: 12, color: thinkingSent ? "hsl(var(--color-text-faint))" : "#5B9FBF", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+            >
+              {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
+              {thinkingSent ? "Skickat" : "Skicka en tanke"}
+            </motion.button>
           )}
-        </button>
-      </div>
-
-      {/* Thinking of you button for quiet persons */}
-      {person.isQuiet && !expanded && (
-        <div style={{ padding: "0 14px 10px" }}>
-          <motion.button
-            onClick={handleThinkingOfYou}
-            disabled={thinkingLoading}
-            whileTap={{ scale: 0.93 }}
-            animate={thinkingSent ? { scale: [1, 1.08, 1] } : {}}
-            transition={{ duration: 0.3 }}
-            className="flex items-center gap-1.5"
-            style={{
-              backgroundColor: thinkingSent ? "#EAF2E8" : "#EDE8F4",
-              borderRadius: 99,
-              padding: "5px 12px",
-              fontSize: 10,
-              fontWeight: 500,
-              color: thinkingSent ? "#1F4A1A" : "#C4522A",
-              transition: "background-color 0.2s ease",
-            }}
-          >
-            {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
-            {thinkingSent ? "Skickat" : "Jag tänker på dig"}
-          </motion.button>
         </div>
-      )}
+        {expanded
+          ? <ChevronDown size={14} style={{ color: "hsl(var(--color-text-faint))", flexShrink: 0 }} />
+          : <ChevronRight size={14} style={{ color: "hsl(var(--color-text-faint))", flexShrink: 0 }} />
+        }
+      </div>
 
       {/* Expanded content */}
       <AnimatePresence>
@@ -265,20 +211,12 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                       </p>
                     )}
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[10px]" style={{ color: "hsl(var(--color-text-faint))" }}>
+                      <span className="text-[12px]" style={{ color: "hsl(var(--color-text-faint))" }}>
                         {formatDateSwedish(post.created_at)}
                       </span>
                       {post.sectionName && (
-                        <span
-                          style={{
-                            fontSize: 9,
-                            fontWeight: 500,
-                            letterSpacing: "0.12em",
-                            textTransform: "uppercase",
-                            color: "#7A6A85",
-                          }}
-                        >
-                          {post.sectionName}
+                        <span style={{ fontSize: 12, color: "hsl(var(--color-text-faint))" }}>
+                          · {post.sectionName}
                         </span>
                       )}
                     </div>
@@ -286,36 +224,23 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                 ))}
               </div>
 
-              {/* Thinking of you in expanded for quiet */}
               {person.isQuiet && (
-                <div className="mt-3">
-                  <motion.button
-                    onClick={handleThinkingOfYou}
-                    disabled={thinkingLoading}
-                    whileTap={{ scale: 0.93 }}
-                    animate={thinkingSent ? { scale: [1, 1.08, 1] } : {}}
-                    transition={{ duration: 0.3 }}
-                    className="flex items-center gap-1.5"
-                    style={{
-                      backgroundColor: thinkingSent ? "#EAF2E8" : "#EDE8F4",
-                      borderRadius: 99,
-                      padding: "5px 12px",
-                      fontSize: 10,
-                      fontWeight: 500,
-                      color: thinkingSent ? "#1F4A1A" : "#C4522A",
-                      transition: "background-color 0.2s ease",
-                    }}
-                  >
-                    {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
-                    {thinkingSent ? "Skickat" : "Jag tänker på dig"}
-                  </motion.button>
-                </div>
+                <motion.button
+                  onClick={handleThinkingOfYou}
+                  disabled={thinkingLoading}
+                  whileTap={{ scale: 0.95 }}
+                  className="mt-3 flex items-center gap-1"
+                  style={{ fontSize: 12, color: thinkingSent ? "hsl(var(--color-text-faint))" : "#5B9FBF", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                >
+                  {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
+                  {thinkingSent ? "Skickat" : "Skicka en tanke"}
+                </motion.button>
               )}
 
               {/* View profile link */}
               <button
                 onClick={() => navigate(`/profile/${person.userId}`)}
-                className="mt-3 text-[11px]"
+                className="mt-3 text-[12px]"
                 style={{ color: "hsl(var(--color-text-secondary))" }}
               >
                 Se alla delar i {possessive(person.displayName)} vardag →
@@ -348,7 +273,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               <button
                 onClick={(e) => { e.stopPropagation(); setHangoutSheetOpen(true); }}
                 className="text-[12px] font-medium py-1.5 px-4 rounded-full"
-                style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF" }}
+                style={{ backgroundColor: "#561828", color: "#FFFFFF" }}
               >
                 Jag kan
               </button>
@@ -372,18 +297,8 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
           className="flex items-center gap-1.5 w-full text-left"
           style={{ borderTop: "none", padding: "8px 14px" }}
         >
-          <span
-            style={{
-              fontSize: 9,
-              fontWeight: 500,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase" as const,
-              color: "#7A6A85",
-            }}
-          >
-            TIPS
-          </span>
-          <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-secondary))" }}>
+          <span style={{ fontSize: 12, color: "hsl(var(--color-text-faint))" }}>tips ·</span>
+          <span className="text-[12px] truncate" style={{ color: "hsl(var(--color-text-secondary))" }}>
             {person.latestTip.title.slice(0, 40)}
           </span>
         </button>

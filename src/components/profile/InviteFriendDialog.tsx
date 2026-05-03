@@ -131,7 +131,7 @@ const InviteFriendDialog = ({ trigger }: InviteFriendDialogProps = {}) => {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 6,
-                background: "#3C2A4D",
+                background: "#561828",
                 color: "#F7F3EF",
                 borderRadius: 8,
                 padding: "10px",

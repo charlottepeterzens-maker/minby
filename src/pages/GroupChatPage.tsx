@@ -469,7 +469,7 @@ const GroupChatPage = () => {
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       {/* Header */}
-      <header className="sticky top-0 z-50 px-4 py-3 pt-safe" style={{ backgroundColor: "hsl(var(--color-text-primary))", paddingTop: "max(env(safe-area-inset-top, 0px), 12px)" }}>
+      <header className="sticky top-0 z-50 px-4 py-3 pt-safe" style={{ backgroundColor: "#561828", paddingTop: "max(env(safe-area-inset-top, 0px), 12px)" }}>
         <div className="flex items-center gap-3">
           <button onClick={() => navigate("/friends")} className="shrink-0 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Tillbaka till sällskap">
             <ChevronLeft className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
@@ -715,7 +715,7 @@ const GroupChatPage = () => {
           <button
             onClick={() => setSummaryVisible(true)}
             className="mb-1.5 px-4 py-2 rounded-lg text-[12px] font-medium transition-opacity hover:opacity-80"
-            style={{ backgroundColor: "#3C2A4D", color: "#F7F3EF" }}
+            style={{ backgroundColor: "#561828", color: "#F7F3EF" }}
           >
             ✨ Sammanfatta
           </button>
@@ -751,7 +751,7 @@ const GroupChatPage = () => {
             aria-label="Skriv meddelande" />
           <button onClick={handleSend} disabled={!newMessage.trim() || sending}
             className="shrink-0 flex items-center justify-center rounded-full disabled:opacity-40 transition-opacity min-w-[44px] min-h-[44px]"
-            style={{ width: 36, height: 36, backgroundColor: "hsl(var(--color-text-primary))" }}
+            style={{ width: 36, height: 36, backgroundColor: "#561828" }}
             aria-label="Skicka meddelande">
             <SendHorizontal className="w-4 h-4" style={{ color: "#FFFFFF" }} />
           </button>

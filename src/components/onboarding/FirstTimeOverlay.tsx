@@ -52,7 +52,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               onClick={next}
               className="w-full"
               style={{
-                backgroundColor: "hsl(var(--color-text-primary))",
+                backgroundColor: "#561828",
                 color: "#fff",
                 borderRadius: 8,
                 height: 44,
@@ -98,8 +98,8 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 8,
-                  border: intent === "meet" ? "1.5px solid #3C2A4D" : "none",
-                  backgroundColor: intent === "meet" ? "#EDE8F4" : "#FFFFFF",
+                  border: intent === "meet" ? "1.5px solid #561828" : "none",
+                  backgroundColor: intent === "meet" ? "#D4E8F5" : "#FFFFFF",
                 }}
               >
                 Sugen på att ses
@@ -111,8 +111,8 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 8,
-                  border: intent === "browse" ? "1.5px solid #3C2A4D" : "none",
-                  backgroundColor: intent === "browse" ? "#EDE8F4" : "#FFFFFF",
+                  border: intent === "browse" ? "1.5px solid #561828" : "none",
+                  backgroundColor: intent === "browse" ? "#D4E8F5" : "#FFFFFF",
                 }}
               >
                 Vill mest kolla läget
@@ -124,8 +124,8 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 8,
-                  border: intent === "unsure" ? "1.5px solid #3C2A4D" : "none",
-                  backgroundColor: intent === "unsure" ? "#EDE8F4" : "#FFFFFF",
+                  border: intent === "unsure" ? "1.5px solid #561828" : "none",
+                  backgroundColor: intent === "unsure" ? "#D4E8F5" : "#FFFFFF",
                 }}
               >
                 Vet inte riktigt
@@ -137,7 +137,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               disabled={!intent}
               className="w-full"
               style={{
-                backgroundColor: "hsl(var(--color-text-primary))",
+                backgroundColor: "#561828",
                 color: "#fff",
                 borderRadius: 8,
                 height: 44,
@@ -172,7 +172,7 @@ const FirstTimeOverlay = ({ onComplete, onDismiss }: Props) => {
               onClick={handleFinish}
               className="w-full"
               style={{
-                backgroundColor: "hsl(var(--color-text-primary))",
+                backgroundColor: "#561828",
                 color: "#fff",
                 borderRadius: 8,
                 height: 44,

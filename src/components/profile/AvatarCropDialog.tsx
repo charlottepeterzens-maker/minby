@@ -61,7 +61,7 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
     ctx.clip();
 
     // Background
-    ctx.fillStyle = "#EDE8F4";
+    ctx.fillStyle = "#D4E8F5";
     ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
     // Draw image centered with offset, scale, rotation
@@ -147,7 +147,7 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
               style={{
                 width: CANVAS_SIZE,
                 height: CANVAS_SIZE,
-                boxShadow: "0 0 0 2px #EDE8F4",
+                boxShadow: "0 0 0 2px #D4E8F5",
                 cursor: dragging ? "grabbing" : "grab",
               }}
             >
@@ -181,7 +181,7 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
               step={0.05}
               value={scale}
               onChange={(e) => setScale(parseFloat(e.target.value))}
-              className="w-32 accent-[#3C2A4D]"
+              className="w-32 accent-[#561828]"
             />
 
             <button
@@ -213,7 +213,7 @@ const AvatarCropDialog = ({ file, open, onOpenChange, onCropped }: Props) => {
             <button
               onClick={handleCrop}
               className="flex-1 py-2.5 rounded-full text-[13px] font-medium"
-              style={{ color: "#F7F3EF", backgroundColor: "hsl(var(--color-text-primary))" }}
+              style={{ color: "#F7F3EF", backgroundColor: "#561828" }}
             >
               Spara
             </button>

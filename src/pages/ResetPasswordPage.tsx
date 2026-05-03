@@ -64,7 +64,7 @@ const ResetPasswordPage = () => {
           <Button
             onClick={() => navigate("/auth")}
             className="mt-6 w-full rounded-lg font-medium text-sm"
-            style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#fff" }}
+            style={{ backgroundColor: "#561828", color: "#fff" }}
           >
             Tillbaka till inloggning
           </Button>
@@ -115,7 +115,7 @@ const ResetPasswordPage = () => {
             type="submit"
             className="w-full rounded-lg font-medium text-sm"
             disabled={loading}
-            style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#fff" }}
+            style={{ backgroundColor: "#561828", color: "#fff" }}
           >
             {loading ? "..." : "Uppdatera lösenord"}
           </Button>

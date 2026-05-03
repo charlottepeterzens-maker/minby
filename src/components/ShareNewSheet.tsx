@@ -9,7 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarDays, Sparkles, CalendarIcon, X, Pencil, TreePine, UtensilsCrossed, Sofa, ShoppingBag, Dumbbell, Coffee, Film, Gamepad2 } from "lucide-react";
 import { format, isBefore, startOfDay } from "date-fns";
-import { sv } from "date-fns/locale";
+import { monthShort, weekdayShort } from "@/utils/months";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage, type TranslationKey } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -383,7 +383,7 @@ const ShareNewSheet = ({ open, onOpenChange }: ShareNewSheetProps) => {
                   >
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-foreground">
-                        {format(new Date(entry.date + "T00:00:00"), "EEE d MMM", { locale: sv })}
+                        {(() => { const _d = new Date(entry.date + "T00:00:00"); return `${weekdayShort(_d)} ${_d.getDate()} ${monthShort(_d)}`; })()}
                       </p>
                       {entry.activities.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-1">

@@ -180,7 +180,7 @@ const TipCommentSection = ({
               padding: "0 12px",
               height: 36,
               fontSize: 13,
-              fontFamily: "Lexend, sans-serif",
+              fontFamily: "Outfit, sans-serif",
               outline: "none",
               background: "hsl(var(--color-surface))",
               color: "hsl(var(--color-text-primary))",

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { sv } from "date-fns/locale";
+import { monthShort, weekdayLong } from "@/utils/months";
 import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -42,8 +42,8 @@ interface Props {
 const TYPE_COLORS: Record<string, string> = {
   open: "#F5F0E8",
   available: "#F5F0E8",
-  confirmed: "#EDE8F4",
-  activity: "#E8F2EC",
+  confirmed: "#D4E8F5",
+  activity: "#F8F0D8",
 };
 
 const TYPE_LABEL: Record<string, string> = {
@@ -57,7 +57,7 @@ const TYPE_LABEL_COLOR: Record<string, string> = {
   open: "#6B5A3E",
   available: "#6B5A3E",
   confirmed: "#5C4A7A",
-  activity: "#2A6645",
+  activity: "#7A5C14",
 };
 
 const getActivityLabel = (key: string) => ACTIVITY_MAP[key] || key;
@@ -207,9 +207,9 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
 
   const renderDateCard = (item: AvailabilityEntry) => {
     const dateObj = new Date(item.date + "T00:00:00");
-    const weekday = format(dateObj, "EEEE", { locale: sv });
-    const dayNum = format(dateObj, "d");
-    const month = format(dateObj, "MMMM", { locale: sv });
+    const weekday = weekdayLong(dateObj);
+    const dayNum = String(dateObj.getDate());
+    const month = monthShort(dateObj);
     const entryType = item.entry_type || "available";
     const typeLabel = TYPE_LABEL[entryType] || "LEDIG";
     const typeLabelColor = TYPE_LABEL_COLOR[entryType] || "#6B5A3E";
@@ -244,30 +244,21 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 4, marginBottom: 8 }}>
           <div style={{ minWidth: 0, flex: 1 }}>
             {/* Veckodag */}
-            <p style={{ fontSize: 11, fontWeight: 300, color: "#9A8FA3", marginBottom: 2 }}>
+            <p style={{ fontSize: 12, fontWeight: 400, color: "#9A8FA3", marginBottom: 2 }}>
               {weekday}
             </p>
             {/* Siffra + månad */}
             <div className="flex items-baseline gap-1">
-              <span style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 400, color: "#3C2A4D", lineHeight: 1 }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 22, fontWeight: 400, color: "#1C1917", lineHeight: 1 }}>
                 {dayNum}
               </span>
-              <span style={{ fontFamily: "'Fraunces', serif", fontSize: 15, fontWeight: 400, color: "#3C2A4D", lineHeight: 1 }}>
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 400, color: "#1C1917", lineHeight: 1 }}>
                 {month}
               </span>
             </div>
           </div>
           {/* Type label */}
-          <span style={{
-            fontSize: 9,
-            fontWeight: 500,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            textAlign: "right",
-            whiteSpace: "nowrap",
-            paddingTop: 3,
-            color: typeLabelColor,
-          }}>
+          <span style={{ fontSize: 12, fontWeight: 400, color: typeLabelColor, whiteSpace: "nowrap", paddingTop: 3 }}>
             {typeLabel}
           </span>
         </div>
@@ -278,7 +269,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
             style={{
               fontSize: 13,
               lineHeight: 1.45,
-              color: "#3C2A4D",
+              color: "#1C1917",
               display: "-webkit-box",
               WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical" as any,
@@ -307,7 +298,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
           height: 160,
           borderRadius: 8,
           padding: 14,
-          backgroundColor: "#E2EDE5",
+          backgroundColor: "#F5EAC8",
           border: "none",
           overflow: "hidden",
         }}
@@ -315,25 +306,18 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
         {/* Rad 1: empty left, label right */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 2 }}>
           <span />
-          <span style={{
-            fontSize: 9,
-            fontWeight: 500,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            whiteSpace: "nowrap",
-            color: "#2A6645",
-          }}>
-            SUGEN PÅ
+          <span style={{ fontSize: 12, fontWeight: 400, color: "#7A5C14", whiteSpace: "nowrap" }}>
+            sugen på
           </span>
         </div>
 
         {/* Rad 2: activity name */}
         <p
           style={{
-            fontFamily: "'Fraunces', serif",
+            fontFamily: "'Outfit', sans-serif",
             fontSize: 20,
             fontWeight: 500,
-            color: "#1F4A2E",
+            color: "#7A5C14",
             lineHeight: 1.2,
             marginBottom: 8,
             display: "-webkit-box",
@@ -351,13 +335,13 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
         {/* Datum-sektion – alltid i botten */}
         {item.dates.length > 0 && (
           <div style={{ marginTop: "auto", paddingTop: 8 }}>
-            <p style={{ fontSize: 10, color: "#4A7A5E", marginBottom: 4 }}>
+            <p style={{ fontSize: 10, color: "#8B6428", marginBottom: 4 }}>
               förslag på datum
             </p>
             <div className="flex flex-wrap gap-1">
               {item.dates.map((d, i) => {
                 const dateObj = new Date(d + "T00:00:00");
-                const label = format(dateObj, "d/M", { locale: sv });
+                const label = `${dateObj.getDate()}/${dateObj.getMonth() + 1}`;
                 return (
                   <span
                     key={i}
@@ -366,7 +350,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
                       borderRadius: 99,
                       padding: "2px 7px",
                       fontSize: 10,
-                      color: "#1F4A2E",
+                      color: "#7A5C14",
                     }}
                   >
                     {label}
@@ -395,7 +379,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
       }}
       aria-label="Lägg till hangout"
     >
-      <Plus className="w-5 h-5" style={{ color: "#C9B8D8" }} />
+      <Plus className="w-5 h-5" style={{ color: "#D4E8F5" }} />
     </button>
   );
 
@@ -457,8 +441,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
           <div className="relative mb-4" style={{ width: 100, height: 50 }}>
             {[
               { left: 4, top: 0, bg: "#F5F0E8", delay: 0.15 },
-              { left: 32, top: 4, bg: "#E8F2EC", delay: 0.25 },
-              { left: 54, top: 0, bg: "#EDE8F4", delay: 0.35 },
+              { left: 32, top: 4, bg: "#F8F0D8", delay: 0.25 },
+              { left: 54, top: 0, bg: "#D4E8F5", delay: 0.35 },
             ].map((c, i) => (
               <motion.div
                 key={i}
@@ -492,7 +476,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
             onClick={() => setShowAdd(true)}
             className="mt-3 text-white font-medium"
             style={{
-              backgroundColor: "#3C2A4D",
+              backgroundColor: "#561828",
               borderRadius: 8,
               padding: "8px 20px",
               fontSize: 13,
@@ -546,7 +530,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
                     style={{
                       width: i === currentIndex ? 16 : 6,
                       height: 6,
-                      backgroundColor: i === currentIndex ? "#3C2A4D" : "#C9B8D8",
+                      backgroundColor: i === currentIndex ? "#561828" : "#D4E8F5",
                     }}
                   />
                 ))}

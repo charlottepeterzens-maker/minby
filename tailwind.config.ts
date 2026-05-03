@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Lexend", "sans-serif"],
-        body: ["Lexend", "sans-serif"],
+        display: ["Outfit", "sans-serif"],
+        body: ["Outfit", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

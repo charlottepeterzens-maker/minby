@@ -315,12 +315,12 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false, u
                       className="flex items-center justify-center"
                       style={{
                         width: 26, height: 26, borderRadius: 8,
-                        background: editPhotoLayout === "large" ? "#2E1F3E" : "#fff",
-                        border: "1px solid #2E1F3E",
+                        background: editPhotoLayout === "large" ? "#561828" : "#fff",
+                        border: "1px solid #561828",
                       }}
                       title="Stort foto"
                     >
-                      <RectangleHorizontal className="w-3 h-3" style={{ color: editPhotoLayout === "large" ? "#fff" : "#2E1F3E" }} />
+                      <RectangleHorizontal className="w-3 h-3" style={{ color: editPhotoLayout === "large" ? "#fff" : "#561828" }} />
                     </button>
                     <button
                       type="button"
@@ -328,12 +328,12 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false, u
                       className="flex items-center justify-center"
                       style={{
                         width: 26, height: 26, borderRadius: 8,
-                        background: editPhotoLayout === "small" ? "#2E1F3E" : "#fff",
-                        border: "1px solid #2E1F3E",
+                        background: editPhotoLayout === "small" ? "#561828" : "#fff",
+                        border: "1px solid #561828",
                       }}
                       title="Liten thumbnail"
                     >
-                      <LayoutList className="w-3 h-3" style={{ color: editPhotoLayout === "small" ? "#fff" : "#2E1F3E" }} />
+                      <LayoutList className="w-3 h-3" style={{ color: editPhotoLayout === "small" ? "#fff" : "#561828" }} />
                     </button>
                   </div>
                 )}
@@ -346,7 +346,7 @@ const RecentPostsFeed = ({ sections, refreshKey, limit = 10, showFade = false, u
               style={{
                 width: "100%",
                 padding: 10,
-                background: "#2E1F3E",
+                background: "#561828",
                 color: "#F0EAE2",
                 borderRadius: 8,
                 border: "none",
@@ -398,7 +398,7 @@ const PostCard = ({
       {/* Row 1 – section label + menu */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 12px 0", ...(!sectionName ? { paddingBottom: 0 } : {}) }}>
         {sectionName ? (
-          <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
+          <span style={{ fontSize: 12, fontWeight: 400, color: "hsl(var(--color-text-secondary))" }}>
             {sectionName}
           </span>
         ) : <span />}
@@ -413,7 +413,7 @@ const PostCard = ({
                   cursor: "pointer",
                   fontSize: 16,
                   letterSpacing: 2,
-                  color: "#B0A8B5",
+                  color: "hsl(var(--color-text-faint))",
                   lineHeight: 1,
                 }}
               >
@@ -444,10 +444,10 @@ const PostCard = ({
         <div className="flex-1 min-w-0">
           {post.content && (
             <p style={{
-              fontFamily: "'Fraunces', serif",
+              fontFamily: "'Outfit', sans-serif",
               fontSize: 15,
               fontWeight: 500,
-              color: "#2E1F3E",
+              color: "#1C1917",
               lineHeight: 1.4,
               display: "-webkit-box",
               WebkitLineClamp: 3,
@@ -472,7 +472,7 @@ const PostCard = ({
 
       {/* Row 3 – date */}
       <div className="px-3 pt-1.5">
-        <span style={{ fontSize: 12, fontWeight: 300, color: "#B0A8B5" }}>{dateStr}</span>
+        <span style={{ fontSize: 12, fontWeight: 300, color: "hsl(var(--color-text-faint))" }}>{dateStr}</span>
       </div>
 
       {/* Row 4–6 – reactions + comments */}

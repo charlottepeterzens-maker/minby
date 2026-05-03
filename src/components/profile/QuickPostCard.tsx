@@ -98,30 +98,29 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
   const AvatarCircle = ({ size = 34 }: { size?: number }) => (
     <div
       className="shrink-0 rounded-full flex items-center justify-center overflow-hidden"
-      style={{ width: size, height: size, backgroundColor: "#EDE8F4" }}
+      style={{ width: size, height: size, backgroundColor: "#D4E8F5" }}
     >
       {avatarUrl ? (
         <img src={avatarUrl} alt="" loading="lazy" className="w-full h-full object-cover" />
       ) : (
-        <span style={{ fontSize: size * 0.35, fontWeight: 500, color: "#2E1F3E" }}>{initial}</span>
+        <span style={{ fontSize: size * 0.35, fontWeight: 500, color: "#1C1917" }}>{initial}</span>
       )}
     </div>
   );
 
   return (
-    <div style={{ background: "#FFFFFF", borderRadius: 8, overflow: "hidden" }}>
+    <div style={{ background: "#FFFFFF", borderRadius: 8, overflow: "hidden", border: "1px solid hsl(var(--color-border-subtle))" }}>
       {/* Collapsed */}
       {!composing && (
         <button
           onClick={() => setComposing(true)}
           className="w-full flex items-center gap-3"
-          style={{ padding: "10px 12px", background: "none", border: "none", cursor: "pointer" }}
+          style={{ padding: "12px 14px", background: "none", border: "none", cursor: "pointer" }}
         >
-          <AvatarCircle />
-          <span style={{ flex: 1, textAlign: "left", fontSize: 14, fontWeight: 300, color: "#B0A8B5" }}>
+          <span style={{ flex: 1, textAlign: "left", fontSize: 14, fontWeight: 400, color: "hsl(var(--color-text-faint))" }}>
             Dela något med din krets…
           </span>
-          <Camera style={{ width: 18, height: 18, color: "#B0A8B5" }} />
+          <Camera style={{ width: 18, height: 18, color: "hsl(var(--color-text-faint))" }} />
         </button>
       )}
 
@@ -135,8 +134,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
             transition={{ duration: 0.25, ease: "easeOut" }}
           >
             {/* Zone 1 – Text */}
-            <div className="flex gap-3" style={{ padding: "12px 12px 10px" }}>
-              <AvatarCircle />
+            <div style={{ padding: "12px 14px 10px" }}>
               <textarea
                 ref={textareaRef}
                 value={content}
@@ -150,7 +148,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                   background: "transparent",
                   fontSize: 14,
                   fontWeight: 300,
-                  color: "#2E1F3E",
+                  color: "#1C1917",
                   lineHeight: 1.5,
                   padding: "4px 0",
                 }}
@@ -158,18 +156,11 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
             </div>
 
             {/* Divider */}
-            <div style={{ height: 1, background: "#F5F0EA", margin: "0 12px" }} />
+            <div style={{ height: 1, background: "hsl(var(--color-border-subtle))" }} />
 
             {/* Zone 2 – Section picker */}
-            <div style={{ padding: "10px 12px" }}>
-              <p style={{
-                fontSize: 9,
-                fontWeight: 500,
-                letterSpacing: "0.12em",
-                color: "#B0A8B5",
-                textTransform: "uppercase",
-                marginBottom: 8,
-              }}>
+            <div style={{ padding: "10px 14px" }}>
+              <p style={{ fontSize: 12, color: "hsl(var(--color-text-faint))", marginBottom: 8 }}>
                 Dela i
               </p>
               <div className="flex flex-wrap gap-1.5">
@@ -180,14 +171,13 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                       key={s.id}
                       onClick={() => setSelectedSection(active ? null : s.id)}
                       style={{
-                        fontSize: 11,
-                        textTransform: "uppercase",
+                        fontSize: 12,
                         fontWeight: active ? 500 : 400,
                         padding: "5px 12px",
                         borderRadius: 8,
                         border: "none",
-                        background: active ? "#EDE8F4" : "#F5F0EA",
-                        color: active ? "#2E1F3E" : "#7A6A85",
+                        background: active ? "#D4E8F5" : "#F5F0EA",
+                        color: active ? "#561828" : "hsl(var(--color-text-secondary))",
                         cursor: "pointer",
                         transition: "all 0.15s ease",
                       }}
@@ -219,13 +209,13 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
             </div>
 
             {/* Divider */}
-            <div style={{ height: 1, background: "#F5F0EA", margin: "0 12px" }} />
+            <div style={{ height: 1, background: "hsl(var(--color-border-subtle))" }} />
 
             {/* Zone 3 – Actions */}
             <div
               ref={actionsRef}
               className="flex items-center justify-between"
-              style={{ padding: "10px 12px" }}
+              style={{ padding: "10px 14px" }}
             >
               <div className="flex items-center gap-2">
                 <label style={{ cursor: "pointer" }}>
@@ -241,8 +231,8 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                       fontSize: 12,
                       padding: "6px 12px",
                       borderRadius: 8,
-                      background: imageFile ? "#EDE8F4" : "#F5F0EA",
-                      color: imageFile ? "#2E1F3E" : "#7A6A85",
+                      background: imageFile ? "#D4E8F5" : "#F5F0EA",
+                      color: imageFile ? "#561828" : "hsl(var(--color-text-secondary))",
                       border: "none",
                       cursor: "pointer",
                     }}
@@ -266,7 +256,7 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                   onClick={reset}
                   style={{
                     fontSize: 13,
-                    color: "#B0A8B5",
+                    color: "hsl(var(--color-text-faint))",
                     background: "none",
                     border: "none",
                     cursor: "pointer",
@@ -284,8 +274,8 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
                     borderRadius: 8,
                     border: "none",
                     cursor: hasContent ? "pointer" : "default",
-                    background: hasContent ? "#2E1F3E" : "#EDE8E0",
-                    color: hasContent ? "#F0EAE2" : "#B0A8B5",
+                    background: hasContent ? "#561828" : "#EDE8E0",
+                    color: hasContent ? "#F0EAE2" : "hsl(var(--color-text-faint))",
                     opacity: posting ? 0.6 : 1,
                     transition: "all 0.2s ease",
                     WebkitAppearance: "none",

@@ -23,9 +23,9 @@ export const ContentFeed = ({ items, emptyMessage, emptyAction, onRefresh }: Pro
       >
         <div
           className="w-14 h-14 rounded-full flex items-center justify-center mb-4"
-          style={{ backgroundColor: "#EAF2E8" }}
+          style={{ backgroundColor: "#F8F0D8" }}
         >
-          <CalendarDays className="w-6 h-6" style={{ color: "#4A7A5E" }} strokeWidth={1.5} />
+          <CalendarDays className="w-6 h-6" style={{ color: "#8B6428" }} strokeWidth={1.5} />
         </div>
         <p
           className="font-fraunces text-[16px] font-medium text-center mb-1"
@@ -52,10 +52,23 @@ export const ContentFeed = ({ items, emptyMessage, emptyAction, onRefresh }: Pro
   }
 
   return (
-    <div className="space-y-3">
-      {items.map((item) => (
-        <FeedItemRenderer key={item.data.id} item={item} onRefresh={onRefresh} />
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
+    >
+      {items.map((item, i) => (
+        <motion.div
+          key={item.data.id}
+          variants={{
+            hidden: { opacity: 0, y: 18 },
+            visible: { opacity: 1, y: 0, transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] } },
+          }}
+        >
+          {i > 0 && <div style={{ height: 1, backgroundColor: "hsl(var(--color-border-subtle))" }} />}
+          <FeedItemRenderer item={item} onRefresh={onRefresh} />
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
   );
 };

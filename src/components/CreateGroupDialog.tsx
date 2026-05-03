@@ -204,8 +204,8 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
                 border: "none",
                 borderRadius: 8,
                 cursor: name ? "pointer" : "default",
-                background: name ? "#2E1F3E" : "#EDE8E0",
-                color: name ? "#F0EAE2" : "#B0A8B5",
+                background: name ? "#561828" : "#EDE8E0",
+                color: name ? "#F0EAE2" : "hsl(var(--color-text-faint))",
                 opacity: !name ? 1 : undefined,
                 transition: "all 0.2s ease",
                 WebkitAppearance: "none" as any,
@@ -234,7 +234,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
                     onClick={() => toggleFriend(f.user_id)}
                     className="w-full flex items-center gap-3 rounded-lg p-2.5 text-left transition-colors"
                     style={{
-                      backgroundColor: selected ? "#EAF2E8" : "#FFFFFF",
+                      backgroundColor: selected ? "#F8F0D8" : "#FFFFFF",
                       boxShadow: selected ? "0 0 0 1px #B5CCBF" : "0 1px 3px 0 rgba(0,0,0,0.05)"
                     }}>
                     
@@ -279,7 +279,7 @@ const CreateGroupDialog = ({ onGroupCreated, trigger, externalOpen, onExternalOp
                   fontWeight: 500,
                   border: "none",
                   borderRadius: 8,
-                  background: "#2E1F3E",
+                  background: "#561828",
                   color: "#F0EAE2",
                   opacity: loading ? 0.5 : 1,
                   cursor: loading ? "default" : "pointer",

@@ -89,7 +89,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
         style={{
           height: 100,
           borderRadius: 8,
-          background: "#EDE8F4",
+          background: "#D4E8F5",
           display: "flex",
           alignItems: "center",
           gap: 8,
@@ -107,7 +107,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
           autoFocus
           style={{ flex: 1, border: "none", background: "rgba(255,255,255,0.6)" }}
         />
-        <button onClick={handleRename} style={{ fontSize: 11, fontWeight: 500, color: "#2E1F3E", background: "none", border: "none", cursor: "pointer" }}>
+        <button onClick={handleRename} style={{ fontSize: 11, fontWeight: 500, color: "#1C1917", background: "none", border: "none", cursor: "pointer" }}>
           Spara
         </button>
       </div>
@@ -153,7 +153,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
               style={{
                 position: "absolute",
                 inset: 0,
-                backgroundColor: "#EDE8F4",
+                backgroundColor: "#D4E8F5",
               }}
             />
           )}
@@ -186,11 +186,9 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
           >
             <p
               style={{
-                fontSize: 9,
+                fontSize: 12,
                 fontWeight: 500,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                color: hasImage ? "#F0EAE2" : postCount === 0 ? "#7A6A85" : "#2E1F3E",
+                color: hasImage ? "#F0EAE2" : postCount === 0 ? "hsl(var(--color-text-secondary))" : "#1C1917",
                 margin: 0,
                 lineHeight: 1.3,
               }}
@@ -201,7 +199,7 @@ const SectionGridCard = ({ section, isOwner, isExpanded, onClick, onDeleted, onR
               <p
                 style={{
                   fontSize: 11,
-                  fontWeight: 300,
+                  fontWeight: 400,
                   color: hasImage ? "rgba(240,234,226,0.8)" : "rgba(46,31,62,0.6)",
                   margin: "2px 0 0",
                   lineHeight: 1.3,

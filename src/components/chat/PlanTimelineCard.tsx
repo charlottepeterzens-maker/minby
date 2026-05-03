@@ -57,7 +57,7 @@ const PlanTimelineCard = ({
   }, [rsvps, members]);
 
   const quickReplies = [
-    { status: "in", label: "Jag kan", icon: Check, bg: "#EAF2E8", color: "hsl(var(--color-accent-sage-text))", activeBorder: "#B5CCBF" },
+    { status: "in", label: "Jag kan", icon: Check, bg: "#F8F0D8", color: "hsl(var(--color-accent-sage-text))", activeBorder: "#B5CCBF" },
     { status: "maybe", label: "Kanske", icon: HelpCircle, bg: "#FFF8E1", color: "#8B6914", activeBorder: "#E8D48A" },
     { status: "out", label: "Kan inte", icon: X, bg: "#FDECEC", color: "hsl(var(--color-accent-red))", activeBorder: "#E8AAAA" },
   ];

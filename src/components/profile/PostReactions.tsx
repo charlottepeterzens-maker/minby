@@ -191,7 +191,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
       </div>
 
       {totalCount > 0 && !readOnly && (
-        <p style={{ fontSize: 10, color: "hsl(var(--color-text-faint))", marginTop: 4 }}>
+        <p style={{ fontSize: 11, color: "hsl(var(--color-text-faint))", marginTop: 4 }}>
           {totalCount === 1 ? "Någon reagerade" : `${totalCount} personer har reagerat`}
         </p>
       )}
@@ -216,7 +216,7 @@ const PostReactions = ({ postId, readOnly }: Props) => {
                 const def = REACTIONS.find((r) => r.key === detailKey);
                 if (!def) return null;
                 const Icon = def.icon;
-                return <Icon size={16} strokeWidth={1.8} style={{ stroke: "#3C2A4D" }} />;
+                return <Icon size={16} strokeWidth={1.8} style={{ stroke: "#561828" }} />;
               })()}
               <button
                 onClick={() => setDetailKey(null)}

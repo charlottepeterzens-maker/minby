@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
-import CurvedSeparator from "@/components/CurvedSeparator";
+
 import CreateGroupDialog from "@/components/CreateGroupDialog";
 import { Container } from "@/components/layout";
 import GroupStatusLine from "@/components/chat/GroupStatusLine";
@@ -115,12 +115,12 @@ const GroupsPage = () => {
   }, [fetchGroups]);
 
   return (
-    <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
-      <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+    <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))", borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
+      <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))", borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
         <Container className="py-4 flex items-center justify-between">
           <span className="font-display text-[20px] font-medium text-foreground">Sällskap</span>
         </Container>
-        <CurvedSeparator />
+
       </nav>
 
       <Container className="py-5">
@@ -192,9 +192,9 @@ const GroupsPage = () => {
               >
                 <div className="relative mb-5" style={{ width: 100, height: 60 }}>
                   {[
-                    { left: 0, top: 4, bg: "#EDE8F4", delay: 0.15 },
+                    { left: 0, top: 4, bg: "#D4E8F5", delay: 0.15 },
                     { left: 28, top: 0, bg: "#FCF0F3", delay: 0.25 },
-                    { left: 56, top: 8, bg: "#EAF2E8", delay: 0.35 },
+                    { left: 56, top: 8, bg: "#F8F0D8", delay: 0.35 },
                   ].map((c, i) => (
                     <motion.div
                       key={i}

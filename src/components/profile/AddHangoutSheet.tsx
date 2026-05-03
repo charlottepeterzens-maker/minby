@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
-import { sv } from "date-fns/locale";
+import { monthShort, weekdayShort } from "@/utils/months";
 import { CalendarIcon, X, Plus } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { sendNotification } from "@/utils/notifications";
-import { format as fmtDate } from "date-fns";
 
 type EntryType = "available" | "confirmed" | "activity";
 type Visibility = "all" | "selected" | "private";
@@ -36,10 +35,7 @@ const VISIBILITY_OPTIONS: { value: Visibility; label: string }[] = [
   { value: "private", label: "Bara oss" },
 ];
 
-const formatDateChip = (d: Date) => {
-  const weekday = format(d, "EEE", { locale: sv }).replace(".", "");
-  return `${weekday} ${format(d, "d MMM", { locale: sv })}`;
-};
+const formatDateChip = (d: Date) => `${weekdayShort(d)} ${d.getDate()} ${monthShort(d)}`;
 
 const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: Props) => {
   const { user } = useAuth();
@@ -251,13 +247,13 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
       >
         {/* Handle */}
         <div className="flex justify-center mb-4">
-          <div className="w-10 h-1 rounded-full" style={{ backgroundColor: '#C9B8D8' }} />
+          <div className="w-10 h-1 rounded-full" style={{ backgroundColor: '#D4E8F5' }} />
         </div>
         <SheetTitle className="sr-only">Lägg till</SheetTitle>
 
         {step === "type" ? (
           <div className="space-y-3">
-            <h3 className="text-[15px] font-medium text-center mb-4" style={{ color: '#3C2A4D' }}>
+            <h3 className="text-[15px] font-medium text-center mb-4" style={{ color: '#1C1917' }}>
               Vad vill du dela?
             </h3>
             {TYPE_OPTIONS.map((opt) => (
@@ -269,9 +265,9 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
                   boxShadow: '0 1px 4px 0 rgba(0,0,0,0.05)',
                 }}
               >
-                <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>{opt.title}</p>
-                <p className="text-[12px] mt-0.5" style={{ color: '#655675' }}>{opt.desc}</p>
-                <p className="text-[11px] mt-1" style={{ color: '#655675', opacity: 0.8 }}>{opt.hint}</p>
+                <p className="text-[14px] font-medium" style={{ color: '#1C1917' }}>{opt.title}</p>
+                <p className="text-[12px] mt-0.5" style={{ color: 'hsl(var(--color-text-secondary))' }}>{opt.desc}</p>
+                <p className="text-[11px] mt-1" style={{ color: 'hsl(var(--color-text-secondary))', opacity: 0.8 }}>{opt.hint}</p>
               </button>
             ))}
           </div>
@@ -280,12 +276,12 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
             {/* Selected type indicator */}
             <div
               className="w-full text-left p-3 rounded-lg bg-white"
-              style={{ boxShadow: '0 0 0 2px #3C2A4D' }}
+              style={{ boxShadow: '0 0 0 2px #561828' }}
             >
-              <p className="text-[14px] font-medium" style={{ color: '#3C2A4D' }}>
+              <p className="text-[14px] font-medium" style={{ color: '#1C1917' }}>
                 {TYPE_OPTIONS.find(o => o.value === entryType)?.title}
               </p>
-              <p className="text-[12px] mt-0.5" style={{ color: '#655675' }}>
+              <p className="text-[12px] mt-0.5" style={{ color: 'hsl(var(--color-text-secondary))' }}>
                 {TYPE_OPTIONS.find(o => o.value === entryType)?.desc}
               </p>
             </div>
@@ -295,7 +291,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
               <>
                 {/* Date picker */}
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Datum</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: 'hsl(var(--color-text-secondary))' }}>Datum</label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white border-0 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]", !selectedDate && "text-muted-foreground")}>
@@ -310,7 +306,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
                 </div>
                 {/* Note */}
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Fritext</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: 'hsl(var(--color-text-secondary))' }}>Fritext</label>
                   <textarea
                     value={note}
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
@@ -328,7 +324,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
             {entryType === "confirmed" && (
               <>
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Datum</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: 'hsl(var(--color-text-secondary))' }}>Datum</label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" className={cn("w-full justify-start text-left font-normal bg-white border-0 shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]", !selectedDate && "text-muted-foreground")}>
@@ -342,7 +338,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
                   </Popover>
                 </div>
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Aktivitet</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: 'hsl(var(--color-text-secondary))' }}>Aktivitet</label>
                   <Input
                     value={planName}
                     onChange={(e) => setPlanName(e.target.value)}
@@ -354,13 +350,13 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
                 </div>
                 {/* Friends already in */}
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Redan med</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: 'hsl(var(--color-text-secondary))' }}>Redan med</label>
                   <div className="flex flex-wrap gap-1.5 mb-2">
                     {friends.map((f) => (
                       <span
                         key={f.user_id}
                         className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-full bg-white"
-                        style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)', color: '#3C2A4D' }}
+                        style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)', color: '#1C1917' }}
                       >
                         {f.display_name}
                         <button onClick={() => removeFriend(f.user_id)} className="hover:opacity-70">
@@ -384,7 +380,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
                             key={fr.user_id}
                             onClick={() => addFriend(fr)}
                             className="w-full text-left px-3 py-2 text-[13px] hover:bg-muted/50 transition-colors"
-                            style={{ color: '#3C2A4D' }}
+                            style={{ color: '#1C1917' }}
                           >
                             {fr.display_name || "?"}
                           </button>
@@ -400,7 +396,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
             {entryType === "activity" && (
               <>
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Aktivitet</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: 'hsl(var(--color-text-secondary))' }}>Aktivitet</label>
                   <Input
                     value={activityName}
                     onChange={(e) => setActivityName(e.target.value)}
@@ -411,7 +407,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
                   />
                 </div>
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Fritext</label>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: 'hsl(var(--color-text-secondary))' }}>Fritext</label>
                   <textarea
                     value={note}
                     onChange={(e) => setNote(e.target.value.slice(0, 150))}
@@ -423,7 +419,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
                   />
                 </div>
                 <div>
-                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: 'hsl(var(--color-text-secondary))' }}>
                     Datum ({activityDates.length}/5)
                   </label>
                   <div className="flex flex-wrap gap-1.5 mb-2">
@@ -431,7 +427,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
                       <span
                         key={i}
                         className="inline-flex items-center gap-1 text-[12px] font-medium px-2.5 py-1 rounded-lg bg-white"
-                        style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)', color: '#3C2A4D' }}
+                        style={{ boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06)', color: '#1C1917' }}
                       >
                         {formatDateChip(d)}
                         <button onClick={() => removeActivityDate(i)} className="hover:opacity-70">
@@ -466,7 +462,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
 
             {/* Visibility */}
             <div>
-              <label className="text-[12px] font-medium mb-1.5 block" style={{ color: '#655675' }}>Synlighet</label>
+              <label className="text-[12px] font-medium mb-1.5 block" style={{ color: 'hsl(var(--color-text-secondary))' }}>Synlighet</label>
               <div className="flex gap-1.5">
                 {VISIBILITY_OPTIONS.map((opt) => {
                   // For plan type, show different label for private
@@ -485,7 +481,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
                       )}
                       style={{
                         border: visibility === opt.value ? 'none' : 'none',
-                        backgroundColor: visibility === opt.value ? '#3C2A4D' : undefined,
+                        backgroundColor: visibility === opt.value ? '#561828' : undefined,
                       }}
                     >
                       {label}
@@ -500,7 +496,7 @@ const AddHangoutSheet = ({ open, onOpenChange, onCreated, initialTaggedUser }: P
               onClick={handleSubmit}
               disabled={!canSubmit() || saving}
               className="w-full py-3 text-[14px] font-medium rounded-lg text-white transition-all disabled:opacity-50"
-              style={{ backgroundColor: '#3C2A4D' }}
+              style={{ backgroundColor: '#561828' }}
             >
               {saving ? "Sparar..." : "Dela"}
             </button>

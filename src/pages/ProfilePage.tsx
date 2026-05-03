@@ -12,7 +12,7 @@ import { ChevronLeft, Plus, Camera, Pencil, Check, X } from "lucide-react";
 import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
-import CurvedSeparator from "@/components/CurvedSeparator";
+
 import LifeSectionCard from "@/components/profile/LifeSectionCard";
 import SectionGridCard from "@/components/profile/SectionGridCard";
 import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
@@ -231,12 +231,12 @@ const ProfilePage = () => {
           animate={{ rotate: refreshing ? 360 : progress * 270 }}
           transition={refreshing ? { repeat: Infinity, duration: 0.8, ease: "linear" } : { duration: 0 }}
           className="w-5 h-5 rounded-full border-2 border-t-transparent"
-          style={{ borderColor: "#B0A8B5", borderTopColor: "transparent" }}
+          style={{ borderColor: "hsl(var(--color-text-faint))", borderTopColor: "transparent" }}
         />
       </div>
 
       {/* Top nav */}
-      <nav className="sticky top-0 z-50 bg-background pt-safe">
+      <nav className="sticky top-0 z-50 bg-background pt-safe" style={{ borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
         <Container className="px-2 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
@@ -250,7 +250,7 @@ const ProfilePage = () => {
           </div>
           <div className="flex items-center gap-1">{targetUserId && <ProfileShareDialog userId={targetUserId} />}</div>
         </Container>
-        <CurvedSeparator />
+
       </nav>
 
       <main className="px-4 pt-6 pb-24">
@@ -442,7 +442,7 @@ const ProfilePage = () => {
 
           {/* Delar av min vardag – 2-col grid */}
           <div className="flex items-center justify-between mt-6 mb-3">
-            <span className="text-[10px] uppercase font-medium tracking-wider" style={{ color: "hsl(var(--color-text-faint))" }}>
+            <span className="text-[13px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
               {isOwnProfile ? "Delar av min vardag" : `Delar av ${possessive(profile?.display_name || "deras")} vardag`}
             </span>
           </div>
@@ -460,9 +460,12 @@ const ProfilePage = () => {
               {sections.map((section, i) => {
                 const isActive = expandedSection === section.id;
                 return (
-                  <div
+                  <motion.div
                     key={section.id}
                     id={`section-${section.id}`}
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: i * 0.06 }}
                     style={{
                       gridColumn: isActive ? "1 / -1" : "auto",
                       transition: "grid-column 0.3s ease",
@@ -491,7 +494,7 @@ const ProfilePage = () => {
                           <div style={{ paddingTop: 8 }}>
                             {/* Close button */}
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                              <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
+                              <span style={{ fontSize: 12, fontWeight: 400, color: "hsl(var(--color-text-secondary))" }}>
                                 {section.name}
                               </span>
                               <button
@@ -500,7 +503,7 @@ const ProfilePage = () => {
                                   background: "none",
                                   border: "none",
                                   fontSize: 18,
-                                  color: "#B0A8B5",
+                                  color: "hsl(var(--color-text-faint))",
                                   cursor: "pointer",
                                   padding: "0 4px",
                                   lineHeight: 1,
@@ -518,7 +521,7 @@ const ProfilePage = () => {
                         </motion.div>
                       )}
                     </AnimatePresence>
-                  </div>
+                  </motion.div>
                 );
               })}
 
@@ -531,7 +534,7 @@ const ProfilePage = () => {
                       style={{
                         width: "100%",
                         height: 100,
-                        border: "1px dashed #C9B8D8",
+                        border: "1px dashed #D4E8F5",
                         borderRadius: 8,
                         background: "transparent",
                         display: "flex",
@@ -539,7 +542,7 @@ const ProfilePage = () => {
                         justifyContent: "center",
                         cursor: "pointer",
                         fontSize: 20,
-                        color: "#C9B8D8",
+                        color: "#D4E8F5",
                       }}
                     >
                       +

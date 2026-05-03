@@ -126,7 +126,7 @@ const CreatePollSheet = ({ open, onOpenChange, onSubmit, sending }: CreatePollSh
             disabled={!canSubmit || sending}
             className="w-full py-2.5 text-[13px] font-medium text-white disabled:opacity-40 transition-opacity"
             style={{
-              backgroundColor: "hsl(var(--color-text-primary))",
+              backgroundColor: "#561828",
               borderRadius: 8,
             }}
           >

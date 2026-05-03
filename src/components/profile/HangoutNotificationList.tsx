@@ -124,7 +124,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
   return (
     <div className="mb-5">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-[11px] uppercase tracking-wider font-medium" style={{ color: "hsl(var(--color-text-faint))" }}>
+        <p className="text-[12px]" style={{ color: "hsl(var(--color-text-faint))" }}>
           Nytt
         </p>
         {unread.length > 1 && (
@@ -152,7 +152,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
               onClick={() => handleClick(n)}
               className="flex items-center gap-3 w-full text-left px-3 py-2.5 transition-colors hover:bg-[#FAFAFA]"
               style={{
-                borderBottom: i < unread.length - 1 ? "1px solid #EDE8F4" : "none",
+                borderBottom: i < unread.length - 1 ? "1px solid #D4E8F5" : "none",
               }}
             >
               {/* Unread dot */}

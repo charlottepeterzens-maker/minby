@@ -70,13 +70,13 @@ const PWAInstallBanner = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="fixed bottom-20 left-4 right-4 z-50 rounded-2xl p-4 shadow-lg"
+          className="fixed bottom-36 left-4 right-4 z-50 rounded-2xl p-4 shadow-lg"
           style={{ backgroundColor: "hsl(var(--color-surface-card))", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}
         >
           <div className="flex items-center gap-3">
             <div
               className="shrink-0 flex items-center justify-center rounded-full"
-              style={{ width: 40, height: 40, backgroundColor: "hsl(var(--color-text-primary))" }}
+              style={{ width: 40, height: 40, backgroundColor: "#561828" }}
             >
               {isIOS ? (
                 <Share className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
@@ -102,7 +102,7 @@ const PWAInstallBanner = () => {
               <button
                 onClick={handleInstall}
                 className="shrink-0 rounded-lg px-4 py-2 text-[12px] font-medium text-white"
-                style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
+                style={{ backgroundColor: "#561828" }}
               >
                 Lägg till
               </button>

@@ -130,7 +130,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
               </div>
               <button onClick={handleSubmitPoll} disabled={!canSubmitPoll || sending}
                 className="w-full py-2.5 text-[13px] font-medium text-white disabled:opacity-40 transition-opacity"
-                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 8 }}>
+                style={{ backgroundColor: "#561828", borderRadius: 8 }}>
                 Skicka omröstning
               </button>
             </div>
@@ -157,7 +157,7 @@ const CreateActionSheet = ({ open, onOpenChange, onSubmitPoll, onSubmitPlan, sen
               </div>
               <button onClick={handleSubmitPlan} disabled={!canSubmitPlan || sending}
                 className="w-full py-2.5 text-[13px] font-medium text-white disabled:opacity-40 transition-opacity"
-                style={{ backgroundColor: "hsl(var(--color-text-primary))", borderRadius: 8 }}>
+                style={{ backgroundColor: "#561828", borderRadius: 8 }}>
                 Föreslå plan
               </button>
             </div>

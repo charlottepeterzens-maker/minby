@@ -45,7 +45,7 @@ const OnboardingFlow = ({ onComplete }: Props) => {
           style={{
             width: i === step ? 18 : 6,
             height: 6,
-            backgroundColor: i === step ? "#3C2A4D" : "#C9B8D8",
+            backgroundColor: i === step ? "#561828" : "#D4E8F5",
             borderRadius: 99,
           }}
         />
@@ -200,7 +200,7 @@ const OnboardingButton = ({
     disabled={disabled}
     className="w-full text-[14px] font-medium"
     style={{
-      backgroundColor: "hsl(var(--color-text-primary))",
+      backgroundColor: "#561828",
       color: "#fff",
       borderRadius: 99,
       height: 52,
@@ -294,7 +294,7 @@ const InviteSheet = ({ open, onOpenChange }: { open: boolean; onOpenChange: (v: 
                 onClick={handleShare}
                 style={{
                   flex: 1,
-                  background: "#3C2A4D",
+                  background: "#561828",
                   color: "#F7F3EF",
                   borderRadius: 8,
                   padding: 10,

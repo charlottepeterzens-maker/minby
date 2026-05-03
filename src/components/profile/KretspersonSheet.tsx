@@ -141,7 +141,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                   <span className="font-display text-[15px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
                     {person.display_name}
                   </span>
-                  {isClose && <Heart className="w-2.5 h-2.5" style={{ color: "#C9B8D8" }} fill="#C9B8D8" />}
+                  {isClose && <Heart className="w-2.5 h-2.5" style={{ color: "#D4E8F5" }} fill="#D4E8F5" />}
                 </div>
                 <span className="text-[12px]" style={{ color: "hsl(var(--color-text-muted))" }}>
                   {tierText} · senast aktiv {relativeTime(person.last_activity)}
@@ -179,7 +179,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                 </div>
               ) : (
                 <div className="mb-4">
-                  <p className="text-[13px]" style={{ color: "#B0A8B5" }}>
+                  <p className="text-[13px]" style={{ color: "hsl(var(--color-text-faint))" }}>
                     {person.display_name} har inga planer – vill du föreslå något?
                   </p>
                   <button
@@ -188,7 +188,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                       setTimeout(() => setHangoutOpen(true), 300);
                     }}
                     className="text-[13px] font-medium mt-1"
-                    style={{ color: "#3C2A4D" }}
+                    style={{ color: "#1C1917" }}
                   >
                     Föreslå något →
                   </button>
@@ -210,7 +210,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                   setTimeout(() => setHangoutOpen(true), 300);
                 }}
                 className="flex-1 py-2.5 text-[13px] font-medium"
-                style={{ backgroundColor: "#2E1F3E", borderRadius: 8, color: "#F0EAE2", border: "none" }}
+                style={{ backgroundColor: "#561828", borderRadius: 8, color: "#F0EAE2", border: "none" }}
               >
                 Föreslå en träff
               </motion.button>
@@ -221,7 +221,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                   setTimeout(() => setGroupOpen(true), 300);
                 }}
                 className="flex-1 py-2.5 text-[13px] font-medium"
-                style={{ borderRadius: 8, color: "#2E1F3E", backgroundColor: "#F5F0EA", border: "none" }}
+                style={{ borderRadius: 8, color: "#1C1917", backgroundColor: "#F5F0EA", border: "none" }}
               >
                 Starta sällskap
               </motion.button>
@@ -243,7 +243,7 @@ const KretspersonSheet = ({ open, onOpenChange, person, onUpdate, mutedUsers, on
                 className="w-full text-left py-2.5 px-1 text-[13px] flex items-center gap-2"
                 style={{ color: "hsl(var(--color-text-primary))" }}
               >
-                <Heart className="w-3.5 h-3.5" style={{ color: isClose ? "#C9B8D8" : "#6B5C78" }} fill={isClose ? "#C9B8D8" : "none"} />
+                <Heart className="w-3.5 h-3.5" style={{ color: isClose ? "#D4E8F5" : "#6B5C78" }} fill={isClose ? "#D4E8F5" : "none"} />
                 {isClose ? "Ta bort från närmaste krets" : "Lägg till i närmaste krets"}
               </motion.button>
               <motion.button

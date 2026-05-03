@@ -4,7 +4,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,7 +37,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     let isMounted = true;
 
     if (!user) {
-      setOnboarded(false);
+      setOnboarded(null);
       return () => {
         isMounted = false;
       };
@@ -116,18 +117,54 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
           onComplete={() => {
             setOnboarded(true);
             if (user) {
-              supabase.from("profiles").update({ onboarded_at: new Date().toISOString() }).eq("user_id", user.id).then();
+              supabase.from("profiles").update({ onboarded_at: new Date().toISOString() }).eq("user_id", user.id)
+                .then(({ error }) => { if (error) console.error("Failed to set onboarded_at:", error); });
             }
           }}
           onDismiss={() => {
             setOnboarded(true);
             if (user) {
-              supabase.from("profiles").update({ onboarded_at: new Date().toISOString() }).eq("user_id", user.id).then();
+              supabase.from("profiles").update({ onboarded_at: new Date().toISOString() }).eq("user_id", user.id)
+                .then(({ error }) => { if (error) console.error("Failed to set onboarded_at:", error); });
             }
           }}
         />
       )}
     </>
+  );
+};
+
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.15 }}
+      >
+        <Routes location={location}>
+          <Route path="/" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
+          <Route path="/circles" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+          <Route path="/groups" element={<ProtectedRoute><GroupsPage /></ProtectedRoute>} />
+          <Route path="/groups/:groupId" element={<ProtectedRoute><GroupChatPage /></ProtectedRoute>} />
+          <Route path="/friends" element={<ProtectedRoute><FriendsPage /></ProtectedRoute>} />
+          <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="/profile/:userId" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/invite/:token" element={<InvitePage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
@@ -139,97 +176,10 @@ const App = () => (
       <AuthProvider>
         <LanguageProvider>
           <BrowserRouter>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <FeedPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/circles"
-                element={
-                  <ProtectedRoute>
-                    <Index />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/groups"
-                element={
-                  <ProtectedRoute>
-                    <GroupsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/groups/:groupId"
-                element={
-                  <ProtectedRoute>
-                    <GroupChatPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/friends"
-                element={
-                  <ProtectedRoute>
-                    <FriendsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/notifications"
-                element={
-                  <ProtectedRoute>
-                    <NotificationsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/profile/:userId"
-                element={
-                  <ProtectedRoute>
-                    <ProfilePage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/settings"
-                element={
-                  <ProtectedRoute>
-                    <SettingsPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute>
-                    <AdminPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/terms" element={<TermsPage />} />
-              <Route path="/invite/:token" element={<InvitePage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <AnimatedRoutes />
+            <PWAInstallBanner />
+            <PushPermissionDialog />
           </BrowserRouter>
-          <PWAInstallBanner />
-          <PushPermissionDialog />
         </LanguageProvider>
       </AuthProvider>
     </TooltipProvider>

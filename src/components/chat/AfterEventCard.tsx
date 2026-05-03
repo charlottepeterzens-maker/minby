@@ -68,7 +68,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       className="mx-4 mb-2 p-3 rounded-lg space-y-2.5"
-      style={{ backgroundColor: "hsl(var(--color-surface-card))", border: "1px solid #EDE8F4" }}
+      style={{ backgroundColor: "hsl(var(--color-surface-card))", border: "1px solid #D4E8F5" }}
     >
       <div className="flex items-start justify-between">
         <div>
@@ -113,7 +113,7 @@ const AfterEventCard = ({ planId, planTitle, planDate, groupId, onDismiss, onMem
           onClick={handleSave}
           disabled={saving || (!note.trim() && !imageFile)}
           className="shrink-0 px-3 py-2 text-[11px] font-medium rounded-lg disabled:opacity-40 transition-opacity"
-          style={{ backgroundColor: "hsl(var(--color-text-primary))", color: "#FFFFFF" }}
+          style={{ backgroundColor: "#561828", color: "#FFFFFF" }}
         >
           Spara
         </button>

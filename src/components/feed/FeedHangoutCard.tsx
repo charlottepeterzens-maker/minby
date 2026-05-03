@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { format } from "date-fns";
-import { sv } from "date-fns/locale";
+import { monthShort, weekdayLong, weekdayShort, formatDayMonth } from "@/utils/months";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -33,27 +32,6 @@ interface FeedHangoutCardProps {
   onRefresh?: () => void;
 }
 
-const TYPE_LABEL: Record<string, string> = {
-  open: "LEDIG",
-  available: "LEDIG",
-  confirmed: "HÄNG MED",
-  activity: "SUGEN PÅ",
-};
-
-const TYPE_LABEL_COLOR: Record<string, string> = {
-  open: "#6B5A3E",
-  available: "#6B5A3E",
-  confirmed: "#5C4A7A",
-  activity: "#2A6645",
-};
-
-const TYPE_BG_COLOR: Record<string, string> = {
-  open: "#F5F0E8",
-  available: "#F5F0E8",
-  confirmed: "#EDE8F4",
-  activity: "#E8F2EC",
-};
-
 function formatFeedDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
   const today = new Date();
@@ -64,16 +42,38 @@ function formatFeedDate(dateStr: string): string {
   if (d.getTime() === today.getTime()) return "Idag";
   if (d.getTime() === tomorrow.getTime()) return "Imorgon";
 
-  const weekday = format(d, "EEEE", { locale: sv });
-  const day = format(d, "d", { locale: sv });
-  const month = format(d, "MMMM", { locale: sv });
-  return `${weekday} ${day} ${month}`;
+  return `${weekdayLong(d)} ${d.getDate()} ${monthShort(d)}`;
 }
 
 function formatDateChip(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
-  return `${format(d, "d", { locale: sv })} ${format(d, "MMM", { locale: sv }).replace(".", "")}`;
+  return `${d.getDate()} ${monthShort(d)}`;
 }
+
+function getTimeAgo(dateStr: string): string {
+  const now = new Date();
+  const date = new Date(dateStr);
+  const diffMs = now.getTime() - date.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  if (diffMins < 1) return "nu";
+  if (diffMins < 60) return `${diffMins} min sedan`;
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return `${diffHours} tim sedan`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 7) return `${diffDays} d sedan`;
+  return formatDayMonth(date);
+}
+
+const cardStyle = {
+  backgroundColor: "hsl(var(--color-surface-card))",
+  borderRadius: 8,
+  padding: 16,
+  overflow: "hidden" as const,
+};
+
+const divider = (
+  <div style={{ height: 1, backgroundColor: "hsl(var(--color-border-subtle))", margin: "12px 0" }} />
+);
 
 /** Single hangout card in the feed */
 const UnifiedHangoutCard = ({
@@ -136,7 +136,7 @@ const UnifiedHangoutCard = ({
       if (hangout.user_id && hangout.user_id !== user.id) {
         const { data: myProfile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
         const name = myProfile?.display_name || "Någon";
-        const label = hangout.custom_note || (hangout.activities[0]) || "häng";
+        const label = hangout.custom_note || hangout.activities[0] || "häng";
         await sendNotification({
           recipientUserId: hangout.user_id,
           fromUserId: user.id,
@@ -151,151 +151,93 @@ const UnifiedHangoutCard = ({
     onRefresh?.();
   };
 
-  const activityText = hangout.activities.length > 0 ? hangout.activities[0] : null;
-  const noteText = hangout.custom_note || null;
-  const textsAreSimilar =
-    noteText && activityText &&
-    (noteText.toLowerCase().includes(activityText.toLowerCase()) ||
-     activityText.toLowerCase().includes(noteText.toLowerCase()));
-  const mainText = noteText || activityText;
-
-  const typeLabel = TYPE_LABEL[entryType] || "LEDIG";
-  const typeLabelColor = TYPE_LABEL_COLOR[entryType] || "#6B5A3E";
+  const mainText = hangout.custom_note || (hangout.activities.length > 0 ? hangout.activities[0] : null);
+  const hasResponses = yesCount > 0 || maybeCount > 0;
 
   return (
-    <div
-      className="rounded-lg"
-      style={{
-        backgroundColor: TYPE_BG_COLOR[entryType] || "#F5F0E8",
-        borderRadius: 8,
-        padding: 16,
-        overflow: "hidden",
-      }}
-    >
-      {/* 1. DATE — Georgia serif */}
-      {hangout.date && (
-        <p style={{
-          fontFamily: "'Fraunces', serif",
-          fontSize: 22,
-          fontWeight: 500,
-          color: "#3C2A4D",
-          lineHeight: 1.2,
-          marginBottom: 6,
-        }}>
-          {formatFeedDate(hangout.date)}
-        </p>
-      )}
-
-      {/* 2. FRITEXT */}
-      {mainText && (
-        <p style={{
-          fontSize: 15,
-          lineHeight: 1.55,
-          color: "#3C2A4D",
-          marginBottom: 10,
-        }}>
-          {mainText}
-        </p>
-      )}
-
-      {/* 3. META ROW: avatar + name + type pill + match pill */}
-      <div className="flex items-center gap-2" style={{ marginBottom: 12 }}>
+    <div style={cardStyle}>
+      {/* Header — avatar + name + time */}
+      <div className="flex items-center gap-2.5 mb-3">
         <FeedAvatar
           avatarUrl={(profile as any).avatar_url || null}
           displayName={profile.display_name}
           initials={profile.initials}
           onClick={onProfileClick}
-          size="w-6 h-6"
         />
-        <button
-          onClick={onProfileClick}
-          className="text-[12px] font-medium hover:underline leading-tight"
-          style={{ color: "#7A6A85" }}
-        >
-          {profile.display_name || "Vän"}
-        </button>
-        <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
-        <span style={{
-          fontSize: 9,
-          fontWeight: 500,
-          letterSpacing: "0.12em",
-          textTransform: "uppercase" as const,
-          color: typeLabelColor,
-        }}>
-          {typeLabel}
-        </span>
-        {(yesCount > 0 || maybeCount > 0) && (
-          <>
-            <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
-            <span style={{ fontSize: 11, color: "#7A6A85" }}>
-              {yesCount > 0 ? `${yesCount} kan` : ""}{yesCount > 0 && maybeCount > 0 ? " · " : ""}{maybeCount > 0 ? `${maybeCount} kanske` : ""}
-            </span>
-          </>
-        )}
+        <div>
+          <button
+            onClick={onProfileClick}
+            className="text-sm font-medium hover:underline block leading-tight"
+            style={{ color: "hsl(var(--color-text-primary))" }}
+          >
+            {isOwn ? "Du" : profile.display_name || "Vän"}
+          </button>
+          <p className="text-[11px] leading-tight" style={{ color: "hsl(var(--color-text-secondary))" }}>
+            {getTimeAgo(hangout.created_at)}
+          </p>
+        </div>
         {hangout.isMatch && !isOwn && (
-          <span style={{
-            fontSize: 9,
-            fontWeight: 500,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase" as const,
-            color: "#5C4A7A",
-            marginLeft: "auto",
-          }}>
+          <span className="ml-auto text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
             ni matcher
           </span>
         )}
       </div>
 
-      {/* 4. ACTIONS */}
+      {/* Content — date + activity */}
+      {hangout.date && (
+        <p style={{ fontSize: 18, fontWeight: 500, color: "hsl(var(--color-text-primary))", lineHeight: 1.25, marginBottom: 4 }}>
+          {formatFeedDate(hangout.date)}
+        </p>
+      )}
+      {mainText && (
+        <p style={{ fontSize: 14, color: "hsl(var(--color-text-secondary))", lineHeight: 1.5 }}>
+          {mainText}
+        </p>
+      )}
+
+      {/* Response count */}
+      {hasResponses && (
+        <p className="mt-2 text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
+          {[yesCount > 0 && `${yesCount} kan`, maybeCount > 0 && `${maybeCount} kanske`].filter(Boolean).join(" · ")}
+        </p>
+      )}
+
+      {/* Actions */}
       {!isOwn && (
-        <div className="flex items-center gap-2">
-          {myResponse ? (
-            <button
-              onClick={() => handleQuickRSVP(myResponse as "yes" | "maybe")}
-              disabled={saving}
-              className="text-[13px] font-medium transition-colors disabled:opacity-60"
-              style={{
-                backgroundColor: "rgba(255,255,255,0.6)",
-                color: "#3C2A4D",
-                borderRadius: 8,
-                padding: "8px 16px",
-              }}
-            >
-              Ångra svar
-            </button>
-          ) : (
-            <>
+        <>
+          {divider}
+          <div className="flex items-center gap-4">
+            {myResponse ? (
               <button
-                onClick={() => handleQuickRSVP("yes")}
+                onClick={() => handleQuickRSVP(myResponse as "yes" | "maybe")}
                 disabled={saving}
-                className="text-[13px] font-medium transition-colors disabled:opacity-60"
-                style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
+                className="text-[13px] font-medium disabled:opacity-50"
+                style={{ color: "hsl(var(--color-text-secondary))" }}
               >
-                Jag kan
+                Ångra svar
               </button>
-              <button
-                onClick={() => handleQuickRSVP("maybe")}
-                disabled={saving}
-                className="text-[13px] font-medium transition-colors disabled:opacity-60"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.6)",
-                  color: "#3C2A4D",
-                  borderRadius: 8,
-                  padding: "8px 16px",
-                }}
-              >
-                Kanske
-              </button>
-            </>
-          )}
-          <button
-            onClick={() => setDetailOpen(true)}
-            className="text-[12px] font-medium"
-            style={{ color: "#7A6A85", marginLeft: 4 }}
-          >
-            Kommentera
-          </button>
-        </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => handleQuickRSVP("yes")}
+                  disabled={saving}
+                  className="text-[13px] font-medium rounded-lg disabled:opacity-50"
+                  style={{ backgroundColor: "#561828", color: "#fff", padding: "7px 16px" }}
+                >
+                  Jag kan
+                </button>
+                <button
+                  onClick={() => handleQuickRSVP("maybe")}
+                  disabled={saving}
+                  className="text-[13px] font-medium disabled:opacity-50"
+                  style={{ color: "hsl(var(--color-text-secondary))", background: "none", border: "none" }}
+                >
+                  Kanske
+                </button>
+              </>
+            )}
+          </div>
+        </>
       )}
 
       {entry && (
@@ -337,7 +279,6 @@ const GroupedActivityCard = ({
 
   const fetchRsvps = useCallback(async () => {
     if (hangoutIds.length === 0) return;
-    // Fetch responses from new table
     const { data } = await supabase
       .from("hangout_responses")
       .select("availability_id, user_id, response")
@@ -368,28 +309,21 @@ const GroupedActivityCard = ({
     }
   }, [hangoutIds, dates, user?.id]);
 
-  useEffect(() => {
-    fetchRsvps();
-  }, [fetchRsvps]);
+  useEffect(() => { fetchRsvps(); }, [fetchRsvps]);
 
   const handleDateClick = async (dateStr: string) => {
     if (!user || isOwn || saving) return;
     setSaving(true);
     const dateIdx = dates.indexOf(dateStr);
     const hangoutId = hangoutIds[dateIdx];
-    if (!hangoutId) {
-      setSaving(false);
-      return;
-    }
+    if (!hangoutId) { setSaving(false); return; }
 
     if (selectedDate === dateStr && myResponse) {
-      // Remove response
       await supabase.from("hangout_responses").delete().eq("availability_id", hangoutId).eq("user_id", user.id);
       setSelectedDate(null);
       setMyResponse(null);
       toast("Val borttaget");
     } else {
-      // Remove old response if switching date
       if (selectedDate && myResponse) {
         const oldIdx = dates.indexOf(selectedDate);
         const oldId = hangoutIds[oldIdx];
@@ -407,171 +341,124 @@ const GroupedActivityCard = ({
     fetchRsvps();
   };
 
+  const hasResponses = totalYes > 0 || totalMaybe > 0;
+
   return (
-    <div
-      className="rounded-lg"
-      style={{
-        backgroundColor: "#E8F2EC",
-        borderRadius: 8,
-        padding: 16,
-        overflow: "hidden",
-      }}
-    >
-      {/* 1. ACTIVITY — Georgia serif */}
-      <p
-        style={{
-          fontFamily: "'Fraunces', serif",
-          fontSize: 22,
-          fontWeight: 500,
-          color: "#3C2A4D",
-          lineHeight: 1.2,
-          marginBottom: 8,
-        }}
-      >
-        {activityName}
-      </p>
-
-      {/* 2. DATE CHIPS */}
-      <div style={{ marginBottom: 10 }}>
-        <p style={{ fontSize: 10, color: "#7A6A85", marginBottom: 4 }}>
-          förslag på datum
-        </p>
-        <div className="flex gap-1.5 flex-wrap">
-          {dates.map((dateStr) => {
-            const isSelected = selectedDate === dateStr;
-            const count = rsvpCounts[dateStr] || 0;
-            return (
-              <button
-                key={dateStr}
-                onClick={() => handleDateClick(dateStr)}
-                disabled={isOwn || saving}
-                className="flex items-center gap-1 rounded-full transition-all shrink-0"
-                style={{
-                  backgroundColor: isSelected ? "#3C2A4D" : "#F0EAE2",
-                  border: "none",
-                  padding: "2px 9px",
-                  fontSize: 11,
-                }}
-              >
-                <span style={{ color: isSelected ? "#FFFFFF" : "#3C2A4D" }}>
-                  {formatDateChip(dateStr)}
-                </span>
-                {count > 0 && (
-                  <span
-                    className="font-medium px-1 rounded-full"
-                    style={{
-                      fontSize: 9,
-                      backgroundColor: isSelected ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.06)",
-                      color: isSelected ? "#FFFFFF" : "#7A6A85",
-                    }}
-                  >
-                    {count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* 3. META ROW */}
-      <div className="flex items-center gap-2" style={{ marginBottom: 12 }}>
+    <div style={cardStyle}>
+      {/* Header — avatar + name + time */}
+      <div className="flex items-center gap-2.5 mb-3">
         <FeedAvatar
           avatarUrl={(profile as any).avatar_url || null}
           displayName={profile.display_name}
           initials={profile.initials}
           onClick={onProfileClick}
-          size="w-6 h-6"
         />
-        <button
-          onClick={onProfileClick}
-          className="text-[12px] font-medium hover:underline leading-tight"
-          style={{ color: "#7A6A85" }}
-        >
-          {profile.display_name || "Vän"}
-        </button>
-        <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
-        <span style={{
-          fontSize: 9,
-          fontWeight: 500,
-          letterSpacing: "0.12em",
-          textTransform: "uppercase" as const,
-          color: "#2A6645",
-        }}>
-          SUGEN PÅ
-        </span>
-        {(totalYes > 0 || totalMaybe > 0) && (
-          <>
-            <span style={{ color: "#C9B8D8", fontSize: 12 }}>·</span>
-            <span style={{ fontSize: 11, color: "#7A6A85" }}>
-              {totalYes > 0 ? `${totalYes} kan` : ""}{totalYes > 0 && totalMaybe > 0 ? " · " : ""}{totalMaybe > 0 ? `${totalMaybe} kanske` : ""}
-            </span>
-          </>
-        )}
+        <div>
+          <button
+            onClick={onProfileClick}
+            className="text-sm font-medium hover:underline block leading-tight"
+            style={{ color: "hsl(var(--color-text-primary))" }}
+          >
+            {isOwn ? "Du" : profile.display_name || "Vän"}
+          </button>
+          <p className="text-[11px] leading-tight" style={{ color: "hsl(var(--color-text-secondary))" }}>
+            {getTimeAgo(hangout.created_at)}
+          </p>
+        </div>
       </div>
 
-      {/* 4. ACTIONS */}
-      {!isOwn && (
-        <div className="flex items-center gap-2">
-          {myResponse ? (
+      {/* Activity name */}
+      <p style={{ fontSize: 18, fontWeight: 500, color: "hsl(var(--color-text-primary))", lineHeight: 1.25, marginBottom: 10 }}>
+        {activityName}
+      </p>
+
+      {/* Date chips */}
+      <div className="flex gap-1.5 flex-wrap mb-2">
+        {dates.map((dateStr) => {
+          const isSelected = selectedDate === dateStr;
+          const count = rsvpCounts[dateStr] || 0;
+          return (
             <button
-              onClick={async () => {
-                if (!user || saving) return;
-                setSaving(true);
-                for (const hid of hangoutIds) {
-                  await supabase.from("hangout_responses").delete().eq("availability_id", hid).eq("user_id", user.id);
-                }
-                setMyResponse(null);
-                setSelectedDate(null);
-                toast("Svar borttaget");
-                setSaving(false);
-                fetchRsvps();
-              }}
-              disabled={saving}
-              className="text-[13px] font-medium transition-colors disabled:opacity-60"
+              key={dateStr}
+              onClick={() => handleDateClick(dateStr)}
+              disabled={isOwn || saving}
+              className="flex items-center gap-1.5 rounded-full transition-all shrink-0"
               style={{
-                backgroundColor: "rgba(255,255,255,0.6)",
-                color: "#3C2A4D",
-                borderRadius: 8,
-                padding: "8px 16px",
+                backgroundColor: isSelected ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-raised))",
+                border: "none",
+                padding: "4px 12px",
+                fontSize: 12,
+                color: isSelected ? "#fff" : "hsl(var(--color-text-primary))",
               }}
             >
-              Ångra svar
+              {formatDateChip(dateStr)}
+              {count > 0 && (
+                <span style={{
+                  fontSize: 11,
+                  opacity: 0.7,
+                }}>
+                  {count}
+                </span>
+              )}
             </button>
-          ) : (
-            <>
-              <button
-                onClick={() => setDetailOpen(true)}
-                className="text-[13px] font-medium transition-colors"
-                style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8, padding: "8px 16px" }}
-              >
-                Jag kan
-              </button>
-              <button
-                onClick={() => setDetailOpen(true)}
-                className="text-[13px] font-medium transition-colors"
-                style={{
-                  backgroundColor: "rgba(255,255,255,0.6)",
-                  color: "#3C2A4D",
-                  borderRadius: 8,
-                  padding: "8px 16px",
-                }}
-              >
-                Kanske
-              </button>
-            </>
-          )}
-          <button
-            onClick={() => setDetailOpen(true)}
-            className="text-[12px] font-medium"
-            style={{ color: "#7A6A85", marginLeft: 4 }}
-          >
-            Kommentera
-          </button>
-        </div>
+          );
+        })}
+      </div>
+
+      {/* Response count */}
+      {hasResponses && (
+        <p className="mt-1 text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
+          {[totalYes > 0 && `${totalYes} kan`, totalMaybe > 0 && `${totalMaybe} kanske`].filter(Boolean).join(" · ")}
+        </p>
       )}
 
-      {/* Detail sheet for grouped activity */}
+      {/* Actions */}
+      {!isOwn && (
+        <>
+          {divider}
+          <div className="flex items-center gap-4">
+            {myResponse ? (
+              <button
+                onClick={async () => {
+                  if (!user || saving) return;
+                  setSaving(true);
+                  for (const hid of hangoutIds) {
+                    await supabase.from("hangout_responses").delete().eq("availability_id", hid).eq("user_id", user.id);
+                  }
+                  setMyResponse(null);
+                  setSelectedDate(null);
+                  toast("Svar borttaget");
+                  setSaving(false);
+                  fetchRsvps();
+                }}
+                disabled={saving}
+                className="text-[13px] font-medium disabled:opacity-50"
+                style={{ color: "hsl(var(--color-text-secondary))", background: "none", border: "none" }}
+              >
+                Ångra svar
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => setDetailOpen(true)}
+                  className="text-[13px] font-medium rounded-lg"
+                  style={{ backgroundColor: "#561828", color: "#fff", padding: "7px 16px" }}
+                >
+                  Jag kan
+                </button>
+                <button
+                  onClick={() => setDetailOpen(true)}
+                  className="text-[13px] font-medium"
+                  style={{ color: "hsl(var(--color-text-secondary))", background: "none", border: "none" }}
+                >
+                  Kanske
+                </button>
+              </>
+            )}
+          </div>
+        </>
+      )}
+
       {hangoutIds.length > 0 && (() => {
         const primaryEntry = {
           id: hangoutIds[0],
@@ -606,11 +493,7 @@ const GroupedActivityCard = ({
 
 const FeedHangoutCard = (props: FeedHangoutCardProps) => {
   const entryType = props.hangout.entry_type || "available";
-  if (
-    entryType === "activity" &&
-    props.hangout.dates &&
-    props.hangout.dates.length > 0
-  ) {
+  if (entryType === "activity" && props.hangout.dates && props.hangout.dates.length > 0) {
     return <GroupedActivityCard {...props} />;
   }
   return <UnifiedHangoutCard {...props} />;

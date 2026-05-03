@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { motion } from "framer-motion";
 import { Check, UserCheck, Heart, CalendarDays, MessageCircle, Bell, Users, Sparkles } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { sv } from "date-fns/locale";
@@ -37,7 +38,7 @@ interface Notification {
 
 const NOTIF_ICON: Record<string, React.ReactNode> = {
   friend_request: <Users className="w-4 h-4" style={{ color: "#5C4A7A" }} />,
-  hangout_match: <CalendarDays className="w-4 h-4" style={{ color: "#2A6645" }} />,
+  hangout_match: <CalendarDays className="w-4 h-4" style={{ color: "#7A5C14" }} />,
   hangout_nudge: <CalendarDays className="w-4 h-4" style={{ color: "#6B5A3E" }} />,
   reaction: <Heart className="w-4 h-4" style={{ color: "#C4727F" }} />,
   comment: <MessageCircle className="w-4 h-4" style={{ color: "#5C4A7A" }} />,
@@ -108,7 +109,7 @@ const NotificationsPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background pt-safe">
+      <nav className="sticky top-0 z-50 bg-background pt-safe" style={{ borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
         <Container className="py-4 flex items-center justify-between">
           <span className="font-display text-[20px] font-medium text-foreground">{t("notifications")}</span>
           {unreadCount > 0 && (
@@ -127,15 +128,29 @@ const NotificationsPage = () => {
             ))}
           </div>
         ) : notifications.length === 0 ? (
-          <div className="text-center py-20">
+          <motion.div
+            className="text-center py-20"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
             <p className="font-display text-lg text-muted-foreground">{t("noNotificationsYet")}</p>
             <p className="text-sm text-muted-foreground mt-2">{t("notificationsHint")}</p>
-          </div>
+          </motion.div>
         ) : (
-          <div className="space-y-2">
+          <motion.div
+            className="space-y-2"
+            initial="hidden"
+            animate="visible"
+            variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
+          >
             {notifications.map((n) => (
-              <div
+              <motion.div
                 key={n.id}
+                variants={{
+                  hidden: { opacity: 0, y: 14 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] } },
+                }}
                 onClick={() => markRead(n.id)}
                 className={`w-full text-left p-4 rounded-lg transition-colors duration-150 cursor-pointer ${
                   n.read ? "bg-card" : "bg-lavender-bg"
@@ -171,9 +186,9 @@ const NotificationsPage = () => {
                     <div className="w-2 h-2 rounded-full bg-primary shrink-0 mt-2" />
                   )}
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </Container>
       <ScrollToTopButton />

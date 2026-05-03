@@ -8,7 +8,7 @@ const CurvedSeparator = () => (
     <path
       d="M0,0 Q200,6 400,0"
       fill="none"
-      stroke="#EDE8F4"
+      stroke="#D4E8F5"
       strokeWidth="1"
     />
   </svg>

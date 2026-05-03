@@ -180,7 +180,7 @@ const PostComments = ({ postId, isOwner, collapsedInput = false }: Props) => {
                   </span>
                   <span style={{ fontSize: 10, color: "hsl(var(--color-text-faint))" }}>{getTimeAgo(c.created_at)}</span>
                 </div>
-                <p style={{ fontSize: 12, color: "#5A4A6A", lineHeight: 1.5 }}>{c.content}</p>
+                <p style={{ fontSize: 12, color: "hsl(var(--color-text-primary))", lineHeight: 1.5 }}>{c.content}</p>
               </div>
               {(c.user_id === user?.id || isOwner) && (
                 <button
@@ -205,32 +205,12 @@ const PostComments = ({ postId, isOwner, collapsedInput = false }: Props) => {
       {collapsedInput && !showInput ? (
         <button
           onClick={() => setShowInput(true)}
-          style={{ fontSize: 11, color: "hsl(var(--color-text-faint))", marginTop: comments.length > 0 ? 4 : 0 }}
-          className="hover:underline"
+          style={{ fontSize: 13, color: "hsl(var(--color-text-faint))", marginTop: comments.length > 0 ? 4 : 0 }}
         >
           Kommentera…
         </button>
       ) : (
-        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-          <div
-            style={{
-              width: 24,
-              height: 24,
-              borderRadius: "50%",
-              background: "hsl(var(--color-surface-raised))",
-              flexShrink: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "hidden",
-            }}
-          >
-            {resolveAvatarUrl(myAvatarUrl) ? (
-              <img src={resolveAvatarUrl(myAvatarUrl)!} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            ) : (
-              <span style={{ fontSize: 9, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}>{myInitials}</span>
-            )}
-          </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -249,12 +229,14 @@ const PostComments = ({ postId, isOwner, collapsedInput = false }: Props) => {
             autoFocus={collapsedInput}
             style={{
               flex: 1,
-              height: 36,
-              background: "hsl(var(--color-surface))",
+              height: 34,
+              background: "transparent",
               border: "none",
-              borderRadius: 8,
-              padding: "0 12px",
+              borderBottom: "1px solid hsl(var(--color-border-subtle))",
+              borderRadius: 0,
+              padding: "0 2px",
               fontSize: 13,
+              fontWeight: 400,
               color: "hsl(var(--color-text-primary))",
               outline: "none",
             }}

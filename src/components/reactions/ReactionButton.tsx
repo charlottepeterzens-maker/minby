@@ -23,13 +23,13 @@ const ReactionButton = ({
       onClick={onClick}
       onContextMenu={onContextMenu}
       disabled={disabled}
-      whileTap={disabled ? undefined : { scale: 0.92 }}
-      animate={active ? { scale: [1, 1.12, 1] } : {}}
-      transition={{ duration: 0.18, ease: "easeOut" }}
-      className="inline-flex items-center gap-1 rounded-full transition-colors"
+      whileTap={disabled ? undefined : { scale: 0.78 }}
+      animate={active ? { scale: [1, 1.28, 0.88, 1.06, 1] } : { scale: 1 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
+      className="inline-flex items-center gap-1 transition-colors"
       style={{
-        padding: count > 0 ? "6px 12px" : "6px 8px",
-        backgroundColor: active ? "#FDF0EB" : "#F5F0EA",
+        padding: "4px 6px",
+        background: "none",
         border: "none",
         cursor: disabled ? "default" : "pointer",
         opacity: disabled ? 0.4 : 1,
@@ -39,8 +39,8 @@ const ReactionButton = ({
         size={17}
         strokeWidth={1.8}
         style={{
-          stroke: active ? "#C4522A" : "#C9B8D8",
-          fill: active ? "#FDF0EB" : "none",
+          stroke: active ? "#C4522A" : "#D4E8F5",
+          fill: "none",
         }}
       />
       {count > 0 && (

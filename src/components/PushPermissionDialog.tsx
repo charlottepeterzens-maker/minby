@@ -16,6 +16,9 @@ const PushPermissionDialog = () => {
   useEffect(() => {
     if (!user || !isSupported || permission !== "default") return;
 
+    let isMounted = true;
+    let timer: ReturnType<typeof setTimeout>;
+
     const check = async () => {
       const { data } = await supabase
         .from("profiles")
@@ -23,12 +26,16 @@ const PushPermissionDialog = () => {
         .eq("user_id", user.id)
         .single();
 
-      if (data && !(data as any).notification_permission_asked) {
-        // Delay showing to not overwhelm on first load
-        setTimeout(() => setShow(true), 2000);
+      if (isMounted && data && !(data as any).notification_permission_asked) {
+        timer = setTimeout(() => { if (isMounted) setShow(true); }, 2000);
       }
     };
     check();
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+    };
   }, [user, isSupported, permission]);
 
   const markAsked = async () => {
@@ -77,7 +84,7 @@ const PushPermissionDialog = () => {
             <button
               onClick={handleActivate}
               className="w-full py-3 rounded-lg text-[14px] font-medium text-white transition-colors"
-              style={{ backgroundColor: "hsl(var(--color-text-primary))" }}
+              style={{ backgroundColor: "#561828" }}
             >
               Håll mig uppdaterad
             </button>

@@ -14,7 +14,7 @@ import { ChevronLeft, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import BottomNav from "@/components/BottomNav";
-import CurvedSeparator from "@/components/CurvedSeparator";
+
 import ConfirmSheet from "@/components/ConfirmSheet";
 import { Container } from "@/components/layout";
 
@@ -196,7 +196,7 @@ const SettingsPage = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <nav className="sticky top-0 z-50 bg-background pt-safe">
+      <nav className="sticky top-0 z-50 bg-background pt-safe" style={{ borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
         <Container className="py-4 flex items-center gap-2">
           <button
             onClick={() => navigate(-1)}
@@ -207,14 +207,14 @@ const SettingsPage = () => {
           </button>
           <span className="font-display text-[20px] font-medium text-foreground">{t("settings")}</span>
         </Container>
-        <CurvedSeparator />
+
       </nav>
 
       <Container className="py-6 space-y-4">
         {/* Dark mode */}
         <Card className="rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>{lang === "sv" ? "Utseende" : "Appearance"}</CardTitle>
+            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "hsl(var(--color-text-faint))" }}>{lang === "sv" ? "Utseende" : "Appearance"}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
@@ -246,7 +246,7 @@ const SettingsPage = () => {
         {/* Language */}
         <Card className="rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>{t("language")}</CardTitle>
+            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "hsl(var(--color-text-faint))" }}>{t("language")}</CardTitle>
           </CardHeader>
           <CardContent>
             <Select value={lang} onValueChange={(v) => setLang(v as "en" | "sv")}>
@@ -264,7 +264,7 @@ const SettingsPage = () => {
         {/* Password */}
         <Card className="rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>{t("changePassword")}</CardTitle>
+            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "hsl(var(--color-text-faint))" }}>{t("changePassword")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div>
@@ -303,7 +303,7 @@ const SettingsPage = () => {
         {/* Notifications */}
         <Card className="rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>Notiser</CardTitle>
+            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "hsl(var(--color-text-faint))" }}>Notiser</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {NOTIF_TOGGLES.map(({ key, label }) => (
@@ -319,7 +319,7 @@ const SettingsPage = () => {
         {/* Data & Privacy */}
         <Card className="rounded-lg">
           <CardHeader className="pb-2">
-            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>{t("howWeUseData")}</CardTitle>
+            <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "hsl(var(--color-text-faint))" }}>{t("howWeUseData")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>{t("dataPrivacy1")}</p>
@@ -336,7 +336,7 @@ const SettingsPage = () => {
         {isAdmin && (
           <Card className="rounded-lg">
             <CardHeader className="pb-2">
-              <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "#B0A8B5" }}>Utvecklarverktyg</CardTitle>
+              <CardTitle style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "hsl(var(--color-text-faint))" }}>Utvecklarverktyg</CardTitle>
             </CardHeader>
             <CardContent>
               <SeedTestUsersButton />

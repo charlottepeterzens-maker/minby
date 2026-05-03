@@ -66,15 +66,9 @@ interface GroupRow {
 }
 
 function statusLabel(entryType: string): string {
-  if (entryType === "confirmed") return "HÄNG MED";
-  if (entryType === "activity") return "SUGEN PÅ";
-  return "LEDIG";
-}
-
-function statusLabelColor(entryType: string): string {
-  if (entryType === "confirmed") return "#5C4A7A";
-  if (entryType === "activity") return "#2A6645";
-  return "#6B5A3E";
+  if (entryType === "confirmed") return "häng med";
+  if (entryType === "activity") return "sugen på";
+  return "ledig";
 }
 
 function statusContent(f: FriendRow): string {
@@ -520,9 +514,9 @@ const FriendsPage = () => {
   };
 
   return (
-    <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+    <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))", borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
       {/* Header */}
-      <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
+      <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))", borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
         <Container className="py-4 flex items-center justify-between">
           <span className="font-fraunces text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
             Sällskap
@@ -636,7 +630,7 @@ const FriendsPage = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.06 * i, type: "spring", stiffness: 300, damping: 24 }}
                 className="flex items-center gap-3 p-3"
-                style={{ backgroundColor: "#EDE8F4", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 8 }}
+                style={{ backgroundColor: "#D4E8F5", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 8 }}
               >
                 <button
                   onClick={() => navigate(`/profile/${r.from_user_id}`)}
@@ -664,7 +658,7 @@ const FriendsPage = () => {
                     onClick={() => handleAccept(r.id, r.from_user_id)}
                     disabled={respondingId === r.id}
                     className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                    style={{ backgroundColor: "#3C2A4D", color: "#FFFFFF", borderRadius: 8 }}
+                    style={{ backgroundColor: "#561828", color: "#FFFFFF", borderRadius: 8 }}
                   >
                     Acceptera
                   </button>
@@ -703,8 +697,8 @@ const FriendsPage = () => {
         ) : (
           <div>
             <p
-              className="text-[11px] font-medium uppercase mb-3 px-1"
-              style={{ color: "#B0A8B5", letterSpacing: "0.07em" }}
+              className="text-[12px] mb-3 px-1"
+              style={{ color: "hsl(var(--color-text-faint))" }}
             >
               Din krets
             </p>
@@ -760,27 +754,21 @@ const FriendsPage = () => {
                           )}
                         </div>
                         <div className="flex items-center gap-0.5 max-w-full">
-                          <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-primary))", fontFamily: "'Fraunces', serif" }}>
+                          <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-primary))", fontFamily: "'Outfit', sans-serif" }}>
                             {f.display_name.split(" ")[0]}
                           </span>
                           {isClose && (
-                            <svg width="8" height="8" viewBox="0 0 8 8" fill="#C9B8D8" className="shrink-0">
+                            <svg width="8" height="8" viewBox="0 0 8 8" fill="#D4E8F5" className="shrink-0">
                               <path d="M4 7L1.17 4.17a2 2 0 112.83-2.83L4 1.34l.17-.17a2 2 0 012.83 2.83L4 7z" />
                             </svg>
                           )}
                         </div>
                         {f.hangout_status ? (
-                          <span className="truncate max-w-full" style={{
-                            fontSize: 9,
-                            fontWeight: 500,
-                            letterSpacing: "0.12em",
-                            textTransform: "uppercase",
-                            color: statusLabelColor(f.hangout_status.entry_type),
-                          }}>
+                          <span className="truncate max-w-full" style={{ fontSize: 11, color: "hsl(var(--color-text-faint))" }}>
                             {statusLabel(f.hangout_status.entry_type)}
                           </span>
                         ) : status ? (
-                          <span className="text-[10px] truncate max-w-full" style={{ color: "#B0A8B5" }}>
+                          <span className="truncate max-w-full" style={{ fontSize: 11, color: "hsl(var(--color-text-faint))" }}>
                             {status}
                           </span>
                         ) : null}
@@ -796,9 +784,9 @@ const FriendsPage = () => {
                         className="w-[44px] h-[44px] rounded-full flex items-center justify-center mb-1"
                         style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
                       >
-                        <Plus className="w-4 h-4" style={{ color: "#C9B8D8" }} />
+                        <Plus className="w-4 h-4" style={{ color: "#D4E8F5" }} />
                       </div>
-                      <span className="text-[10px]" style={{ color: "#B0A8B5" }}>Bjud in</span>
+                      <span className="text-[11px]" style={{ color: "hsl(var(--color-text-faint))" }}>Bjud in</span>
                     </div>
                   }
                 />
@@ -811,8 +799,8 @@ const FriendsPage = () => {
         <div>
           <div className="flex items-center justify-between mb-3 px-1">
             <p
-              className="text-[11px] font-medium uppercase"
-              style={{ color: "#B0A8B5", letterSpacing: "0.07em" }}
+              className="text-[12px]"
+              style={{ color: "hsl(var(--color-text-faint))" }}
             >
               Dina sällskap
             </p>
@@ -821,7 +809,7 @@ const FriendsPage = () => {
               trigger={
                 <button
                   className="px-3 py-1 text-[11px] font-medium text-white"
-                  style={{ backgroundColor: "#3C2A4D", borderRadius: 8 }}
+                  style={{ backgroundColor: "#561828", borderRadius: 8 }}
                 >
                   + Nytt
                 </button>
@@ -849,7 +837,7 @@ const FriendsPage = () => {
                   style={{
                     backgroundColor: "hsl(var(--color-surface-card))",
                     borderRadius: 8,
-                    borderLeft: g.has_unread ? "3px solid #3C2A4D" : "3px solid transparent",
+                    borderLeft: g.has_unread ? "3px solid #561828" : "3px solid transparent",
                   }}
                 >
                   {g.avatar_url ? (
@@ -879,7 +867,7 @@ const FriendsPage = () => {
                     </p>
                   </div>
                   <div className="shrink-0 flex flex-col items-end gap-1">
-                    <span className="text-[10px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                    <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
                       {g.last_message_at ? formatTime(g.last_message_at) : "–"}
                     </span>
                     {g.has_unread && (
@@ -900,7 +888,7 @@ const FriendsPage = () => {
                   <CreateGroupDialog
                     onGroupCreated={fetchGroups}
                     trigger={
-                      <span className="text-[13px] font-medium cursor-pointer" style={{ color: "#3C2A4D" }}>
+                      <span className="text-[13px] font-medium cursor-pointer" style={{ color: "#1C1917" }}>
                         Starta ett sällskap med din krets →
                       </span>
                     }

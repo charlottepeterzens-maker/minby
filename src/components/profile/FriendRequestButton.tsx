@@ -138,13 +138,7 @@ const FriendRequestButton = ({ targetUserId }: Props) => {
 
   if (status === "friends") {
     return (
-      <span style={{
-        fontSize: 9,
-        fontWeight: 500,
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        color: "#7A6A85",
-      }}>
+      <span style={{ fontSize: 12, fontWeight: 400, color: "hsl(var(--color-text-secondary))" }}>
         {t("friendsStatus")}
       </span>
     );
@@ -152,17 +146,9 @@ const FriendRequestButton = ({ targetUserId }: Props) => {
 
   if (status === "sent") {
     return (
-      <span style={{
-        fontSize: 9,
-        fontWeight: 500,
-        letterSpacing: "0.12em",
-        textTransform: "uppercase",
-        color: "#B0A8B5",
-      }}>
-        <button onClick={cancelRequest} style={{ background: "none", border: "none", color: "inherit", font: "inherit", letterSpacing: "inherit", cursor: "pointer" }}>
-          {t("requestPending")}
-        </button>
-      </span>
+      <button onClick={cancelRequest} style={{ fontSize: 12, fontWeight: 400, color: "hsl(var(--color-text-faint))", background: "none", border: "none", cursor: "pointer" }}>
+        {t("requestPending")}
+      </button>
     );
   }
 
@@ -177,7 +163,7 @@ const FriendRequestButton = ({ targetUserId }: Props) => {
         </button>
         <button
           onClick={cancelRequest}
-          style={{ background: "none", border: "none", fontSize: 11, color: "#B0A8B5", cursor: "pointer" }}
+          style={{ background: "none", border: "none", fontSize: 11, color: "hsl(var(--color-text-faint))", cursor: "pointer" }}
         >
           <X className="w-3.5 h-3.5" />
         </button>

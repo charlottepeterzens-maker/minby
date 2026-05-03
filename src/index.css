@@ -1,8 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap');
 
 .font-fraunces {
-  font-family: 'Fraunces', serif;
-  font-style: normal;
+  font-family: 'Outfit', sans-serif;
 }
 
 @tailwind base;
@@ -13,76 +12,76 @@
   :root {
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
-    /* Minby — warmer linen + deeper purple */
-    --background: 30 28% 92%;
-    --foreground: 270 33% 18%;
+    /* Minby — warm linen + burgundy + powder blue */
+    --background: 30 20% 96%;
+    --foreground: 20 10% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 270 33% 18%;
+    --card-foreground: 20 10% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 270 33% 18%;
+    --popover-foreground: 20 10% 12%;
 
-    --primary: 270 33% 18%;
-    --primary-foreground: 30 28% 92%;
+    --primary: 347 56% 23%;
+    --primary-foreground: 30 28% 96%;
 
-    --secondary: 270 25% 78%;
-    --secondary-foreground: 270 33% 18%;
+    --secondary: 206 60% 91%;
+    --secondary-foreground: 20 10% 12%;
 
     --accent: 16 65% 46%;
     --accent-foreground: 0 0% 100%;
 
     --muted: 30 15% 89%;
-    --muted-foreground: 270 14% 38%;
+    --muted-foreground: 20 8% 42%;
 
     --destructive: 0 0% 55%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 265 30% 93%;
+    --border: 200 25% 88%;
     --input: 0 0% 100%;
-    --ring: 270 33% 18%;
+    --ring: 347 56% 23%;
 
     --radius: 0.5rem;
 
     /* Extended palette */
     --dusty-rose: 340 25% 87%;
     --dusty-rose-bg: 340 30% 97%;
-    --salvia: 145 18% 75%;
-    --salvia-bg: 145 20% 94%;
-    --lavender: 270 25% 78%;
-    --lavender-bg: 270 20% 94%;
+    --salvia: 44 55% 72%;
+    --salvia-bg: 44 65% 93%;
+    --lavender: 206 45% 80%;
+    --lavender-bg: 206 60% 91%;
 
-    /* Branded colors (dark-mode-aware) */
-    --color-surface: 30 28% 92%;           /* #F0EAE2 */
+    /* Branded colors */
+    --color-surface: 30 20% 96%;           /* #F7F4F1 */
     --color-surface-card: 0 0% 100%;       /* #FFFFFF */
-    --color-surface-raised: 270 20% 94%;   /* #EDE8F4 */
+    --color-surface-raised: 206 60% 91%;   /* light airy blue */
     --color-surface-rose: 340 30% 97%;     /* #FCF0F3 */
-    --color-surface-sage: 145 20% 93%;     /* #EAF2E8 */
-    --color-text-primary: 270 33% 18%;     /* #2E1F3E */
-    --color-text-secondary: 270 14% 38%;   /* #655675 */
-    --color-text-muted: 270 12% 45%;       /* #6B5C78 */
-    --color-text-faint: 270 10% 52%;       /* #857A8F */
+    --color-surface-sage: 44 65% 93%;      /* #F8F0D8 warm yellow */
+    --color-text-primary: 20 10% 12%;      /* dark warm charcoal */
+    --color-text-secondary: 20 6% 40%;     /* muted warm gray */
+    --color-text-muted: 20 5% 46%;
+    --color-text-faint: 20 4% 54%;
     --color-border-subtle: 30 15% 89%;     /* #EDE8E0 */
-    --color-border-lavender: 270 25% 78%;  /* #C9B8D8 */
+    --color-border-lavender: 206 45% 80%;  /* soft blue border */
     --color-accent-red: 0 55% 49%;         /* #A32D2D */
     --color-accent-terra: 16 65% 46%;      /* #C4522A */
-    --color-accent-sage-text: 140 42% 20%; /* #1F4A1A */
-    --color-badge: 330 40% 35%;            /* #993556 */
+    --color-accent-sage-text: 44 65% 28%;  /* #7A5C14 amber */
+    --color-badge: 347 40% 35%;
 
     /* Korall accent */
     --terrakotta: 16 65% 46%;              /* #C4522A */
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 270 33% 18%;
-    --sidebar-primary: 270 33% 18%;
-    --sidebar-primary-foreground: 30 28% 92%;
-    --sidebar-accent: 270 20% 94%;
-    --sidebar-accent-foreground: 270 33% 18%;
+    --sidebar-foreground: 20 10% 12%;
+    --sidebar-primary: 347 56% 23%;
+    --sidebar-primary-foreground: 30 28% 96%;
+    --sidebar-accent: 206 60% 91%;
+    --sidebar-accent-foreground: 20 10% 12%;
     --sidebar-border: 30 15% 85%;
     --sidebar-ring: 270 33% 18%;
 
-    --font-display: 'Lexend', sans-serif;
-    --font-body: 'Lexend', sans-serif;
+    --font-display: 'Outfit', sans-serif;
+    --font-body: 'Outfit', sans-serif;
   }
 
   .dark {
@@ -116,17 +115,17 @@
 
     --dusty-rose: 340 20% 30%;
     --dusty-rose-bg: 340 15% 15%;
-    --salvia: 145 15% 30%;
-    --salvia-bg: 145 10% 15%;
-    --lavender: 270 20% 35%;
-    --lavender-bg: 270 15% 15%;
+    --salvia: 44 35% 35%;
+    --salvia-bg: 44 25% 18%;
+    --lavender: 210 25% 40%;
+    --lavender-bg: 210 20% 20%;
 
     /* Branded colors — dark variants */
     --color-surface: 270 15% 10%;
     --color-surface-card: 270 15% 14%;
     --color-surface-raised: 270 12% 20%;
     --color-surface-rose: 340 15% 15%;
-    --color-surface-sage: 145 10% 15%;
+    --color-surface-sage: 44 25% 18%;
     --color-text-primary: 270 25% 85%;
     --color-text-secondary: 270 10% 65%;
     --color-text-muted: 270 10% 58%;
@@ -135,7 +134,7 @@
     --color-border-lavender: 270 20% 40%;
     --color-accent-red: 0 50% 55%;
     --color-accent-terra: 16 55% 60%;
-    --color-accent-sage-text: 140 30% 65%;
+    --color-accent-sage-text: 44 55% 65%;
     --color-badge: 330 35% 45%;
 
     --terrakotta: 16 55% 60%;

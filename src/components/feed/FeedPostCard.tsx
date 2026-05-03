@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { formatDayMonth } from "@/utils/months";
 import { supabase } from "@/integrations/supabase/client";
 import PostReactions from "@/components/profile/PostReactions";
 import PostComments from "@/components/profile/PostComments";
@@ -34,25 +35,16 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   return (
-    <div
-      style={{
-        backgroundColor: "hsl(var(--color-surface-card))",
-        borderRadius: 8,
-        border: "none",
-        padding: 16,
-      }}
-    >
+    <div style={{ padding: "13px 0" }}>
       {/* Row 1 – section label */}
       {post.sectionName && (
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6A85" }}>
-            {post.sectionName}
-          </span>
-        </div>
+        <p style={{ fontSize: 12, color: "hsl(var(--color-text-faint))", marginBottom: 6 }}>
+          {post.sectionName}
+        </p>
       )}
 
       {/* Header – avatar + name */}
-      <div className="flex items-center gap-2.5 mb-3">
+      <div className="flex items-center gap-[14px] mb-3">
         <FeedAvatar
           avatarUrl={profile.avatar_url}
           displayName={profile.display_name}
@@ -60,15 +52,16 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
           onClick={onProfileClick}
         />
         <div>
-          <button
-            onClick={onProfileClick}
-            className="text-sm font-medium text-foreground hover:underline block leading-tight"
-          >
-            {isOwn ? "Du" : profile.display_name || "Någon"}
-          </button>
-          <p className="text-[11px] text-muted-foreground leading-tight">
-            {timeAgo}
-          </p>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onProfileClick}
+              className="text-[13px] font-medium hover:underline"
+              style={{ color: "hsl(var(--color-text-primary))" }}
+            >
+              {isOwn ? "Du" : profile.display_name || "Någon"}
+            </button>
+            <span className="text-[12px]" style={{ color: "hsl(var(--color-text-faint))" }}>{timeAgo}</span>
+          </div>
         </div>
       </div>
 
@@ -84,7 +77,7 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
           <div style={{ flex: 1, minWidth: 0 }}>
             {post.content && (
               <p style={{
-                fontFamily: "'Fraunces', serif",
+                fontFamily: "'Outfit', sans-serif",
                 fontSize: 15,
                 fontWeight: 500,
                 color: "hsl(var(--color-text-primary))",
@@ -102,9 +95,9 @@ const FeedPostCard = ({ post, profile, isOwn, onProfileClick, onSuggestPlan }: F
         <>
           {post.content && (
             <p style={{
-              fontFamily: "'Fraunces', serif",
-              fontSize: 15,
-              fontWeight: 500,
+              fontFamily: "'Outfit', sans-serif",
+              fontSize: 14,
+              fontWeight: 400,
               color: "hsl(var(--color-text-primary))",
               lineHeight: 1.4,
               margin: "0 0 10px",
@@ -187,7 +180,7 @@ function getTimeAgo(dateStr: string): string {
   if (diffHours < 24) return `${diffHours} tim sedan`;
   const diffDays = Math.floor(diffHours / 24);
   if (diffDays < 7) return `${diffDays} d sedan`;
-  return date.toLocaleDateString("sv-SE", { day: "numeric", month: "short" });
+  return formatDayMonth(date);
 }
 
 export default FeedPostCard;

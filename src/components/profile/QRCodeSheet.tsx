@@ -91,8 +91,8 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
               onClick={() => setTab(t)}
               className="flex-1 py-2 rounded-lg text-[13px] font-medium transition-colors"
               style={{
-                backgroundColor: tab === t ? "#3C2A4D" : "hsl(var(--color-surface-raised))",
-                color: tab === t ? "#FFFFFF" : "#3C2A4D",
+                backgroundColor: tab === t ? "#561828" : "hsl(var(--color-surface-raised))",
+                color: tab === t ? "#FFFFFF" : "#561828",
                 border: "none",
               }}
             >
@@ -112,7 +112,7 @@ const QRCodeSheet = ({ open, onOpenChange }: Props) => {
                   value={inviteUrl}
                   size={200}
                   bgColor="#FFFFFF"
-                  fgColor="#3C2A4D"
+                  fgColor="#561828"
                   level="M"
                 />
               </div>
