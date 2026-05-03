@@ -614,63 +614,49 @@ const TipCard = ({
           style={{ backgroundColor: "#FFFFFF", padding: 0, maxHeight: "85vh" }}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
-          {signedUrl && (
-            <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden", borderRadius: "20px 20px 0 0" }}>
-              <img src={signedUrl} alt={displayTitle} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            </div>
-          )}
-          <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: 14 }}>
+          <div style={{ padding: "20px 16px 0", display: "flex", flexDirection: "column" }}>
             <span
-              style={{
-                fontSize: 12, fontWeight: 400, color: "hsl(var(--color-text-secondary))",
-              }}
+              className="text-[11px] font-medium tracking-[0.04em]"
+              style={{ color: "hsl(20, 4%, 54%)", marginBottom: 16 }}
             >
-              {cat.label}
+              Tips
             </span>
-            <p style={{ fontSize: 16, fontWeight: 500, color: "hsl(var(--color-text-primary))", margin: 0, lineHeight: 1.3 }}>
+            {signedUrl && (
+              <img
+                src={signedUrl}
+                alt={displayTitle}
+                style={{ height: 160, borderRadius: 8, width: "100%", objectFit: "cover", marginBottom: 16 }}
+              />
+            )}
+            <h2 className="text-[18px] font-medium leading-snug mb-2" style={{ color: "hsl(20, 10%, 12%)" }}>
               {displayTitle}
-            </p>
+            </h2>
             {tip.comment && (
-              <p style={{ fontSize: 13, color: "hsl(var(--color-text-secondary))", margin: 0, lineHeight: 1.5 }}>"{tip.comment}"</p>
+              <p className="text-[15px] font-light leading-relaxed mb-4" style={{ color: "hsl(20, 6%, 40%)" }}>
+                {tip.comment}
+              </p>
             )}
             {tip.url && (
-              <a
-                href={tip.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 4,
-                  fontSize: 13,
-                  color: "hsl(var(--color-text-secondary))",
-                  textDecoration: "underline",
-                  textUnderlineOffset: 3,
-                }}
+              <button
+                className="flex items-center gap-1.5 text-[13px] font-medium mb-5"
+                style={{ color: "#561828", background: "none", border: "none", fontFamily: "inherit", padding: 0, cursor: "pointer" }}
+                onClick={() => window.open(tip.url!, "_blank")}
               >
-                Följ länken till tipset
-              </a>
+                Öppna tipset
+                <ExternalLink size={12} strokeWidth={2} />
+              </button>
             )}
             <TipCommentSection tipId={tip.id} tipOwnerId={tip.user_id} tipTitle={tip.title} />
             {isOwner && (
-              <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 24, padding: "16px 20px 0" }}>
                 <button
                   onClick={() => {
                     setDetailOpen(false);
                     onEdit();
                   }}
-                  style={{
-                    flex: 1,
-                    background: "hsl(var(--color-surface-raised))",
-                    color: "hsl(var(--color-text-primary))",
-                    borderRadius: 8,
-                    padding: "9px",
-                    fontSize: 12,
-                    fontWeight: 500,
-                    border: "none",
-                    outline: "none",
-                  }}
+                  style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 400, background: "none", border: "none", cursor: "pointer", color: "hsl(20, 4%, 54%)", fontFamily: "inherit" }}
                 >
+                  <Pencil size={13} strokeWidth={1.8} />
                   Redigera
                 </button>
                 <button
@@ -678,16 +664,9 @@ const TipCard = ({
                     setDetailOpen(false);
                     onDelete();
                   }}
-                  style={{
-                    background: "hsl(var(--color-surface))",
-                    color: "hsl(var(--color-accent-red))",
-                    borderRadius: 8,
-                    padding: "9px 14px",
-                    fontSize: 12,
-                    border: "none",
-                    outline: "none",
-                  }}
+                  style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 400, background: "none", border: "none", cursor: "pointer", color: "hsl(20, 4%, 54%)", fontFamily: "inherit" }}
                 >
+                  <Trash2 size={13} strokeWidth={1.8} />
                   Ta bort
                 </button>
               </div>

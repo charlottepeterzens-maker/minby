@@ -193,7 +193,7 @@ const TipCommentSection = ({
               width: 32,
               height: 32,
               borderRadius: 8,
-              background: newComment.trim() ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-raised))",
+              background: newComment.trim() ? "#561828" : "hsl(var(--color-surface-raised))",
               border: "none",
               display: "flex",
               alignItems: "center",
