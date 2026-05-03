@@ -26,7 +26,7 @@ const QuickPostCard = ({ profile, sections, onPosted }: Props) => {
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
-  const [showSections, setShowSections] = useState(false);
+  
   const [posting, setPosting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -56,7 +56,6 @@ const QuickPostCard = ({ profile, sections, onPosted }: Props) => {
     setContent("");
     setImageFile(null);
     setSelectedSection(null);
-    setShowSections(false);
   };
 
   const handleSubmit = async () => {
@@ -152,26 +151,24 @@ const QuickPostCard = ({ profile, sections, onPosted }: Props) => {
         </div>
       )}
 
-      {/* Sections picker */}
-      {showSections && sections.length > 0 && (
-        <div className="px-4 pb-2 flex flex-wrap gap-1.5">
+      {/* Del-pills */}
+      {sections.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 px-4 pb-3">
           {sections.map((s) => {
             const active = selectedSection === s.id;
             return (
               <button
                 key={s.id}
                 type="button"
-                onClick={() => {
-                  setSelectedSection(active ? null : s.id);
-                  setShowSections(false);
-                }}
-                className="rounded-lg"
+                onClick={() => setSelectedSection(active ? null : s.id)}
+                className="text-[12px] rounded-lg"
                 style={{
-                  fontSize: 12,
-                  padding: "5px 10px",
+                  padding: "6px 12px",
                   border: "none",
-                  background: active ? "#D4E8F5" : "#F5F0EA",
-                  color: active ? "#561828" : "hsl(var(--color-text-secondary))",
+                  background: active ? "hsl(44, 65%, 93%)" : "hsl(var(--color-surface))",
+                  color: active ? "hsl(44, 65%, 28%)" : "hsl(20, 6%, 40%)",
+                  fontWeight: active ? 500 : 400,
+                  fontFamily: "inherit",
                   cursor: "pointer",
                 }}
               >
@@ -205,9 +202,14 @@ const QuickPostCard = ({ profile, sections, onPosted }: Props) => {
         </button>
         <button
           type="button"
-          onClick={() => setShowSections((v) => !v)}
+          disabled
           className="flex items-center gap-1.5 text-[12px]"
-          style={{ color: selectedSectionName ? "hsl(20, 10%, 12%)" : "hsl(20, 4%, 54%)", background: "none", border: "none", cursor: "pointer" }}
+          style={{
+            color: selectedSectionName ? "hsl(44, 65%, 28%)" : "hsl(20, 4%, 54%)",
+            background: "none",
+            border: "none",
+            cursor: "default",
+          }}
         >
           <Tag size={12} strokeWidth={1.5} />
           {selectedSectionName || "Del"}
