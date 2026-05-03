@@ -13,7 +13,7 @@
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     /* Minby — warm linen + burgundy + powder blue */
-    --background: 30 20% 96%;
+    --background: 42 20% 95%;
     --foreground: 20 10% 12%;
 
     --card: 0 0% 100%;
@@ -52,7 +52,7 @@
     --lavender-bg: 206 60% 91%;
 
     /* Branded colors */
-    --color-surface: 30 20% 96%;           /* #F7F4F1 */
+    --color-surface: 42 20% 95%;           /* warm linen */
     --color-surface-card: 0 0% 100%;       /* #FFFFFF */
     --color-surface-raised: 206 60% 91%;   /* light airy blue */
     --color-surface-rose: 340 30% 97%;     /* #FCF0F3 */
