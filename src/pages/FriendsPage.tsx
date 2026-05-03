@@ -273,7 +273,7 @@ const FriendsPage = () => {
 
   const fetchMutedUsers = useCallback(async () => {
     if (!user) return;
-    const { data } = await supabase.from("profiles").select("muted_users").eq("user_id", user.id).single();
+    const { data } = await (supabase as any).from("profile_settings").select("muted_users").eq("user_id", user.id).maybeSingle();
     if (data?.muted_users) {
       setMutedUsers((data.muted_users as any) || []);
     }
@@ -364,7 +364,7 @@ const FriendsPage = () => {
     const isMuted = mutedUsers.includes(friendUserId);
     const updated = isMuted ? mutedUsers.filter((id) => id !== friendUserId) : [...mutedUsers, friendUserId];
     setMutedUsers(updated);
-    await (supabase as any).from("profiles").update({ muted_users: updated }).eq("user_id", user.id);
+    await (supabase as any).from("profile_settings").update({ muted_users: updated }).eq("user_id", user.id);
     toast.success(isMuted ? "Avmutad" : "Mutad");
   };
 

@@ -110,14 +110,11 @@ const PostReactions = ({ postId, readOnly }: Props) => {
           .single();
 
         if (post && post.user_id !== user.id) {
-          const { data: ownerProfile } = await supabase
-            .from("profiles")
-            .select("muted_users")
-            .eq("user_id", post.user_id)
-            .single();
-
-          const mutedUsers = (ownerProfile?.muted_users as string[]) || [];
-          if (!mutedUsers.includes(user.id)) {
+          const { data: isMuted } = await (supabase as any).rpc("is_muted_by", {
+            _owner_id: post.user_id,
+            _candidate_id: user.id,
+          });
+          if (!isMuted) {
             const { data: myProfile } = await supabase
               .from("profiles")
               .select("display_name")
