@@ -65,9 +65,7 @@ function getTimeAgo(dateStr: string): string {
 }
 
 const cardStyle = {
-  backgroundColor: "hsl(var(--color-surface-card))",
-  borderRadius: 8,
-  padding: 16,
+  padding: "13px 14px",
   overflow: "hidden" as const,
 };
 
