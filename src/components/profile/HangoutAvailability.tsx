@@ -312,7 +312,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
             </p>
             {item.dates.length > 0 ? (
               <div className="flex flex-col gap-y-0.5">
-                {item.dates.slice(0, 2).map((d, i) => {
+                {item.dates.slice(0, 3).map((d, i) => {
                   const dateObj = new Date(d + "T00:00:00");
                   return (
                     <span
@@ -323,9 +323,9 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
                     </span>
                   );
                 })}
-                {item.dates.length > 2 && (
-                  <span style={{ fontSize: 12, fontWeight: 400, color: "#7A5C14", lineHeight: 1.15, marginTop: 2 }}>
-                    visa fler
+                {item.dates.length > 3 && (
+                  <span style={{ fontSize: 12, fontWeight: 400, color: "#7A5C14", lineHeight: 1.15, marginTop: 2, textDecoration: "underline" }}>
+                    visa fler…
                   </span>
                 )}
               </div>
