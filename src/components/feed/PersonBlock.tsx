@@ -104,8 +104,13 @@ const PostImage = ({ imageUrl, onClick }: { imageUrl: string; onClick?: (url: st
 const PersonAvatar = ({ person, onClick }: { person: PersonData; onClick?: () => void }) => {
   const resolved = resolveAvatarUrl(person.avatarUrl);
   const Wrapper: any = onClick ? "button" : "div";
+  const handleClick = (e: React.MouseEvent) => {
+    if (!onClick) return;
+    e.stopPropagation();
+    onClick();
+  };
   return (
-    <Wrapper onClick={onClick} className="shrink-0">
+    <Wrapper onClick={onClick ? handleClick : undefined} className="shrink-0">
       <Avatar className="w-10 h-10">
         {resolved && <AvatarImage src={resolved} alt={person.displayName} className="object-cover" />}
         <AvatarFallback
@@ -174,7 +179,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   );
 
   return (
-    <div style={{ opacity: person.isQuiet && !expanded ? 0.65 : 1, transition: "opacity 0.2s ease" }}>
+    <div>
       {/* Collapsed header */}
       {!expanded && (
         <div
@@ -312,7 +317,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               >
                 <ThinkingButton size="md" />
                 <button
-                  onClick={() => navigate(`/profile/${person.userId}`)}
+                  onClick={(e) => { e.stopPropagation(); navigate(`/profile/${person.userId}`); }}
                   style={{ fontSize: 12, color: "hsl(var(--color-text-faint))", background: "none", border: "none", cursor: "pointer" }}
                 >
                   Se alla delar i {possessive(person.displayName)} vardag →
