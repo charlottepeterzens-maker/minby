@@ -481,9 +481,9 @@ const filteredItems = feedItems.filter((item) => {
 const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => void; onOpenInvite: () => void }) => {
   const navigate = useNavigate();
   const items = [
-    { onClick: onOpenInvite, bg: "#D4E8F5", icon: UserPlus, title: "Bjud in din närmaste krets", sub: "De du faktiskt vill hålla nära", cta: "Bjud in →", delay: 0.45 },
-    { onClick: () => navigate("/profile"), bg: "#FCF0F3", icon: PenLine, title: "Dela från din vardag", sub: "Berätta vad som händer hos dig", cta: "Dela →", delay: 0.55 },
-    { onClick: onOpenHangout, bg: "#F8F0D8", icon: CalendarDays, title: "Föreslå en träff", sub: "Se när det passar att ses", cta: "Föreslå →", delay: 0.65 },
+    { onClick: onOpenInvite, bg: "hsl(var(--color-surface-raised))", icon: UserPlus, title: "Bjud in din närmaste krets", sub: "De du faktiskt vill hålla nära", cta: "Bjud in →", delay: 0.45 },
+    { onClick: () => navigate("/profile"), bg: "hsl(var(--color-surface-rose))", icon: PenLine, title: "Dela från din vardag", sub: "Berätta vad som händer hos dig", cta: "Dela →", delay: 0.55 },
+    { onClick: onOpenHangout, bg: "hsl(var(--color-surface-sage))", icon: CalendarDays, title: "Föreslå en träff", sub: "Se när det passar att ses", cta: "Föreslå →", delay: 0.65 },
   ];
 
   return (
@@ -495,9 +495,9 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
     >
       <div className="relative mb-6" style={{ width: 140, height: 80 }}>
         {[
-          { left: 0, top: 8, bg: "#D4E8F5", delay: 0.15 },
-          { left: 40, top: 0, bg: "#FCF0F3", delay: 0.25 },
-          { left: 80, top: 12, bg: "#F8F0D8", delay: 0.35 },
+          { left: 0, top: 8, bg: "hsl(var(--color-surface-raised))", delay: 0.15 },
+          { left: 40, top: 0, bg: "hsl(var(--color-surface-rose))", delay: 0.25 },
+          { left: 80, top: 12, bg: "hsl(var(--color-surface-sage))", delay: 0.35 },
         ].map((c, i) => (
           <motion.div
             key={i}
