@@ -52,7 +52,7 @@ const CloseCircleSuggestion = ({ friendUserId, friendName, onDismiss }: CloseCir
           onClick={handleAdd}
           disabled={adding}
           className="px-3 py-1 rounded-full text-[11px] font-medium"
-          style={{ backgroundColor: "#561828", color: "#F7F3EF" }}
+          style={{ backgroundColor: "hsl(var(--primary))", color: "#F7F3EF" }}
         >
           Ja
         </button>

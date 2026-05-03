@@ -42,7 +42,7 @@ export const ContentFeed = ({ items, emptyMessage, emptyAction, onRefresh }: Pro
         {emptyAction && (
           <button
             onClick={() => navigate(emptyAction.to)}
-            style={{ fontSize: 14, fontWeight: 500, color: "#C4522A", background: "none", border: "none", cursor: "pointer", marginTop: 12 }}
+            style={{ fontSize: 14, fontWeight: 500, color: "hsl(var(--accent))", background: "none", border: "none", cursor: "pointer", marginTop: 12 }}
           >
             {emptyAction.label}
           </button>

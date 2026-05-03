@@ -220,7 +220,7 @@ const UnifiedHangoutCard = ({
                   onClick={() => handleQuickRSVP("yes")}
                   disabled={saving}
                   className="text-[13px] font-medium rounded-lg disabled:opacity-50"
-                  style={{ backgroundColor: "#561828", color: "#fff", padding: "7px 16px" }}
+                  style={{ backgroundColor: "hsl(var(--primary))", color: "#fff", padding: "7px 16px" }}
                 >
                   Jag kan
                 </button>
@@ -440,7 +440,7 @@ const GroupedActivityCard = ({
                 <button
                   onClick={() => setDetailOpen(true)}
                   className="text-[13px] font-medium rounded-lg"
-                  style={{ backgroundColor: "#561828", color: "#fff", padding: "7px 16px" }}
+                  style={{ backgroundColor: "hsl(var(--primary))", color: "#fff", padding: "7px 16px" }}
                 >
                   Jag kan
                 </button>
