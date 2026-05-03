@@ -173,7 +173,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               disabled={thinkingLoading}
               whileTap={{ scale: 0.95 }}
               className="mt-1.5 flex items-center gap-1"
-              style={{ fontSize: 12, color: thinkingSent ? "hsl(var(--color-text-faint))" : "#5B9FBF", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+              style={{ fontSize: 12, color: thinkingSent ? "hsl(var(--color-text-faint))" : "hsl(var(--accent))", background: "none", border: "none", padding: 0, cursor: "pointer" }}
             >
               {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
               {thinkingSent ? "Skickat" : "Skicka en tanke"}
@@ -230,7 +230,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
                   disabled={thinkingLoading}
                   whileTap={{ scale: 0.95 }}
                   className="mt-3 flex items-center gap-1"
-                  style={{ fontSize: 12, color: thinkingSent ? "hsl(var(--color-text-faint))" : "#5B9FBF", background: "none", border: "none", padding: 0, cursor: "pointer" }}
+                  style={{ fontSize: 12, color: thinkingSent ? "hsl(var(--color-text-faint))" : "hsl(var(--accent))", background: "none", border: "none", padding: 0, cursor: "pointer" }}
                 >
                   {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
                   {thinkingSent ? "Skickat" : "Skicka en tanke"}
@@ -273,7 +273,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               <button
                 onClick={(e) => { e.stopPropagation(); setHangoutSheetOpen(true); }}
                 className="text-[12px] font-medium py-1.5 px-4 rounded-full"
-                style={{ backgroundColor: "hsl(var(--primary))", color: "#FFFFFF" }}
+                style={{ backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}
               >
                 Jag kan
               </button>

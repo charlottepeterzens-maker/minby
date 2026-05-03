@@ -220,7 +220,7 @@ const UnifiedHangoutCard = ({
                   onClick={() => handleQuickRSVP("yes")}
                   disabled={saving}
                   className="text-[13px] font-medium rounded-lg disabled:opacity-50"
-                  style={{ backgroundColor: "hsl(var(--primary))", color: "#fff", padding: "7px 16px" }}
+                  style={{ backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))", padding: "7px 16px" }}
                 >
                   Jag kan
                 </button>
@@ -382,11 +382,11 @@ const GroupedActivityCard = ({
               disabled={isOwn || saving}
               className="flex items-center gap-1.5 rounded-full transition-all shrink-0"
               style={{
-                backgroundColor: isSelected ? "hsl(var(--color-text-primary))" : "hsl(var(--color-surface-raised))",
+                backgroundColor: isSelected ? "hsl(var(--primary))" : "hsl(var(--color-surface-raised))",
                 border: "none",
                 padding: "4px 12px",
                 fontSize: 12,
-                color: isSelected ? "#fff" : "hsl(var(--color-text-primary))",
+                color: isSelected ? "hsl(var(--primary-foreground))" : "hsl(var(--color-text-primary))",
               }}
             >
               {formatDateChip(dateStr)}
@@ -440,7 +440,7 @@ const GroupedActivityCard = ({
                 <button
                   onClick={() => setDetailOpen(true)}
                   className="text-[13px] font-medium rounded-lg"
-                  style={{ backgroundColor: "hsl(var(--primary))", color: "#fff", padding: "7px 16px" }}
+                  style={{ backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))", padding: "7px 16px" }}
                 >
                   Jag kan
                 </button>

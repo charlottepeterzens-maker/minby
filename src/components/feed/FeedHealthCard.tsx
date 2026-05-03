@@ -85,7 +85,7 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
             {isOwn && (
               <span
                 className="text-[11px] font-medium px-2.5 py-0.5 rounded-full"
-                style={{ backgroundColor: '#F7F3EF', color: 'hsl(var(--color-text-secondary))' }}
+                style={{ backgroundColor: 'hsl(var(--color-surface-raised))', color: 'hsl(var(--color-text-secondary))' }}
               >
                 Ditt inlägg
               </span>
@@ -107,17 +107,17 @@ const FeedHealthCard = ({ post, profile, isOwn, onProfileClick }: FeedHealthCard
             transition={{ duration: 0.18, ease: "easeOut" }}
             className="inline-flex items-center gap-2 text-[13px] font-medium px-4 py-2 rounded-full transition-colors disabled:opacity-50"
             style={{
-              backgroundColor: hugSent ? "#D4E8F5" : "transparent",
+              backgroundColor: hugSent ? "hsl(var(--color-surface-raised))" : "transparent",
               borderColor: "transparent",
-              color: hugSent ? "#561828" : "hsl(var(--color-text-secondary))",
+              color: hugSent ? "hsl(var(--primary))" : "hsl(var(--color-text-secondary))",
             }}
           >
             <Heart
               size={16}
               strokeWidth={1.8}
               style={{
-                stroke: hugSent ? "#561828" : "#D4E8F5",
-                fill: hugSent ? "#D4E8F5" : "none",
+                stroke: hugSent ? "hsl(var(--primary))" : "hsl(var(--color-border-lavender))",
+                fill: hugSent ? "hsl(var(--color-surface-raised))" : "none",
               }}
             />
             {hugSent ? "Kärlek skickad" : "Skicka kärlek"}

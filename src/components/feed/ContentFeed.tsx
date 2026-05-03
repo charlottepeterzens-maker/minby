@@ -23,9 +23,9 @@ export const ContentFeed = ({ items, emptyMessage, emptyAction, onRefresh }: Pro
       >
         <div
           className="w-14 h-14 rounded-full flex items-center justify-center mb-4"
-          style={{ backgroundColor: "#F8F0D8" }}
+          style={{ backgroundColor: "hsl(var(--color-surface-sage))" }}
         >
-          <CalendarDays className="w-6 h-6" style={{ color: "#8B6428" }} strokeWidth={1.5} />
+          <CalendarDays className="w-6 h-6" style={{ color: "hsl(var(--accent))" }} strokeWidth={1.5} />
         </div>
         <p
           className="font-fraunces text-[16px] font-medium text-center mb-1"
