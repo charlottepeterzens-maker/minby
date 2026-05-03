@@ -673,7 +673,7 @@ const SignedImage = ({
   if (!url) return null;
   const Tag = onClick ? "button" : "div";
   return (
-    <Tag onClick={onClick ? () => onClick(url) : undefined} className={className} style={{ width: "100%", display: "block", padding: 0, border: "none", background: "none" }}>
+    <Tag onClick={onClick ? () => onClick(url) : undefined} className={className} style={{ display: "block", padding: 0, border: "none", background: "none" }}>
       <img src={url} alt="" className={imgClassName} />
     </Tag>
   );
