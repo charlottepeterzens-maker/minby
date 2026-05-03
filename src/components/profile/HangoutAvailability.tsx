@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { monthShort, weekdayLong } from "@/utils/months";
+import { monthShort, weekdayLong, weekdayShort } from "@/utils/months";
 import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
