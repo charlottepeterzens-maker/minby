@@ -16,7 +16,7 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
   return (
     <div
       style={{
-        backgroundColor: "#F7F4F1",
+        backgroundColor: "hsl(42, 20%, 95%)",
         padding: "0 24px",
         display: "flex",
         flexDirection: "column",
