@@ -330,7 +330,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
               </span>
             )}
           </div>
-          <span style={{ fontSize: 12, fontWeight: 400, color: "#7A5C14", whiteSpace: "nowrap", paddingTop: 3 }}>
+          <span style={{ fontSize: 12, fontWeight: 400, color: "#7A5C14", whiteSpace: "nowrap" }}>
             sugen på
           </span>
         </div>
