@@ -450,6 +450,42 @@ const TipCard = ({
 }) => {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editTitle, setEditTitle] = useState(tip.title);
+  const [editComment, setEditComment] = useState(tip.comment || "");
+  const [editUrl, setEditUrl] = useState(tip.url || "");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (editMode) {
+      setEditTitle(tip.title);
+      setEditComment(tip.comment || "");
+      setEditUrl(tip.url || "");
+    }
+  }, [editMode, tip.title, tip.comment, tip.url]);
+
+  const handleInlineSave = async () => {
+    if (!editTitle.trim()) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("user_tips")
+      .update({
+        title: editTitle.trim(),
+        comment: editComment.trim() || null,
+        url: editUrl.trim() || null,
+      })
+      .eq("id", tip.id);
+    setSaving(false);
+    if (error) {
+      toast({ title: "Kunde inte spara", description: error.message, variant: "destructive" });
+      return;
+    }
+    // mutate local tip for instant feedback
+    tip.title = editTitle.trim();
+    tip.comment = editComment.trim() || null;
+    tip.url = editUrl.trim() || null;
+    setEditMode(false);
+  };
 
   useEffect(() => {
     if (!tip.image_url) return;
