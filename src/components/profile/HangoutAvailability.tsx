@@ -180,12 +180,13 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
     }
     const grouped: GroupedActivity[] = [];
     actMap.forEach((val, name) => {
+      const sorted = [...val].sort((a, b) => a.date.localeCompare(b.date));
       grouped.push({
-        id: val[0].id,
+        id: sorted[0].id,
         entry_type: "activity",
         activityName: name,
-        dates: val.map((e) => e.date),
-        ids: val.map((e) => e.id),
+        dates: sorted.map((e) => e.date),
+        ids: sorted.map((e) => e.id),
       });
     });
     return [...nonActivity, ...grouped];
