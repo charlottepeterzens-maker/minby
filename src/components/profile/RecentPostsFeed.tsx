@@ -438,7 +438,7 @@ const PostCard = ({
           <SignedImg
             imageRef={post.image_url}
             className="rounded-md shrink-0 cursor-pointer hover:opacity-80 transition-opacity overflow-hidden"
-            style={{ width: 72, height: 72 }}
+            style={{ width: 96, height: 96 }}
             onClick={(signedUrl) => onImageClick(signedUrl)}
           />
         )}
