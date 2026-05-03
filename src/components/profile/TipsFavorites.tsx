@@ -450,6 +450,42 @@ const TipCard = ({
 }) => {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editTitle, setEditTitle] = useState(tip.title);
+  const [editComment, setEditComment] = useState(tip.comment || "");
+  const [editUrl, setEditUrl] = useState(tip.url || "");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (editMode) {
+      setEditTitle(tip.title);
+      setEditComment(tip.comment || "");
+      setEditUrl(tip.url || "");
+    }
+  }, [editMode, tip.title, tip.comment, tip.url]);
+
+  const handleInlineSave = async () => {
+    if (!editTitle.trim()) return;
+    setSaving(true);
+    const { error } = await supabase
+      .from("user_tips")
+      .update({
+        title: editTitle.trim(),
+        comment: editComment.trim() || null,
+        url: editUrl.trim() || null,
+      })
+      .eq("id", tip.id);
+    setSaving(false);
+    if (error) {
+      toast({ title: "Kunde inte spara", description: error.message, variant: "destructive" });
+      return;
+    }
+    // mutate local tip for instant feedback
+    tip.title = editTitle.trim();
+    tip.comment = editComment.trim() || null;
+    tip.url = editUrl.trim() || null;
+    setEditMode(false);
+  };
 
   useEffect(() => {
     if (!tip.image_url) return;
@@ -628,37 +664,109 @@ const TipCard = ({
                 style={{ height: 160, borderRadius: 8, width: "100%", objectFit: "cover", marginBottom: 16 }}
               />
             )}
-            <h2 className="text-[18px] font-medium leading-snug mb-2" style={{ color: "hsl(20, 10%, 12%)" }}>
-              {displayTitle}
-            </h2>
-            {tip.comment && (
-              <p className="text-[15px] font-light leading-relaxed mb-4" style={{ color: "hsl(20, 6%, 40%)" }}>
-                {tip.comment}
-              </p>
-            )}
-            {tip.url && (
-              <button
-                className="flex items-center gap-1.5 text-[13px] font-medium mb-5"
-                style={{ color: "#561828", background: "none", border: "none", fontFamily: "inherit", padding: 0, cursor: "pointer" }}
-                onClick={() => window.open(tip.url!, "_blank")}
-              >
-                Öppna tipset
-                <ExternalLink size={12} strokeWidth={2} />
-              </button>
+            {editMode ? (
+              <>
+                <input
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  maxLength={80}
+                  placeholder="Titel"
+                  className="text-[18px] font-medium leading-snug mb-2 w-full"
+                  style={{
+                    color: "hsl(20, 10%, 12%)",
+                    background: "transparent",
+                    border: "none",
+                    outline: "none",
+                    padding: 0,
+                    fontFamily: "inherit",
+                    WebkitAppearance: "none",
+                    borderRadius: 0,
+                  }}
+                />
+                <textarea
+                  value={editComment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  maxLength={200}
+                  placeholder="Din kommentar"
+                  rows={3}
+                  className="text-[15px] font-light leading-relaxed mb-3 w-full resize-none"
+                  style={{
+                    color: "hsl(20, 6%, 40%)",
+                    background: "transparent",
+                    border: "none",
+                    outline: "none",
+                    padding: 0,
+                    fontFamily: "inherit",
+                  }}
+                />
+                <input
+                  value={editUrl}
+                  onChange={(e) => setEditUrl(e.target.value)}
+                  placeholder="Länk (valfritt)"
+                  type="url"
+                  className="text-[13px] mb-5 w-full"
+                  style={{
+                    color: "#561828",
+                    background: "transparent",
+                    border: "none",
+                    outline: "none",
+                    padding: 0,
+                    fontFamily: "inherit",
+                    WebkitAppearance: "none",
+                    borderRadius: 0,
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <h2 className="text-[18px] font-medium leading-snug mb-2" style={{ color: "hsl(20, 10%, 12%)" }}>
+                  {displayTitle}
+                </h2>
+                {tip.comment && (
+                  <p className="text-[15px] font-light leading-relaxed mb-4" style={{ color: "hsl(20, 6%, 40%)" }}>
+                    {tip.comment}
+                  </p>
+                )}
+                {tip.url && (
+                  <button
+                    className="flex items-center gap-1.5 text-[13px] font-medium mb-5"
+                    style={{ color: "#561828", background: "none", border: "none", fontFamily: "inherit", padding: 0, cursor: "pointer" }}
+                    onClick={() => window.open(tip.url!, "_blank")}
+                  >
+                    Öppna tipset
+                    <ExternalLink size={12} strokeWidth={2} />
+                  </button>
+                )}
+              </>
             )}
             <TipCommentSection tipId={tip.id} tipOwnerId={tip.user_id} tipTitle={tip.title} />
             {isOwner && (
               <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 24, padding: "16px 20px 0" }}>
-                <button
-                  onClick={() => {
-                    setDetailOpen(false);
-                    onEdit();
-                  }}
-                  style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 400, background: "none", border: "none", cursor: "pointer", color: "hsl(20, 4%, 54%)", fontFamily: "inherit" }}
-                >
-                  <Pencil size={13} strokeWidth={1.8} />
-                  Redigera
-                </button>
+                {editMode ? (
+                  <>
+                    <button
+                      onClick={() => setEditMode(false)}
+                      style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 400, background: "none", border: "none", cursor: "pointer", color: "hsl(20, 4%, 54%)", fontFamily: "inherit" }}
+                    >
+                      Avbryt
+                    </button>
+                    <button
+                      onClick={handleInlineSave}
+                      disabled={saving || !editTitle.trim()}
+                      style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 500, background: "none", border: "none", cursor: "pointer", color: "#561828", fontFamily: "inherit" }}
+                    >
+                      {saving ? "Sparar…" : "Spara"}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => setEditMode(true)}
+                      style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 400, background: "none", border: "none", cursor: "pointer", color: "hsl(20, 4%, 54%)", fontFamily: "inherit" }}
+                    >
+                      <Pencil size={13} strokeWidth={1.8} />
+                      Redigera
+                    </button>
                 <button
                   onClick={() => {
                     setDetailOpen(false);
@@ -669,6 +777,8 @@ const TipCard = ({
                   <Trash2 size={13} strokeWidth={1.8} />
                   Ta bort
                 </button>
+                  </>
+                )}
               </div>
             )}
           </div>
