@@ -423,61 +423,60 @@ const HangoutDetailSheet = ({
                     </span>
                   );
                 })}
-                {isOwner && (
-                  addingDate ? (
-                    <span className="inline-flex items-center gap-1" style={{ borderRadius: 8 }}>
-                      <input
-                        type="date"
-                        value={newDateValue}
-                        onChange={(e) => setNewDateValue(e.target.value)}
-                        className="text-[11px] px-2 py-1 rounded-lg bg-white focus-visible:outline-none"
-                        style={{ color: "#1C1917", width: 130 }}
-                        min={format(new Date(), "yyyy-MM-dd")}
-                        autoFocus
-                      />
-                      <button
-                        disabled={!newDateValue}
-                        onClick={async () => {
-                          if (!newDateValue || !user) return;
-                          // Insert a new row copying the existing entry's activity/note/type
-                          await supabase.from("hangout_availability").insert({
-                            user_id: user.id,
-                            date: newDateValue,
-                            activities: entry.activities,
-                            custom_note: entry.custom_note,
-                            entry_type: entry.entry_type,
-                            visibility: "all",
-                          });
-                          setAddingDate(false);
-                          setNewDateValue("");
-                          toast({ title: "Datum tillagt" });
-                          onRefresh?.();
-                          // Re-fetch to update grouped entries
-                          fetchDetails();
-                        }}
-                        className="text-[11px] font-medium px-2 py-1 rounded-lg text-white disabled:opacity-40"
-                        style={{ backgroundColor: "#561828" }}
-                      >
-                        OK
-                      </button>
-                      <button
-                        onClick={() => { setAddingDate(false); setNewDateValue(""); }}
-                        className="text-[11px] px-1 py-1"
-                        style={{ color: "hsl(var(--color-text-secondary))" }}
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  ) : (
-                    <button
-                      onClick={() => setAddingDate(true)}
-                      className="inline-flex items-center gap-1 text-[11px]"
-                      style={{ backgroundColor: "#F7F3EF", borderRadius: 8, padding: "4px 10px", color: "hsl(var(--color-text-secondary))" }}
-                    >
-                      <Plus className="w-3 h-3" /> Lägg till
-                    </button>
-                  )
+                {isOwner && !addingDate && (
+                  <button
+                    onClick={() => setAddingDate(true)}
+                    className="inline-flex items-center gap-1 text-[12px]"
+                    style={{ color: "#561828", background: "none", border: "none", padding: "4px 4px", cursor: "pointer" }}
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Lägg till datum
+                  </button>
                 )}
+              </div>
+            )}
+
+            {/* Inline add-date form (own row for clarity) */}
+            {entry.entry_type === "activity" && isOwner && addingDate && (
+              <div className="flex items-center gap-2 -mt-2">
+                <input
+                  type="date"
+                  value={newDateValue}
+                  onChange={(e) => setNewDateValue(e.target.value)}
+                  className="text-[13px] px-3 py-2 rounded-lg bg-white focus-visible:outline-none flex-1"
+                  style={{ color: "#1C1917", border: "1px solid #EDE8E0" }}
+                  min={format(new Date(), "yyyy-MM-dd")}
+                  autoFocus
+                />
+                <button
+                  disabled={!newDateValue}
+                  onClick={async () => {
+                    if (!newDateValue || !user) return;
+                    await supabase.from("hangout_availability").insert({
+                      user_id: user.id,
+                      date: newDateValue,
+                      activities: entry.activities,
+                      custom_note: entry.custom_note,
+                      entry_type: entry.entry_type,
+                      visibility: "all",
+                    });
+                    setAddingDate(false);
+                    setNewDateValue("");
+                    toast({ title: "Datum tillagt" });
+                    onRefresh?.();
+                    fetchDetails();
+                  }}
+                  className="text-[12px] font-medium px-3 py-2 rounded-lg text-white disabled:opacity-40"
+                  style={{ backgroundColor: "#561828" }}
+                >
+                  Lägg till
+                </button>
+                <button
+                  onClick={() => { setAddingDate(false); setNewDateValue(""); }}
+                  className="text-[12px] px-2 py-2"
+                  style={{ color: "hsl(var(--color-text-secondary))", background: "none", border: "none" }}
+                >
+                  Avbryt
+                </button>
               </div>
             )}
 
