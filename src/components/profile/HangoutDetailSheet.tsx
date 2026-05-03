@@ -521,8 +521,16 @@ const HangoutDetailSheet = ({
                   return (
                     <span
                       key={ae.id}
-                      className="inline-flex items-center gap-1 text-[11px]"
-                      style={{ backgroundColor: "#F7F3EF", borderRadius: 8, padding: "4px 10px", color: "#1C1917" }}
+                      className="inline-flex items-center gap-1 text-[12px]"
+                      style={{
+                        backgroundColor: "hsl(44, 65%, 93%)",
+                        color: "hsl(44, 65%, 28%)",
+                        fontWeight: 500,
+                        borderRadius: 8,
+                        padding: "8px 12px",
+                        height: 36,
+                        border: "none",
+                      }}
                     >
                       {label}
                       {isOwner && (
