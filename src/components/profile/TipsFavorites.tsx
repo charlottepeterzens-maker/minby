@@ -777,6 +777,8 @@ const TipCard = ({
                   <Trash2 size={13} strokeWidth={1.8} />
                   Ta bort
                 </button>
+                  </>
+                )}
               </div>
             )}
           </div>
