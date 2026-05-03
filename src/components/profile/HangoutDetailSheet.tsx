@@ -363,7 +363,7 @@ const HangoutDetailSheet = ({
 
                   {/* Datum: siffra + månad */}
                   <div className="flex items-baseline gap-2">
-                    <span style={{ fontFamily: "Georgia, serif", fontSize: 36, color: "#1C1917", lineHeight: 1 }}>
+                    <span className="font-fraunces" style={{ fontSize: 36, color: "#1C1917", lineHeight: 1 }}>
                       {dayNum}
                     </span>
                     <span style={{ fontSize: 16, fontWeight: 400, color: "#1C1917" }}>
