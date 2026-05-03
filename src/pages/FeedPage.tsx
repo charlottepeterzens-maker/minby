@@ -493,25 +493,6 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div className="relative mb-6" style={{ width: 140, height: 80 }}>
-        {[
-          { left: 0, top: 8, bg: "hsl(var(--color-surface-raised))", delay: 0.15 },
-          { left: 40, top: 0, bg: "hsl(var(--color-surface-rose))", delay: 0.25 },
-          { left: 80, top: 12, bg: "hsl(var(--color-surface-sage))", delay: 0.35 },
-        ].map((c, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full flex items-center justify-center"
-            style={{ left: c.left, top: c.top, width: 56, height: 56, backgroundColor: c.bg, zIndex: i }}
-            initial={{ opacity: 0, scale: 0.6 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: c.delay, type: "spring", stiffness: 260, damping: 20 }}
-          >
-            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: "rgba(60,42,77,0.1)" }} />
-          </motion.div>
-        ))}
-      </div>
-
       <motion.h2
         className="font-fraunces text-[18px] font-medium text-center mb-1.5"
         style={{ color: "hsl(var(--color-text-primary))" }}
