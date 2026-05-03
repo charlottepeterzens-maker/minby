@@ -211,7 +211,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
     const dayNum = String(dateObj.getDate());
     const month = monthShort(dateObj);
     const entryType = item.entry_type || "available";
-    const typeLabel = TYPE_LABEL[entryType] || "LEDIG";
+    const typeLabel = TYPE_LABEL[entryType] || "Ledig";
     const typeLabelColor = TYPE_LABEL_COLOR[entryType] || "#6B5A3E";
     const typeBg = TYPE_COLORS[entryType] || TYPE_COLORS.open;
 
