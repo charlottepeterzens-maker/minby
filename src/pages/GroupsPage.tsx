@@ -190,24 +190,6 @@ const GroupsPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="relative mb-5" style={{ width: 100, height: 60 }}>
-                  {[
-                    { left: 0, top: 4, bg: "#D4E8F5", delay: 0.15 },
-                    { left: 28, top: 0, bg: "#FCF0F3", delay: 0.25 },
-                    { left: 56, top: 8, bg: "#F8F0D8", delay: 0.35 },
-                  ].map((c, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute rounded-lg flex items-center justify-center"
-                      style={{ left: c.left, top: c.top, width: 44, height: 44, backgroundColor: c.bg, zIndex: i }}
-                      initial={{ opacity: 0, scale: 0.6 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: c.delay, type: "spring", stiffness: 260, damping: 20 }}
-                    >
-                      <div className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: "rgba(60,42,77,0.1)" }} />
-                    </motion.div>
-                  ))}
-                </div>
                 <motion.h3
                   className="font-fraunces text-[16px] font-medium mb-1"
                   style={{ color: "hsl(var(--color-text-primary))" }}

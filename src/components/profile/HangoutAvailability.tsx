@@ -407,15 +407,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          <motion.div
-            className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
-            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 20 }}
-          >
-            <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "hsl(var(--color-border-lavender))", opacity: 0.5 }} />
-          </motion.div>
           <p className="text-[12px] text-center mb-1" style={{ color: "hsl(var(--color-text-muted))" }}>
             {displayName ? `${displayName} har inga planer just nu` : "Din vän har inga planer just nu"}
           </p>
@@ -433,22 +424,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="relative mb-4" style={{ width: 100, height: 50 }}>
-            {[
-              { left: 4, top: 0, bg: "#F5F0E8", delay: 0.15 },
-              { left: 32, top: 4, bg: "#F8F0D8", delay: 0.25 },
-              { left: 54, top: 0, bg: "#D4E8F5", delay: 0.35 },
-            ].map((c, i) => (
-              <motion.div
-                key={i}
-                className="absolute rounded-full"
-                style={{ left: c.left, top: c.top, width: 36, height: 36, backgroundColor: c.bg, zIndex: i }}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: c.delay, type: "spring", stiffness: 260, damping: 20 }}
-              />
-            ))}
-          </div>
           <motion.p
             className="text-center font-medium"
             style={{ fontSize: 13, color: "hsl(var(--color-text-primary))" }}
