@@ -7,11 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import LazyImage from "@/components/LazyImage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSignedImageUrl } from "@/hooks/useSignedImageUrl";
-import FeedAvatar from "@/components/feed/FeedAvatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import HangoutDetailSheet from "@/components/profile/HangoutDetailSheet";
 import { toast } from "sonner";
 import { possessive } from "@/utils/possessive";
-import { MONTHS_SHORT, monthShort } from "@/utils/months";
+import { monthShort } from "@/utils/months";
 
 export interface PersonData {
   userId: string;
@@ -54,7 +55,7 @@ function formatRelativeTime(dateStr: string): string {
   if (isNaN(date.getTime())) return "";
   const now = Date.now();
   const diff = now - date.getTime();
-  if (diff < 0 || diff > 180 * 86400000) return ""; // future or >6 months
+  if (diff < 0 || diff > 180 * 86400000) return "";
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return "nu";
   if (mins < 60) return `${mins} min`;
@@ -100,6 +101,24 @@ const PostImage = ({ imageUrl, onClick }: { imageUrl: string; onClick?: (url: st
   );
 };
 
+const PersonAvatar = ({ person, onClick }: { person: PersonData; onClick?: () => void }) => {
+  const resolved = resolveAvatarUrl(person.avatarUrl);
+  const Wrapper: any = onClick ? "button" : "div";
+  return (
+    <Wrapper onClick={onClick} className="shrink-0">
+      <Avatar className="w-10 h-10">
+        {resolved && <AvatarImage src={resolved} alt={person.displayName} className="object-cover" />}
+        <AvatarFallback
+          style={{ backgroundColor: "hsl(206, 60%, 91%)", color: "#561828" }}
+          className="text-[13px] font-medium"
+        >
+          {person.initials}
+        </AvatarFallback>
+      </Avatar>
+    </Wrapper>
+  );
+};
+
 const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentUserName: string }) => {
   const [expanded, setExpanded] = useState(false);
   const [thinkingSent, setThinkingSent] = useState(false);
@@ -122,8 +141,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
         body: `${currentUserName} tänker på dig`,
       });
       setThinkingSent(true);
-      const pronoun = "hen";
-      toast.success(`${person.displayName} vet att du tänker på ${pronoun}`);
+      toast.success(`${person.displayName} vet att du tänker på hen`);
     } catch {
       toast.error("Något gick fel");
     } finally {
@@ -132,61 +150,72 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   };
 
   const preview = person.latestPost?.content?.slice(0, 80) || (person.activeHangout ? "Vill ses" : "");
-
   const timeStr = formatRelativeTime(person.lastActivityAt);
 
-  return (
-    <div
+  const ThinkingButton = ({ size = "sm" }: { size?: "sm" | "md" }) => (
+    <motion.button
+      onClick={handleThinkingOfYou}
+      disabled={thinkingLoading}
+      whileTap={{ scale: 0.95 }}
+      className="flex items-center"
       style={{
-        opacity: person.isQuiet && !expanded ? 0.65 : 1,
-        transition: "opacity 0.2s ease",
+        gap: 4,
+        fontSize: size === "md" ? 13 : 12,
+        color: thinkingSent ? "hsl(var(--color-text-faint))" : "#C4522A",
+        background: "none",
+        border: "none",
+        padding: 0,
+        cursor: "pointer",
       }}
     >
-      {/* Collapsed header – tap anywhere to expand */}
-      <div
-        className="flex items-center gap-[14px] cursor-pointer"
-        style={{ padding: "13px 14px" }}
-        onClick={() => setExpanded(!expanded)}
-      >
-        <FeedAvatar
-          avatarUrl={person.avatarUrl}
-          displayName={person.displayName}
-          initials={person.initials}
-          size="w-9 h-9"
-          onClick={() => navigate(`/profile/${person.userId}`)}
-        />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>{person.displayName}</span>
-            {timeStr && (
-              <span className="text-[12px] shrink-0" style={{ color: "hsl(var(--color-text-faint))" }}>{timeStr}</span>
+      {thinkingSent ? <Check size={12} strokeWidth={1.5} /> : <Heart size={12} strokeWidth={1.5} />}
+      {thinkingSent ? "Skickat" : "Skicka en tanke"}
+    </motion.button>
+  );
+
+  return (
+    <div style={{ opacity: person.isQuiet && !expanded ? 0.65 : 1, transition: "opacity 0.2s ease" }}>
+      {/* Collapsed header */}
+      {!expanded && (
+        <div
+          className="flex items-center cursor-pointer"
+          style={{ padding: "13px 14px", gap: 12 }}
+          onClick={() => setExpanded(true)}
+        >
+          <PersonAvatar person={person} onClick={() => navigate(`/profile/${person.userId}`)} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
+              <span
+                className="truncate"
+                style={{ fontSize: 15, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}
+              >
+                {person.displayName}
+              </span>
+              {timeStr && (
+                <span className="shrink-0" style={{ fontSize: 11, color: "hsl(var(--color-text-faint))" }}>
+                  {timeStr}
+                </span>
+              )}
+            </div>
+            {preview && (
+              <p
+                className="truncate mt-0.5"
+                style={{ fontSize: 13, color: "hsl(var(--color-text-secondary))" }}
+              >
+                {preview}
+              </p>
+            )}
+            {person.isQuiet && (
+              <div className="mt-1.5">
+                <ThinkingButton />
+              </div>
             )}
           </div>
-          {preview && (
-            <p className="text-[13px] truncate mt-0.5" style={{ color: "hsl(var(--color-text-secondary))" }}>
-              {preview}
-            </p>
-          )}
-          {person.isQuiet && !expanded && (
-            <motion.button
-              onClick={(e) => { e.stopPropagation(); handleThinkingOfYou(e); }}
-              disabled={thinkingLoading}
-              whileTap={{ scale: 0.95 }}
-              className="mt-1.5 flex items-center gap-1"
-              style={{ fontSize: 12, color: thinkingSent ? "hsl(var(--color-text-faint))" : "hsl(var(--accent))", background: "none", border: "none", padding: 0, cursor: "pointer" }}
-            >
-              {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
-              {thinkingSent ? "Skickat" : "Skicka en tanke"}
-            </motion.button>
-          )}
+          <ChevronRight size={14} style={{ color: "hsl(var(--color-text-faint))", flexShrink: 0 }} />
         </div>
-        {expanded
-          ? <ChevronDown size={14} style={{ color: "hsl(var(--color-text-faint))", flexShrink: 0 }} />
-          : <ChevronRight size={14} style={{ color: "hsl(var(--color-text-faint))", flexShrink: 0 }} />
-        }
-      </div>
+      )}
 
-      {/* Expanded content */}
+      {/* Expanded */}
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -196,55 +225,99 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
             transition={{ duration: 0.25 }}
             style={{ overflow: "hidden" }}
           >
-            <div style={{ padding: "0 14px 14px" }}>
-              {/* Recent posts */}
-              <div className="space-y-0">
-                {person.recentPosts.slice(0, 3).map((post, idx) => (
-                  <div key={post.id}>
-                    {idx > 0 && (
-                      <div className="my-2.5" style={{ borderTop: "1px solid hsl(var(--color-border-subtle))" }} />
-                    )}
-                    {post.image_url && <PostImage imageUrl={post.image_url} onClick={setLightboxUrl} />}
-                    {post.content && (
-                      <p className="text-[13px] mt-1" style={{ color: "hsl(var(--color-text-primary))" }}>
-                        {post.content}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[12px]" style={{ color: "hsl(var(--color-text-faint))" }}>
-                        {formatDateSwedish(post.created_at)}
-                      </span>
-                      {post.sectionName && (
-                        <span style={{ fontSize: 12, color: "hsl(var(--color-text-faint))" }}>
-                          · {post.sectionName}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {person.isQuiet && (
-                <motion.button
-                  onClick={handleThinkingOfYou}
-                  disabled={thinkingLoading}
-                  whileTap={{ scale: 0.95 }}
-                  className="mt-3 flex items-center gap-1"
-                  style={{ fontSize: 12, color: thinkingSent ? "hsl(var(--color-text-faint))" : "hsl(var(--accent))", background: "none", border: "none", padding: 0, cursor: "pointer" }}
-                >
-                  {thinkingSent ? <Check size={10} /> : <Heart size={10} />}
-                  {thinkingSent ? "Skickat" : "Skicka en tanke"}
-                </motion.button>
-              )}
-
-              {/* View profile link */}
-              <button
+            {/* Sticky header */}
+            <div
+              className="flex items-center cursor-pointer"
+              style={{
+                position: "sticky",
+                top: 0,
+                zIndex: 5,
+                backgroundColor: "hsl(var(--color-surface))",
+                padding: "13px 14px",
+                gap: 12,
+              }}
+              onClick={() => setExpanded(false)}
+            >
+              <PersonAvatar
+                person={person}
                 onClick={() => navigate(`/profile/${person.userId}`)}
-                className="mt-3 text-[12px]"
-                style={{ color: "hsl(var(--color-text-secondary))" }}
+              />
+              <div className="flex-1 min-w-0 flex items-center gap-2">
+                <span
+                  className="truncate"
+                  style={{ fontSize: 15, fontWeight: 500, color: "hsl(var(--color-text-primary))" }}
+                >
+                  {person.displayName}
+                </span>
+                {timeStr && (
+                  <span style={{ fontSize: 11, color: "hsl(var(--color-text-faint))" }}>{timeStr}</span>
+                )}
+              </div>
+              <ChevronDown size={14} style={{ color: "hsl(var(--color-text-faint))", flexShrink: 0 }} />
+            </div>
+
+            {/* Posts indented 52px */}
+            <div style={{ paddingLeft: 52, paddingRight: 14, paddingBottom: 14 }}>
+              {person.recentPosts.slice(0, 3).map((post, idx) => (
+                <div
+                  key={post.id}
+                  style={{
+                    paddingTop: idx === 0 ? 0 : 12,
+                    marginTop: idx === 0 ? 0 : 12,
+                    borderTop: idx === 0 ? "none" : "1px solid hsl(var(--color-border-subtle))",
+                  }}
+                >
+                  {post.image_url && <PostImage imageUrl={post.image_url} onClick={setLightboxUrl} />}
+                  {post.content && (
+                    <p
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 400,
+                        color: "hsl(var(--color-text-primary))",
+                        lineHeight: 1.6,
+                        margin: post.image_url ? "8px 0 0" : 0,
+                      }}
+                    >
+                      {post.content}
+                    </p>
+                  )}
+                  <div className="flex items-center mt-1.5" style={{ gap: 6 }}>
+                    <span style={{ fontSize: 11, color: "hsl(var(--color-text-faint))" }}>
+                      {formatDateSwedish(post.created_at)}
+                    </span>
+                    {post.sectionName && (
+                      <>
+                        <span
+                          style={{
+                            width: 2,
+                            height: 2,
+                            borderRadius: "50%",
+                            backgroundColor: "hsl(var(--color-border-subtle))",
+                            display: "inline-block",
+                          }}
+                        />
+                        <span style={{ fontSize: 11, color: "hsl(var(--color-text-faint))" }}>
+                          {post.sectionName}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+
+              {/* Footer */}
+              <div
+                className="flex items-center justify-between"
+                style={{ marginTop: 14 }}
               >
-                Se alla delar i {possessive(person.displayName)} vardag →
-              </button>
+                <ThinkingButton size="md" />
+                <button
+                  onClick={() => navigate(`/profile/${person.userId}`)}
+                  style={{ fontSize: 12, color: "hsl(var(--color-text-faint))", background: "none", border: "none", cursor: "pointer" }}
+                >
+                  Se alla delar i {possessive(person.displayName)} vardag →
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
@@ -252,34 +325,27 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
 
       {/* Hangout inline card */}
       {person.activeHangout && (
-        <div style={{ borderTop: "none", padding: "10px 14px" }}>
+        <div style={{ padding: "10px 14px" }}>
           <div className="flex items-center gap-1.5 mb-1">
-            <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
+            <span style={{ fontSize: 11, color: "hsl(var(--color-text-secondary))" }}>
               {formatHangoutDate(person.activeHangout.date)}
             </span>
           </div>
-          <p className="text-[13px] line-clamp-1 mb-2.5" style={{ color: "hsl(var(--color-text-primary))" }}>
-            {(() => {
-              const note = person.activeHangout.custom_note || null;
-              const activity = person.activeHangout.activities?.[0] || null;
-              const similar = note && activity &&
-                (note.toLowerCase().includes(activity.toLowerCase()) ||
-                 activity.toLowerCase().includes(note.toLowerCase()));
-              return note || activity || "Vill ses";
-            })()}
+          <p className="line-clamp-1 mb-2.5" style={{ fontSize: 13, color: "hsl(var(--color-text-primary))" }}>
+            {person.activeHangout.custom_note || person.activeHangout.activities?.[0] || "Vill ses"}
           </p>
           {user?.id !== person.userId && (
             <div className="flex gap-2">
               <button
                 onClick={(e) => { e.stopPropagation(); setHangoutSheetOpen(true); }}
-                className="text-[12px] font-medium py-1.5 px-4 rounded-full"
+                className="text-[12px] font-medium py-1.5 px-4 rounded-lg"
                 style={{ backgroundColor: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}
               >
                 Jag kan
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); setHangoutSheetOpen(true); }}
-                className="text-[12px] font-medium py-1.5 px-4 rounded-full"
+                className="text-[12px] font-medium py-1.5 px-4 rounded-lg"
                 style={{ color: "hsl(var(--color-text-primary))" }}
               >
                 Kanske
@@ -289,22 +355,21 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
         </div>
       )}
 
-      {/* Tip signal – only show tips from last 7 days */}
+      {/* Tip signal */}
       {person.latestTip && !person.activeHangout &&
         Date.now() - new Date(person.latestTip.created_at).getTime() < 7 * 86400000 && (
         <button
           onClick={() => navigate(`/profile/${person.userId}`)}
           className="flex items-center gap-1.5 w-full text-left"
-          style={{ borderTop: "none", padding: "8px 14px" }}
+          style={{ padding: "8px 14px" }}
         >
-          <span style={{ fontSize: 12, color: "hsl(var(--color-text-faint))" }}>tips ·</span>
-          <span className="text-[12px] truncate" style={{ color: "hsl(var(--color-text-secondary))" }}>
+          <span style={{ fontSize: 11, color: "hsl(var(--color-text-faint))" }}>tips ·</span>
+          <span className="truncate" style={{ fontSize: 12, color: "hsl(var(--color-text-secondary))" }}>
             {person.latestTip.title.slice(0, 40)}
           </span>
         </button>
       )}
 
-      {/* Hangout detail sheet */}
       {person.activeHangout && (
         <HangoutDetailSheet
           entry={{
