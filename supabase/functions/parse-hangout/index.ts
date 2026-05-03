@@ -48,7 +48,30 @@ VIKTIGT:
 - Inga generiska systemformuleringar
 - Om inget datum: dates=[], date_display=null
 - Om ingen aktivitet: activity=null
-- Nämn ALDRIG datum, veckodag eller tidsuttryck (idag, imorgon, helgen, fredag, 27/5 osv) i activity- eller description-fältet — datumet visas redan separat i kortets UI`;
+- Nämn ALDRIG datum, veckodag eller tidsuttryck (idag, imorgon, helgen, fredag, 27/5 osv) i activity- eller description-fältet — datumet visas redan separat i kortets UI
+
+EXEMPEL (för att hålla utdata konsekvent):
+
+Input: "Sugen på spa 8 maj"
+Output: {"intent":"Jag vill göra något","activity":"spa","dates":["<första kommande 8 maj i ISO>"],"date_display":"8 maj","description":"Sugen på spa","entry_type":"activity"}
+
+Input: "Är ledig på fredag, någon som vill ses?"
+Output: {"intent":"Jag är ledig","activity":null,"dates":["<närmaste fredag i ISO>"],"date_display":"fredag","description":"Någon som vill ses?","entry_type":"available"}
+
+Input: "Jag är ledig i helgen"
+Output: {"intent":"Jag är ledig","activity":null,"dates":["<kommande lördag i ISO>","<kommande söndag i ISO>"],"date_display":"i helgen","description":"Jag är ledig","entry_type":"available"}
+
+Input: "Lunch imorgon kl 12?"
+Output: {"intent":"Jag vill ses","activity":"lunch","dates":["<imorgon i ISO>"],"date_display":"imorgon","description":"Lunch kl 12?","entry_type":"activity"}
+
+Input: "Kan 27/5, 3/6 eller 14/6 — promenad?"
+Output: {"intent":"Jag vill göra något","activity":"promenad","dates":["<27/5 i ISO>","<3/6 i ISO>","<14/6 i ISO>"],"date_display":"27 maj","description":"Promenad?","entry_type":"activity"}
+
+Input: "Bokat middag med Anna på fredag"
+Output: {"intent":"Jag har en plan","activity":"middag","dates":["<närmaste fredag i ISO>"],"date_display":"fredag","description":"Bokat middag med Anna","entry_type":"confirmed"}
+
+Input: "Behöver komma ut, någon som hänger?"
+Output: {"intent":"Jag vill ses","activity":null,"dates":[],"date_display":null,"description":"Behöver komma ut, någon som hänger?","entry_type":"available"}`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
