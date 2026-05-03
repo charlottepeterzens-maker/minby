@@ -437,7 +437,8 @@ const PostCard = ({
         {post.image_url && post.photo_layout === "small" && (
           <SignedImg
             imageRef={post.image_url}
-            className="w-[72px] h-[72px] object-cover rounded-md shrink-0 cursor-pointer hover:opacity-80 transition-opacity"
+            className="rounded-md shrink-0 cursor-pointer hover:opacity-80 transition-opacity overflow-hidden"
+            style={{ width: 72, height: 72 }}
             onClick={(signedUrl) => onImageClick(signedUrl)}
           />
         )}
@@ -464,7 +465,7 @@ const PostCard = ({
           <SignedImg
             imageRef={post.image_url}
             className="w-full cursor-pointer hover:opacity-90 transition-opacity rounded-md overflow-hidden"
-            style={{ aspectRatio: "4 / 3", maxHeight: 280, minHeight: 140 }}
+            style={{ width: "100%", aspectRatio: "4 / 3", maxHeight: 280, minHeight: 140 }}
             onClick={(signedUrl) => onImageClick(signedUrl)}
           />
         </div>
@@ -505,9 +506,9 @@ const SignedImg = ({
     <Tag
       onClick={onClick ? () => onClick(url) : undefined}
       className={`block ${className || ""}`}
-      style={{ width: "100%", padding: 0, border: "none", background: "none", ...style }}
+      style={{ padding: 0, border: "none", background: "none", ...style }}
     >
-      <LazyImage src={url} alt="Inläggsbild" className="w-full h-full" style={{ width: "100%", height: "100%", borderRadius: "inherit" }} />
+      <LazyImage src={url} alt="Inläggsbild" className="w-full h-full" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }} />
     </Tag>
   );
 };
