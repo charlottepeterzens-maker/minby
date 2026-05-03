@@ -744,20 +744,50 @@ export type Database = {
           },
         ]
       }
+      profile_settings: {
+        Row: {
+          created_at: string
+          friend_request_notifications: boolean
+          meetup_notifications: boolean
+          muted_users: Json
+          notification_permission_asked: boolean
+          notification_settings: Json
+          update_notifications: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          friend_request_notifications?: boolean
+          meetup_notifications?: boolean
+          muted_users?: Json
+          notification_permission_asked?: boolean
+          notification_settings?: Json
+          update_notifications?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          friend_request_notifications?: boolean
+          meetup_notifications?: boolean
+          muted_users?: Json
+          notification_permission_asked?: boolean
+          notification_settings?: Json
+          update_notifications?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           bio: string | null
           created_at: string
           display_name: string | null
-          friend_request_notifications: boolean
           id: string
-          meetup_notifications: boolean
-          muted_users: Json
-          notification_permission_asked: boolean
-          notification_settings: Json
           onboarded_at: string | null
-          update_notifications: boolean
           updated_at: string
           user_id: string
         }
@@ -766,14 +796,8 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
-          friend_request_notifications?: boolean
           id?: string
-          meetup_notifications?: boolean
-          muted_users?: Json
-          notification_permission_asked?: boolean
-          notification_settings?: Json
           onboarded_at?: string | null
-          update_notifications?: boolean
           updated_at?: string
           user_id: string
         }
@@ -782,14 +806,8 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
-          friend_request_notifications?: boolean
           id?: string
-          meetup_notifications?: boolean
-          muted_users?: Json
-          notification_permission_asked?: boolean
-          notification_settings?: Json
           onboarded_at?: string | null
-          update_notifications?: boolean
           updated_at?: string
           user_id?: string
         }
@@ -1028,6 +1046,10 @@ export type Database = {
       }
       is_group_member: { Args: { _group_id: string }; Returns: boolean }
       is_group_owner: { Args: { _group_id: string }; Returns: boolean }
+      is_muted_by: {
+        Args: { _candidate_id: string; _owner_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       access_tier: "close" | "inner" | "outer"
