@@ -374,7 +374,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
       }}
       aria-label="Lägg till hangout"
     >
-      <Plus className="w-5 h-5" style={{ color: "#D4E8F5" }} />
+      <Plus className="w-5 h-5" style={{ color: "#561828" }} />
     </button>
   );
 
