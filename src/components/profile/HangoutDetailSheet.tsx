@@ -670,7 +670,7 @@ const HangoutDetailSheet = ({
                 <button
                   className="flex items-center gap-1.5 text-[13px] font-normal"
                   style={{ color: "hsl(var(--color-text-faint))", background: "none", border: "none" }}
-                  onClick={() => (onEdit ? onEdit() : undefined)}
+                  onClick={() => (onEdit ? onEdit() : startEdit())}
                 >
                   <Pencil size={13} strokeWidth={1.8} />
                   Redigera
