@@ -35,10 +35,10 @@ Dagens datum: ${todayStr} (${dayName}).
 
 Analysera texten och extrahera:
 1. intent: en kort, personlig fras i första person som fångar känslan (t.ex. "Jag är ledig", "Jag vill ses", "Jag vill göra något", "Jag har en plan"). Max 5 ord. Naturlig ton, inga utropstecken.
-2. activity: om en specifik aktivitet nämns (spa, lunch, promenad, fika, middag, etc). Annars null.
+2. activity: om en specifik aktivitet nämns (spa, lunch, promenad, fika, middag, etc). Endast själva aktivitetsordet/frasen — ALDRIG datum, veckodag, tidpunkt eller ord som "idag", "imorgon", "i helgen", "fredag" osv. Annars null.
 3. dates: en array av ALLA datum som nämns i texten, i ISO-format (YYYY-MM-DD). Tolka "idag", "imorgon", "fredag", "helgen" relativt till dagens datum. Om flera datum nämns (t.ex. "kan 27/5, 3/6 eller 14/6"), returnera ALLA som separata element i arrayen. Om inget datum nämns, returnera en tom array [].
 4. date_display: en mänskligt läsbar version av det FÖRSTA datumet på svenska (t.ex. "fre 7 februari", "imorgon", "i helgen"). Om inget datum, returnera null.
-5. description: användarens text, lätt justerad för läsbarhet men bevarad i anda. Max 100 tecken.
+5. description: användarens text, lätt justerad för läsbarhet men bevarad i anda. Max 100 tecken. Nämn ALDRIG datum eller veckodag här.
 6. entry_type: "available" (ledig/vill ses), "confirmed" (har en plan), eller "activity" (vill göra specifik sak).
 
 VIKTIGT:
@@ -48,7 +48,7 @@ VIKTIGT:
 - Inga generiska systemformuleringar
 - Om inget datum: dates=[], date_display=null
 - Om ingen aktivitet: activity=null
-- Nämn INTE datumet i description-fältet — datumet visas redan separat i kortets UI`;
+- Nämn ALDRIG datum, veckodag eller tidsuttryck (idag, imorgon, helgen, fredag, 27/5 osv) i activity- eller description-fältet — datumet visas redan separat i kortets UI`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
