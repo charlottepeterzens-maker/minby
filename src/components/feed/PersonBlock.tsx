@@ -200,7 +200,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
             {preview && (
               <p
                 className="truncate mt-0.5"
-                style={{ fontSize: 13, color: "hsl(var(--color-text-secondary))" }}
+                style={{ fontSize: 13, color: "hsl(var(--color-text-primary))" }}
               >
                 {preview}
               </p>
