@@ -166,18 +166,16 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
           const name = myProfile?.display_name || "Någon";
 
           const friendIds = allFriends.map((f) => f.friend_user_id);
-          const { data: friendProfiles } = await supabase
-            .from("profiles")
-            .select("user_id, muted_users")
-            .in("user_id", friendIds);
-
           const mutedByFriend = new Set<string>();
-          if (friendProfiles) {
-            for (const fp of friendProfiles) {
-              const muted = (fp.muted_users as string[]) || [];
-              if (muted.includes(user.id)) mutedByFriend.add(fp.user_id);
-            }
-          }
+          await Promise.all(
+            friendIds.map(async (fid) => {
+              const { data: muted } = await (supabase as any).rpc("is_muted_by", {
+                _owner_id: fid,
+                _candidate_id: user.id,
+              });
+              if (muted) mutedByFriend.add(fid);
+            }),
+          );
 
           await Promise.all(
             allFriends
