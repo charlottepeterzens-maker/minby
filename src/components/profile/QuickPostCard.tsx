@@ -26,7 +26,7 @@ const QuickPostCard = ({ profile, sections, onPosted }: Props) => {
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
-  const [showSections, setShowSections] = useState(false);
+  
   const [posting, setPosting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
