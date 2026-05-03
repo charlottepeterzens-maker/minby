@@ -56,7 +56,6 @@ const QuickPostCard = ({ profile, sections, onPosted }: Props) => {
     setContent("");
     setImageFile(null);
     setSelectedSection(null);
-    setShowSections(false);
   };
 
   const handleSubmit = async () => {
