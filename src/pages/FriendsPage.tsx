@@ -364,7 +364,7 @@ const FriendsPage = () => {
     const isMuted = mutedUsers.includes(friendUserId);
     const updated = isMuted ? mutedUsers.filter((id) => id !== friendUserId) : [...mutedUsers, friendUserId];
     setMutedUsers(updated);
-    await (supabase as any).from("profiles").update({ muted_users: updated }).eq("user_id", user.id);
+    await (supabase as any).from("profile_settings").update({ muted_users: updated }).eq("user_id", user.id);
     toast.success(isMuted ? "Avmutad" : "Mutad");
   };
 
