@@ -407,15 +407,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
         >
-          <motion.div
-            className="w-12 h-12 rounded-full flex items-center justify-center mb-2"
-            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.1, type: "spring", stiffness: 260, damping: 20 }}
-          >
-            <div className="w-5 h-5 rounded-full" style={{ backgroundColor: "hsl(var(--color-border-lavender))", opacity: 0.5 }} />
-          </motion.div>
           <p className="text-[12px] text-center mb-1" style={{ color: "hsl(var(--color-text-muted))" }}>
             {displayName ? `${displayName} har inga planer just nu` : "Din vän har inga planer just nu"}
           </p>
