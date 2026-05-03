@@ -51,7 +51,7 @@ export function usePullToRefresh({ onRefresh, threshold = 80 }: UsePullToRefresh
     setPullDistance(0);
     setPulling(false);
     ignoreTouch.current = false;
-  }, [pullDistance, threshold, onRefresh, refreshing]);
+  }, [pulling, pullDistance, threshold, onRefresh, refreshing]);
 
   const progress = Math.min(pullDistance / threshold, 1);
 
