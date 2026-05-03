@@ -104,8 +104,13 @@ const PostImage = ({ imageUrl, onClick }: { imageUrl: string; onClick?: (url: st
 const PersonAvatar = ({ person, onClick }: { person: PersonData; onClick?: () => void }) => {
   const resolved = resolveAvatarUrl(person.avatarUrl);
   const Wrapper: any = onClick ? "button" : "div";
+  const handleClick = (e: React.MouseEvent) => {
+    if (!onClick) return;
+    e.stopPropagation();
+    onClick();
+  };
   return (
-    <Wrapper onClick={onClick} className="shrink-0">
+    <Wrapper onClick={onClick ? handleClick : undefined} className="shrink-0">
       <Avatar className="w-10 h-10">
         {resolved && <AvatarImage src={resolved} alt={person.displayName} className="object-cover" />}
         <AvatarFallback
