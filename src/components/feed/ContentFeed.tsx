@@ -1,6 +1,5 @@
 import { FeedItemRenderer } from "./FeedItemRenderer";
 import { motion } from "framer-motion";
-import { CalendarDays } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 type Props = {
