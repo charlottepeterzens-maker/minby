@@ -258,7 +258,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
             </div>
           </div>
           {/* Type label */}
-          <span style={{ fontSize: 12, fontWeight: 400, color: typeLabelColor, whiteSpace: "nowrap", paddingTop: 3 }}>
+          <span style={{ fontSize: 12, fontWeight: 400, color: typeLabelColor, whiteSpace: "nowrap" }}>
             {typeLabel}
           </span>
         </div>
