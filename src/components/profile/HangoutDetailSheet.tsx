@@ -166,7 +166,7 @@ const HangoutDetailSheet = ({
   const dayNum = String(dateObj.getDate());
   const month = monthShort(dateObj);
   const entryType = entry.entry_type || "available";
-  const typeLabel = TYPE_LABEL[entryType] || "LEDIG";
+  const typeLabel = TYPE_LABEL[entryType] || "Ledig";
   const typeLabelColor = TYPE_LABEL_COLOR[entryType] || "#6B5A3E";
   const activityName = entry.activities.length > 0 ? entry.activities.map(a => ACTIVITY_MAP[a] || a).join(", ") : null;
   const description = entry.custom_note || "";
