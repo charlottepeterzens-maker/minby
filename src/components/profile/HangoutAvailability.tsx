@@ -318,7 +318,8 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
                       key={i}
                       style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 400, color: "#1C1917", lineHeight: 1.1 }}
                     >
-                      {dateObj.getDate()}/{dateObj.getMonth() + 1}
+                      {i > 0 && <span style={{ color: "#9A8FA3", marginRight: 6 }}>/</span>}
+                      {dateObj.getDate()} {monthShort(dateObj)}
                     </span>
                   );
                 })}
