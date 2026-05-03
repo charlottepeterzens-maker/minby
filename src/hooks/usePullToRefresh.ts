@@ -10,27 +10,36 @@ export function usePullToRefresh({ onRefresh, threshold = 80 }: UsePullToRefresh
   const [pullDistance, setPullDistance] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const startY = useRef(0);
+  const ignoreTouch = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const target = e.target as HTMLElement | null;
+    ignoreTouch.current = !!target?.closest('button, a, input, textarea, select, [role="button"], [role="link"]');
+    if (ignoreTouch.current) return;
+
     const el = containerRef.current;
     if (el && el.scrollTop <= 0) {
       startY.current = e.touches[0].clientY;
-      setPulling(true);
     }
   }, []);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!pulling || refreshing) return;
+    if (ignoreTouch.current || refreshing) return;
     const delta = e.touches[0].clientY - startY.current;
-    if (delta > 0) {
+    if (delta > 8) {
+      setPulling(true);
       setPullDistance(Math.min(delta * 0.5, 120));
     }
-  }, [pulling, refreshing]);
+  }, [refreshing]);
 
   const handleTouchEnd = useCallback(async () => {
+    if (ignoreTouch.current) {
+      ignoreTouch.current = false;
+      return;
+    }
     if (refreshing) return;
-    if (pullDistance >= threshold) {
+    if (pulling && pullDistance >= threshold) {
       setRefreshing(true);
       setPullDistance(threshold * 0.6);
       try {
@@ -41,6 +50,7 @@ export function usePullToRefresh({ onRefresh, threshold = 80 }: UsePullToRefresh
     }
     setPullDistance(0);
     setPulling(false);
+    ignoreTouch.current = false;
   }, [pullDistance, threshold, onRefresh, refreshing]);
 
   const progress = Math.min(pullDistance / threshold, 1);
