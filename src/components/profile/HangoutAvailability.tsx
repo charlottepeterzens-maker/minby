@@ -303,63 +303,52 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
           overflow: "hidden",
         }}
       >
-        {/* Rad 1: empty left, label right */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 2 }}>
-          <span />
-          <span style={{ fontSize: 12, fontWeight: 400, color: "#7A5C14", whiteSpace: "nowrap" }}>
+        {/* Top row: "förslag" + datum vänster, "sugen på" höger */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 4, marginBottom: 8 }}>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <p style={{ fontSize: 12, fontWeight: 400, color: "#9A8FA3", marginBottom: 2 }}>
+              förslag
+            </p>
+            {item.dates.length > 0 ? (
+              <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+                {item.dates.map((d, i) => {
+                  const dateObj = new Date(d + "T00:00:00");
+                  return (
+                    <span
+                      key={i}
+                      style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 400, color: "#1C1917", lineHeight: 1.1 }}
+                    >
+                      {dateObj.getDate()}/{dateObj.getMonth() + 1}
+                    </span>
+                  );
+                })}
+              </div>
+            ) : (
+              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 400, color: "#9A8FA3", lineHeight: 1.1 }}>
+                —
+              </span>
+            )}
+          </div>
+          <span style={{ fontSize: 12, fontWeight: 400, color: "#7A5C14", whiteSpace: "nowrap", paddingTop: 3 }}>
             sugen på
           </span>
         </div>
 
-        {/* Rad 2: activity name */}
+        {/* Aktivitetsnamn som brödtext – samma plats som beskrivning på datumkort */}
         <p
           style={{
-            fontFamily: "'Outfit', sans-serif",
-            fontSize: 20,
-            fontWeight: 500,
-            color: "#7A5C14",
-            lineHeight: 1.2,
-            marginBottom: 8,
+            fontSize: 13,
+            lineHeight: 1.45,
+            color: "#1C1917",
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical" as any,
             overflow: "hidden",
+            marginTop: "auto",
           }}
         >
           {item.activityName}
         </p>
-
-        {/* Spacer */}
-        <div style={{ flex: 1 }} />
-
-        {/* Datum-sektion – alltid i botten */}
-        {item.dates.length > 0 && (
-          <div style={{ marginTop: "auto", paddingTop: 8 }}>
-            <p style={{ fontSize: 10, color: "#8B6428", marginBottom: 4 }}>
-              förslag på datum
-            </p>
-            <div className="flex flex-wrap gap-1">
-              {item.dates.map((d, i) => {
-                const dateObj = new Date(d + "T00:00:00");
-                const label = `${dateObj.getDate()}/${dateObj.getMonth() + 1}`;
-                return (
-                  <span
-                    key={i}
-                    style={{
-                      backgroundColor: "rgba(255,255,255,0.6)",
-                      borderRadius: 99,
-                      padding: "2px 7px",
-                      fontSize: 10,
-                      color: "#7A5C14",
-                    }}
-                  >
-                    {label}
-                  </span>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </button>
     );
   };
