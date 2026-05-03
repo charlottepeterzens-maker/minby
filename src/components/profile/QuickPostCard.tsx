@@ -203,9 +203,14 @@ const QuickPostCard = ({ profile, sections, onPosted }: Props) => {
         </button>
         <button
           type="button"
-          onClick={() => setShowSections((v) => !v)}
+          disabled
           className="flex items-center gap-1.5 text-[12px]"
-          style={{ color: selectedSectionName ? "hsl(20, 10%, 12%)" : "hsl(20, 4%, 54%)", background: "none", border: "none", cursor: "pointer" }}
+          style={{
+            color: selectedSectionName ? "hsl(44, 65%, 28%)" : "hsl(20, 4%, 54%)",
+            background: "none",
+            border: "none",
+            cursor: "default",
+          }}
         >
           <Tag size={12} strokeWidth={1.5} />
           {selectedSectionName || "Del"}
