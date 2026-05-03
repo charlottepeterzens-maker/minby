@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { monthShort, weekdayLong } from "@/utils/months";
+import { monthShort, weekdayLong, weekdayShort } from "@/utils/months";
 import { Plus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -310,19 +310,23 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
               förslag
             </p>
             {item.dates.length > 0 ? (
-              <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-                {item.dates.map((d, i) => {
+              <div className="flex flex-col gap-y-0.5">
+                {item.dates.slice(0, 2).map((d, i) => {
                   const dateObj = new Date(d + "T00:00:00");
                   return (
                     <span
                       key={i}
-                      style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 400, color: "#1C1917", lineHeight: 1.1 }}
+                      style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 400, color: "#1C1917", lineHeight: 1.15 }}
                     >
-                      {i > 0 && <span style={{ color: "#9A8FA3", marginRight: 6 }}>/</span>}
-                      {dateObj.getDate()} {monthShort(dateObj)}
+                      {weekdayShort(dateObj)} {dateObj.getDate()} {monthShort(dateObj)}
                     </span>
                   );
                 })}
+                {item.dates.length > 2 && (
+                  <span style={{ fontSize: 12, fontWeight: 400, color: "#7A5C14", lineHeight: 1.15, marginTop: 2 }}>
+                    visa fler
+                  </span>
+                )}
               </div>
             ) : (
               <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 400, color: "#9A8FA3", lineHeight: 1.1 }}>
