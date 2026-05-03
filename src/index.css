@@ -85,68 +85,71 @@
   }
 
   .dark {
-    --background: 270 15% 10%;
-    --foreground: 30 15% 90%;
+    /* Warm charcoal base — matches the linen/burgundy/coral palette */
+    --background: 24 12% 9%;
+    --foreground: 30 20% 92%;
 
-    --card: 270 15% 14%;
-    --card-foreground: 30 15% 90%;
+    --card: 24 10% 12%;
+    --card-foreground: 30 20% 92%;
 
-    --popover: 270 15% 14%;
-    --popover-foreground: 30 15% 90%;
+    --popover: 24 10% 12%;
+    --popover-foreground: 30 20% 92%;
 
-    --primary: 270 25% 78%;
-    --primary-foreground: 270 30% 10%;
+    /* Soft warm cream as primary in dark — readable on charcoal */
+    --primary: 30 30% 88%;
+    --primary-foreground: 24 15% 12%;
 
-    --secondary: 270 15% 25%;
-    --secondary-foreground: 270 25% 78%;
+    --secondary: 24 10% 18%;
+    --secondary-foreground: 30 20% 92%;
 
-    --accent: 16 55% 60%;
-    --accent-foreground: 0 0% 100%;
+    /* Coral stays — slightly brighter for contrast */
+    --accent: 16 70% 58%;
+    --accent-foreground: 24 15% 10%;
 
-    --muted: 270 10% 18%;
-    --muted-foreground: 270 10% 65%;
+    --muted: 24 8% 16%;
+    --muted-foreground: 30 10% 68%;
 
-    --destructive: 0 0% 45%;
+    --destructive: 0 60% 55%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 270 10% 20%;
-    --input: 270 10% 18%;
-    --ring: 270 25% 78%;
+    --border: 24 8% 20%;
+    --input: 24 8% 16%;
+    --ring: 16 70% 58%;
 
-    --dusty-rose: 340 20% 30%;
-    --dusty-rose-bg: 340 15% 15%;
-    --salvia: 44 35% 35%;
-    --salvia-bg: 44 25% 18%;
-    --lavender: 210 25% 40%;
-    --lavender-bg: 210 20% 20%;
+    --dusty-rose: 340 25% 35%;
+    --dusty-rose-bg: 340 15% 16%;
+    --salvia: 44 35% 40%;
+    --salvia-bg: 44 20% 17%;
+    --lavender: 206 30% 45%;
+    --lavender-bg: 206 20% 20%;
 
-    /* Branded colors — dark variants */
-    --color-surface: 270 15% 10%;
-    --color-surface-card: 270 15% 14%;
-    --color-surface-raised: 270 12% 20%;
-    --color-surface-rose: 340 15% 15%;
-    --color-surface-sage: 44 25% 18%;
-    --color-text-primary: 270 25% 85%;
-    --color-text-secondary: 270 10% 65%;
-    --color-text-muted: 270 10% 58%;
-    --color-text-faint: 270 8% 50%;
-    --color-border-subtle: 270 10% 20%;
-    --color-border-lavender: 270 20% 40%;
-    --color-accent-red: 0 50% 55%;
-    --color-accent-terra: 16 55% 60%;
-    --color-accent-sage-text: 44 55% 65%;
-    --color-badge: 330 35% 45%;
+    /* Branded colors — warm dark variants */
+    --color-surface: 24 12% 9%;
+    --color-surface-card: 24 10% 12%;
+    --color-surface-raised: 24 10% 16%;
+    --color-surface-rose: 340 18% 16%;
+    --color-surface-sage: 44 22% 17%;
+    --color-text-primary: 30 25% 92%;
+    --color-text-secondary: 30 12% 72%;
+    --color-text-muted: 30 10% 60%;
+    --color-text-faint: 30 8% 50%;
+    --color-border-subtle: 24 8% 20%;
+    --color-border-lavender: 206 25% 35%;
+    --color-accent-red: 0 60% 60%;
+    --color-accent-terra: 16 70% 58%;
+    --color-accent-sage-text: 44 60% 70%;
+    --color-badge: 347 45% 55%;
 
-    --terrakotta: 16 55% 60%;
+    --terrakotta: 16 70% 58%;
 
-    --sidebar-background: 270 15% 12%;
-    --sidebar-foreground: 30 15% 90%;
-    --sidebar-primary: 270 25% 78%;
-    --sidebar-primary-foreground: 270 30% 10%;
-    --sidebar-accent: 270 10% 18%;
-    --sidebar-accent-foreground: 30 15% 90%;
-    --sidebar-border: 270 10% 20%;
-    --sidebar-ring: 270 25% 78%;
+    --sidebar-background: 24 10% 11%;
+    --sidebar-foreground: 30 20% 92%;
+    --sidebar-primary: 30 30% 88%;
+    --sidebar-primary-foreground: 24 15% 12%;
+    --sidebar-accent: 24 8% 16%;
+    --sidebar-accent-foreground: 30 20% 92%;
+    --sidebar-border: 24 8% 20%;
+    --sidebar-ring: 16 70% 58%;
   }
 }
 
