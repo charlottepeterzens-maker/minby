@@ -424,22 +424,6 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="relative mb-4" style={{ width: 100, height: 50 }}>
-            {[
-              { left: 4, top: 0, bg: "#F5F0E8", delay: 0.15 },
-              { left: 32, top: 4, bg: "#F8F0D8", delay: 0.25 },
-              { left: 54, top: 0, bg: "#D4E8F5", delay: 0.35 },
-            ].map((c, i) => (
-              <motion.div
-                key={i}
-                className="absolute rounded-full"
-                style={{ left: c.left, top: c.top, width: 36, height: 36, backgroundColor: c.bg, zIndex: i }}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: c.delay, type: "spring", stiffness: 260, damping: 20 }}
-              />
-            ))}
-          </div>
           <motion.p
             className="text-center font-medium"
             style={{ fontSize: 13, color: "hsl(var(--color-text-primary))" }}
