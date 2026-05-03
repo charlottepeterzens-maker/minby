@@ -93,6 +93,11 @@ const HangoutDetailSheet = ({
   const [creatingGroup, setCreatingGroup] = useState(false);
   const [addingDate, setAddingDate] = useState(false);
   const [newDateValue, setNewDateValue] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [editDate, setEditDate] = useState("");
+  const [editActivity, setEditActivity] = useState("");
+  const [editNote, setEditNote] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
   const { subscribe: subscribePush, subscribed: pushSubscribed, permission: pushPermission, isSupported: pushSupported } = usePushNotifications();
 
   const [responses, setResponses] = useState<Array<{ id: string; user_id: string; response: string; profile?: { display_name: string | null; avatar_url: string | null } }>>([]);
@@ -259,6 +264,42 @@ const HangoutDetailSheet = ({
     onDeleted?.();
   };
 
+  const startEdit = () => {
+    if (!entry) return;
+    setEditDate(entry.date);
+    setEditActivity(entry.activities?.[0] || "");
+    setEditNote(entry.custom_note || "");
+    setEditing(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!entry || savingEdit) return;
+    setSavingEdit(true);
+    try {
+      const updates: any = {
+        custom_note: editNote.trim() || null,
+        activities: editActivity.trim() ? [editActivity.trim()] : [],
+      };
+      if (entry.entry_type !== "activity") {
+        updates.date = editDate;
+      }
+      const { error } = await supabase
+        .from("hangout_availability")
+        .update(updates)
+        .eq("id", entry.id);
+      if (error) throw error;
+      toast({ title: "Sparat" });
+      setEditing(false);
+      onEdited?.();
+      onRefresh?.();
+      await fetchDetails();
+    } catch (err: any) {
+      toast({ title: "Kunde inte spara", description: err.message, variant: "destructive" });
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
   const handleRemoveSingleDate = async (entryId: string) => {
     await supabase.from("hangout_availability").delete().eq("id", entryId);
     toast({ title: "Datum borttaget" });
@@ -402,6 +443,74 @@ const HangoutDetailSheet = ({
                 </button>
               )}
             </div>
+
+            {/* ── INLINE EDIT FORM ── */}
+            {isOwner && editing && (
+              <div
+                className="space-y-3 p-4 rounded-lg"
+                style={{ backgroundColor: "hsl(var(--color-surface-card))", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+              >
+                {entry.entry_type !== "activity" && (
+                  <div>
+                    <label className="text-[12px] font-medium mb-1.5 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                      Datum
+                    </label>
+                    <input
+                      type="date"
+                      value={editDate}
+                      onChange={(e) => setEditDate(e.target.value)}
+                      className="w-full text-[13px] px-3 py-2 rounded-lg outline-none"
+                      style={{ color: "#1C1917", border: "1px solid #EDE8E0", backgroundColor: "#fff" }}
+                    />
+                  </div>
+                )}
+                <div>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                    Aktivitet
+                  </label>
+                  <input
+                    type="text"
+                    value={editActivity}
+                    onChange={(e) => setEditActivity(e.target.value.slice(0, 100))}
+                    placeholder="Vad ska ni göra?"
+                    maxLength={100}
+                    className="w-full text-[13px] px-3 py-2 rounded-lg outline-none"
+                    style={{ color: "#1C1917", border: "1px solid #EDE8E0", backgroundColor: "#fff" }}
+                  />
+                </div>
+                <div>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                    Fritext
+                  </label>
+                  <textarea
+                    value={editNote}
+                    onChange={(e) => setEditNote(e.target.value.slice(0, 150))}
+                    placeholder="Berätta lite mer..."
+                    rows={2}
+                    maxLength={150}
+                    className="w-full text-[13px] px-3 py-2 rounded-lg outline-none resize-none"
+                    style={{ color: "#1C1917", border: "1px solid #EDE8E0", backgroundColor: "#fff" }}
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => setEditing(false)}
+                    className="text-[13px] px-3 py-2"
+                    style={{ color: "hsl(var(--color-text-secondary))", background: "none", border: "none", cursor: "pointer" }}
+                  >
+                    Avbryt
+                  </button>
+                  <button
+                    onClick={handleSaveEdit}
+                    disabled={savingEdit}
+                    className="text-[13px] font-medium px-4 py-2 rounded-lg text-white disabled:opacity-60"
+                    style={{ backgroundColor: "#561828", border: "none", cursor: "pointer" }}
+                  >
+                    Spara
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* ── ACTIVITY GROUP: date chips ── */}
             {entry.entry_type === "activity" && activityEntries.length > 0 && (
@@ -629,7 +738,7 @@ const HangoutDetailSheet = ({
                 <button
                   className="flex items-center gap-1.5 text-[13px] font-normal"
                   style={{ color: "hsl(var(--color-text-faint))", background: "none", border: "none" }}
-                  onClick={() => (onEdit ? onEdit() : undefined)}
+                  onClick={() => (onEdit ? onEdit() : startEdit())}
                 >
                   <Pencil size={13} strokeWidth={1.8} />
                   Redigera
