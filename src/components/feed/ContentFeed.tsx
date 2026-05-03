@@ -20,23 +20,11 @@ export const ContentFeed = ({ items, emptyMessage, emptyAction, onRefresh }: Pro
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div
-          className="w-14 h-14 rounded-full flex items-center justify-center mb-4"
-          style={{ backgroundColor: "hsl(var(--color-surface-sage))" }}
-        >
-          <CalendarDays className="w-6 h-6" style={{ color: "hsl(var(--accent))" }} strokeWidth={1.5} />
-        </div>
-        <p
-          className="font-fraunces text-[16px] font-medium text-center mb-1"
-          style={{ color: "hsl(var(--color-text-primary))" }}
-        >
-          {emptyMessage}
-        </p>
         <p
           className="text-[13px] text-center"
           style={{ color: "hsl(var(--color-text-secondary))" }}
         >
-          Här dyker det upp när någon i din krets vill ses
+          {emptyMessage}
         </p>
         {emptyAction && (
           <button
