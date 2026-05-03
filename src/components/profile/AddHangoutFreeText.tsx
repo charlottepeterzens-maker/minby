@@ -227,7 +227,7 @@ const AddHangoutFreeText = ({ open, onOpenChange, onCreated }: Props) => {
         {/* Date(s) */}
         {dateDisplay && (
           <p style={{
-            fontFamily: "Georgia, serif",
+            fontFamily: "'Outfit', sans-serif",
             fontSize: 22,
             fontWeight: 500,
             color: "#1C1917",

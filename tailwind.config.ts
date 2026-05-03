@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         display: ["Outfit", "sans-serif"],
         body: ["Outfit", "sans-serif"],
+        sans: ["Outfit", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
