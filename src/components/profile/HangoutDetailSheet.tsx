@@ -53,8 +53,8 @@ const ACTIVITY_MAP: Record<string, string> = {
 const TYPE_LABEL: Record<string, string> = {
   open: "Ledig",
   available: "Ledig",
-  confirmed: "HÄNG MED",
-  activity: "SUGEN PÅ",
+  confirmed: "Häng med",
+  activity: "Sugen på",
 };
 
 const TYPE_LABEL_COLOR: Record<string, string> = {
@@ -343,7 +343,7 @@ const HangoutDetailSheet = ({
                 <>
                   {/* Activity name prominent for "sugen på" */}
                   {activityName && (
-                    <p style={{ fontFamily: "Georgia, serif", fontSize: 22, fontWeight: 500, color: "#1C1917", lineHeight: 1.2, marginTop: 4 }}>
+                    <p className="font-fraunces" style={{ fontSize: 22, fontWeight: 500, color: "#1C1917", lineHeight: 1.2, marginTop: 4 }}>
                       {activityName}
                     </p>
                   )}
@@ -363,7 +363,7 @@ const HangoutDetailSheet = ({
 
                   {/* Datum: siffra + månad */}
                   <div className="flex items-baseline gap-2">
-                    <span style={{ fontFamily: "Georgia, serif", fontSize: 36, color: "#1C1917", lineHeight: 1 }}>
+                    <span className="font-fraunces" style={{ fontSize: 36, color: "#1C1917", lineHeight: 1 }}>
                       {dayNum}
                     </span>
                     <span style={{ fontSize: 16, fontWeight: 400, color: "#1C1917" }}>

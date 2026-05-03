@@ -49,8 +49,8 @@ const TYPE_COLORS: Record<string, string> = {
 const TYPE_LABEL: Record<string, string> = {
   open: "Ledig",
   available: "Ledig",
-  confirmed: "HÄNG MED",
-  activity: "SUGEN PÅ",
+  confirmed: "Häng med",
+  activity: "Sugen på",
 };
 
 const TYPE_LABEL_COLOR: Record<string, string> = {
