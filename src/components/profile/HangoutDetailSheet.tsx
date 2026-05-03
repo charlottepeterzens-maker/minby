@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { monthShort, weekdayLong, weekdayShort } from "@/utils/months";
-import { X, Send, Trash2, Plus, Users } from "lucide-react";
+import { X, Send, Trash2, Plus, Users, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,10 +58,10 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 const TYPE_LABEL_COLOR: Record<string, string> = {
-  open: "#6B5A3E",
-  available: "#6B5A3E",
-  confirmed: "#5C4A7A",
-  activity: "#7A5C14",
+  open: "hsl(37, 35%, 30%)",
+  available: "hsl(37, 35%, 30%)",
+  confirmed: "hsl(206, 45%, 30%)",
+  activity: "hsl(44, 65%, 28%)",
 };
 
 interface Props {
@@ -71,13 +71,14 @@ interface Props {
   isOwner: boolean;
   onDeleted?: () => void;
   onEdited?: () => void;
+  onEdit?: () => void;
   groupedEntries?: AvailabilityEntry[];
   onRefresh?: () => void;
   onAddActivityDate?: (activityName: string) => void;
 }
 
 const HangoutDetailSheet = ({
-  entry, open, onOpenChange, isOwner, onDeleted, onEdited,
+  entry, open, onOpenChange, isOwner, onDeleted, onEdited, onEdit,
   groupedEntries, onRefresh, onAddActivityDate,
 }: Props) => {
   const { user } = useAuth();
@@ -335,7 +336,7 @@ const HangoutDetailSheet = ({
           <div className="px-5 pb-8 space-y-5 overflow-y-auto">
             {/* ── HEADER ── */}
             <div className="space-y-1">
-              <p style={{ fontSize: 12, fontWeight: 400, color: typeLabelColor }}>
+              <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.04em", color: typeLabelColor }}>
                 {typeLabel}
               </p>
 
@@ -629,13 +630,23 @@ const HangoutDetailSheet = ({
               </div>
             )}
 
-            {/* ── OWNER DELETE ── */}
+            {/* ── OWNER ACTIONS ── */}
             {isOwner && (
-              <div className="pt-2 flex justify-center">
+              <div className="pt-2 flex items-center justify-center gap-6 px-5">
                 <button
-                  onClick={() => entry.entry_type === "activity" && activityEntries.length > 1 ? setDeleteAllConfirm(true) : setDeleteConfirm(true)}
-                  style={{ fontSize: 12, color: "hsl(var(--color-text-faint))" }}
+                  className="flex items-center gap-1.5 text-[13px] font-normal"
+                  style={{ color: "hsl(var(--color-text-faint))", background: "none", border: "none" }}
+                  onClick={() => (onEdit ? onEdit() : undefined)}
                 >
+                  <Pencil size={13} strokeWidth={1.8} />
+                  Redigera
+                </button>
+                <button
+                  className="flex items-center gap-1.5 text-[13px] font-normal"
+                  style={{ color: "hsl(var(--color-text-faint))", background: "none", border: "none" }}
+                  onClick={() => entry.entry_type === "activity" && activityEntries.length > 1 ? setDeleteAllConfirm(true) : setDeleteConfirm(true)}
+                >
+                  <Trash2 size={13} strokeWidth={1.8} />
                   Ta bort
                 </button>
               </div>
