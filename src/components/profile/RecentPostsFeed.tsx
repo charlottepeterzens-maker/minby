@@ -506,9 +506,9 @@ const SignedImg = ({
     <Tag
       onClick={onClick ? () => onClick(url) : undefined}
       className={`block ${className || ""}`}
-      style={{ width: "100%", padding: 0, border: "none", background: "none", ...style }}
+      style={{ padding: 0, border: "none", background: "none", ...style }}
     >
-      <LazyImage src={url} alt="Inläggsbild" className="w-full h-full" style={{ width: "100%", height: "100%", borderRadius: "inherit" }} />
+      <LazyImage src={url} alt="Inläggsbild" className="w-full h-full" style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }} />
     </Tag>
   );
 };
