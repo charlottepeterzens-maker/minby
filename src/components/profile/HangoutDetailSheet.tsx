@@ -553,13 +553,6 @@ const HangoutDetailSheet = ({
 
               {/* Comment input */}
               <div className="flex gap-1.5 items-center">
-                {user && (
-                  <Avatar className="w-6 h-6 shrink-0">
-                    <AvatarFallback style={{ backgroundColor: "#F7F3EF", color: "#1C1917" }} className="text-[9px]">
-                      {user.email?.charAt(0).toUpperCase() || "?"}
-                    </AvatarFallback>
-                  </Avatar>
-                )}
                 <Input
                   value={commentText}
                   onChange={e => setCommentText(e.target.value)}
