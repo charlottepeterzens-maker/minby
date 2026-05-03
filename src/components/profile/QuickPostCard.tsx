@@ -1,10 +1,8 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Camera, Plus, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Image as ImageIcon, Tag, Send, X } from "lucide-react";
 import { toast } from "sonner";
-import CreateSectionDialog from "@/components/profile/CreateSectionDialog";
 import { compressImage } from "@/utils/imageCompression";
 import { resolveAvatarUrl } from "@/utils/avatarUrl";
 
@@ -22,39 +20,47 @@ interface Props {
   onSectionsChanged: () => void;
 }
 
-const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props) => {
+const QuickPostCard = ({ profile, sections, onPosted }: Props) => {
   const { user } = useAuth();
-  const [composing, setComposing] = useState(false);
+  const [composeActive, setComposeActive] = useState(false);
   const [content, setContent] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [showSections, setShowSections] = useState(false);
   const [posting, setPosting] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const actionsRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const avatarUrl = resolveAvatarUrl(profile?.avatar_url ?? null);
+  const firstName = (profile?.display_name || "du").split(" ")[0];
   const initial = profile?.display_name
-    ? profile.display_name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()
+    ? profile.display_name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
     : "?";
 
   const hasContent = content.trim().length > 0 || !!imageFile;
 
-  useEffect(() => {
-    if (composing && textareaRef.current) {
-      setTimeout(() => textareaRef.current?.focus(), 100);
-    }
-  }, [composing]);
+  const Avatar = ({ className = "w-8 h-8", style }: { className?: string; style?: React.CSSProperties }) => (
+    <div
+      className={`${className} rounded-full overflow-hidden flex items-center justify-center`}
+      style={{ backgroundColor: "#D4E8F5", ...style }}
+    >
+      {avatarUrl ? (
+        <img src={avatarUrl} alt="" loading="lazy" className="w-full h-full object-cover" />
+      ) : (
+        <span style={{ fontSize: 11, fontWeight: 500, color: "#1C1917" }}>{initial}</span>
+      )}
+    </div>
+  );
 
-  // Auto-resize textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
-    }
-  }, [content]);
+  const reset = () => {
+    setComposeActive(false);
+    setContent("");
+    setImageFile(null);
+    setSelectedSection(null);
+    setShowSections(false);
+  };
 
-  const handlePost = async () => {
-    if (!user || !hasContent) return;
+  const handleSubmit = async () => {
+    if (!user || !hasContent || posting) return;
     setPosting(true);
 
     let image_url: string | null = null;
@@ -88,206 +94,149 @@ const QuickPostCard = ({ profile, sections, onPosted, onSectionsChanged }: Props
     setPosting(false);
   };
 
-  const reset = () => {
-    setComposing(false);
-    setContent("");
-    setImageFile(null);
-    setSelectedSection(null);
-  };
+  if (!composeActive) {
+    return (
+      <div
+        className="rounded-lg flex items-center gap-3 cursor-pointer"
+        style={{
+          backgroundColor: "hsl(var(--color-surface-card))",
+          padding: "14px 16px",
+          boxShadow: "0 2px 10px rgba(86,24,40,0.07), 0 1px 3px rgba(0,0,0,0.04)",
+        }}
+        onClick={() => setComposeActive(true)}
+      >
+        <Avatar />
+        <span className="text-[13px] font-normal" style={{ color: "hsl(20, 6%, 40%)" }}>
+          Din tur, {firstName}.
+        </span>
+      </div>
+    );
+  }
 
-  const AvatarCircle = ({ size = 34 }: { size?: number }) => (
-    <div
-      className="shrink-0 rounded-full flex items-center justify-center overflow-hidden"
-      style={{ width: size, height: size, backgroundColor: "#D4E8F5" }}
-    >
-      {avatarUrl ? (
-        <img src={avatarUrl} alt="" loading="lazy" className="w-full h-full object-cover" />
-      ) : (
-        <span style={{ fontSize: size * 0.35, fontWeight: 500, color: "#1C1917" }}>{initial}</span>
-      )}
-    </div>
-  );
+  const selectedSectionName = sections.find((s) => s.id === selectedSection)?.name;
 
   return (
-    <div style={{ background: "#FFFFFF", borderRadius: 8, overflow: "hidden", border: "1px solid hsl(var(--color-border-subtle))" }}>
-      {/* Collapsed */}
-      {!composing && (
-        <button
-          onClick={() => setComposing(true)}
-          className="w-full flex items-center gap-3"
-          style={{ padding: "12px 14px", background: "none", border: "none", cursor: "pointer" }}
-        >
-          <span style={{ flex: 1, textAlign: "left", fontSize: 14, fontWeight: 400, color: "hsl(var(--color-text-faint))" }}>
-            Dela något med din krets…
-          </span>
-          <Camera style={{ width: 18, height: 18, color: "hsl(var(--color-text-faint))" }} />
-        </button>
+    <div
+      className="rounded-lg overflow-hidden"
+      style={{
+        backgroundColor: "hsl(var(--color-surface-card))",
+        boxShadow: "0 2px 12px rgba(86,24,40,0.08), 0 1px 3px rgba(0,0,0,0.05)",
+      }}
+    >
+      {/* Textyta */}
+      <div className="flex items-start gap-3 p-4">
+        <Avatar style={{ marginTop: 2 }} />
+        <textarea
+          autoFocus
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="Vad händer i din vardag?"
+          className="flex-1 text-[13px] font-normal bg-transparent resize-none outline-none"
+          style={{ color: "hsl(20, 10%, 12%)", lineHeight: "1.6", minHeight: "60px" }}
+        />
+      </div>
+
+      {/* Image preview */}
+      {imageFile && (
+        <div className="px-4 pb-2">
+          <div className="inline-flex items-center gap-1.5 text-[12px]" style={{ color: "hsl(20, 6%, 40%)" }}>
+            {imageFile.name.slice(0, 24)}
+            <button
+              type="button"
+              onClick={() => setImageFile(null)}
+              style={{ background: "none", border: "none", cursor: "pointer", color: "hsl(20, 4%, 54%)" }}
+            >
+              <X size={12} />
+            </button>
+          </div>
+        </div>
       )}
 
-      {/* Expanded */}
-      <AnimatePresence>
-        {composing && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-          >
-            {/* Zone 1 – Text */}
-            <div style={{ padding: "12px 14px 10px" }}>
-              <textarea
-                ref={textareaRef}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Dela något med din krets…"
-                rows={2}
-                className="w-full resize-none outline-none"
-                style={{
-                  flex: 1,
-                  border: "none",
-                  background: "transparent",
-                  fontSize: 14,
-                  fontWeight: 300,
-                  color: "#1C1917",
-                  lineHeight: 1.5,
-                  padding: "4px 0",
+      {/* Sections picker */}
+      {showSections && sections.length > 0 && (
+        <div className="px-4 pb-2 flex flex-wrap gap-1.5">
+          {sections.map((s) => {
+            const active = selectedSection === s.id;
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => {
+                  setSelectedSection(active ? null : s.id);
+                  setShowSections(false);
                 }}
-              />
-            </div>
+                className="rounded-lg"
+                style={{
+                  fontSize: 12,
+                  padding: "5px 10px",
+                  border: "none",
+                  background: active ? "#D4E8F5" : "#F5F0EA",
+                  color: active ? "#561828" : "hsl(var(--color-text-secondary))",
+                  cursor: "pointer",
+                }}
+              >
+                {s.name}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
-            {/* Divider */}
-            <div style={{ height: 1, background: "hsl(var(--color-border-subtle))" }} />
-
-            {/* Zone 2 – Section picker */}
-            <div style={{ padding: "10px 14px" }}>
-              <p style={{ fontSize: 12, color: "hsl(var(--color-text-faint))", marginBottom: 8 }}>
-                Dela i
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {sections.map((s) => {
-                  const active = selectedSection === s.id;
-                  return (
-                    <button
-                      key={s.id}
-                      onClick={() => setSelectedSection(active ? null : s.id)}
-                      style={{
-                        fontSize: 12,
-                        fontWeight: active ? 500 : 400,
-                        padding: "5px 12px",
-                        borderRadius: 8,
-                        border: "none",
-                        background: active ? "#D4E8F5" : "#F5F0EA",
-                        color: active ? "#561828" : "hsl(var(--color-text-secondary))",
-                        cursor: "pointer",
-                        transition: "all 0.15s ease",
-                      }}
-                    >
-                      {s.name}
-                    </button>
-                  );
-                })}
-                <CreateSectionDialog
-                  onCreated={onSectionsChanged}
-                  trigger={
-                    <button
-                      style={{
-                        fontSize: 11,
-                        padding: "5px 12px",
-                        borderRadius: 8,
-                        background: "transparent",
-                        border: "none",
-                        color: "#C4522A",
-                        fontWeight: 500,
-                        cursor: "pointer",
-                      }}
-                    >
-                      + Ny del
-                    </button>
-                  }
-                />
-              </div>
-            </div>
-
-            {/* Divider */}
-            <div style={{ height: 1, background: "hsl(var(--color-border-subtle))" }} />
-
-            {/* Zone 3 – Actions */}
-            <div
-              ref={actionsRef}
-              className="flex items-center justify-between"
-              style={{ padding: "10px 14px" }}
-            >
-              <div className="flex items-center gap-2">
-                <label style={{ cursor: "pointer" }}>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => setImageFile(e.target.files?.[0] || null)}
-                  />
-                  <span
-                    className="inline-flex items-center gap-1.5"
-                    style={{
-                      fontSize: 12,
-                      padding: "6px 12px",
-                      borderRadius: 8,
-                      background: imageFile ? "#D4E8F5" : "#F5F0EA",
-                      color: imageFile ? "#561828" : "hsl(var(--color-text-secondary))",
-                      border: "none",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <Camera style={{ width: 14, height: 14 }} />
-                    {imageFile ? (
-                      <span className="flex items-center gap-1">
-                        {imageFile.name.slice(0, 12)}
-                        <X
-                          style={{ width: 12, height: 12, cursor: "pointer" }}
-                          onClick={(e) => { e.preventDefault(); setImageFile(null); }}
-                        />
-                      </span>
-                    ) : "Foto"}
-                  </span>
-                </label>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={reset}
-                  style={{
-                    fontSize: 13,
-                    color: "hsl(var(--color-text-faint))",
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                  }}
-                >
-                  Avbryt
-                </button>
-                <button
-                  onClick={handlePost}
-                  disabled={posting || !hasContent}
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 500,
-                    padding: "8px 20px",
-                    borderRadius: 8,
-                    border: "none",
-                    cursor: hasContent ? "pointer" : "default",
-                    background: hasContent ? "#561828" : "#EDE8E0",
-                    color: hasContent ? "#F0EAE2" : "hsl(var(--color-text-faint))",
-                    opacity: posting ? 0.6 : 1,
-                    transition: "all 0.2s ease",
-                    WebkitAppearance: "none",
-                  }}
-                >
-                  Dela
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Åtgärdsrad */}
+      <div
+        className="flex items-center px-4 pb-3"
+        style={{ borderTop: "1px solid hsl(var(--color-border-subtle))", gap: "16px", paddingTop: "10px" }}
+      >
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+        />
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="flex items-center gap-1.5 text-[12px]"
+          style={{ color: "hsl(20, 4%, 54%)", background: "none", border: "none", cursor: "pointer" }}
+        >
+          <ImageIcon size={12} strokeWidth={1.5} />
+          Bild
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowSections((v) => !v)}
+          className="flex items-center gap-1.5 text-[12px]"
+          style={{ color: selectedSectionName ? "hsl(20, 10%, 12%)" : "hsl(20, 4%, 54%)", background: "none", border: "none", cursor: "pointer" }}
+        >
+          <Tag size={12} strokeWidth={1.5} />
+          {selectedSectionName || "Del"}
+        </button>
+        <button
+          type="button"
+          onClick={reset}
+          className="text-[12px]"
+          style={{ color: "hsl(20, 4%, 54%)", background: "none", border: "none", cursor: "pointer" }}
+        >
+          Avbryt
+        </button>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={!hasContent || posting}
+          className="ml-auto rounded-lg flex items-center justify-center"
+          style={{
+            width: "30px",
+            height: "30px",
+            backgroundColor: hasContent ? "#561828" : "#EDE8E0",
+            border: "none",
+            cursor: hasContent ? "pointer" : "default",
+            opacity: posting ? 0.6 : 1,
+          }}
+        >
+          <Send size={13} fill="white" strokeWidth={0} />
+        </button>
+      </div>
     </div>
   );
 };
