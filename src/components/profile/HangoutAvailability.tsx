@@ -316,7 +316,7 @@ const HangoutAvailability = ({ userId, isOwner, openEntryId, onOpenedEntry, disp
                   return (
                     <span
                       key={i}
-                      style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 400, color: "#1C1917", lineHeight: 1.15 }}
+                      style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, fontWeight: 400, color: "#1C1917", lineHeight: 1.15, whiteSpace: "nowrap" }}
                     >
                       {weekdayShort(dateObj)} {dateObj.getDate()} {monthShort(dateObj)}
                     </span>
