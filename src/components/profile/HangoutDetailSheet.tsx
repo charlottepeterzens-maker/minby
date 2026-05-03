@@ -343,7 +343,7 @@ const HangoutDetailSheet = ({
                 <>
                   {/* Activity name prominent for "sugen på" */}
                   {activityName && (
-                    <p style={{ fontFamily: "Georgia, serif", fontSize: 22, fontWeight: 500, color: "#1C1917", lineHeight: 1.2, marginTop: 4 }}>
+                    <p className="font-fraunces" style={{ fontSize: 22, fontWeight: 500, color: "#1C1917", lineHeight: 1.2, marginTop: 4 }}>
                       {activityName}
                     </p>
                   )}
