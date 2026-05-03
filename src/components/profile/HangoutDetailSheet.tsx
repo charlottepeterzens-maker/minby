@@ -444,6 +444,74 @@ const HangoutDetailSheet = ({
               )}
             </div>
 
+            {/* ── INLINE EDIT FORM ── */}
+            {isOwner && editing && (
+              <div
+                className="space-y-3 p-4 rounded-lg"
+                style={{ backgroundColor: "hsl(var(--color-surface-card))", boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}
+              >
+                {entry.entry_type !== "activity" && (
+                  <div>
+                    <label className="text-[12px] font-medium mb-1.5 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                      Datum
+                    </label>
+                    <input
+                      type="date"
+                      value={editDate}
+                      onChange={(e) => setEditDate(e.target.value)}
+                      className="w-full text-[13px] px-3 py-2 rounded-lg outline-none"
+                      style={{ color: "#1C1917", border: "1px solid #EDE8E0", backgroundColor: "#fff" }}
+                    />
+                  </div>
+                )}
+                <div>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                    Aktivitet
+                  </label>
+                  <input
+                    type="text"
+                    value={editActivity}
+                    onChange={(e) => setEditActivity(e.target.value.slice(0, 100))}
+                    placeholder="Vad ska ni göra?"
+                    maxLength={100}
+                    className="w-full text-[13px] px-3 py-2 rounded-lg outline-none"
+                    style={{ color: "#1C1917", border: "1px solid #EDE8E0", backgroundColor: "#fff" }}
+                  />
+                </div>
+                <div>
+                  <label className="text-[12px] font-medium mb-1.5 block" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                    Fritext
+                  </label>
+                  <textarea
+                    value={editNote}
+                    onChange={(e) => setEditNote(e.target.value.slice(0, 150))}
+                    placeholder="Berätta lite mer..."
+                    rows={2}
+                    maxLength={150}
+                    className="w-full text-[13px] px-3 py-2 rounded-lg outline-none resize-none"
+                    style={{ color: "#1C1917", border: "1px solid #EDE8E0", backgroundColor: "#fff" }}
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    onClick={() => setEditing(false)}
+                    className="text-[13px] px-3 py-2"
+                    style={{ color: "hsl(var(--color-text-secondary))", background: "none", border: "none", cursor: "pointer" }}
+                  >
+                    Avbryt
+                  </button>
+                  <button
+                    onClick={handleSaveEdit}
+                    disabled={savingEdit}
+                    className="text-[13px] font-medium px-4 py-2 rounded-lg text-white disabled:opacity-60"
+                    style={{ backgroundColor: "#561828", border: "none", cursor: "pointer" }}
+                  >
+                    Spara
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* ── ACTIVITY GROUP: date chips ── */}
             {entry.entry_type === "activity" && activityEntries.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
