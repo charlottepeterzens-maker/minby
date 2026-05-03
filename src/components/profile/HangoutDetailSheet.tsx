@@ -264,6 +264,42 @@ const HangoutDetailSheet = ({
     onDeleted?.();
   };
 
+  const startEdit = () => {
+    if (!entry) return;
+    setEditDate(entry.date);
+    setEditActivity(entry.activities?.[0] || "");
+    setEditNote(entry.custom_note || "");
+    setEditing(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!entry || savingEdit) return;
+    setSavingEdit(true);
+    try {
+      const updates: any = {
+        custom_note: editNote.trim() || null,
+        activities: editActivity.trim() ? [editActivity.trim()] : [],
+      };
+      if (entry.entry_type !== "activity") {
+        updates.date = editDate;
+      }
+      const { error } = await supabase
+        .from("hangout_availability")
+        .update(updates)
+        .eq("id", entry.id);
+      if (error) throw error;
+      toast({ title: "Sparat" });
+      setEditing(false);
+      onEdited?.();
+      onRefresh?.();
+      await fetchDetails();
+    } catch (err: any) {
+      toast({ title: "Kunde inte spara", description: err.message, variant: "destructive" });
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
   const handleRemoveSingleDate = async (entryId: string) => {
     await supabase.from("hangout_availability").delete().eq("id", entryId);
     toast({ title: "Datum borttaget" });
