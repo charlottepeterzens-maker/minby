@@ -278,7 +278,7 @@ const HangoutDetailSheet = ({
     if (!user || creatingGroup) return;
     setCreatingGroup(true);
     try {
-      const groupName = `${activityName || description || "Häng"} ${weekday} ${dayNum}/${dateObj.getMonth() + 1}`;
+      const groupName = `${activityName || description || "Häng"} ${weekday} ${dayNum} ${month}`;
       const { data: group, error: groupError } = await supabase
         .from("friend_groups")
         .insert({ name: groupName, owner_id: user.id, emoji: "" })
@@ -407,7 +407,7 @@ const HangoutDetailSheet = ({
               <div className="flex flex-wrap gap-1.5">
                 {activityEntries.map(ae => {
                   const d = new Date(ae.date + "T00:00:00");
-                  const label = `${weekdayShort(d)} ${d.getDate()}/${d.getMonth() + 1}`;
+                  const label = `${weekdayShort(d)} ${d.getDate()} ${monthShort(d)}`;
                   return (
                     <span
                       key={ae.id}
