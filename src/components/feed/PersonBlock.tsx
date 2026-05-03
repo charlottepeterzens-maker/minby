@@ -174,7 +174,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
   );
 
   return (
-    <div style={{ opacity: person.isQuiet && !expanded ? 0.65 : 1, transition: "opacity 0.2s ease" }}>
+    <div>
       {/* Collapsed header */}
       {!expanded && (
         <div
