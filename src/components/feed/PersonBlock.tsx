@@ -317,7 +317,7 @@ const PersonBlock = ({ person, currentUserName }: { person: PersonData; currentU
               >
                 <ThinkingButton size="md" />
                 <button
-                  onClick={() => navigate(`/profile/${person.userId}`)}
+                  onClick={(e) => { e.stopPropagation(); navigate(`/profile/${person.userId}`); }}
                   style={{ fontSize: 12, color: "hsl(var(--color-text-faint))", background: "none", border: "none", cursor: "pointer" }}
                 >
                   Se alla delar i {possessive(person.displayName)} vardag →
