@@ -35,10 +35,7 @@ const FeedTipCard = ({ tip, profile, onProfileClick }: FeedTipCardProps) => {
   const timeAgo = getTimeAgo(tip.created_at);
 
   return (
-    <div
-      className="rounded-lg p-4"
-      style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
-    >
+    <div style={{ padding: "13px 14px" }}>
       <div className="flex items-center gap-2.5 mb-3">
         <FeedAvatar
           avatarUrl={profile.avatar_url}

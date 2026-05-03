@@ -551,7 +551,7 @@ const EmptyFeedCard = ({ onOpenHangout, onOpenInvite }: { onOpenHangout: () => v
               <p className="text-[13px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>{item.title}</p>
               <p className="text-[11px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>{item.sub}</p>
             </div>
-            <span className="text-[11px] font-medium shrink-0" style={{ color: "#C4522A" }}>{item.cta}</span>
+            <span className="text-[11px] font-medium shrink-0" style={{ color: "hsl(var(--accent))" }}>{item.cta}</span>
           </motion.button>
         ))}
       </div>
