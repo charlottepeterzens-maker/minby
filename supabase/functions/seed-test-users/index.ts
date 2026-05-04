@@ -118,7 +118,7 @@ Deno.serve(async (req) => {
     const testUsers = [
       {
         email: "emma.lindgren.minby@gmail.com",
-        password: "minby123",
+        password: crypto.randomUUID() + "Aa1!",
         display_name: "Emma",
         bio: "Mamma, löpare och evigt sugen på äventyr",
         avatar_url: avatars[0],
@@ -143,7 +143,7 @@ Deno.serve(async (req) => {
       },
       {
         email: "sara.karlsson.minby@gmail.com",
-        password: "minby123",
+        password: crypto.randomUUID() + "Aa1!",
         display_name: "Sara",
         bio: "Jobbar för mycket men skrattar ännu mer",
         avatar_url: avatars[1],
@@ -166,7 +166,7 @@ Deno.serve(async (req) => {
       },
       {
         email: "karin.nilsson.minby@gmail.com",
-        password: "minby123",
+        password: crypto.randomUUID() + "Aa1!",
         display_name: "Karin",
         bio: "Älskar långsamma söndagar och snabba beslut",
         avatar_url: avatars[2],
