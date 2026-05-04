@@ -45,6 +45,11 @@ const PWAInstallBanner = () => {
       const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
       setIsIOS(ios);
       setShow(true);
+      const next = parseInt(localStorage.getItem(SHOW_COUNT_KEY) || "0", 10) + 1;
+      localStorage.setItem(SHOW_COUNT_KEY, String(next));
+      if (next >= MAX_SHOWS) {
+        localStorage.setItem(DISMISS_KEY, "true");
+      }
     }, DELAY_MS);
 
     return () => {
