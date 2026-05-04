@@ -8,6 +8,8 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 const DISMISS_KEY = "pwa-install-dismissed";
+const SHOW_COUNT_KEY = "pwa-install-show-count";
+const MAX_SHOWS = 3;
 const DELAY_MS = 10_000; // Show after 10 seconds in the app
 
 const PWAInstallBanner = () => {
@@ -18,6 +20,13 @@ const PWAInstallBanner = () => {
   useEffect(() => {
     // Never show if already dismissed or already installed
     if (localStorage.getItem(DISMISS_KEY)) return;
+
+    // Stop showing after MAX_SHOWS appearances
+    const shownCount = parseInt(localStorage.getItem(SHOW_COUNT_KEY) || "0", 10);
+    if (shownCount >= MAX_SHOWS) {
+      localStorage.setItem(DISMISS_KEY, "true");
+      return;
+    }
 
     const isStandalone =
       window.matchMedia("(display-mode: standalone)").matches ||
