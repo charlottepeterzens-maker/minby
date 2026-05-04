@@ -57,12 +57,11 @@ Deno.serve(async (req) => {
     );
 
     if (alreadyRegistered) {
+      // Avoid revealing whether an email is registered (user enumeration).
+      // Return generic success without sending an invite email.
       return new Response(
-        JSON.stringify({
-          error: "already_registered",
-          message: "Den här personen har redan ett konto på Minby",
-        }),
-        { status: 409, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ success: true }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
