@@ -93,9 +93,9 @@ const PWAInstallBanner = () => {
               style={{ width: 40, height: 40, backgroundColor: "#561828" }}
             >
               {isIOS ? (
-                <Share className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
+                <Share className="w-5 h-5" style={{ color: "hsl(var(--color-surface))" }} />
               ) : (
-                <Download className="w-5 h-5" style={{ color: "hsl(var(--color-border-lavender))" }} />
+                <Download className="w-5 h-5" style={{ color: "hsl(var(--color-surface))" }} />
               )}
             </div>
 
