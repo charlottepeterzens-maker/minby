@@ -46,6 +46,18 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
+    // Restrict to admins only — this function creates users and modifies friendship data
+    const { data: isAdmin, error: roleError } = await adminClient.rpc("has_role", {
+      _user_id: callerUserId,
+      _role: "admin",
+    });
+    if (roleError || !isAdmin) {
+      return new Response(JSON.stringify({ error: "Forbidden: admin role required" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // --- CLEANUP: delete old test users completely ---
     const { data: { users: allUsers } } = await adminClient.auth.admin.listUsers();
     const oldTestUsers = allUsers?.filter((u) => TEST_EMAILS.includes(u.email ?? "")) ?? [];
@@ -106,7 +118,7 @@ Deno.serve(async (req) => {
     const testUsers = [
       {
         email: "emma.lindgren.minby@gmail.com",
-        password: "minby123",
+        password: crypto.randomUUID() + "Aa1!",
         display_name: "Emma",
         bio: "Mamma, löpare och evigt sugen på äventyr",
         avatar_url: avatars[0],
@@ -131,7 +143,7 @@ Deno.serve(async (req) => {
       },
       {
         email: "sara.karlsson.minby@gmail.com",
-        password: "minby123",
+        password: crypto.randomUUID() + "Aa1!",
         display_name: "Sara",
         bio: "Jobbar för mycket men skrattar ännu mer",
         avatar_url: avatars[1],
@@ -154,7 +166,7 @@ Deno.serve(async (req) => {
       },
       {
         email: "karin.nilsson.minby@gmail.com",
-        password: "minby123",
+        password: crypto.randomUUID() + "Aa1!",
         display_name: "Karin",
         bio: "Älskar långsamma söndagar och snabba beslut",
         avatar_url: avatars[2],
