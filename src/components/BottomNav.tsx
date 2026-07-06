@@ -1,12 +1,11 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { MessageCircle, Newspaper, User, Users } from "lucide-react";
+import { Users, Newspaper, User } from "lucide-react";
 import { useUnreadSallskap } from "@/hooks/useUnreadSallskap";
 import { motion } from "framer-motion";
 
 const navItems = [
-  { label: "Sällskap", icon: MessageCircle, path: "/" },
+  { label: "Sällskap", icon: Users, path: "/" },
   { label: "Flöde", icon: Newspaper, path: "/feed" },
-  { label: "Krets", icon: Users, path: "/friends" },
   { label: "Mitt", icon: User, path: "/profile" },
 ];
 
