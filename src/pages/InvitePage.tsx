@@ -92,7 +92,7 @@ const InvitePage = () => {
 
       if (inviterId === user.id) {
         toast.info("Du kan inte använda din egen inbjudningslänk.");
-        navigate("/friends", { replace: true });
+        navigate("/", { replace: true });
         return;
       }
 
@@ -277,7 +277,7 @@ const InvitePage = () => {
           Du och {inviterName} kan nu se varandras vardag.
         </p>
         <button
-          onClick={() => navigate("/friends", { replace: true })}
+          onClick={() => navigate("/", { replace: true })}
           className="text-sm font-medium rounded-lg px-5 py-2.5"
           style={{ backgroundColor: "#561828", color: "#F7F3EF" }}
         >
@@ -301,7 +301,7 @@ const InvitePage = () => {
           Inget mer behövs — {inviterName} finns redan hos dig.
         </p>
         <button
-          onClick={() => navigate("/friends", { replace: true })}
+          onClick={() => navigate("/", { replace: true })}
           className="text-sm font-medium rounded-lg px-5 py-2.5"
           style={{ backgroundColor: "#561828", color: "#F7F3EF" }}
         >
