@@ -146,7 +146,8 @@ const AnimatedRoutes = () => {
         transition={{ duration: 0.15 }}
       >
         <Routes location={location}>
-          <Route path="/" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><GroupsPage /></ProtectedRoute>} />
+          <Route path="/feed" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
           <Route path="/circles" element={<ProtectedRoute><Index /></ProtectedRoute>} />
           <Route path="/groups" element={<ProtectedRoute><GroupsPage /></ProtectedRoute>} />
           <Route path="/groups/:groupId" element={<ProtectedRoute><GroupChatPage /></ProtectedRoute>} />
