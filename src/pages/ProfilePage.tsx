@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, Plus, Camera, Pencil, Check, X } from "lucide-react";
+import { ChevronLeft, Plus, Camera, Pencil, Check, X, Settings } from "lucide-react";
 import { resolveAvatarUrl } from "@/utils/avatarUrl";
 import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
@@ -248,7 +248,18 @@ const ProfilePage = () => {
             </button>
             <span className="font-fraunces text-[20px] font-medium text-foreground">{isOwnProfile ? "Mitt" : profile?.display_name || ""}</span>
           </div>
-          <div className="flex items-center gap-1">{targetUserId && <ProfileShareDialog userId={targetUserId} />}</div>
+          <div className="flex items-center gap-1">
+            {isOwnProfile && (
+              <button
+                onClick={() => navigate("/settings")}
+                aria-label="Inställningar"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors duration-150"
+              >
+                <Settings className="w-5 h-5" strokeWidth={1.5} />
+              </button>
+            )}
+            {targetUserId && <ProfileShareDialog userId={targetUserId} />}
+          </div>
         </Container>
 
       </nav>
