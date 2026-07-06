@@ -86,7 +86,7 @@ const HangoutNotificationList = ({ onOpenHangout, onNotificationsRead }: Props) 
     } else if (n.type === "hangout_new" && n.reference_id) {
       navigate(`/profile/${n.reference_id}`);
     } else if (n.type === "friend_request" || n.type === "friend_accepted") {
-      navigate("/friends");
+      navigate("/");
     } else if (n.type === "life_comment" && n.reference_id) {
       // Stay on profile – could deep-link later
     } else if (n.type === "group_invite" || n.type === "group_message") {
