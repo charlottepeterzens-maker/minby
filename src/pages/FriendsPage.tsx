@@ -513,114 +513,237 @@ const FriendsPage = () => {
     setRespondingId(null);
   };
 
+  const availableToday = friends.filter((f) => f.hangout_status);
+  const hasAnyContent = friends.length > 0 || groups.length > 0 || pendingRequests.length > 0;
+
   return (
-    <PageTransition className="min-h-screen pb-20" style={{ backgroundColor: "hsl(var(--color-surface))", borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
+    <PageTransition className="min-h-screen pb-24" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       {/* Header */}
-      <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))", borderBottom: "1px solid hsl(var(--color-border-subtle))" }}>
+      <nav className="sticky top-0 z-50 pt-safe" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <Container className="py-4 flex items-center justify-between">
-          <span className="font-fraunces text-[20px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+          <span className="font-fraunces text-[22px] font-semibold" style={{ color: "hsl(var(--color-text-primary))" }}>
             Sällskap
           </span>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSearchOpen(!searchOpen)}
               aria-label="Sök"
-              className="w-11 h-11 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+              className="w-10 h-10 rounded-lg flex items-center justify-center"
+              style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
             >
-              <Search className="w-4.5 h-4.5" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />
+              <Search className="w-4 h-4" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.75} />
             </button>
             <button
               onClick={() => setQrOpen(true)}
               aria-label="Visa QR-kod"
-              className="w-11 h-11 rounded-lg flex items-center justify-center"
-              style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+              className="w-10 h-10 rounded-lg flex items-center justify-center"
+              style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
             >
-              <QrCode className="w-4.5 h-4.5" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.5} />
+              <QrCode className="w-4 h-4" style={{ color: "hsl(var(--color-text-primary))" }} strokeWidth={1.75} />
             </button>
           </div>
         </Container>
       </nav>
 
-      <Container className="py-2 space-y-5">
+      <Container className="py-2 space-y-6">
         {/* Search panel */}
-        {searchOpen && (
-          <div>
-            <div className="relative">
-              <Search
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
-                style={{ color: "hsl(var(--color-text-muted))" }}
-                strokeWidth={1.5}
-              />
-              <input
-                value={peopleSearch}
-                onChange={(e) => setPeopleSearch(e.target.value)}
-                placeholder="Sök på namn..."
-                autoFocus
-                className="w-full pl-10 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#6B5C78] font-display"
-                style={{ backgroundColor: "hsl(var(--color-surface-card))", border: "none", borderRadius: 8, color: "hsl(var(--color-text-primary))" }}
-              />
-            </div>
+        <AnimatePresence>
+          {searchOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="overflow-hidden"
+            >
+              <div className="relative">
+                <Search
+                  className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4"
+                  style={{ color: "hsl(var(--color-text-muted))" }}
+                  strokeWidth={1.5}
+                />
+                <input
+                  value={peopleSearch}
+                  onChange={(e) => setPeopleSearch(e.target.value)}
+                  placeholder="Sök på namn..."
+                  autoFocus
+                  className="w-full pl-10 pr-3 py-2.5 text-[13px] outline-none placeholder:text-[#6B5C78] font-display"
+                  style={{ backgroundColor: "hsl(var(--color-surface-card))", border: "none", borderRadius: 8, color: "hsl(var(--color-text-primary))" }}
+                />
+              </div>
 
-            {peopleSearch.trim().length >= 2 && (
-              <div className="mt-2 space-y-1.5">
-                {searching ? (
-                  <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
-                    Söker...
-                  </p>
-                ) : searchResults.length === 0 ? (
-                  <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
-                    Inga resultat
-                  </p>
-                ) : (
-                  searchResults.map((r) => (
-                    <div
-                      key={r.user_id}
-                      className="flex items-center gap-3 p-3"
-                      style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
-                    >
+              {peopleSearch.trim().length >= 2 && (
+                <div className="mt-2 space-y-1.5">
+                  {searching ? (
+                    <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
+                      Söker...
+                    </p>
+                  ) : searchResults.length === 0 ? (
+                    <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
+                      Inga resultat
+                    </p>
+                  ) : (
+                    searchResults.map((r) => (
                       <div
-                        className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-                        style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                        key={r.user_id}
+                        className="flex items-center gap-3 p-3"
+                        style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
                       >
-                        {resolveAvatarUrl(r.avatar_url) ? (
-                          <img src={resolveAvatarUrl(r.avatar_url)!} alt="" loading="lazy" className="w-full h-full rounded-full object-cover" />
+                        <div
+                          className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
+                          style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                        >
+                          {resolveAvatarUrl(r.avatar_url) ? (
+                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="" loading="lazy" className="w-full h-full rounded-full object-cover" />
+                          ) : (
+                            <span className="text-[12px] font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                              {r.initial}
+                            </span>
+                          )}
+                        </div>
+                        <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                          {r.display_name}
+                        </p>
+                        {r.status === "friend" ? (
+                          <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>I din krets</span>
+                        ) : r.status === "sent" ? (
+                          <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>Skickat</span>
                         ) : (
-                          <span className="text-[12px] font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                            {r.initial}
-                          </span>
+                          <button
+                            onClick={() => handleSendFriendRequest(r.user_id)}
+                            disabled={sendingTo === r.user_id}
+                            className="shrink-0 px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                            style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
+                          >
+                            Bjud in
+                          </button>
                         )}
                       </div>
-                      <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
-                        {r.display_name}
-                      </p>
-                      {r.status === "friend" ? (
-                        <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>
-                          I din krets
-                        </span>
-                      ) : r.status === "sent" ? (
-                        <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>
-                          Skickat
-                        </span>
-                      ) : (
-                        <button
-                          onClick={() => handleSendFriendRequest(r.user_id)}
-                          disabled={sendingTo === r.user_id}
-                          className="shrink-0 px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                          style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
+                    ))
+                  )}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Din krets – story-rad med signaler */}
+        {loading ? (
+          <div className="flex items-center justify-center py-8">
+            <p className="text-[12px]" style={{ color: "hsl(var(--color-text-muted))" }}>Laddar...</p>
+          </div>
+        ) : error ? (
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <p className="font-display text-[14px] font-medium mb-2" style={{ color: "hsl(var(--color-text-primary))" }}>
+              Vi kunde inte hämta din krets
+            </p>
+            <button
+              onClick={() => fetchData()}
+              className="px-4 py-1.5 text-[12px] font-medium"
+              style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
+            >
+              Försök igen
+            </button>
+          </div>
+        ) : (
+          <section className="space-y-3">
+            <h2 className="font-fraunces text-[17px] font-semibold px-1" style={{ color: "hsl(var(--color-text-primary))" }}>
+              Din krets
+            </h2>
+
+            {friends.length === 0 ? (
+              <div className="text-center py-6" style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}>
+                <p className="text-[13px] mb-3" style={{ color: "hsl(var(--color-text-muted))" }}>
+                  Din krets väntar – bjud in dina närmaste
+                </p>
+                <InviteFriendDialog />
+              </div>
+            ) : (
+              <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4" style={{ scrollbarWidth: "none" }}>
+                {friends.map((f, i) => {
+                  const isClose = f.tier === "close";
+                  const isAvailable = !!f.hangout_status;
+                  const hasActivity = hasRecentActivity(f.last_activity);
+
+                  return (
+                    <motion.button
+                      key={f.user_id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.04 * i, type: "spring", stiffness: 300, damping: 24 }}
+                      whileTap={{ scale: 0.92 }}
+                      onClick={() => setSelectedPerson(f)}
+                      className="flex flex-col items-center gap-2 shrink-0"
+                      style={{ width: 68 }}
+                    >
+                      <div className="relative">
+                        <div
+                          className="rounded-full"
+                          style={{
+                            padding: isAvailable ? 2 : 0,
+                            border: isAvailable ? "2px solid #C4522A" : "none",
+                          }}
                         >
-                          Bjud in
-                        </button>
-                      )}
+                          <div
+                            className="w-14 h-14 rounded-full flex items-center justify-center overflow-hidden"
+                            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                          >
+                            {resolveAvatarUrl(f.avatar_url) ? (
+                              <img src={resolveAvatarUrl(f.avatar_url)!} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <span className="text-[15px] font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                                {f.initial}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {isClose && (
+                          <div
+                            className="absolute -top-0.5 -right-0.5 flex items-center justify-center rounded-full"
+                            style={{ width: 18, height: 18, backgroundColor: "hsl(var(--color-surface))", boxShadow: "0 1px 2px rgba(0,0,0,0.08)" }}
+                          >
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="#C4522A">
+                              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                          </div>
+                        )}
+
+                        {!isClose && !isAvailable && hasActivity && (
+                          <div
+                            className="absolute bottom-0 right-0 rounded-full"
+                            style={{ width: 10, height: 10, backgroundColor: "#C4522A", border: "2px solid hsl(var(--color-surface))" }}
+                          />
+                        )}
+                      </div>
+
+                      <span className="text-[11px] font-medium truncate max-w-full" style={{ color: "hsl(var(--color-text-primary))" }}>
+                        {f.display_name.split(" ")[0]}
+                      </span>
+                    </motion.button>
+                  );
+                })}
+
+                {/* Bjud in */}
+                <InviteFriendDialog
+                  trigger={
+                    <div className="flex flex-col items-center gap-2 shrink-0" style={{ width: 68 }}>
+                      <div
+                        className="w-14 h-14 rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: "hsl(var(--color-surface-card))" }}
+                      >
+                        <Plus className="w-5 h-5" style={{ color: "hsl(var(--color-text-muted))" }} strokeWidth={1.5} />
+                      </div>
+                      <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>Bjud in</span>
                     </div>
-                  ))
-                )}
+                  }
+                />
               </div>
             )}
-          </div>
+          </section>
         )}
 
-        {/* Pending friend requests – on top */}
+        {/* Vänförfrågan-band */}
         {pendingRequests.length > 0 && (
           <div className="space-y-2">
             {pendingRequests.map((r, i) => (
@@ -630,12 +753,12 @@ const FriendsPage = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.06 * i, type: "spring", stiffness: 300, damping: 24 }}
                 className="flex items-center gap-3 p-3"
-                style={{ backgroundColor: "#D4E8F5", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 8 }}
+                style={{ backgroundColor: "rgba(196,82,42,0.10)", borderRadius: 8 }}
               >
                 <button
                   onClick={() => navigate(`/profile/${r.from_user_id}`)}
                   className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-                  style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                  style={{ backgroundColor: "hsl(var(--color-surface))" }}
                 >
                   {resolveAvatarUrl(r.avatar_url) ? (
                     <img src={resolveAvatarUrl(r.avatar_url)!} alt="" loading="lazy" className="w-full h-full rounded-full object-cover" />
@@ -666,7 +789,7 @@ const FriendsPage = () => {
                     onClick={() => handleDecline(r.id)}
                     disabled={respondingId === r.id}
                     className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                    style={{ backgroundColor: "transparent", color: "#A32D2D", borderRadius: 8 }}
+                    style={{ backgroundColor: "transparent", color: "hsl(var(--color-text-muted))", borderRadius: 8 }}
                   >
                     Neka
                   </button>
@@ -676,140 +799,73 @@ const FriendsPage = () => {
           </div>
         )}
 
-        {/* Section 1: Din krets */}
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-10">
-            <p className="text-[12px]" style={{ color: "hsl(var(--color-text-muted))" }}>Laddar...</p>
-          </div>
-        ) : error ? (
-          <div className="flex flex-col items-center justify-center py-10 text-center">
-            <p className="font-display text-[14px] font-medium mb-2" style={{ color: "hsl(var(--color-text-primary))" }}>
-              Vi kunde inte hämta din krets
-            </p>
-            <button
-              onClick={() => fetchData()}
-              className="px-4 py-1.5 text-[12px] font-medium"
-              style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
-            >
-              Försök igen
-            </button>
-          </div>
-        ) : (
-          <div>
-            <p
-              className="text-[12px] mb-3 px-1"
-              style={{ color: "hsl(var(--color-text-faint))" }}
-            >
-              Din krets
-            </p>
-
-            {friends.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-[13px] mb-3" style={{ color: "hsl(var(--color-text-muted))" }}>
-                  Din krets väntar – bjud in dina närmaste
-                </p>
-                <InviteFriendDialog />
-              </div>
-            ) : (
-              <div className="flex gap-3 overflow-x-auto pb-2 -mx-2 px-2" style={{ scrollbarWidth: "none" }}>
-                {friends.map((f) => {
-                  const isClose = f.tier === "close";
-                  const hasActivity = hasRecentActivity(f.last_activity);
-                  const status = statusText(f);
-
-                    return (
-                      <motion.button
-                        key={f.user_id}
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.04 * friends.indexOf(f), type: "spring", stiffness: 300, damping: 24 }}
-                        whileTap={{ scale: 0.92 }}
-                        onClick={() => setSelectedPerson(f)}
-                        className="flex flex-col items-center shrink-0"
-                        style={{ width: 64 }}
-                      >
-                        <div className="relative mb-1">
-                          <motion.div
-                            whileHover={{ scale: 1.08 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 20 }}
-                            className="w-[44px] h-[44px] rounded-full flex items-center justify-center overflow-hidden"
-                            style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-                          >
-                            {resolveAvatarUrl(f.avatar_url) ? (
-                              <img src={resolveAvatarUrl(f.avatar_url)!} alt="" className="w-full h-full rounded-full object-cover" />
-                            ) : (
-                              <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                                {f.initial}
-                              </span>
-                            )}
-                          </motion.div>
-                          {hasActivity && (
-                            <motion.div
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{ type: "spring", stiffness: 500, damping: 20, delay: 0.2 + 0.04 * friends.indexOf(f) }}
-                              className="absolute bottom-0 right-0 w-[11px] h-[11px] rounded-full"
-                              style={{ backgroundColor: "#C4522A", border: "2px solid #F0EAE2" }}
-                            />
-                          )}
-                        </div>
-                        <div className="flex items-center gap-0.5 max-w-full">
-                          <span className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-primary))", fontFamily: "'Outfit', sans-serif" }}>
-                            {f.display_name.split(" ")[0]}
-                          </span>
-                          {isClose && (
-                            <svg width="8" height="8" viewBox="0 0 8 8" fill="#D4E8F5" className="shrink-0">
-                              <path d="M4 7L1.17 4.17a2 2 0 112.83-2.83L4 1.34l.17-.17a2 2 0 012.83 2.83L4 7z" />
-                            </svg>
-                          )}
-                        </div>
-                        {f.hangout_status ? (
-                          <span className="truncate max-w-full" style={{ fontSize: 11, color: "hsl(var(--color-text-faint))" }}>
-                            {statusLabel(f.hangout_status.entry_type)}
-                          </span>
-                        ) : status ? (
-                          <span className="truncate max-w-full" style={{ fontSize: 11, color: "hsl(var(--color-text-faint))" }}>
-                            {status}
-                          </span>
-                        ) : null}
-                      </motion.button>
-                    );
-                })}
-
-                {/* Invite + avatar */}
-                <InviteFriendDialog
-                  trigger={
-                    <div className="flex flex-col items-center shrink-0" style={{ width: 64 }}>
-                      <div
-                        className="w-[44px] h-[44px] rounded-full flex items-center justify-center mb-1"
-                        style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-                      >
-                        <Plus className="w-4 h-4" style={{ color: "#D4E8F5" }} />
-                      </div>
-                      <span className="text-[11px]" style={{ color: "hsl(var(--color-text-faint))" }}>Bjud in</span>
+        {/* Sugen på nåt? – tillgängliga idag */}
+        {availableToday.length > 0 && (
+          <section className="space-y-3">
+            <h2 className="font-fraunces text-[17px] font-semibold px-1" style={{ color: "hsl(var(--color-text-primary))" }}>
+              Sugen på nåt?
+            </h2>
+            <div className="space-y-2">
+              {availableToday.slice(0, 3).map((f, i) => {
+                const content = statusContent(f);
+                const label = statusLabel(f.hangout_status!.entry_type);
+                return (
+                  <motion.button
+                    key={f.user_id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 * i, type: "spring", stiffness: 300, damping: 24 }}
+                    onClick={() => setSelectedPerson(f)}
+                    className="w-full flex items-center gap-3 p-3 text-left"
+                    style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
+                  >
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
+                      style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                    >
+                      {resolveAvatarUrl(f.avatar_url) ? (
+                        <img src={resolveAvatarUrl(f.avatar_url)!} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                          {f.initial}
+                        </span>
+                      )}
                     </div>
-                  }
-                />
-              </div>
-            )}
-          </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                        {f.display_name.split(" ")[0]} är {label}
+                      </p>
+                      {content && (
+                        <p className="text-[11px] mt-0.5 truncate" style={{ color: "hsl(var(--color-text-muted))" }}>
+                          {content}
+                        </p>
+                      )}
+                    </div>
+                    <span
+                      className="text-[10px] font-semibold uppercase tracking-wider shrink-0 px-2 py-0.5"
+                      style={{ color: "#C4522A", backgroundColor: "rgba(196,82,42,0.10)", borderRadius: 6 }}
+                    >
+                      Idag
+                    </span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </section>
         )}
 
-        {/* Section 2: Dina sällskap */}
-        <div>
-          <div className="flex items-center justify-between mb-3 px-1">
-            <p
-              className="text-[12px]"
-              style={{ color: "hsl(var(--color-text-faint))" }}
-            >
+        {/* Dina sällskap */}
+        <section className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="font-fraunces text-[17px] font-semibold" style={{ color: "hsl(var(--color-text-primary))" }}>
               Dina sällskap
-            </p>
+            </h2>
             <CreateGroupDialog
               onGroupCreated={fetchGroups}
               trigger={
                 <button
-                  className="px-3 py-1 text-[11px] font-medium text-white"
-                  style={{ backgroundColor: "#561828", borderRadius: 8 }}
+                  className="text-[11px] font-semibold uppercase tracking-wider"
+                  style={{ color: "#C4522A" }}
                 >
                   + Nytt
                 </button>
@@ -822,8 +878,8 @@ const FriendsPage = () => {
               {[1, 2].map((i) => (
                 <div
                   key={i}
-                  className="h-[64px] animate-pulse"
-                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8 }}
+                  className="h-[68px] animate-pulse"
+                  style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
                 />
               ))}
             </div>
@@ -833,12 +889,8 @@ const FriendsPage = () => {
                 <button
                   key={g.id}
                   onClick={() => navigate(`/groups/${g.id}`)}
-                  className="w-full flex items-center gap-3 p-3 text-left transition-colors hover:opacity-90"
-                  style={{
-                    backgroundColor: "hsl(var(--color-surface-card))",
-                    borderRadius: 8,
-                    borderLeft: g.has_unread ? "3px solid #561828" : "3px solid transparent",
-                  }}
+                  className="w-full flex items-center gap-3 p-3 text-left transition-transform active:scale-[0.98]"
+                  style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
                 >
                   {g.avatar_url ? (
                     <img
@@ -848,48 +900,59 @@ const FriendsPage = () => {
                       })()}
                       alt={g.name}
                       className="shrink-0 object-cover"
-                      style={{ width: 42, height: 42, borderRadius: 8 }}
+                      style={{ width: 44, height: 44, borderRadius: 8 }}
                     />
                   ) : (
                     <div
                       className="shrink-0 flex items-center justify-center"
-                      style={{ width: 42, height: 42, borderRadius: 8, backgroundColor: "hsl(var(--color-surface))" }}
+                      style={{ width: 44, height: 44, borderRadius: 8, backgroundColor: "hsl(var(--color-surface-raised))" }}
                     >
                       <span className="text-lg">{g.emoji}</span>
                     </div>
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
-                      {g.name}
-                    </p>
-                    <p className="text-[11px] truncate italic" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                      {g.last_message || "Inga meddelanden än"}
-                    </p>
-                  </div>
-                  <div className="shrink-0 flex flex-col items-end gap-1">
-                    <span className="text-[11px]" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                      {g.last_message_at ? formatTime(g.last_message_at) : "–"}
-                    </span>
-                    {g.has_unread && (
-                      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "#C4522A" }} />
-                    )}
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-[13px] font-semibold truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                        {g.name}
+                      </p>
+                      <span className="text-[10px] shrink-0" style={{ color: "hsl(var(--color-text-muted))" }}>
+                        {g.last_message_at ? formatTime(g.last_message_at) : ""}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 mt-0.5">
+                      <p className="text-[12px] truncate" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                        {g.last_message || "Inga meddelanden än"}
+                      </p>
+                      {g.has_unread && (
+                        <span
+                          className="shrink-0 rounded-full"
+                          style={{ width: 8, height: 8, backgroundColor: "#C4522A" }}
+                        />
+                      )}
+                    </div>
                   </div>
                 </button>
               ))}
 
               {groups.length === 0 && (
                 <div
-                  className="p-4 text-center"
-                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", borderRadius: 8 }}
+                  className="p-5 text-center"
+                  style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
                 >
-                  <p className="text-[13px] mb-1" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                    Har ni en gruppchatt som planerar saker?
+                  <p className="font-fraunces italic text-[14px] mb-1" style={{ color: "hsl(var(--color-text-primary))" }}>
+                    Fler sällskap?
+                  </p>
+                  <p className="text-[11px] mb-3 leading-relaxed max-w-[240px] mx-auto" style={{ color: "hsl(var(--color-text-muted))" }}>
+                    Samla dina närmaste för att enklare kunna ses i vardagen.
                   </p>
                   <CreateGroupDialog
                     onGroupCreated={fetchGroups}
                     trigger={
-                      <span className="text-[13px] font-medium cursor-pointer" style={{ color: "#1C1917" }}>
-                        Starta ett sällskap med din krets →
+                      <span
+                        className="text-[12px] font-semibold cursor-pointer underline underline-offset-4"
+                        style={{ color: "#561828" }}
+                      >
+                        Skapa ett nytt sällskap
                       </span>
                     }
                   />
@@ -897,7 +960,15 @@ const FriendsPage = () => {
               )}
             </div>
           )}
-        </div>
+        </section>
+
+        {!loading && !hasAnyContent && (
+          <div className="py-6 text-center">
+            <p className="text-[12px]" style={{ color: "hsl(var(--color-text-muted))" }}>
+              Bjud in någon för att komma igång.
+            </p>
+          </div>
+        )}
       </Container>
 
       <QRCodeSheet open={qrOpen} onOpenChange={setQrOpen} />
