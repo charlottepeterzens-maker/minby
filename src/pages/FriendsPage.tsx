@@ -471,43 +471,76 @@ const FriendsPage = () => {
   const handleAccept = async (requestId: string, fromUserId: string) => {
     if (!user) return;
     setRespondingId(requestId);
+
+    // Snapshot for rollback
+    const snapshot = pendingRequests;
+    const accepted = pendingRequests.find((r) => r.id === requestId);
+
+    // Optimistic: remove request from band, add to friends list immediately
+    setPendingRequests((prev) => prev.filter((r) => r.id !== requestId));
+    if (accepted && !friends.some((f) => f.user_id === fromUserId)) {
+      setFriends((prev) => [
+        ...prev,
+        {
+          user_id: accepted.from_user_id,
+          display_name: accepted.display_name,
+          avatar_url: accepted.avatar_url,
+          initial: accepted.initial,
+          last_activity: null,
+          hangout_status: null,
+          tier: "outer",
+        },
+      ]);
+    }
+
     const { error } = await supabase.from("friend_requests").update({ status: "accepted" }).eq("id", requestId);
 
     if (error) {
+      // Rollback
+      setPendingRequests(snapshot);
+      setFriends((prev) => prev.filter((f) => f.user_id !== fromUserId));
       toast.error("Kunde inte lägga till");
-    } else {
-      await supabase.from("friend_access_tiers").upsert(
+      setRespondingId(null);
+      return;
+    }
+
+    // Fire-and-forget side effects
+    supabase
+      .from("friend_access_tiers")
+      .upsert(
         [
           { owner_id: user.id, friend_user_id: fromUserId, tier: "outer" as const },
           { owner_id: fromUserId, friend_user_id: user.id, tier: "outer" as const },
         ],
         { onConflict: "owner_id,friend_user_id" },
-      );
-
-      const { data: profile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
-
-      await supabase.from("notifications").insert({
-        user_id: fromUserId,
-        from_user_id: user.id,
-        type: "friend_accepted",
-        title: "Nu i din krets!",
-        body: `${profile?.display_name || "Någon"} är nu en del av din vardag`,
+      )
+      .then(async () => {
+        const { data: profile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+        await supabase.from("notifications").insert({
+          user_id: fromUserId,
+          from_user_id: user.id,
+          type: "friend_accepted",
+          title: "Nu i din krets!",
+          body: `${profile?.display_name || "Någon"} är nu en del av din vardag`,
+        });
       });
 
-      toast.success("Tillagd i din krets");
-      fetchData();
-    }
+    toast.success("Tillagd i din krets");
     setRespondingId(null);
   };
 
   const handleDecline = async (requestId: string) => {
     setRespondingId(requestId);
+    const snapshot = pendingRequests;
+    // Optimistic remove
+    setPendingRequests((prev) => prev.filter((r) => r.id !== requestId));
+
     const { error } = await supabase.from("friend_requests").update({ status: "declined" }).eq("id", requestId);
 
     if (error) {
+      setPendingRequests(snapshot);
       toast.error("Något gick fel");
     } else {
-      setPendingRequests((prev) => prev.filter((r) => r.id !== requestId));
       toast("Inte nu");
     }
     setRespondingId(null);
