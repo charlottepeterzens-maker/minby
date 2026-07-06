@@ -19,3 +19,5 @@ verify_jwt = false
 
 [functions.seed-test-users]
 verify_jwt = false
+[functions.get-invite-preview]
+verify_jwt = false
