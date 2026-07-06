@@ -48,11 +48,8 @@ const InvitePage = () => {
           return;
         }
 
-        if (invite.used_by) {
-          toast.info("Den här inbjudan har redan använts.");
-          navigate("/friends", { replace: true });
-          return;
-        }
+        // Reusable links: we no longer block on `used_by`. It's still
+        // updated below to track the most recent acceptor.
 
         const inviterId = invite.created_by;
 
