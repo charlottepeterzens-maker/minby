@@ -471,43 +471,76 @@ const FriendsPage = () => {
   const handleAccept = async (requestId: string, fromUserId: string) => {
     if (!user) return;
     setRespondingId(requestId);
+
+    // Snapshot for rollback
+    const snapshot = pendingRequests;
+    const accepted = pendingRequests.find((r) => r.id === requestId);
+
+    // Optimistic: remove request from band, add to friends list immediately
+    setPendingRequests((prev) => prev.filter((r) => r.id !== requestId));
+    if (accepted && !friends.some((f) => f.user_id === fromUserId)) {
+      setFriends((prev) => [
+        ...prev,
+        {
+          user_id: accepted.from_user_id,
+          display_name: accepted.display_name,
+          avatar_url: accepted.avatar_url,
+          initial: accepted.initial,
+          last_activity: null,
+          hangout_status: null,
+          tier: "outer",
+        },
+      ]);
+    }
+
     const { error } = await supabase.from("friend_requests").update({ status: "accepted" }).eq("id", requestId);
 
     if (error) {
+      // Rollback
+      setPendingRequests(snapshot);
+      setFriends((prev) => prev.filter((f) => f.user_id !== fromUserId));
       toast.error("Kunde inte lägga till");
-    } else {
-      await supabase.from("friend_access_tiers").upsert(
+      setRespondingId(null);
+      return;
+    }
+
+    // Fire-and-forget side effects
+    supabase
+      .from("friend_access_tiers")
+      .upsert(
         [
           { owner_id: user.id, friend_user_id: fromUserId, tier: "outer" as const },
           { owner_id: fromUserId, friend_user_id: user.id, tier: "outer" as const },
         ],
         { onConflict: "owner_id,friend_user_id" },
-      );
-
-      const { data: profile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
-
-      await supabase.from("notifications").insert({
-        user_id: fromUserId,
-        from_user_id: user.id,
-        type: "friend_accepted",
-        title: "Nu i din krets!",
-        body: `${profile?.display_name || "Någon"} är nu en del av din vardag`,
+      )
+      .then(async () => {
+        const { data: profile } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).single();
+        await supabase.from("notifications").insert({
+          user_id: fromUserId,
+          from_user_id: user.id,
+          type: "friend_accepted",
+          title: "Nu i din krets!",
+          body: `${profile?.display_name || "Någon"} är nu en del av din vardag`,
+        });
       });
 
-      toast.success("Tillagd i din krets");
-      fetchData();
-    }
+    toast.success("Tillagd i din krets");
     setRespondingId(null);
   };
 
   const handleDecline = async (requestId: string) => {
     setRespondingId(requestId);
+    const snapshot = pendingRequests;
+    // Optimistic remove
+    setPendingRequests((prev) => prev.filter((r) => r.id !== requestId));
+
     const { error } = await supabase.from("friend_requests").update({ status: "declined" }).eq("id", requestId);
 
     if (error) {
+      setPendingRequests(snapshot);
       toast.error("Något gick fel");
     } else {
-      setPendingRequests((prev) => prev.filter((r) => r.id !== requestId));
       toast("Inte nu");
     }
     setRespondingId(null);
@@ -746,58 +779,63 @@ const FriendsPage = () => {
         {/* Vänförfrågan-band */}
         {pendingRequests.length > 0 && (
           <div className="space-y-2">
-            {pendingRequests.map((r, i) => (
-              <motion.div
-                key={r.id}
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.06 * i, type: "spring", stiffness: 300, damping: 24 }}
-                className="flex items-center gap-3 p-3"
-                style={{ backgroundColor: "rgba(196,82,42,0.10)", borderRadius: 8 }}
-              >
-                <button
-                  onClick={() => navigate(`/profile/${r.from_user_id}`)}
-                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-                  style={{ backgroundColor: "hsl(var(--color-surface))" }}
+            <AnimatePresence initial={false}>
+              {pendingRequests.map((r, i) => (
+                <motion.div
+                  key={r.id}
+                  layout
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0 }}
+                  transition={{ delay: 0.06 * i, type: "spring", stiffness: 300, damping: 24 }}
+                  className="flex items-center gap-3 p-3 overflow-hidden"
+                  style={{ backgroundColor: "rgba(196,82,42,0.10)", borderRadius: 8 }}
                 >
-                  {resolveAvatarUrl(r.avatar_url) ? (
-                    <img src={resolveAvatarUrl(r.avatar_url)!} alt="" loading="lazy" className="w-full h-full rounded-full object-cover" />
-                  ) : (
-                    <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                      {r.initial}
-                    </span>
-                  )}
-                </button>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
-                    {r.display_name}
-                  </p>
-                  <p className="text-[11px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>
-                    Vill vara med i din vardag
-                  </p>
-                </div>
-                <div className="flex items-center gap-1.5 shrink-0">
                   <button
-                    onClick={() => handleAccept(r.id, r.from_user_id)}
-                    disabled={respondingId === r.id}
-                    className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                    style={{ backgroundColor: "#561828", color: "#FFFFFF", borderRadius: 8 }}
+                    onClick={() => navigate(`/profile/${r.from_user_id}`)}
+                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
+                    style={{ backgroundColor: "hsl(var(--color-surface))" }}
                   >
-                    Acceptera
+                    {resolveAvatarUrl(r.avatar_url) ? (
+                      <img src={resolveAvatarUrl(r.avatar_url)!} alt="" loading="lazy" className="w-full h-full rounded-full object-cover" />
+                    ) : (
+                      <span className="text-sm font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                        {r.initial}
+                      </span>
+                    )}
                   </button>
-                  <button
-                    onClick={() => handleDecline(r.id)}
-                    disabled={respondingId === r.id}
-                    className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                    style={{ backgroundColor: "transparent", color: "hsl(var(--color-text-muted))", borderRadius: 8 }}
-                  >
-                    Neka
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                      {r.display_name}
+                    </p>
+                    <p className="text-[11px] mt-0.5" style={{ color: "hsl(var(--color-text-muted))" }}>
+                      Vill vara med i din vardag
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={() => handleAccept(r.id, r.from_user_id)}
+                      disabled={respondingId === r.id}
+                      className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                      style={{ backgroundColor: "#561828", color: "#FFFFFF", borderRadius: 8 }}
+                    >
+                      Acceptera
+                    </button>
+                    <button
+                      onClick={() => handleDecline(r.id)}
+                      disabled={respondingId === r.id}
+                      className="px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                      style={{ backgroundColor: "transparent", color: "hsl(var(--color-text-muted))", borderRadius: 8 }}
+                    >
+                      Ignorera
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
+
 
         {/* Sugen på nåt? – tillgängliga idag */}
         {availableToday.length > 0 && (
