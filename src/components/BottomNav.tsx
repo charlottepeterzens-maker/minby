@@ -1,13 +1,13 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, User, MessageCircle, Settings } from "lucide-react";
+import { MessageCircle, Newspaper, User, Users } from "lucide-react";
 import { useUnreadSallskap } from "@/hooks/useUnreadSallskap";
 import { motion } from "framer-motion";
 
 const navItems = [
-  { label: "Hemma", icon: Home, path: "/" },
+  { label: "Sällskap", icon: MessageCircle, path: "/" },
+  { label: "Flöde", icon: Newspaper, path: "/feed" },
+  { label: "Krets", icon: Users, path: "/friends" },
   { label: "Mitt", icon: User, path: "/profile" },
-  { label: "Sällskap", icon: MessageCircle, path: "/friends" },
-  { label: "Inställningar", icon: Settings, path: "/settings" },
 ];
 
 const BottomNav = () => {
@@ -20,7 +20,7 @@ const BottomNav = () => {
       <div className="max-w-lg mx-auto flex items-center justify-around py-2" role="list">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
-          const showBadge = item.path === "/friends" && unreadCount > 0;
+          const showBadge = item.path === "/" && unreadCount > 0;
 
           return (
             <motion.button
