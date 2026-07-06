@@ -605,57 +605,155 @@ const FriendsPage = () => {
                 />
               </div>
 
-              {peopleSearch.trim().length >= 2 && (
-                <div className="mt-2 space-y-1.5">
-                  {searching ? (
-                    <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
-                      Söker...
-                    </p>
-                  ) : searchResults.length === 0 ? (
-                    <p className="text-[12px] py-3 text-center" style={{ color: "hsl(var(--color-text-muted))" }}>
-                      Inga resultat
-                    </p>
-                  ) : (
-                    searchResults.map((r) => (
-                      <div
-                        key={r.user_id}
-                        className="flex items-center gap-3 p-3"
-                        style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
-                      >
-                        <div
-                          className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
-                          style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
-                        >
-                          {resolveAvatarUrl(r.avatar_url) ? (
-                            <img src={resolveAvatarUrl(r.avatar_url)!} alt="" loading="lazy" className="w-full h-full rounded-full object-cover" />
-                          ) : (
-                            <span className="text-[12px] font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                              {r.initial}
-                            </span>
-                          )}
-                        </div>
-                        <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
-                          {r.display_name}
+              {peopleSearch.trim().length >= 2 && (() => {
+                const q = peopleSearch.trim().toLowerCase();
+                const localFriends = friends.filter((f) => f.display_name.toLowerCase().includes(q));
+                const localGroups = groups.filter((g) => g.name.toLowerCase().includes(q));
+                const localFriendIds = new Set(localFriends.map((f) => f.user_id));
+                const otherPeople = searchResults.filter((r) => !localFriendIds.has(r.user_id));
+                const nothing = !searching && localFriends.length === 0 && localGroups.length === 0 && otherPeople.length === 0;
+
+                return (
+                  <div className="mt-3 space-y-4">
+                    {localFriends.length > 0 && (
+                      <div className="space-y-1.5">
+                        <p className="text-[10px] font-semibold uppercase tracking-wider px-1" style={{ color: "hsl(var(--color-text-muted))" }}>
+                          I din krets
                         </p>
-                        {r.status === "friend" ? (
-                          <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>I din krets</span>
-                        ) : r.status === "sent" ? (
-                          <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>Skickat</span>
-                        ) : (
+                        {localFriends.map((f) => (
                           <button
-                            onClick={() => handleSendFriendRequest(r.user_id)}
-                            disabled={sendingTo === r.user_id}
-                            className="shrink-0 px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
-                            style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
+                            key={f.user_id}
+                            onClick={() => { setSelectedPerson(f); setSearchOpen(false); setPeopleSearch(""); }}
+                            className="w-full flex items-center gap-3 p-3 text-left"
+                            style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
                           >
-                            Bjud in
+                            <div
+                              className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
+                              style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                            >
+                              {resolveAvatarUrl(f.avatar_url) ? (
+                                <img src={resolveAvatarUrl(f.avatar_url)!} alt="" loading="lazy" className="w-full h-full rounded-full object-cover" />
+                              ) : (
+                                <span className="text-[12px] font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                                  {f.initial}
+                                </span>
+                              )}
+                            </div>
+                            <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                              {f.display_name}
+                            </p>
+                            <span className="text-[11px] shrink-0" style={{ color: "hsl(var(--color-text-muted))" }}>I din krets</span>
                           </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {localGroups.length > 0 && (
+                      <div className="space-y-1.5">
+                        <p className="text-[10px] font-semibold uppercase tracking-wider px-1" style={{ color: "hsl(var(--color-text-muted))" }}>
+                          Sällskap
+                        </p>
+                        {localGroups.map((g) => (
+                          <button
+                            key={g.id}
+                            onClick={() => { navigate(`/groups/${g.id}`); setSearchOpen(false); setPeopleSearch(""); }}
+                            className="w-full flex items-center gap-3 p-3 text-left"
+                            style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
+                          >
+                            {g.avatar_url ? (
+                              <img
+                                src={supabase.storage.from("group-avatars").getPublicUrl(g.avatar_url).data.publicUrl}
+                                alt=""
+                                loading="lazy"
+                                className="shrink-0 object-cover"
+                                style={{ width: 36, height: 36, borderRadius: 8 }}
+                              />
+                            ) : (
+                              <div
+                                className="shrink-0 flex items-center justify-center"
+                                style={{ width: 36, height: 36, borderRadius: 8, backgroundColor: "hsl(var(--color-surface-raised))" }}
+                              >
+                                <span className="text-base">{g.emoji}</span>
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                                {g.name}
+                              </p>
+                              <p className="text-[11px] truncate" style={{ color: "hsl(var(--color-text-muted))" }}>
+                                {g.member_names.length} {g.member_names.length === 1 ? "medlem" : "medlemmar"}
+                              </p>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {(searching || otherPeople.length > 0) && (
+                      <div className="space-y-1.5">
+                        <p className="text-[10px] font-semibold uppercase tracking-wider px-1" style={{ color: "hsl(var(--color-text-muted))" }}>
+                          Andra personer
+                        </p>
+                        {searching ? (
+                          <p className="text-[12px] py-2 px-1" style={{ color: "hsl(var(--color-text-muted))" }}>
+                            Söker...
+                          </p>
+                        ) : (
+                          otherPeople.map((r) => (
+                            <div
+                              key={r.user_id}
+                              className="flex items-center gap-3 p-3"
+                              style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}
+                            >
+                              <div
+                                className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
+                                style={{ backgroundColor: "hsl(var(--color-surface-raised))" }}
+                              >
+                                {resolveAvatarUrl(r.avatar_url) ? (
+                                  <img src={resolveAvatarUrl(r.avatar_url)!} alt="" loading="lazy" className="w-full h-full rounded-full object-cover" />
+                                ) : (
+                                  <span className="text-[12px] font-display font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
+                                    {r.initial}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="flex-1 text-[13px] font-medium truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                                {r.display_name}
+                              </p>
+                              {r.status === "friend" ? (
+                                <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>I din krets</span>
+                              ) : r.status === "sent" ? (
+                                <span className="text-[11px]" style={{ color: "hsl(var(--color-text-muted))" }}>Skickat</span>
+                              ) : (
+                                <button
+                                  onClick={() => handleSendFriendRequest(r.user_id)}
+                                  disabled={sendingTo === r.user_id}
+                                  className="shrink-0 px-3 py-1.5 text-[11px] font-medium transition-opacity hover:opacity-80 disabled:opacity-50"
+                                  style={{ backgroundColor: "hsl(var(--color-surface-raised))", color: "hsl(var(--color-text-primary))", borderRadius: 8 }}
+                                >
+                                  Bjud in
+                                </button>
+                              )}
+                            </div>
+                          ))
                         )}
                       </div>
-                    ))
-                  )}
-                </div>
-              )}
+                    )}
+
+                    {nothing && (
+                      <div className="text-center py-8 px-4" style={{ backgroundColor: "hsl(var(--color-surface-card))", borderRadius: 8 }}>
+                        <p className="font-fraunces italic text-[14px] mb-1" style={{ color: "hsl(var(--color-text-primary))" }}>
+                          Inget matchar "{peopleSearch.trim()}"
+                        </p>
+                        <p className="text-[11px] leading-relaxed max-w-[240px] mx-auto" style={{ color: "hsl(var(--color-text-muted))" }}>
+                          Prova ett annat namn, eller bjud in någon du saknar.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
             </motion.div>
           )}
         </AnimatePresence>
