@@ -686,44 +686,69 @@ const CirclePage = () => {
             >
               <X className="w-5 h-5" />
             </button>
-            <SheetTitle className="text-center text-[16px] font-semibold" style={HEADING_STYLE}>
+      {/* Tips list sheet */}
+      <Sheet open={showTipsList} onOpenChange={setShowTipsList}>
+        <SheetContent
+          side="bottom"
+          className="rounded-t-[26px] border-0 p-0 h-[92dvh] flex flex-col"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          style={{ backgroundColor: "hsl(var(--background))" }}
+        >
+          <SheetHeader
+            className="sticky top-0 z-10 px-4 pt-5 pb-3 flex-row items-center gap-3 space-y-0"
+            style={{ backgroundColor: "hsl(var(--background))" }}
+          >
+            <button
+              type="button"
+              onClick={() => setShowTipsList(false)}
+              aria-label="Stäng"
+              className="p-2 -ml-2"
+            >
+              <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
+            </button>
+            <SheetTitle className="text-heading-md text-left" style={HEADING_STYLE}>
               Våra tips
             </SheetTitle>
           </SheetHeader>
-          <div className="relative min-h-[60vh]">
-            <div className="p-4 space-y-3 pb-28">
-              {loadingContent ? (
-                <>
-                  <TipCardSkeleton />
-                  <TipCardSkeleton />
-                </>
-              ) : tips.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">Inga tips delade ännu.</p>
-              ) : (
-                tips.map((t) => (
-                  <TipCard
-                    key={t.id}
-                    imageUrl={t.image_url ?? null}
-                    ownerName={t.owner_name}
-                    dateLabel={formatDateYear(t.created_at)}
-                    title={t.title}
-                    description={t.comment}
-                    url={t.url}
-                    onOpen={() => { setShowTipsList(false); setSelectedTip(t); }}
-                  />
-                ))
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={() => { setShowTipsList(false); setShowTipForm(true); }}
-              className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
-              style={{ backgroundColor: "#561828", color: "white" }}
-              aria-label="Lägg till tips"
-            >
-              <Plus className="w-6 h-6" />
-            </button>
+          <div className="flex-1 overflow-y-auto px-4 pb-32 space-y-3">
+            {loadingContent ? (
+              <>
+                <TipCardSkeleton />
+                <TipCardSkeleton />
+              </>
+            ) : tips.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">Inga tips delade ännu.</p>
+            ) : (
+              tips.map((t) => (
+                <TipCard
+                  key={t.id}
+                  imageUrl={t.image_url ?? null}
+                  ownerName={t.owner_name}
+                  dateLabel={formatDateYear(t.created_at)}
+                  title={t.title}
+                  description={t.comment}
+                  url={t.url}
+                  onOpen={() => { setShowTipsList(false); setSelectedTip(t); }}
+                />
+              ))
+            )}
           </div>
+          <button
+            type="button"
+            onClick={() => { setShowTipsList(false); setShowTipForm(true); }}
+            aria-label="Lägg till tips"
+            className="absolute z-20 flex items-center justify-center rounded-full shadow-lg active:scale-95 transition-transform"
+            style={{
+              width: 64,
+              height: 64,
+              right: "max(16px, env(safe-area-inset-right))",
+              bottom: "calc(max(16px, env(safe-area-inset-bottom)) + 16px)",
+              backgroundColor: "#561828",
+              color: "#FFFFFF",
+            }}
+          >
+            <Plus className="w-6 h-6" strokeWidth={2} />
+          </button>
         </SheetContent>
       </Sheet>
 
