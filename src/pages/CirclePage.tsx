@@ -17,6 +17,8 @@ import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkel
 import { OVERLAY_GRADIENT, CARD_RADIUS_CLASS } from "@/lib/card-styles";
 import CircleOnboarding from "@/components/CircleOnboarding";
 import CreateHub from "@/components/ui/create-hub";
+import WelcomeToCircleCard from "@/components/circle/WelcomeToCircleCard";
+import ProfileNudge from "@/components/profile/ProfileNudge";
 
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
