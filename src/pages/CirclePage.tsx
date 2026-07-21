@@ -424,12 +424,14 @@ const CirclePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-lg mx-auto pb-safe">
-        {/* Hero */}
+        {/* Hero — always uses the most recently uploaded photo, fallback to stored hero */}
         <div
           className="relative w-full h-[220px] overflow-hidden"
           style={{
             backgroundColor: "#8b6f5e",
-            backgroundImage: circle.hero_image_url ? `url(${circle.hero_image_url})` : undefined,
+            backgroundImage: (photos[0]?.image_url || circle.hero_image_url)
+              ? `url(${photos[0]?.image_url || circle.hero_image_url})`
+              : undefined,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -629,7 +631,7 @@ const CirclePage = () => {
             />
           </div>
           {loadingContent ? (
-            <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex overflow-x-auto pl-4 pr-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <PhotoSmallSkeleton />
               <PhotoSmallSkeleton />
               <PhotoSmallSkeleton />
@@ -637,8 +639,8 @@ const CirclePage = () => {
           ) : photos.length === 0 ? (
             <p className="px-4 text-sm text-muted-foreground">Inga foton delade ännu.</p>
           ) : (
-            <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              {photos.map((p) => (
+            <div className={`flex overflow-x-auto pl-4 ${photos.length <= 3 ? "pr-4" : "pr-0"} pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}>
+              {photos.map((p, i) => (
                 <PhotoTile
                   key={p.id}
                   imageUrl={p.image_url ?? null}
@@ -647,6 +649,8 @@ const CirclePage = () => {
                   onOpen={() => setSelectedPhoto(p)}
                   size="sm"
                   gradient="photos"
+                  roundedLeft={i === 0}
+                  roundedRight={photos.length <= 3 && i === photos.length - 1}
                 />
               ))}
             </div>
