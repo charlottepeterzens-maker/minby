@@ -73,7 +73,7 @@ const CircleOnboarding = ({ circleId, circleName, hasMembers, hasPhotos, hasTips
         <h3 className="text-[18px] mb-1" style={{ fontFamily: "'Outfit', sans-serif", color: "#FFFFFF" }}>
           Kom igång med {circleName}
         </h3>
-        <p className="text-[13px] mb-4" style={{ color: "#675332" }}>
+        <p className="text-[13px] mb-4" style={{ color: "#FFFFFF" }}>
           Tre snabba steg så börjar det hända grejer här.
         </p>
 
