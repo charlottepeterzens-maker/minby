@@ -85,6 +85,11 @@ const CirclePage = () => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoCaption, setPhotoCaption] = useState("");
 
+  // invite sheet (layered on top of Create Hub)
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteUrl, setInviteUrl] = useState<string | null>(null);
+  const [creatingInvite, setCreatingInvite] = useState(false);
+
   useEffect(() => {
     if (!user) return;
     supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle()
