@@ -41,6 +41,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
             <Route path="/circle/:id" element={<ProtectedRoute><CirclePage /></ProtectedRoute>} />
             <Route path="/chat/:id" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
             <Route path="/invite/:token" element={<InvitePage />} />
