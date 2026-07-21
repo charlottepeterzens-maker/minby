@@ -381,7 +381,7 @@ const CirclePage = () => {
           </button>
           <div
             className="absolute inset-x-0 bottom-0 px-4 pt-10 pb-4"
-            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)" }}
+            style={{ background: OVERLAY_GRADIENT.hero }}
           >
             <h1 className="text-white text-[26px] leading-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
               {circle.name}
