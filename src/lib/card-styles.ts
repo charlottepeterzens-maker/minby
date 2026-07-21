@@ -6,9 +6,9 @@
 
 export const CARD_RADIUS = {
   /** Content cards: circle, meeting, tip, placeholder, sheet forms. */
-  card: 28,
+  card: 26,
   /** Photo tiles, hero images inside sheets. */
-  photo: 24,
+  photo: 26,
   /** Chat bubbles, composer, small info surfaces. */
   bubble: 20,
   /** Small inline media thumbnails. */
