@@ -768,7 +768,7 @@ const CirclePage = () => {
                 </p>
               )}
               {selectedTip.url && (
-                <a href={selectedTip.url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-[15px] font-medium underline underline-offset-4" style={LINK_STYLE}>
+                <a href={selectedTip.url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-[15px] font-medium underline underline-offset-2" style={LINK_STYLE}>
                   <ExternalLink className="w-4 h-4" /> Öppna länken
                 </a>
               )}

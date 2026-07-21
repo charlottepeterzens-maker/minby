@@ -63,12 +63,12 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
         >
           {summary ?? "Här samlas kretsen. Öppna för att se vad som händer."}
         </p>
-        <span
-          className="text-[15px] font-medium underline underline-offset-[6px] decoration-2"
-          style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
-        >
-          Kika in!
-        </span>
+          <span
+            className="text-[15px] font-medium underline underline-offset-2 decoration-2"
+            style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+          >
+            Kika in!
+          </span>
       </div>
 
       <div className="flex-shrink-0 w-[92px] relative h-[92px]">
