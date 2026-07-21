@@ -282,6 +282,7 @@ const CirclePage = () => {
                   title={m.title}
                   responseCount={m.response_count}
                   onRespond={() => respondYes(m.id)}
+                  onOpen={() => openMeeting(m)}
                 />
               ))}
             </div>
