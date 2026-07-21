@@ -123,7 +123,6 @@ const HomePage = () => {
             className="relative w-20 h-20 rounded-[32%] overflow-hidden flex items-center justify-center flex-shrink-0"
             style={{
               backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1",
-              border: profile.avatar_url ? "none" : "1px dashed #C85A2E",
               color: "#561828",
             }}
           >
