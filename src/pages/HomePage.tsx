@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import { Camera, Menu, Plus, X } from "lucide-react";
 import TipCard from "@/components/cards/TipCard";
+import ShareTipSheet from "@/components/tips/ShareTipSheet";
 import CircleCard from "@/components/cards/CircleCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
@@ -350,6 +351,7 @@ interface MyTip {
   created_at: string;
   comment: string | null;
   url: string | null;
+  category: string | null;
 }
 interface MyPhoto {
   id: string;
@@ -464,7 +466,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       ]);
       const tipMap = new Map((tipSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
       const photoMap = new Map((photoSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
-      setMyTips((tipRows ?? []).map((t: any) => ({ id: t.id, title: t.title, created_at: t.created_at, comment: t.comment ?? null, url: t.url ?? null, image_url: t.image_path ? tipMap.get(t.image_path) ?? null : null })));
+      setMyTips((tipRows ?? []).map((t: any) => ({ id: t.id, title: t.title, created_at: t.created_at, comment: t.comment ?? null, url: t.url ?? null, category: t.category ?? null, image_url: t.image_path ? tipMap.get(t.image_path) ?? null : null })));
       setMyPhotos((photoRows ?? []).map((p: any) => ({ id: p.id, created_at: p.created_at, caption: p.caption ?? null, image_url: p.storage_path ? photoMap.get(p.storage_path) ?? null : null })));
     })();
   }, [userId]);
