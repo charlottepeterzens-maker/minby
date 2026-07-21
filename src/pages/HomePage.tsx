@@ -329,6 +329,14 @@ const formatMeetingDate = (iso: string | null) => {
   return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
 };
 
+const formatTipDate = (iso: string) => {
+  const d = new Date(iso);
+  const months = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+  return `${d.getDate()} ${months[d.getMonth()]}`;
+};
+
+
+
 const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string | null; circles: Circle[]; displayName: string }) => {
   const navigate = useNavigate();
   const [meetings, setMeetings] = useState<MeetingItem[] | null>(null);
