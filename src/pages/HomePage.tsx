@@ -262,10 +262,10 @@ const HomePage = () => {
 
 const PlaceholderTag = () => (
   <span
-    className="text-[11px] uppercase px-3 py-1 rounded-full"
+    className="text-[11px] px-3 py-1 rounded-full"
     style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.08em" }}
   >
-    Exempel
+    exempel
   </span>
 );
 
@@ -294,7 +294,7 @@ const HorizontalStrip = ({
         ownerName={t.sub}
         size={size}
         gradient={gradient}
-        tag={t.showTag ? "Exempel" : undefined}
+        tag={t.showTag ? "exempel" : undefined}
         roundedLeft={i === 0}
         roundedRight={i === items.length - 1}
       />
@@ -347,8 +347,8 @@ const ProfilePlaceholders = () => (
       gradient="tips"
       items={[
         { title: "Bagarstugan", sub: "Du", bg: "#E8DDC6", showTag: true },
-        { title: "Podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
-        { title: "Bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
+        { title: "podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
+        { title: "bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
       ]}
     />
     <p className="text-sm mt-2" style={{ color: "#561828" }}>
@@ -402,10 +402,10 @@ const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: strin
     style={{ backgroundColor: "#F9F3E1" }}
   >
     <span
-      className="absolute top-3 right-3 text-[11px] uppercase px-3 py-1 rounded-full"
+      className="absolute top-3 right-3 text-[11px] px-3 py-1 rounded-full"
       style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.08em" }}
     >
-      Exempel
+      exempel
     </span>
     <div className="flex-1 min-w-0">
       <div className="text-[13px] mb-2" style={{ fontFamily: "'Outfit', sans-serif", color: "#561828" }}>
