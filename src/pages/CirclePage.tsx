@@ -255,14 +255,7 @@ const CirclePage = () => {
     toast.success("Träffen är skapad");
   };
 
-  const createTip = async () => {
-    if (!user || !id || !tipTitle.trim()) return;
-    setSavingTip(true);
-
-    let imagePath: string | null = null;
-    const trimmedUrl = tipUrl.trim();
-
-    // 1. Prefer user-uploaded photo
+  
   const resetTipForm = () => {
     setTipTitle(""); setTipUrl(""); setTipComment("");
     setTipImageFile(null);
