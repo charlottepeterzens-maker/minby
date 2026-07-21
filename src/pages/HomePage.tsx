@@ -278,6 +278,48 @@ const SectionHeader = ({ title, cta, onCta }: { title: string; cta: string; onCt
   </div>
 );
 
+const TIPS_GRADIENT = "linear-gradient(to top, #561828 0%, rgba(86,24,40,0.35) 55%, rgba(86,24,40,0) 100%)";
+const PHOTOS_GRADIENT = "linear-gradient(to top, #765D19 0%, rgba(118,93,25,0.35) 55%, rgba(118,93,25,0) 100%)";
+
+const HorizontalStrip = ({
+  items,
+  gradient,
+  radius = 24,
+}: {
+  items: { title: string; sub: string; bg: string; showTag?: boolean }[];
+  gradient: string;
+  radius?: number;
+}) => (
+  <div className="flex overflow-x-auto -mx-5 px-5 pb-2 scrollbar-hide">
+    {items.map((t, i) => {
+      const isFirst = i === 0;
+      const isLast = i === items.length - 1;
+      return (
+        <div
+          key={i}
+          className="w-[150px] h-[210px] flex-shrink-0 relative overflow-hidden"
+          style={{
+            backgroundColor: t.bg,
+            borderTopLeftRadius: isFirst ? radius : 0,
+            borderBottomLeftRadius: isFirst ? radius : 0,
+            borderTopRightRadius: isLast ? radius : 0,
+            borderBottomRightRadius: isLast ? radius : 0,
+          }}
+        >
+          {t.showTag && <div className="absolute top-2 left-2 z-10"><PlaceholderTag /></div>}
+          <div
+            className="absolute bottom-0 left-0 right-0 p-3 pt-10"
+            style={{ background: gradient }}
+          >
+            <div className="text-[13px] text-white font-medium leading-tight">{t.title}</div>
+            <div className="text-[11px] text-white/80 mt-0.5">{t.sub}</div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+);
+
 const ProfilePlaceholders = () => (
   <>
     {/* Kommande träffar */}
@@ -290,7 +332,7 @@ const ProfilePlaceholders = () => (
         <div
           key={i}
           className="w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between relative"
-          style={{ backgroundColor: "#F2ECE3", opacity: 0.85, border: "1px dashed #C85A2E" }}
+          style={{ backgroundColor: "#F2ECE3" }}
         >
           <div className="absolute top-3 right-3"><PlaceholderTag /></div>
           <div>
@@ -303,12 +345,12 @@ const ProfilePlaceholders = () => (
             <div className="text-[12px] mb-1" style={{ color: "#561828" }}>
               {m.count === 0 ? "Ingen har svarat" : `${m.count} har svarat`}
             </div>
-              <span
-                className="text-[15px] font-medium underline underline-offset-2 decoration-2"
-                style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
-              >
-                Häng med!
-              </span>
+            <span
+              className="text-[15px] font-medium underline underline-offset-2 decoration-2"
+              style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+            >
+              Häng med!
+            </span>
           </div>
         </div>
       ))}
@@ -319,45 +361,29 @@ const ProfilePlaceholders = () => (
 
     {/* Mina tips */}
     <SectionHeader title="Mina tips" cta="+ Dela ett tips" />
-    <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2">
-      {[
-        { title: "Bagarstugan", author: "Du", bg: "#E8DDC6" },
-        { title: "Podd: Filosofiska rummet", author: "Du", bg: "#DCEAF8" },
-        { title: "Bok: Klara och solen", author: "Du", bg: "#F5EFD9" },
-      ].map((t, i) => (
-        <div
-          key={i}
-          className="w-[150px] h-[210px] flex-shrink-0 rounded-[24px] relative overflow-hidden"
-          style={{ backgroundColor: t.bg, opacity: 0.85, border: "1px dashed #C85A2E" }}
-        >
-          <div className="absolute top-2 left-2"><PlaceholderTag /></div>
-          <div
-            className="absolute bottom-0 left-0 right-0 p-3"
-            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55), transparent)" }}
-          >
-            <div className="text-[13px] text-white font-medium leading-tight">{t.title}</div>
-            <div className="text-[11px] text-white/80 mt-0.5">{t.author}</div>
-          </div>
-        </div>
-      ))}
-    </div>
+    <HorizontalStrip
+      gradient={TIPS_GRADIENT}
+      items={[
+        { title: "Bagarstugan", sub: "Du", bg: "#E8DDC6", showTag: true },
+        { title: "Podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
+        { title: "Bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
+      ]}
+    />
     <p className="text-sm mt-2" style={{ color: "#561828" }}>
       Dela en plats, bok, podd eller länk du gillar med en krets.
     </p>
 
     {/* Foton */}
     <SectionHeader title="Mina foton" cta="+ Ladda upp foto" />
-    <div className="grid grid-cols-3 gap-2">
-      {["#E8DDC6", "#DCEAF8", "#F5EFD9", "#F2ECE3", "#E8DDC6", "#DCEAF8"].map((bg, i) => (
-        <div
-          key={i}
-          className="aspect-square rounded-[20px] relative"
-          style={{ backgroundColor: bg, opacity: 0.85, border: "1px dashed #C85A2E" }}
-        >
-          {i === 0 && <div className="absolute top-1.5 left-1.5"><PlaceholderTag /></div>}
-        </div>
-      ))}
-    </div>
+    <HorizontalStrip
+      gradient={PHOTOS_GRADIENT}
+      items={[
+        { title: "Barnen", sub: "Du", bg: "#E8DDC6", showTag: true },
+        { title: "Huset", sub: "Du", bg: "#DCEAF8" },
+        { title: "Sommar", sub: "Du", bg: "#F5EFD9" },
+        { title: "Resan", sub: "Du", bg: "#F2ECE3" },
+      ]}
+    />
     <p className="text-sm mt-2" style={{ color: "#561828" }}>
       Bilder du delar i dina kretsar samlas här som ett gemensamt minne.
     </p>
@@ -365,10 +391,10 @@ const ProfilePlaceholders = () => (
     {/* Om mig */}
     <SectionHeader title="Om mig" cta="+ Lägg till" />
     <div
-      className="rounded-[28px] p-5 space-y-3"
-      style={{ backgroundColor: "#F9F3E1", opacity: 0.9, border: "1px dashed #C85A2E" }}
+      className="rounded-[28px] p-5 space-y-3 relative"
+      style={{ backgroundColor: "#F9F3E1" }}
     >
-      <div className="absolute-none flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <span className="text-[13px]" style={{ color: "#675332" }}>Bor i</span>
         <span className="text-[15px]" style={{ color: "#2B2B2B" }}>Stockholm</span>
       </div>
@@ -391,7 +417,7 @@ const ProfilePlaceholders = () => (
 const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: string }) => (
   <div
     className="w-full rounded-[28px] p-5 flex gap-4 relative"
-    style={{ backgroundColor: "#F9F3E1", opacity: 0.75, border: "1px dashed #C85A2E" }}
+    style={{ backgroundColor: "#F9F3E1" }}
   >
     <span
       className="absolute top-3 right-3 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded"
