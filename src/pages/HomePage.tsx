@@ -502,16 +502,17 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       const { error: upErr } = await supabase.storage.from("circle-photos").upload(path, photoFile, { contentType: photoFile.type });
       if (upErr) throw upErr;
       const { data: photoRow, error: insErr } = await supabase.from("photos")
-        .insert({ owner_id: userId, storage_path: path })
-        .select("id, storage_path, created_at").single();
+        .insert({ owner_id: userId, storage_path: path, caption: photoCaption.trim() || null })
+        .select("id, storage_path, created_at, caption").single();
       if (insErr || !photoRow) throw insErr ?? new Error("Kunde inte spara foto");
       const { error: visErr } = await supabase.from("photo_visibility")
         .insert(selectedCircles.map((c) => ({ photo_id: photoRow.id, circle_id: c })));
       if (visErr) throw visErr;
       const { data: signed } = await supabase.storage.from("circle-photos").createSignedUrl(path, 60 * 60);
-      setMyPhotos((prev) => [{ id: photoRow.id, created_at: photoRow.created_at, image_url: signed?.signedUrl ?? null }, ...(prev ?? [])]);
+      setMyPhotos((prev) => [{ id: photoRow.id, created_at: photoRow.created_at, caption: (photoRow as any).caption ?? null, image_url: signed?.signedUrl ?? null }, ...(prev ?? [])]);
       toast.success("Fotot är delat");
       setPhotoFile(null);
+      setPhotoCaption("");
       if (photoPreview) { URL.revokeObjectURL(photoPreview); setPhotoPreview(null); }
       setShowPhotoForm(false);
     } catch (e: any) {
