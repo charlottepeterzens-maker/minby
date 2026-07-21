@@ -13,6 +13,7 @@ import PhotoTile from "@/components/cards/PhotoTile";
 import TipCard from "@/components/cards/TipCard";
 import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 import { OVERLAY_GRADIENT, CARD_RADIUS_CLASS } from "@/lib/card-styles";
+import CircleOnboarding from "@/components/CircleOnboarding";
 
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
@@ -391,6 +392,19 @@ const CirclePage = () => {
             )}
           </div>
         </div>
+        {/* Onboarding checklist for new circles */}
+        {circle && user && circle.created_by === user.id && (
+          <CircleOnboarding
+            circleId={circle.id}
+            circleName={circle.name}
+            hasMembers={members.length > 1}
+            hasPhotos={photos.length > 0}
+            hasTips={tips.length > 0}
+            onInvite={invite}
+            onPhoto={() => photoInputRef.current?.click()}
+            onTip={() => setShowTipForm(true)}
+          />
+        )}
 
         {/* Sedan sist */}
         {sinceLast && (
