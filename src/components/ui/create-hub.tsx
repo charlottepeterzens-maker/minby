@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Plus, X } from "lucide-react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Plus } from "lucide-react";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
 export interface CreateHubAction {
   label: string;
