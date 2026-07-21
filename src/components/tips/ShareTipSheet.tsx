@@ -377,21 +377,14 @@ const ShareTipSheet = ({
             value={selectedCircles}
             onChange={setSelectedCircles}
           />
-        </div>
+        </BottomSheetBody>
 
-        {/* Sticky footer */}
-        <div
-          className="shrink-0 px-5 pt-3 pb-4 flex justify-end"
-          style={{
-            backgroundColor: "#FFFFFF",
-            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)",
-          }}
-        >
+        <BottomSheetFooter className="flex justify-end">
           <TextButton onClick={submit} disabled={!canSubmit}>
             {saving ? "Delar…" : "Dela tips"}
           </TextButton>
-        </div>
-      </SheetContent>
+        </BottomSheetFooter>
+      </BottomSheetContent>
     </Sheet>
   );
 };
