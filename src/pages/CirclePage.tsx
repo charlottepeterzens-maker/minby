@@ -67,6 +67,9 @@ const CirclePage = () => {
   const [tipTitle, setTipTitle] = useState("");
   const [tipUrl, setTipUrl] = useState("");
   const [tipComment, setTipComment] = useState("");
+  const [tipImageFile, setTipImageFile] = useState<File | null>(null);
+  const [tipImagePreview, setTipImagePreview] = useState<string | null>(null);
+  const tipImageInputRef = useRef<HTMLInputElement>(null);
   const [savingTip, setSavingTip] = useState(false);
 
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
@@ -239,10 +242,26 @@ const CirclePage = () => {
     if (!user || !id || !tipTitle.trim()) return;
     setSavingTip(true);
 
-    // Try to fetch link preview image if URL provided
     let imagePath: string | null = null;
     const trimmedUrl = tipUrl.trim();
-    if (trimmedUrl) {
+
+    // 1. Prefer user-uploaded photo
+    if (tipImageFile) {
+      try {
+        const ext = tipImageFile.name.split(".").pop() || "jpg";
+        const path = `${id}/tips/${user.id}/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("circle-photos")
+          .upload(path, tipImageFile, { contentType: tipImageFile.type });
+        if (upErr) throw upErr;
+        imagePath = path;
+      } catch (e: any) {
+        setSavingTip(false);
+        toast.error(e?.message ?? "Kunde inte ladda upp bilden");
+        return;
+      }
+    } else if (trimmedUrl) {
+      // 2. Fallback: fetch OG image from the link
       try {
         const { data: preview } = await supabase.functions.invoke("fetch-link-preview", {
           body: { url: trimmedUrl, uploadBucket: "circle-photos", uploadPrefix: `${id}/tips` },
@@ -270,7 +289,10 @@ const CirclePage = () => {
     if (visErr) { toast.error(visErr.message); return; }
     const [signed] = await signPhotoUrls([{ ...data }], "image_path");
     setTips((prev) => [{ ...signed, owner_name: displayName }, ...prev]);
-    setTipTitle(""); setTipUrl(""); setTipComment(""); setShowTipForm(false);
+    setTipTitle(""); setTipUrl(""); setTipComment("");
+    setTipImageFile(null);
+    if (tipImagePreview) { URL.revokeObjectURL(tipImagePreview); setTipImagePreview(null); }
+    setShowTipForm(false);
     toast.success("Tipset är delat");
   };
 
@@ -557,6 +579,57 @@ const CirclePage = () => {
             <Input placeholder="Titel" value={tipTitle} onChange={(e) => setTipTitle(e.target.value)} className="rounded-lg" />
             <Input placeholder="Länk (valfritt)" value={tipUrl} onChange={(e) => setTipUrl(e.target.value)} className="rounded-lg" />
             <Textarea placeholder="Kommentar (valfritt)" value={tipComment} onChange={(e) => setTipComment(e.target.value)} rows={3} className="rounded-lg resize-none" />
+
+            {/* Photo picker */}
+            <input
+              ref={tipImageInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) {
+                  setTipImageFile(f);
+                  if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
+                  setTipImagePreview(URL.createObjectURL(f));
+                }
+                e.target.value = "";
+              }}
+            />
+            {tipImagePreview ? (
+              <div className="pt-1 flex items-center gap-3">
+                <div
+                  className="w-16 h-16 rounded-[16px] bg-cover bg-center flex-shrink-0"
+                  style={{ backgroundImage: `url(${tipImagePreview})` }}
+                />
+                <div className="flex flex-col items-start gap-1">
+                  <TextButton onClick={() => tipImageInputRef.current?.click()} className="text-[13px]">
+                    Byt bild
+                  </TextButton>
+                  <TextButton
+                    variant="secondary"
+                    onClick={() => {
+                      setTipImageFile(null);
+                      if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
+                      setTipImagePreview(null);
+                    }}
+                    className="text-[13px]"
+                  >
+                    Ta bort bild
+                  </TextButton>
+                </div>
+              </div>
+            ) : (
+              <div className="pt-1">
+                <TextButton onClick={() => tipImageInputRef.current?.click()} className="text-[13px]">
+                  + Lägg till eget foto
+                </TextButton>
+                <p className="text-[12px] mt-1" style={{ color: "hsl(20, 4%, 54%)" }}>
+                  Om du inte laddar upp något använder vi bilden från länken.
+                </p>
+              </div>
+            )}
+
             <div className="flex justify-end pt-2">
               <TextButton onClick={createTip} disabled={!tipTitle.trim() || savingTip}>
                 {savingTip ? "Sparar…" : "Dela tips"}
