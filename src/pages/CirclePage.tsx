@@ -351,6 +351,7 @@ const CirclePage = () => {
                   title={t.title}
                   description={t.comment}
                   url={t.url}
+                  onOpen={() => setSelectedTip(t)}
                 />
               ))}
             </div>
