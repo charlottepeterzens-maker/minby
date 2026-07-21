@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,15 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { ChevronLeft, MessageCircle, Share2, Plus, X, ExternalLink } from "lucide-react";
+import { ChevronLeft, MessageCircle, Share2, ExternalLink, X } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
-import TipCard from "@/components/cards/TipCard";
-import { MeetingCardSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
+import PhotoTile from "@/components/cards/PhotoTile";
+import { MeetingCardSkeleton, PhotoTileSkeleton } from "@/components/cards/CardSkeletons";
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
-interface Tip { id: string; title: string; url: string | null; comment: string | null; created_at: string; owner_id: string; owner_name: string; owner_avatar: string | null; }
+interface Tip { id: string; title: string; url: string | null; comment: string | null; created_at: string; owner_id: string; owner_name: string; image_path: string | null; image_url?: string | null; }
+interface Photo { id: string; storage_path: string; owner_id: string; owner_name: string; created_at: string; image_url?: string | null; }
 
 const monthNames = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
 const formatDate = (iso: string | null) => {
@@ -26,19 +27,36 @@ const formatDateYear = (iso: string) => {
   const d = new Date(iso);
   return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
 };
+const formatDateShort = (iso: string) => {
+  const d = new Date(iso);
+  return `${d.getDate()} ${monthNames[d.getMonth()].slice(0, 3)}`;
+};
+const formatTimestamp = (iso: string) => {
+  const d = new Date(iso);
+  return `${d.getDate()} ${monthNames[d.getMonth()].slice(0, 3)}, ${d.getHours().toString().padStart(2, "0")}.${d.getMinutes().toString().padStart(2, "0")}`;
+};
+
+const HEADING_STYLE = { fontFamily: "'Fraunces', serif", color: "#2E1F3E" } as const;
+const LINK_STYLE = { color: "#C4522A" } as const;
+const CARD_YELLOW = "hsl(44, 65%, 93%)";
+const CARD_BLUE = "hsl(210, 45%, 94%)";
 
 const CirclePage = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [circle, setCircle] = useState<Circle | null>(null);
-  const [memberCount, setMemberCount] = useState(0);
+  const [members, setMembers] = useState<{ user_id: string; display_name: string | null }[]>([]);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [tips, setTips] = useState<Tip[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [aiSummary, setAiSummary] = useState<{ content: string; generated_at: string; author?: string | null } | null>(null);
+  const [sinceLast, setSinceLast] = useState<{ label: string; body: string } | null>(null);
   const [loadingContent, setLoadingContent] = useState(true);
-  const [displayName, setDisplayName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
+  const [displayName, setDisplayName] = useState("");
+
+  // sheets/forms
   const [showMeetingForm, setShowMeetingForm] = useState(false);
   const [meetingTitle, setMeetingTitle] = useState("");
   const [meetingDate, setMeetingDate] = useState("");
@@ -54,37 +72,47 @@ const CirclePage = () => {
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [meetingAttendees, setMeetingAttendees] = useState<{ user_id: string; display_name: string | null }[]>([]);
   const [selectedTip, setSelectedTip] = useState<Tip | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("display_name, avatar_url").eq("user_id", user.id).maybeSingle()
-      .then(({ data }) => {
-        setDisplayName(data?.display_name ?? "");
-        setAvatarUrl(data?.avatar_url ?? null);
-      });
+    supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle()
+      .then(({ data }) => setDisplayName(data?.display_name ?? ""));
   }, [user]);
+
+  const signPhotoUrls = async <T extends { storage_path?: string | null; image_path?: string | null }>(items: T[], key: "storage_path" | "image_path"): Promise<(T & { image_url: string | null })[]> => {
+    const paths = items.map((i) => (i as any)[key]).filter(Boolean) as string[];
+    if (!paths.length) return items.map((i) => ({ ...i, image_url: null }));
+    const { data } = await supabase.storage.from("circle-photos").createSignedUrls(paths, 60 * 60);
+    const map = new Map((data ?? []).map((d) => [d.path, d.signedUrl]));
+    return items.map((i) => ({ ...i, image_url: (i as any)[key] ? map.get((i as any)[key]) ?? null : null }));
+  };
 
   useEffect(() => {
     if (!id) return;
     (async () => {
       const { data } = await supabase.from("circles").select("*").eq("id", id).maybeSingle();
       setCircle(data as Circle | null);
-      const { count } = await supabase.from("circle_members").select("*", { count: "exact", head: true }).eq("circle_id", id);
-      setMemberCount(count ?? 0);
 
+      const { data: mems } = await supabase.from("circle_members").select("user_id").eq("circle_id", id);
+      const memberIds = (mems ?? []).map((m) => m.user_id);
+      const { data: memberProfs } = memberIds.length
+        ? await supabase.from("profiles").select("user_id, display_name").in("user_id", memberIds)
+        : { data: [] as { user_id: string; display_name: string | null }[] };
+      setMembers(memberProfs ?? []);
+      const nameMap = new Map((memberProfs ?? []).map((p) => [p.user_id, p.display_name ?? ""]));
+
+      // Meetings
       const { data: mtgs } = await supabase
         .from("meetings")
         .select("id, title, meeting_date, description, created_by")
         .eq("circle_id", id)
         .order("meeting_date", { ascending: true })
-        .limit(6);
+        .limit(10);
       const meetingList = mtgs ?? [];
-      const hostIds = [...new Set(meetingList.map((m) => m.created_by))];
-      const { data: hostProfiles } = hostIds.length
-        ? await supabase.from("profiles").select("user_id, display_name").in("user_id", hostIds)
-        : { data: [] as { user_id: string; display_name: string | null }[] };
-      const nameMap = new Map((hostProfiles ?? []).map((p) => [p.user_id, p.display_name ?? ""]));
-
       const withCounts = await Promise.all(
         meetingList.map(async (m) => {
           const { count: rc } = await supabase
@@ -97,26 +125,62 @@ const CirclePage = () => {
       );
       setMeetings(withCounts);
 
-      // Tips visible to this circle
+      // Tips
       const { data: tipRows } = await supabase
         .from("tip_visibility")
-        .select("tip_id, tips!inner(id, title, url, comment, created_at, owner_id)")
+        .select("tip_id, tips!inner(id, title, url, comment, created_at, owner_id, image_path)")
         .eq("circle_id", id)
         .order("tip_id", { ascending: false })
-        .limit(10);
-      const tipList = (tipRows ?? []).map((r: any) => r.tips).filter(Boolean) as Tip[];
-      const ownerIds = [...new Set(tipList.map((t) => t.owner_id))];
-      const { data: ownerProfs } = ownerIds.length
-        ? await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", ownerIds)
-        : { data: [] as { user_id: string; display_name: string | null; avatar_url: string | null }[] };
-      const ownerMap = new Map((ownerProfs ?? []).map((p) => [p.user_id, p]));
-      setTips(
-        tipList.map((t) => ({
-          ...t,
-          owner_name: ownerMap.get(t.owner_id)?.display_name ?? "",
-          owner_avatar: ownerMap.get(t.owner_id)?.avatar_url ?? null,
-        }))
-      );
+        .limit(20);
+      const tipList = (tipRows ?? [])
+        .map((r: any) => r.tips)
+        .filter(Boolean)
+        .map((t: any) => ({ ...t, owner_name: nameMap.get(t.owner_id) ?? "" })) as Tip[];
+      const signedTips = await signPhotoUrls(tipList, "image_path");
+      setTips(signedTips);
+
+      // Photos
+      const { data: photoRows } = await supabase
+        .from("photo_visibility")
+        .select("photo_id, photos!inner(id, storage_path, owner_id, created_at)")
+        .eq("circle_id", id)
+        .order("photo_id", { ascending: false })
+        .limit(20);
+      const photoList = (photoRows ?? [])
+        .map((r: any) => r.photos)
+        .filter(Boolean)
+        .map((p: any) => ({ ...p, owner_name: nameMap.get(p.owner_id) ?? "" })) as Photo[];
+      const signedPhotos = await signPhotoUrls(photoList, "storage_path");
+      setPhotos(signedPhotos);
+
+      // AI summary
+      const { data: summary } = await supabase
+        .from("circle_ai_summary")
+        .select("content, generated_at")
+        .eq("circle_id", id)
+        .maybeSingle();
+      if (summary) {
+        const { data: last } = await supabase
+          .from("messages")
+          .select("user_id")
+          .eq("circle_id", id)
+          .lte("created_at", summary.generated_at)
+          .order("created_at", { ascending: false })
+          .limit(1);
+        const author = last?.[0]?.user_id ? nameMap.get(last[0].user_id) ?? null : null;
+        setAiSummary({ ...summary, author });
+      }
+
+      // "Sedan sist" — last activity in circle (meeting/tip/photo)
+      const latestTs = [
+        ...withCounts.map((m) => m.meeting_date ? { ts: m.meeting_date, body: `Ny träff: ${m.title}` } : null),
+        ...signedTips.map((t) => ({ ts: t.created_at, body: `${t.owner_name} delade tipset ${t.title}` })),
+        ...signedPhotos.map((p) => ({ ts: p.created_at, body: `${p.owner_name} lade upp ett nytt foto` })),
+      ].filter(Boolean).sort((a: any, b: any) => new Date(b!.ts).getTime() - new Date(a!.ts).getTime())[0] as any;
+      if (latestTs) {
+        setSinceLast({ label: `Senaste händelsen: ${formatTimestamp(latestTs.ts)}`, body: latestTs.body });
+      }
+
       setLoadingContent(false);
     })();
   }, [id]);
@@ -182,15 +246,41 @@ const CirclePage = () => {
         url: tipUrl.trim() || null,
         comment: tipComment.trim() || null,
       })
-      .select("id, title, url, comment, created_at, owner_id")
+      .select("id, title, url, comment, created_at, owner_id, image_path")
       .single();
     if (error || !data) { setSavingTip(false); toast.error(error?.message ?? "Kunde inte spara"); return; }
     const { error: visErr } = await supabase.from("tip_visibility").insert({ tip_id: data.id, circle_id: id });
     setSavingTip(false);
     if (visErr) { toast.error(visErr.message); return; }
-    setTips((prev) => [{ ...data, owner_name: displayName, owner_avatar: avatarUrl }, ...prev]);
+    setTips((prev) => [{ ...data, owner_name: displayName, image_url: null }, ...prev]);
     setTipTitle(""); setTipUrl(""); setTipComment(""); setShowTipForm(false);
     toast.success("Tipset är delat");
+  };
+
+  const uploadPhoto = async (file: File) => {
+    if (!user || !id) return;
+    setUploadingPhoto(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("circle-photos").upload(path, file, { contentType: file.type });
+      if (upErr) throw upErr;
+      const { data: photoRow, error: insErr } = await supabase
+        .from("photos")
+        .insert({ owner_id: user.id, storage_path: path })
+        .select("id, storage_path, owner_id, created_at")
+        .single();
+      if (insErr || !photoRow) throw insErr ?? new Error("Kunde inte spara foto");
+      const { error: visErr } = await supabase.from("photo_visibility").insert({ photo_id: photoRow.id, circle_id: id });
+      if (visErr) throw visErr;
+      const { data: signed } = await supabase.storage.from("circle-photos").createSignedUrl(path, 60 * 60);
+      setPhotos((prev) => [{ ...photoRow, owner_name: displayName, image_url: signed?.signedUrl ?? null }, ...prev]);
+      toast.success("Fotot är delat");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Kunde inte ladda upp");
+    } finally {
+      setUploadingPhoto(false);
+    }
   };
 
   const openMeeting = async (m: Meeting) => {
@@ -214,73 +304,77 @@ const CirclePage = () => {
     return <div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground text-sm">Laddar…</div>;
   }
 
+  const memberNames = members.map((m) => m.display_name).filter(Boolean).slice(0, 6).join(", ");
+
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-lg mx-auto pt-safe pb-safe">
-        <header className="flex items-center gap-3 px-5 py-4">
-          <button onClick={() => navigate("/")} aria-label="Tillbaka" className="p-2 -ml-2">
+      <div className="max-w-lg mx-auto pb-safe">
+        {/* Hero */}
+        <div
+          className="relative w-full h-[220px] overflow-hidden"
+          style={{
+            backgroundColor: "#8b6f5e",
+            backgroundImage: circle.hero_image_url ? `url(${circle.hero_image_url})` : undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <button
+            onClick={() => navigate("/")}
+            aria-label="Tillbaka"
+            className="absolute top-3 left-3 p-2 rounded-lg text-white pt-safe"
+            style={{ backgroundColor: "rgba(0,0,0,0.25)" }}
+          >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <h1 className="font-display text-xl">{circle.name}</h1>
-        </header>
-
-        <div className="px-5 space-y-4">
-          <p className="text-sm text-muted-foreground">{memberCount} {memberCount === 1 ? "medlem" : "medlemmar"}</p>
-
-          <div className="flex gap-2">
-            <Button onClick={() => navigate(`/chat/${circle.id}`)} className="flex-1 rounded-lg justify-center gap-2" style={{ backgroundColor: "#561828", color: "#fff" }}>
-              <MessageCircle className="w-4 h-4" /> Öppna chatten
-            </Button>
-            <Button onClick={invite} variant="outline" className="rounded-lg justify-center gap-2">
-              <Share2 className="w-4 h-4" /> Bjud in
-            </Button>
+          <button
+            onClick={invite}
+            aria-label="Bjud in"
+            className="absolute top-3 right-3 p-2 rounded-lg text-white pt-safe"
+            style={{ backgroundColor: "rgba(0,0,0,0.25)" }}
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
+          <div
+            className="absolute inset-x-0 bottom-0 px-5 pt-10 pb-4"
+            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)" }}
+          >
+            <h1 className="text-white text-[26px] leading-tight" style={{ fontFamily: "'Fraunces', serif" }}>
+              {circle.name}
+            </h1>
+            {memberNames && (
+              <p className="text-white/85 text-[13px] mt-1 truncate">{memberNames}{members.length > 6 ? "…" : ""}</p>
+            )}
           </div>
         </div>
 
+        {/* Sedan sist */}
+        {sinceLast && (
+          <section className="mt-6 px-5">
+            <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Sedan sist</h2>
+            <div className="rounded-lg p-4" style={{ backgroundColor: CARD_YELLOW }}>
+              <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(20, 4%, 40%)" }}>
+                {sinceLast.label}
+              </div>
+              <p className="text-[14px] leading-relaxed" style={{ color: "#2E1F3E" }}>
+                {sinceLast.body}
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* Våra förslag att ses */}
         <section className="mt-8">
           <div className="px-5 mb-3 flex items-center justify-between">
-            <h2 className="text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Träffar</h2>
+            <h2 className="text-[16px]" style={HEADING_STYLE}>Våra förslag att ses</h2>
             <button
-              onClick={() => setShowMeetingForm((v) => !v)}
-              aria-label={showMeetingForm ? "Stäng" : "Ny träff"}
-              className="p-1.5 rounded-lg hover:bg-black/5"
+              onClick={() => setShowMeetingForm(true)}
+              className="text-[13px] font-medium underline underline-offset-4"
+              style={LINK_STYLE}
             >
-              {showMeetingForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+              + Föreslå en träff
             </button>
           </div>
-          {showMeetingForm && (
-            <div className="mx-5 mb-4 p-4 rounded-lg bg-white space-y-2">
-              <Input
-                placeholder="Vad ska ni göra?"
-                value={meetingTitle}
-                onChange={(e) => setMeetingTitle(e.target.value)}
-                className="rounded-lg"
-              />
-              <Input
-                type="date"
-                value={meetingDate}
-                onChange={(e) => setMeetingDate(e.target.value)}
-                className="rounded-lg"
-              />
-              <Textarea
-                placeholder="Beskrivning (valfritt)"
-                value={meetingDesc}
-                onChange={(e) => setMeetingDesc(e.target.value)}
-                rows={2}
-                className="rounded-lg resize-none"
-              />
-              <div className="flex justify-end pt-1">
-                <Button
-                  onClick={createMeeting}
-                  disabled={!meetingTitle.trim() || savingMeeting}
-                  className="rounded-lg"
-                  style={{ backgroundColor: "#561828", color: "#fff" }}
-                >
-                  {savingMeeting ? "Sparar…" : "Skapa träff"}
-                </Button>
-              </div>
-            </div>
-          )}
           {loadingContent ? (
             <div className="flex gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <MeetingCardSkeleton />
@@ -294,7 +388,7 @@ const CirclePage = () => {
               {meetings.map((m) => (
                 <MeetingCard
                   key={m.id}
-                  hostName={m.host_name}
+                  hostName={m.host_name ? `${m.host_name}` : ""}
                   dateLabel={formatDate(m.meeting_date)}
                   title={m.title}
                   responseCount={m.response_count}
@@ -306,69 +400,111 @@ const CirclePage = () => {
           )}
         </section>
 
+        {/* Chatt */}
         <section className="mt-8 px-5">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Tips</h2>
+          <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Chatt</h2>
+          <div className="rounded-lg p-4" style={{ backgroundColor: CARD_BLUE }}>
+            {aiSummary ? (
+              <>
+                <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(210, 20%, 35%)" }}>
+                  Senast uppdaterad: {formatTimestamp(aiSummary.generated_at)}
+                  {aiSummary.author ? ` av ${aiSummary.author}` : ""}
+                </div>
+                <p className="text-[14px] leading-relaxed" style={{ color: "#2E1F3E" }}>
+                  {aiSummary.content}
+                </p>
+              </>
+            ) : (
+              <p className="text-[14px] leading-relaxed" style={{ color: "#2E1F3E" }}>
+                Ingen sammanfattning ännu. Skriv några meddelanden så plockar vi upp tråden.
+              </p>
+            )}
             <button
-              onClick={() => setShowTipForm((v) => !v)}
-              aria-label={showTipForm ? "Stäng" : "Nytt tips"}
-              className="p-1.5 rounded-lg hover:bg-black/5"
+              onClick={() => navigate(`/chat/${circle.id}`)}
+              className="mt-4 text-[14px] font-medium underline underline-offset-4 inline-flex items-center gap-1"
+              style={LINK_STYLE}
             >
-              {showTipForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+              <MessageCircle className="w-4 h-4" /> Se hela chatten
             </button>
           </div>
-          {showTipForm && (
-            <div className="mb-4 p-4 rounded-lg bg-white space-y-2">
-              <Input
-                placeholder="Titel"
-                value={tipTitle}
-                onChange={(e) => setTipTitle(e.target.value)}
-                className="rounded-lg"
-              />
-              <Input
-                placeholder="Länk (valfritt)"
-                value={tipUrl}
-                onChange={(e) => setTipUrl(e.target.value)}
-                className="rounded-lg"
-              />
-              <Textarea
-                placeholder="Kommentar (valfritt)"
-                value={tipComment}
-                onChange={(e) => setTipComment(e.target.value)}
-                rows={2}
-                className="rounded-lg resize-none"
-              />
-              <div className="flex justify-end pt-1">
-                <Button
-                  onClick={createTip}
-                  disabled={!tipTitle.trim() || savingTip}
-                  className="rounded-lg"
-                  style={{ backgroundColor: "#561828", color: "#fff" }}
-                >
-                  {savingTip ? "Sparar…" : "Dela tips"}
-                </Button>
-              </div>
-            </div>
-          )}
+        </section>
+
+        {/* Våra tips */}
+        <section className="mt-8">
+          <div className="px-5 mb-3 flex items-center justify-between">
+            <h2 className="text-[16px]" style={HEADING_STYLE}>Våra tips</h2>
+            <button
+              onClick={() => setShowTipForm(true)}
+              className="text-[13px] font-medium underline underline-offset-4"
+              style={LINK_STYLE}
+            >
+              + Lägg till tips
+            </button>
+          </div>
           {loadingContent ? (
-            <div className="space-y-3">
-              <TipCardSkeleton />
-              <TipCardSkeleton />
+            <div className="flex gap-2 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              <PhotoTileSkeleton />
+              <PhotoTileSkeleton />
+              <PhotoTileSkeleton />
             </div>
           ) : tips.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Inga tips delade ännu.</p>
+            <p className="px-5 text-sm text-muted-foreground">Inga tips delade ännu.</p>
           ) : (
-            <div className="space-y-3">
+            <div className="flex gap-2 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {tips.map((t) => (
-                <TipCard
+                <PhotoTile
                   key={t.id}
-                  ownerName={t.owner_name}
-                  ownerAvatar={t.owner_avatar}
-                  dateLabel={formatDateYear(t.created_at)}
+                  imageUrl={t.image_url ?? null}
                   title={t.title}
-                  description={t.comment}
-                  url={t.url}
+                  ownerName={t.owner_name}
                   onOpen={() => setSelectedTip(t)}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Våra foton */}
+        <section className="mt-8 mb-10">
+          <div className="px-5 mb-3 flex items-center justify-between">
+            <h2 className="text-[16px]" style={HEADING_STYLE}>Våra foton</h2>
+            <button
+              onClick={() => photoInputRef.current?.click()}
+              disabled={uploadingPhoto}
+              className="text-[13px] font-medium underline underline-offset-4 disabled:opacity-50"
+              style={LINK_STYLE}
+            >
+              {uploadingPhoto ? "Laddar upp…" : "+ Lägg foto"}
+            </button>
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) uploadPhoto(f);
+                e.target.value = "";
+              }}
+            />
+          </div>
+          {loadingContent ? (
+            <div className="flex gap-2 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              <PhotoTileSkeleton />
+              <PhotoTileSkeleton />
+              <PhotoTileSkeleton />
+            </div>
+          ) : photos.length === 0 ? (
+            <p className="px-5 text-sm text-muted-foreground">Inga foton delade ännu.</p>
+          ) : (
+            <div className="flex gap-2 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              {photos.map((p) => (
+                <PhotoTile
+                  key={p.id}
+                  imageUrl={p.image_url ?? null}
+                  title={p.owner_name}
+                  ownerName={formatDateShort(p.created_at)}
+                  onOpen={() => setSelectedPhoto(p)}
                 />
               ))}
             </div>
@@ -376,14 +512,51 @@ const CirclePage = () => {
         </section>
       </div>
 
+      {/* Meeting create sheet */}
+      <Sheet open={showMeetingForm} onOpenChange={setShowMeetingForm}>
+        <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
+          <SheetHeader className="text-left">
+            <SheetTitle style={HEADING_STYLE}>Föreslå en träff</SheetTitle>
+          </SheetHeader>
+          <div className="mt-4 space-y-2">
+            <Input placeholder="Vad ska ni göra?" value={meetingTitle} onChange={(e) => setMeetingTitle(e.target.value)} className="rounded-lg" />
+            <Input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} className="rounded-lg" />
+            <Textarea placeholder="Beskrivning (valfritt)" value={meetingDesc} onChange={(e) => setMeetingDesc(e.target.value)} rows={3} className="rounded-lg resize-none" />
+            <div className="flex justify-end pt-2">
+              <Button onClick={createMeeting} disabled={!meetingTitle.trim() || savingMeeting} className="rounded-lg" style={{ backgroundColor: "#561828", color: "#fff" }}>
+                {savingMeeting ? "Sparar…" : "Skapa träff"}
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Tip create sheet */}
+      <Sheet open={showTipForm} onOpenChange={setShowTipForm}>
+        <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
+          <SheetHeader className="text-left">
+            <SheetTitle style={HEADING_STYLE}>Dela ett tips</SheetTitle>
+          </SheetHeader>
+          <div className="mt-4 space-y-2">
+            <Input placeholder="Titel" value={tipTitle} onChange={(e) => setTipTitle(e.target.value)} className="rounded-lg" />
+            <Input placeholder="Länk (valfritt)" value={tipUrl} onChange={(e) => setTipUrl(e.target.value)} className="rounded-lg" />
+            <Textarea placeholder="Kommentar (valfritt)" value={tipComment} onChange={(e) => setTipComment(e.target.value)} rows={3} className="rounded-lg resize-none" />
+            <div className="flex justify-end pt-2">
+              <Button onClick={createTip} disabled={!tipTitle.trim() || savingTip} className="rounded-lg" style={{ backgroundColor: "#561828", color: "#fff" }}>
+                {savingTip ? "Sparar…" : "Dela tips"}
+              </Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Meeting detail sheet */}
       <Sheet open={!!selectedMeeting} onOpenChange={(o) => !o && setSelectedMeeting(null)}>
         <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
           {selectedMeeting && (
             <>
               <SheetHeader className="text-left">
-                <SheetTitle style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>
-                  {selectedMeeting.title}
-                </SheetTitle>
+                <SheetTitle style={HEADING_STYLE}>{selectedMeeting.title}</SheetTitle>
                 <SheetDescription className="text-[13px]">
                   {selectedMeeting.host_name}
                   {selectedMeeting.meeting_date ? ` · ${formatDateYear(selectedMeeting.meeting_date)}` : ""}
@@ -411,18 +584,10 @@ const CirclePage = () => {
                 )}
               </div>
               <div className="mt-6 flex gap-2">
-                <Button
-                  onClick={() => { respondYes(selectedMeeting.id); setSelectedMeeting(null); }}
-                  className="flex-1 rounded-lg"
-                  style={{ backgroundColor: "#561828", color: "#fff" }}
-                >
-                  Jag kan
+                <Button onClick={() => { respondYes(selectedMeeting.id); setSelectedMeeting(null); }} className="flex-1 rounded-lg" style={{ backgroundColor: "#561828", color: "#fff" }}>
+                  Häng med!
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => { navigate(`/chat/${circle.id}`); setSelectedMeeting(null); }}
-                  className="rounded-lg"
-                >
+                <Button variant="outline" onClick={() => { navigate(`/chat/${circle.id}`); setSelectedMeeting(null); }} className="rounded-lg">
                   <MessageCircle className="w-4 h-4 mr-1" /> Till chatten
                 </Button>
               </div>
@@ -431,33 +596,48 @@ const CirclePage = () => {
         </SheetContent>
       </Sheet>
 
+      {/* Tip detail sheet */}
       <Sheet open={!!selectedTip} onOpenChange={(o) => !o && setSelectedTip(null)}>
         <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
           {selectedTip && (
             <>
               <SheetHeader className="text-left">
-                <SheetTitle style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>
-                  {selectedTip.title}
-                </SheetTitle>
+                <SheetTitle style={HEADING_STYLE}>{selectedTip.title}</SheetTitle>
                 <SheetDescription className="text-[13px]">
                   {selectedTip.owner_name} · {formatDateYear(selectedTip.created_at)}
                 </SheetDescription>
               </SheetHeader>
+              {selectedTip.image_url && (
+                <div className="mt-4 w-full h-[160px] rounded-lg bg-center bg-cover" style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
+              )}
               {selectedTip.comment && (
                 <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2E1F3E" }}>
                   {selectedTip.comment}
                 </p>
               )}
               {selectedTip.url && (
-                <a
-                  href={selectedTip.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 text-[15px] font-medium underline underline-offset-4"
-                  style={{ color: "#C4522A" }}
-                >
+                <a href={selectedTip.url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-[15px] font-medium underline underline-offset-4" style={LINK_STYLE}>
                   <ExternalLink className="w-4 h-4" /> Öppna länken
                 </a>
+              )}
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      {/* Photo detail sheet */}
+      <Sheet open={!!selectedPhoto} onOpenChange={(o) => !o && setSelectedPhoto(null)}>
+        <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+          {selectedPhoto && (
+            <>
+              <SheetHeader className="text-left">
+                <SheetTitle style={HEADING_STYLE}>{selectedPhoto.owner_name}</SheetTitle>
+                <SheetDescription className="text-[13px]">
+                  {formatDateYear(selectedPhoto.created_at)}
+                </SheetDescription>
+              </SheetHeader>
+              {selectedPhoto.image_url && (
+                <img src={selectedPhoto.image_url} alt="" className="mt-4 w-full rounded-lg object-cover max-h-[70vh]" />
               )}
             </>
           )}

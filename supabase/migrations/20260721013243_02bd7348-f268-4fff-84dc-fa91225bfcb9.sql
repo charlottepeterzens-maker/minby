@@ -1,0 +1,1 @@
+ALTER TABLE public.tips ADD COLUMN IF NOT EXISTS image_path text;

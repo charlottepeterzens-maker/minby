@@ -21,35 +21,27 @@ export const CircleCardSkeleton = () => (
 
 export const MeetingCardSkeleton = () => (
   <div
-    className={`w-[130px] flex-shrink-0 h-[166px] rounded-[30px] p-4 flex flex-col justify-between ${shimmer}`}
-    style={{ backgroundColor: "#F2ECE3" }}
+    className={`w-[168px] flex-shrink-0 h-[176px] rounded-lg p-4 flex flex-col justify-between ${shimmer}`}
+    style={{ backgroundColor: "hsl(44, 65%, 93%)" }}
   >
     <div className="space-y-2">
-      <div className="h-2.5 w-16 rounded" style={{ backgroundColor: "#E2D9C9" }} />
-      <div className="h-3 w-20 rounded" style={{ backgroundColor: "#E2D9C9" }} />
-      <div className="h-3 w-16 rounded" style={{ backgroundColor: "#E2D9C9" }} />
+      <div className="h-2.5 w-16 rounded" style={{ backgroundColor: "#E8DDB8" }} />
+      <div className="h-3 w-24 rounded" style={{ backgroundColor: "#E8DDB8" }} />
+      <div className="h-3 w-20 rounded" style={{ backgroundColor: "#E8DDB8" }} />
     </div>
     <div className="space-y-2">
-      <div className="h-2 w-14 rounded" style={{ backgroundColor: "#E2D9C9" }} />
-      <div className="h-3 w-12 rounded" style={{ backgroundColor: "#E2D9C9" }} />
+      <div className="h-2 w-14 rounded" style={{ backgroundColor: "#E8DDB8" }} />
+      <div className="h-3 w-16 rounded" style={{ backgroundColor: "#E8DDB8" }} />
     </div>
   </div>
 );
 
-export const TipCardSkeleton = () => (
+export const TipTileSkeleton = () => (
   <div
-    className={`w-full rounded-[20px] p-3 flex gap-3 ${shimmer}`}
-    style={{ backgroundColor: "#F9F3E1" }}
-  >
-    <div className="w-[110px] h-[110px] rounded-[14px] flex-shrink-0" style={{ backgroundColor: "#EADFC1" }} />
-    <div className="flex-1 space-y-2">
-      <div className="flex items-center gap-2">
-        <div className="w-6 h-6 rounded-full" style={{ backgroundColor: "#EADFC1" }} />
-        <div className="h-2.5 w-20 rounded" style={{ backgroundColor: "#EADFC1" }} />
-      </div>
-      <div className="h-3 w-3/4 rounded" style={{ backgroundColor: "#EADFC1" }} />
-      <div className="h-3 w-full rounded" style={{ backgroundColor: "#EADFC1" }} />
-      <div className="h-3 w-16 rounded mt-3" style={{ backgroundColor: "#EADFC1" }} />
-    </div>
-  </div>
+    className={`w-[110px] h-[130px] flex-shrink-0 rounded-lg ${shimmer}`}
+    style={{ backgroundColor: "#E8DFC9" }}
+  />
 );
+
+export const TipCardSkeleton = TipTileSkeleton;
+export const PhotoTileSkeleton = TipTileSkeleton;
