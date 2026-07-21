@@ -662,7 +662,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     {hasPhotos ? (
       <HorizontalStrip
         gradient="photos"
-        items={myPhotos!.map((p) => ({ title: displayName || "Du", sub: new Date(p.created_at).toLocaleDateString("sv-SE", { day: "numeric", month: "short" }), bg: "#E8DDC6", imageUrl: p.image_url }))}
+        items={myPhotos!.map((p) => ({ title: p.caption || "", sub: new Date(p.created_at).toLocaleDateString("sv-SE", { day: "numeric", month: "short" }), bg: "#E8DDC6", imageUrl: p.image_url }))}
       />
     ) : (
       <HorizontalStrip
