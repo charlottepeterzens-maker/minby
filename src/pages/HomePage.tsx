@@ -355,29 +355,6 @@ const ProfilePlaceholders = () => (
       Bilder du delar i dina kretsar samlas här som ett gemensamt minne.
     </p>
 
-    {/* Om mig */}
-    <SectionHeader title="Om mig" cta="+ Lägg till" />
-    <div
-      className="rounded-[28px] p-5 space-y-3 relative"
-      style={{ backgroundColor: "#F9F3E1" }}
-    >
-      <div className="flex items-center justify-between">
-        <span className="text-[13px]" style={{ color: "#675332" }}>Bor i</span>
-        <span className="text-[15px]" style={{ color: "#2B2B2B" }}>Stockholm</span>
-      </div>
-      <div className="flex items-center justify-between">
-        <span className="text-[13px]" style={{ color: "#675332" }}>Jobbar med</span>
-        <span className="text-[15px]" style={{ color: "#2B2B2B" }}>Illustration</span>
-      </div>
-      <div className="flex items-center justify-between">
-        <span className="text-[13px]" style={{ color: "#675332" }}>Gillar</span>
-        <span className="text-[15px]" style={{ color: "#2B2B2B" }}>Långa promenader, keramik</span>
-      </div>
-      <div className="pt-1"><PlaceholderTag /></div>
-    </div>
-    <p className="text-sm mt-2 mb-8" style={{ color: "#561828" }}>
-      Lägg till några små saker om dig så dina vänner lär känna dig bättre.
-    </p>
   </>
 );
 
