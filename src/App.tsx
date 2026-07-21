@@ -16,6 +16,7 @@ import CirclePage from "./pages/CirclePage";
 import ChatPage from "./pages/ChatPage";
 import VerifyPage from "./pages/VerifyPage";
 import SettingsPage from "./pages/SettingsPage";
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 
 const queryClient = new QueryClient();
 
