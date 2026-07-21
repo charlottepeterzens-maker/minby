@@ -67,6 +67,9 @@ const CirclePage = () => {
   const [tipTitle, setTipTitle] = useState("");
   const [tipUrl, setTipUrl] = useState("");
   const [tipComment, setTipComment] = useState("");
+  const [tipImageFile, setTipImageFile] = useState<File | null>(null);
+  const [tipImagePreview, setTipImagePreview] = useState<string | null>(null);
+  const tipImageInputRef = useRef<HTMLInputElement>(null);
   const [savingTip, setSavingTip] = useState(false);
 
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
