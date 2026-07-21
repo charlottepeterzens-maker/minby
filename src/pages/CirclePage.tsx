@@ -537,9 +537,9 @@ const CirclePage = () => {
           </div>
           {loadingContent ? (
             <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              <PhotoTileSkeleton />
-              <PhotoTileSkeleton />
-              <PhotoTileSkeleton />
+              <PhotoSmallSkeleton />
+              <PhotoSmallSkeleton />
+              <PhotoSmallSkeleton />
             </div>
           ) : photos.length === 0 ? (
             <p className="px-4 text-sm text-muted-foreground">Inga foton delade ännu.</p>
@@ -552,6 +552,7 @@ const CirclePage = () => {
                   title={p.owner_name}
                   ownerName={formatDateShort(p.created_at)}
                   onOpen={() => setSelectedPhoto(p)}
+                  size="sm"
                 />
               ))}
             </div>
