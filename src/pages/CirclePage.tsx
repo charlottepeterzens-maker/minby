@@ -216,6 +216,20 @@ const CirclePage = () => {
     })();
   }, [id, user]);
 
+  // Track whether creator has sent their first invite (drives creator welcome card)
+  useEffect(() => {
+    if (!id || !user) return;
+    (async () => {
+      const { count } = await supabase
+        .from("circle_invites")
+        .select("*", { count: "exact", head: true })
+        .eq("circle_id", id)
+        .eq("created_by", user.id);
+      setHasSentInvite((count ?? 0) > 0);
+    })();
+  }, [id, user]);
+
+
   const openInviteSheet = async () => {
     if (!id || !user) return;
     setInviteOpen(true);
