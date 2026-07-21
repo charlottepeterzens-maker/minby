@@ -392,6 +392,19 @@ const CirclePage = () => {
             )}
           </div>
         </div>
+        {/* Onboarding checklist for new circles */}
+        {circle && user && circle.created_by === user.id && (
+          <CircleOnboarding
+            circleId={circle.id}
+            circleName={circle.name}
+            hasMembers={members.length > 1}
+            hasPhotos={photos.length > 0}
+            hasTips={tips.length > 0}
+            onInvite={invite}
+            onPhoto={() => photoInputRef.current?.click()}
+            onTip={() => setShowTipForm(true)}
+          />
+        )}
 
         {/* Sedan sist */}
         {sinceLast && (
