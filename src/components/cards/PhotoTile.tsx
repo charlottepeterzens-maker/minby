@@ -3,19 +3,26 @@ interface Props {
   title: string;
   ownerName: string;
   onOpen?: () => void;
+  roundedLeft?: boolean;
+  roundedRight?: boolean;
 }
 
-const PhotoTile = ({ imageUrl, title, ownerName, onOpen }: Props) => {
+const PhotoTile = ({ imageUrl, title, ownerName, onOpen, roundedLeft, roundedRight }: Props) => {
+  const radius = "24px";
   return (
     <button
       type="button"
       onClick={onOpen}
-      className="relative w-[110px] h-[130px] flex-shrink-0 rounded-[24px] overflow-hidden text-left"
+      className="relative w-[110px] h-[130px] flex-shrink-0 overflow-hidden text-left"
       style={{
         backgroundColor: "#E8DDC6",
         backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
         backgroundSize: "cover",
         backgroundPosition: "center",
+        borderTopLeftRadius: roundedLeft ? radius : 0,
+        borderBottomLeftRadius: roundedLeft ? radius : 0,
+        borderTopRightRadius: roundedRight ? radius : 0,
+        borderBottomRightRadius: roundedRight ? radius : 0,
       }}
     >
       <div
