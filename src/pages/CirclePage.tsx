@@ -556,7 +556,13 @@ const CirclePage = () => {
               className="hidden"
               onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f) uploadPhoto(f);
+                if (f) {
+                  setPhotoFile(f);
+                  if (photoPreview) URL.revokeObjectURL(photoPreview);
+                  setPhotoPreview(URL.createObjectURL(f));
+                  setPhotoCaption("");
+                  setShowPhotoForm(true);
+                }
                 e.target.value = "";
               }}
             />
@@ -575,8 +581,8 @@ const CirclePage = () => {
                 <PhotoTile
                   key={p.id}
                   imageUrl={p.image_url ?? null}
-                  title={p.owner_name}
-                  ownerName={formatDateShort(p.created_at)}
+                  title={p.caption || p.owner_name}
+                  ownerName={p.caption ? p.owner_name : formatDateShort(p.created_at)}
                   onOpen={() => setSelectedPhoto(p)}
                   size="sm"
                   gradient="photos"
