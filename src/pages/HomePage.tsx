@@ -417,7 +417,7 @@ const ProfilePlaceholders = () => (
 const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: string }) => (
   <div
     className="w-full rounded-[28px] p-5 flex gap-4 relative"
-    style={{ backgroundColor: "#F9F3E1", opacity: 0.75, border: "1px dashed #C85A2E" }}
+    style={{ backgroundColor: "#F9F3E1" }}
   >
     <span
       className="absolute top-3 right-3 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded"
