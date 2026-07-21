@@ -416,7 +416,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       const tipMap = new Map((tipSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
       const photoMap = new Map((photoSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
       setMyTips((tipRows ?? []).map((t) => ({ id: t.id, title: t.title, image_url: t.image_path ? tipMap.get(t.image_path) ?? null : null })));
-      setMyPhotos((photoRows ?? []).map((p) => ({ id: p.id, created_at: p.created_at, image_url: p.storage_path ? photoMap.get(p.storage_path) ?? null : null })));
+      setMyPhotos((photoRows ?? []).map((p: any) => ({ id: p.id, created_at: p.created_at, caption: p.caption ?? null, image_url: p.storage_path ? photoMap.get(p.storage_path) ?? null : null })));
     })();
   }, [userId]);
 
