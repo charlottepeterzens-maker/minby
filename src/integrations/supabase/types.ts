@@ -400,7 +400,9 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_view_tip: { Args: { _tip_id: string }; Returns: boolean }
       is_circle_member: { Args: { _circle_id: string }; Returns: boolean }
+      is_tip_owner: { Args: { _tip_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
