@@ -47,8 +47,8 @@ const PhotoTile = ({
     >
       {tag && (
         <span
-          className="absolute top-2 left-2 z-10 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded"
-          style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.12em" }}
+          className="absolute top-2 left-2 z-10 text-[11px] uppercase px-3 py-1 rounded-full"
+          style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.08em" }}
         >
           {tag}
         </span>
