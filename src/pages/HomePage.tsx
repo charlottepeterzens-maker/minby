@@ -245,7 +245,7 @@ const HomePage = () => {
           </div>
         )}
 
-        <ProfilePlaceholders />
+        <ProfilePlaceholders userId={user?.id ?? null} />
       </div>
     </div>
   );
