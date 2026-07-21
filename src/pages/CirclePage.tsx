@@ -764,7 +764,7 @@ const CirclePage = () => {
                 </SheetDescription>
               </SheetHeader>
               {selectedTip.image_url && (
-                <div className="mt-4 w-full h-[160px] rounded-[24px] bg-center bg-cover" style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
+                <div className={`mt-4 w-full h-[160px] ${CARD_RADIUS_CLASS.photo} bg-center bg-cover`} style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
               )}
               {selectedTip.comment && (
                 <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
