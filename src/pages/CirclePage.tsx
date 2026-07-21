@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import TipCard from "@/components/cards/TipCard";
+import ShareTipSheet from "@/components/tips/ShareTipSheet";
 import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 import { OVERLAY_GRADIENT, CARD_RADIUS_CLASS } from "@/lib/card-styles";
 import CircleOnboarding from "@/components/CircleOnboarding";
@@ -19,7 +20,7 @@ import CreateHub from "@/components/ui/create-hub";
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
-interface Tip { id: string; title: string; url: string | null; comment: string | null; created_at: string; owner_id: string; owner_name: string; image_path: string | null; image_url?: string | null; }
+interface Tip { id: string; title: string; url: string | null; comment: string | null; category: string | null; created_at: string; owner_id: string; owner_name: string; image_path: string | null; image_url?: string | null; }
 interface Photo { id: string; storage_path: string; owner_id: string; owner_name: string; created_at: string; caption: string | null; image_url?: string | null; }
 
 const monthNames = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
@@ -70,21 +71,6 @@ const CirclePage = () => {
   const [savingMeeting, setSavingMeeting] = useState(false);
 
   const [showTipForm, setShowTipForm] = useState(false);
-  const [tipTitle, setTipTitle] = useState("");
-  const [tipUrl, setTipUrl] = useState("");
-  const [tipComment, setTipComment] = useState("");
-  const [tipImageFile, setTipImageFile] = useState<File | null>(null);
-  const [tipImagePreview, setTipImagePreview] = useState<string | null>(null);
-  const tipImageInputRef = useRef<HTMLInputElement>(null);
-  // Live link preview state
-  const [linkPreviewLoading, setLinkPreviewLoading] = useState(false);
-  const [linkPreviewImage, setLinkPreviewImage] = useState<string | null>(null);
-  const [linkPreviewPath, setLinkPreviewPath] = useState<string | null>(null);
-  const [linkPreviewTitle, setLinkPreviewTitle] = useState<string | null>(null);
-  const linkPreviewSeqRef = useRef(0);
-  const linkPreviewTimerRef = useRef<number | null>(null);
-  const [titleTouched, setTitleTouched] = useState(false);
-  const [savingTip, setSavingTip] = useState(false);
 
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
   const [meetingAttendees, setMeetingAttendees] = useState<{ user_id: string; display_name: string | null }[]>([]);
@@ -150,7 +136,7 @@ const CirclePage = () => {
       // Tips
       const { data: tipRows } = await supabase
         .from("tip_visibility")
-        .select("tip_id, tips!inner(id, title, url, comment, created_at, owner_id, image_path)")
+        .select("tip_id, tips!inner(id, title, url, comment, category, created_at, owner_id, image_path)")
         .eq("circle_id", id)
         .order("tip_id", { ascending: false })
         .limit(20);
@@ -257,116 +243,8 @@ const CirclePage = () => {
     toast.success("Träffen är skapad");
   };
 
-  
-  const resetTipForm = () => {
-    setTipTitle(""); setTipUrl(""); setTipComment("");
-    setTipImageFile(null);
-    if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
-    setTipImagePreview(null);
-    setLinkPreviewImage(null);
-    setLinkPreviewPath(null);
-    setLinkPreviewTitle(null);
-    setLinkPreviewLoading(false);
-    setTitleTouched(false);
-    if (linkPreviewTimerRef.current) window.clearTimeout(linkPreviewTimerRef.current);
-    linkPreviewSeqRef.current += 1;
-  };
+  const addTipToList = (t: Tip) => setTips((prev) => [t, ...prev]);
 
-  const fetchLinkPreview = async (rawUrl: string) => {
-    if (!id) return;
-    const trimmed = rawUrl.trim();
-    if (!trimmed) {
-      setLinkPreviewImage(null);
-      setLinkPreviewPath(null);
-      setLinkPreviewTitle(null);
-      setLinkPreviewLoading(false);
-      return;
-    }
-    const seq = ++linkPreviewSeqRef.current;
-    setLinkPreviewLoading(true);
-    try {
-      const { data } = await supabase.functions.invoke("fetch-link-preview", {
-        body: { url: trimmed, uploadBucket: "circle-photos", uploadPrefix: `${id}/tips` },
-      });
-      if (seq !== linkPreviewSeqRef.current) return;
-      const path = (data as any)?.storagePath ?? null;
-      const title = (data as any)?.title ?? null;
-      const rawImage = (data as any)?.image ?? null;
-      if (path) {
-        const { data: signed } = await supabase.storage.from("circle-photos").createSignedUrl(path, 60 * 60);
-        if (seq !== linkPreviewSeqRef.current) return;
-        setLinkPreviewImage(signed?.signedUrl ?? rawImage);
-        setLinkPreviewPath(path);
-      } else {
-        setLinkPreviewImage(rawImage);
-        setLinkPreviewPath(null);
-      }
-      setLinkPreviewTitle(title);
-      if (title && !titleTouched && !tipTitle.trim()) setTipTitle(title);
-    } catch (e) {
-      if (seq !== linkPreviewSeqRef.current) return;
-      setLinkPreviewImage(null);
-      setLinkPreviewPath(null);
-    } finally {
-      if (seq === linkPreviewSeqRef.current) setLinkPreviewLoading(false);
-    }
-  };
-
-  const onTipUrlChange = (v: string) => {
-    setTipUrl(v);
-    if (linkPreviewTimerRef.current) window.clearTimeout(linkPreviewTimerRef.current);
-    if (tipImageFile) return; // user's own photo wins
-    linkPreviewTimerRef.current = window.setTimeout(() => fetchLinkPreview(v), 600);
-  };
-
-  const createTip = async () => {
-    if (!user || !id || !tipTitle.trim()) return;
-    setSavingTip(true);
-
-    let imagePath: string | null = null;
-    const trimmedUrl = tipUrl.trim();
-
-    // 1. User-uploaded photo wins
-    if (tipImageFile) {
-      try {
-        const ext = tipImageFile.name.split(".").pop() || "jpg";
-        const path = `${id}/tips/${user.id}/${crypto.randomUUID()}.${ext}`;
-        const { error: upErr } = await supabase.storage
-          .from("circle-photos")
-          .upload(path, tipImageFile, { contentType: tipImageFile.type });
-        if (upErr) throw upErr;
-        imagePath = path;
-      } catch (e: any) {
-        setSavingTip(false);
-        toast.error(e?.message ?? "Kunde inte ladda upp bilden");
-        return;
-      }
-    } else if (linkPreviewPath) {
-      // 2. Already-fetched link preview
-      imagePath = linkPreviewPath;
-    }
-
-    const { data, error } = await supabase
-      .from("tips")
-      .insert({
-        owner_id: user.id,
-        title: tipTitle.trim(),
-        url: trimmedUrl || null,
-        comment: tipComment.trim() || null,
-        image_path: imagePath,
-      })
-      .select("id, title, url, comment, created_at, owner_id, image_path")
-      .single();
-    if (error || !data) { setSavingTip(false); toast.error(error?.message ?? "Kunde inte spara"); return; }
-    const { error: visErr } = await supabase.from("tip_visibility").insert({ tip_id: data.id, circle_id: id });
-    setSavingTip(false);
-    if (visErr) { toast.error(visErr.message); return; }
-    const [signed] = await signPhotoUrls([{ ...data }], "image_path");
-    setTips((prev) => [{ ...signed, owner_name: displayName }, ...prev]);
-    resetTipForm();
-    setShowTipForm(false);
-    toast.success("Tipset är publicerat");
-  };
 
 
   const uploadPhoto = async () => {
@@ -595,6 +473,7 @@ const CirclePage = () => {
                       title={t.title}
                       description={t.comment}
                       url={t.url}
+                      category={t.category}
                       onOpen={() => setSelectedTip(t)}
                     />
                   ))}
@@ -716,6 +595,7 @@ const CirclePage = () => {
                   title={t.title}
                   description={t.comment}
                   url={t.url}
+                  category={t.category}
                   onOpen={() => { setShowTipsList(false); setSelectedTip(t); }}
                 />
               ))
@@ -760,133 +640,28 @@ const CirclePage = () => {
       </Sheet>
 
       {/* Tip create sheet */}
-      <Sheet
+      <ShareTipSheet
         open={showTipForm}
-        onOpenChange={(o) => {
-          setShowTipForm(o);
-          if (!o) resetTipForm();
-        }}
-      >
-        <SheetContent side="bottom" className="rounded-t-2xl max-h-[92vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
-          <SheetHeader className="text-left">
-            <SheetTitle style={HEADING_STYLE}>Dela ett tips</SheetTitle>
-          </SheetHeader>
-
-          {(() => {
-            const displayImage = tipImagePreview || linkPreviewImage;
-            const showLoader = !tipImagePreview && linkPreviewLoading;
-            return (
-              <div className="mt-4 space-y-3">
-                {/* Hidden file input */}
-                <input
-                  ref={tipImageInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) {
-                      setTipImageFile(f);
-                      if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
-                      setTipImagePreview(URL.createObjectURL(f));
-                    }
-                    e.target.value = "";
-                  }}
-                />
-
-                {/* Preview hero — always occupies the same slot so layout doesn't jump */}
-                <div
-                  className="relative w-full overflow-hidden rounded-[20px] transition-all"
-                  style={{
-                    aspectRatio: "16 / 9",
-                    background: displayImage ? "#F2ECE3" : "#F5EFE6",
-                    border: displayImage ? "none" : "1px dashed rgba(43,43,43,0.18)",
-                  }}
-                >
-                  {displayImage ? (
-                    <>
-                      <img src={displayImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/45 to-transparent" />
-                      <div className="absolute right-3 bottom-3 flex gap-3">
-                        <TextButton
-                          variant="primaryOnPhoto"
-                          onClick={() => tipImageInputRef.current?.click()}
-                          className="text-[13px]"
-                        >
-                          Byt bild
-                        </TextButton>
-                        <TextButton
-                          variant="primaryOnPhoto"
-                          onClick={() => {
-                            setTipImageFile(null);
-                            if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
-                            setTipImagePreview(null);
-                            setLinkPreviewImage(null);
-                            setLinkPreviewPath(null);
-                          }}
-                          className="text-[13px]"
-                        >
-                          Ta bort
-                        </TextButton>
-                      </div>
-                    </>
-                  ) : showLoader ? (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-[13px]" style={{ color: "hsl(20, 4%, 54%)" }}>
-                        Hämtar bild från länken…
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 px-6 text-center">
-                      <p className="text-[13px]" style={{ color: "hsl(20, 4%, 40%)" }}>
-                        Ingen bild ännu
-                      </p>
-                      <TextButton onClick={() => tipImageInputRef.current?.click()} className="text-[13px]">
-                        + Lägg till foto
-                      </TextButton>
-                      <p className="text-[11px]" style={{ color: "hsl(20, 4%, 54%)" }}>
-                        eller klistra in en länk nedan
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <Input
-                  placeholder="Titel"
-                  value={tipTitle}
-                  onChange={(e) => { setTipTitle(e.target.value); setTitleTouched(true); }}
-                  className="rounded-lg"
-                />
-                <Input
-                  placeholder="Länk (valfritt)"
-                  value={tipUrl}
-                  onChange={(e) => onTipUrlChange(e.target.value)}
-                  inputMode="url"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  className="rounded-lg"
-                />
-                <Textarea
-                  placeholder="Kommentar (valfritt)"
-                  value={tipComment}
-                  onChange={(e) => setTipComment(e.target.value)}
-                  rows={3}
-                  className="rounded-lg resize-none"
-                />
-
-                <div className="flex items-center justify-between pt-2">
-                  <span className="text-[12px]" style={{ color: "hsl(20, 4%, 54%)" }}>
-                    {tipTitle.trim() ? "Klart att publicera" : "Skriv en titel för att publicera"}
-                  </span>
-                  <TextButton onClick={createTip} disabled={!tipTitle.trim() || savingTip || linkPreviewLoading}>
-                    {savingTip ? "Publicerar…" : "Publicera"}
-                  </TextButton>
-                </div>
-              </div>
-            );
-          })()}
-        </SheetContent>
-      </Sheet>
+        onOpenChange={setShowTipForm}
+        userId={user?.id ?? ""}
+        circles={circle ? [{ id: circle.id, name: circle.name }] : []}
+        defaultCircleIds={circle ? [circle.id] : []}
+        storagePrefix={id}
+        onCreated={(t) =>
+          addTipToList({
+            id: t.id,
+            title: t.title,
+            url: t.url,
+            comment: t.comment,
+            category: t.category,
+            created_at: t.created_at,
+            owner_id: user?.id ?? "",
+            owner_name: displayName,
+            image_path: t.image_path,
+            image_url: t.image_url,
+          })
+        }
+      />
 
       {/* Meeting detail sheet */}
       <Sheet open={!!selectedMeeting} onOpenChange={(o) => !o && setSelectedMeeting(null)}>

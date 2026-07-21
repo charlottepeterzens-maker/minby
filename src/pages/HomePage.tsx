@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import { Camera, Menu, Plus, X } from "lucide-react";
 import TipCard from "@/components/cards/TipCard";
+import ShareTipSheet from "@/components/tips/ShareTipSheet";
 import CircleCard from "@/components/cards/CircleCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
@@ -350,6 +351,7 @@ interface MyTip {
   created_at: string;
   comment: string | null;
   url: string | null;
+  category: string | null;
 }
 interface MyPhoto {
   id: string;
@@ -383,13 +385,6 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
   // Creation sheet state
   const [showTipForm, setShowTipForm] = useState(false);
   const [showAllTips, setShowAllTips] = useState(false);
-  const [tipTitle, setTipTitle] = useState("");
-  const [tipUrl, setTipUrl] = useState("");
-  const [tipComment, setTipComment] = useState("");
-  const [tipImageFile, setTipImageFile] = useState<File | null>(null);
-  const [tipImagePreview, setTipImagePreview] = useState<string | null>(null);
-  const tipImageInputRef = useRef<HTMLInputElement>(null);
-  const [savingTip, setSavingTip] = useState(false);
   const [selectedCircles, setSelectedCircles] = useState<string[]>([]);
 
   const [showPhotoForm, setShowPhotoForm] = useState(false);
@@ -409,7 +404,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
           .order("meeting_date", { ascending: true, nullsFirst: false }),
         supabase
           .from("tips")
-          .select("id, title, image_path, created_at, comment, url")
+          .select("id, title, image_path, created_at, comment, url, category")
           .eq("owner_id", userId)
           .order("created_at", { ascending: false })
           .limit(10),
@@ -464,7 +459,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       ]);
       const tipMap = new Map((tipSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
       const photoMap = new Map((photoSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
-      setMyTips((tipRows ?? []).map((t: any) => ({ id: t.id, title: t.title, created_at: t.created_at, comment: t.comment ?? null, url: t.url ?? null, image_url: t.image_path ? tipMap.get(t.image_path) ?? null : null })));
+      setMyTips((tipRows ?? []).map((t: any) => ({ id: t.id, title: t.title, created_at: t.created_at, comment: t.comment ?? null, url: t.url ?? null, category: t.category ?? null, image_url: t.image_path ? tipMap.get(t.image_path) ?? null : null })));
       setMyPhotos((photoRows ?? []).map((p: any) => ({ id: p.id, created_at: p.created_at, caption: p.caption ?? null, image_url: p.storage_path ? photoMap.get(p.storage_path) ?? null : null })));
     })();
   }, [userId]);
@@ -489,58 +484,11 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     setSelectedCircles((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]);
   };
 
-  const createTip = async () => {
-    if (!userId || !tipTitle.trim() || !selectedCircles.length) return;
-    setSavingTip(true);
-    let imagePath: string | null = null;
-    const trimmedUrl = tipUrl.trim();
-    const bucketPrefix = selectedCircles[0];
-
-    if (tipImageFile) {
-      try {
-        const ext = tipImageFile.name.split(".").pop() || "jpg";
-        const path = `${bucketPrefix}/tips/${userId}/${crypto.randomUUID()}.${ext}`;
-        const { error: upErr } = await supabase.storage.from("circle-photos").upload(path, tipImageFile, { contentType: tipImageFile.type });
-        if (upErr) throw upErr;
-        imagePath = path;
-      } catch (e: any) {
-        setSavingTip(false); toast.error(e?.message ?? "Kunde inte ladda upp"); return;
-      }
-    } else if (trimmedUrl) {
-      try {
-        const { data: preview } = await supabase.functions.invoke("fetch-link-preview", {
-          body: { url: trimmedUrl, uploadBucket: "circle-photos", uploadPrefix: `${bucketPrefix}/tips` },
-        });
-        if (preview?.storagePath) imagePath = preview.storagePath as string;
-      } catch (e) { console.error(e); }
-    }
-
-    const { data, error } = await supabase.from("tips").insert({
-      owner_id: userId,
-      title: tipTitle.trim(),
-      url: trimmedUrl || null,
-      comment: tipComment.trim() || null,
-      image_path: imagePath,
-    }).select("id, title, image_path, created_at, comment, url").single();
-    if (error || !data) { setSavingTip(false); toast.error(error?.message ?? "Kunde inte spara"); return; }
-
-    const { error: visErr } = await supabase.from("tip_visibility")
-      .insert(selectedCircles.map((c) => ({ tip_id: data.id, circle_id: c })));
-    setSavingTip(false);
-    if (visErr) { toast.error(visErr.message); return; }
-
-    let signedUrl: string | null = null;
-    if (data.image_path) {
-      const { data: s } = await supabase.storage.from("circle-photos").createSignedUrl(data.image_path, 60 * 60);
-      signedUrl = s?.signedUrl ?? null;
-    }
-    setMyTips((prev) => [{ id: data.id, title: data.title, image_url: signedUrl, created_at: (data as any).created_at, comment: (data as any).comment ?? null, url: (data as any).url ?? null }, ...(prev ?? [])]);
-    setTipTitle(""); setTipUrl(""); setTipComment("");
-    setTipImageFile(null);
-    if (tipImagePreview) { URL.revokeObjectURL(tipImagePreview); setTipImagePreview(null); }
-    setShowTipForm(false);
-    toast.success("Tipset är delat");
+  const addTipToList = (t: { id: string; title: string; image_url: string | null; created_at: string; comment: string | null; url: string | null; category: string | null }) => {
+    setMyTips((prev) => [t, ...(prev ?? [])]);
   };
+
+
 
   const uploadPhoto = async () => {
     if (!userId || !photoFile || !selectedCircles.length) return;
@@ -687,6 +635,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
                 title={t.title}
                 description={t.comment}
                 url={t.url}
+                category={t.category}
                 onOpen={() => setShowAllTips(true)}
               />
             ))}
@@ -793,6 +742,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
               title={t.title}
               description={t.comment}
               url={t.url}
+              category={t.category}
             />
           ))}
         </div>
@@ -816,50 +766,24 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     </Sheet>
 
     {/* Tip create sheet */}
-    <Sheet open={showTipForm} onOpenChange={setShowTipForm}>
-      <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
-        <SheetHeader className="text-left">
-          <SheetTitle style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}>Dela ett tips</SheetTitle>
-        </SheetHeader>
-        <div className="mt-4 space-y-3">
-          <Input placeholder="Titel" value={tipTitle} onChange={(e) => setTipTitle(e.target.value)} className="rounded-lg" />
-          <Input placeholder="Länk (valfritt)" value={tipUrl} onChange={(e) => setTipUrl(e.target.value)} className="rounded-lg" />
-          <Textarea placeholder="Kommentar (valfritt)" value={tipComment} onChange={(e) => setTipComment(e.target.value)} rows={3} className="rounded-lg resize-none" />
-          <input
-            ref={tipImageInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) {
-                setTipImageFile(f);
-                if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
-                setTipImagePreview(URL.createObjectURL(f));
-              }
-              e.target.value = "";
-            }}
-          />
-          {tipImagePreview ? (
-            <div className="flex items-center gap-3">
-              <div className="w-16 h-16 rounded-[16px] bg-cover bg-center flex-shrink-0" style={{ backgroundImage: `url(${tipImagePreview})` }} />
-              <div className="flex flex-col items-start gap-1">
-                <TextButton onClick={() => tipImageInputRef.current?.click()}>Byt bild</TextButton>
-                <TextButton variant="secondary" onClick={() => { setTipImageFile(null); if (tipImagePreview) URL.revokeObjectURL(tipImagePreview); setTipImagePreview(null); }}>Ta bort bild</TextButton>
-              </div>
-            </div>
-          ) : (
-            <TextButton onClick={() => tipImageInputRef.current?.click()}>+ Lägg till eget foto</TextButton>
-          )}
-          <CirclePicker />
-          <div className="flex justify-end pt-2">
-            <TextButton onClick={createTip} disabled={!tipTitle.trim() || !selectedCircles.length || savingTip}>
-              {savingTip ? "Sparar…" : "Dela tips"}
-            </TextButton>
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
+    <ShareTipSheet
+      open={showTipForm}
+      onOpenChange={setShowTipForm}
+      userId={userId ?? ""}
+      circles={circles.map((c) => ({ id: c.id, name: c.name }))}
+      defaultCircleIds={selectedCircles}
+      onCreated={(t) =>
+        addTipToList({
+          id: t.id,
+          title: t.title,
+          image_url: t.image_url,
+          created_at: t.created_at,
+          comment: t.comment,
+          url: t.url,
+          category: t.category,
+        })
+      }
+    />
 
     {/* Photo upload sheet */}
     <Sheet open={showPhotoForm} onOpenChange={(o) => { setShowPhotoForm(o); if (!o) { setPhotoFile(null); setPhotoCaption(""); if (photoPreview) URL.revokeObjectURL(photoPreview); setPhotoPreview(null); } }}>
