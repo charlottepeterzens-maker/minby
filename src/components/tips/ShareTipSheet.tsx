@@ -65,10 +65,15 @@ const ShareTipSheet = ({
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [titleTouched, setTitleTouched] = useState(false);
+  const [linkPreview, setLinkPreview] = useState<{ url: string; image: string | null } | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const previewSeq = useRef(0);
 
   const reset = () => {
     setTitle("");
+    setTitleTouched(false);
     setUrl("");
     setCategory(null);
     setCategoryOpen(false);
@@ -77,12 +82,46 @@ const ShareTipSheet = ({
     setImageFile(null);
     if (imagePreview) URL.revokeObjectURL(imagePreview);
     setImagePreview(null);
+    setLinkPreview(null);
+    setPreviewLoading(false);
   };
 
   useEffect(() => {
     if (open) setSelectedCircles(defaultCircleIds);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
+
+  // Debounced link preview: autofill title, cache image for later upload
+  useEffect(() => {
+    const trimmed = url.trim();
+    if (!open || !trimmed || !/^https?:\/\/|^www\.|^[a-z0-9-]+\.[a-z]{2,}/i.test(trimmed)) {
+      setLinkPreview(null);
+      return;
+    }
+    if (linkPreview && linkPreview.url === trimmed) return;
+    const seq = ++previewSeq.current;
+    setPreviewLoading(true);
+    const t = setTimeout(async () => {
+      try {
+        const { data } = await supabase.functions.invoke("fetch-link-preview", {
+          body: { url: trimmed },
+        });
+        if (seq !== previewSeq.current) return;
+        const previewTitle: string | null = data?.title ?? null;
+        const previewImage: string | null = data?.image ?? null;
+        setLinkPreview({ url: trimmed, image: previewImage });
+        if (previewTitle && !titleTouched && !title.trim()) {
+          setTitle(previewTitle);
+        }
+      } catch {
+        if (seq === previewSeq.current) setLinkPreview({ url: trimmed, image: null });
+      } finally {
+        if (seq === previewSeq.current) setPreviewLoading(false);
+      }
+    }, 500);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url, open]);
 
   const canSubmit = title.trim().length > 0 && selectedCircles.length > 0 && !saving;
 
