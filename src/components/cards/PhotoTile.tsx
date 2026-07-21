@@ -10,7 +10,7 @@ const PhotoTile = ({ imageUrl, title, ownerName, onOpen }: Props) => {
     <button
       type="button"
       onClick={onOpen}
-      className="relative w-[110px] h-[130px] flex-shrink-0 rounded-lg overflow-hidden text-left"
+      className="relative w-[110px] h-[130px] flex-shrink-0 rounded-[24px] overflow-hidden text-left"
       style={{
         backgroundColor: "#E8DDC6",
         backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
