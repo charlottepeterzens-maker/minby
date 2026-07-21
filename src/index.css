@@ -13,7 +13,7 @@
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     /* Minby — warm linen + burgundy + powder blue */
-    --background: 42 20% 95%;
+    --background: 40 27% 96%;
     --foreground: 20 10% 12%;
 
     --card: 0 0% 100%;
@@ -22,13 +22,13 @@
     --popover: 0 0% 100%;
     --popover-foreground: 20 10% 12%;
 
-    --primary: 347 56% 23%;
+    --primary: 338 58% 22%;
     --primary-foreground: 30 28% 96%;
 
-    --secondary: 206 60% 91%;
+    --secondary: 210 65% 92%;
     --secondary-foreground: 20 10% 12%;
 
-    --accent: 16 65% 46%;
+    --accent: 17 63% 48%;
     --accent-foreground: 0 0% 100%;
 
     --muted: 30 15% 89%;
@@ -39,7 +39,7 @@
 
     --border: 200 25% 88%;
     --input: 0 0% 100%;
-    --ring: 347 56% 23%;
+    --ring: 338 58% 22%;
 
     --radius: 0.5rem;
 
@@ -49,12 +49,12 @@
     --salvia: 44 55% 72%;
     --salvia-bg: 44 65% 93%;
     --lavender: 206 45% 80%;
-    --lavender-bg: 206 60% 91%;
+    --lavender-bg: 210 65% 92%;
 
     /* Branded colors */
-    --color-surface: 42 20% 95%;           /* warm linen */
+    --color-surface: 40 27% 96%;           /* warm linen */
     --color-surface-card: 0 0% 100%;       /* #FFFFFF */
-    --color-surface-raised: 206 60% 91%;   /* light airy blue */
+    --color-surface-raised: 210 65% 92%;   /* light airy blue */
     --color-surface-rose: 340 30% 97%;     /* #FCF0F3 */
     --color-surface-sage: 44 65% 93%;      /* #F8F0D8 warm yellow */
     --color-text-primary: 20 10% 12%;      /* dark warm charcoal */
@@ -64,18 +64,18 @@
     --color-border-subtle: 30 15% 89%;     /* #EDE8E0 */
     --color-border-lavender: 206 45% 80%;  /* soft blue border */
     --color-accent-red: 0 55% 49%;         /* #A32D2D */
-    --color-accent-terra: 16 65% 46%;      /* #C85A2E */
+    --color-accent-terra: 17 63% 48%;      /* #C85A2E */
     --color-accent-sage-text: 44 65% 28%;  /* #7A5C14 amber */
     --color-badge: 347 40% 35%;
 
     /* Korall accent */
-    --terrakotta: 16 65% 46%;              /* #C85A2E */
+    --terrakotta: 17 63% 48%;              /* #C85A2E */
 
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 20 10% 12%;
-    --sidebar-primary: 347 56% 23%;
+    --sidebar-primary: 338 58% 22%;
     --sidebar-primary-foreground: 30 28% 96%;
-    --sidebar-accent: 206 60% 91%;
+    --sidebar-accent: 210 65% 92%;
     --sidebar-accent-foreground: 20 10% 12%;
     --sidebar-border: 30 15% 85%;
     --sidebar-ring: 270 33% 18%;
