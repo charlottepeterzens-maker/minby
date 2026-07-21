@@ -19,7 +19,7 @@ import CircleOnboarding from "@/components/CircleOnboarding";
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
 interface Tip { id: string; title: string; url: string | null; comment: string | null; created_at: string; owner_id: string; owner_name: string; image_path: string | null; image_url?: string | null; }
-interface Photo { id: string; storage_path: string; owner_id: string; owner_name: string; created_at: string; image_url?: string | null; }
+interface Photo { id: string; storage_path: string; owner_id: string; owner_name: string; created_at: string; caption: string | null; image_url?: string | null; }
 
 const monthNames = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
 const formatDate = (iso: string | null) => {
