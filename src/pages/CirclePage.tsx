@@ -263,6 +263,75 @@ const CirclePage = () => {
     const trimmedUrl = tipUrl.trim();
 
     // 1. Prefer user-uploaded photo
+  const resetTipForm = () => {
+    setTipTitle(""); setTipUrl(""); setTipComment("");
+    setTipImageFile(null);
+    if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
+    setTipImagePreview(null);
+    setLinkPreviewImage(null);
+    setLinkPreviewPath(null);
+    setLinkPreviewTitle(null);
+    setLinkPreviewLoading(false);
+    setTitleTouched(false);
+    if (linkPreviewTimerRef.current) window.clearTimeout(linkPreviewTimerRef.current);
+    linkPreviewSeqRef.current += 1;
+  };
+
+  const fetchLinkPreview = async (rawUrl: string) => {
+    if (!id) return;
+    const trimmed = rawUrl.trim();
+    if (!trimmed) {
+      setLinkPreviewImage(null);
+      setLinkPreviewPath(null);
+      setLinkPreviewTitle(null);
+      setLinkPreviewLoading(false);
+      return;
+    }
+    const seq = ++linkPreviewSeqRef.current;
+    setLinkPreviewLoading(true);
+    try {
+      const { data } = await supabase.functions.invoke("fetch-link-preview", {
+        body: { url: trimmed, uploadBucket: "circle-photos", uploadPrefix: `${id}/tips` },
+      });
+      if (seq !== linkPreviewSeqRef.current) return;
+      const path = (data as any)?.storagePath ?? null;
+      const title = (data as any)?.title ?? null;
+      const rawImage = (data as any)?.image ?? null;
+      if (path) {
+        const { data: signed } = await supabase.storage.from("circle-photos").createSignedUrl(path, 60 * 60);
+        if (seq !== linkPreviewSeqRef.current) return;
+        setLinkPreviewImage(signed?.signedUrl ?? rawImage);
+        setLinkPreviewPath(path);
+      } else {
+        setLinkPreviewImage(rawImage);
+        setLinkPreviewPath(null);
+      }
+      setLinkPreviewTitle(title);
+      if (title && !titleTouched && !tipTitle.trim()) setTipTitle(title);
+    } catch (e) {
+      if (seq !== linkPreviewSeqRef.current) return;
+      setLinkPreviewImage(null);
+      setLinkPreviewPath(null);
+    } finally {
+      if (seq === linkPreviewSeqRef.current) setLinkPreviewLoading(false);
+    }
+  };
+
+  const onTipUrlChange = (v: string) => {
+    setTipUrl(v);
+    if (linkPreviewTimerRef.current) window.clearTimeout(linkPreviewTimerRef.current);
+    if (tipImageFile) return; // user's own photo wins
+    linkPreviewTimerRef.current = window.setTimeout(() => fetchLinkPreview(v), 600);
+  };
+
+  const createTip = async () => {
+    if (!user || !id || !tipTitle.trim()) return;
+    setSavingTip(true);
+
+    let imagePath: string | null = null;
+    const trimmedUrl = tipUrl.trim();
+
+    // 1. User-uploaded photo wins
     if (tipImageFile) {
       try {
         const ext = tipImageFile.name.split(".").pop() || "jpg";
@@ -277,16 +346,9 @@ const CirclePage = () => {
         toast.error(e?.message ?? "Kunde inte ladda upp bilden");
         return;
       }
-    } else if (trimmedUrl) {
-      // 2. Fallback: fetch OG image from the link
-      try {
-        const { data: preview } = await supabase.functions.invoke("fetch-link-preview", {
-          body: { url: trimmedUrl, uploadBucket: "circle-photos", uploadPrefix: `${id}/tips` },
-        });
-        if (preview?.storagePath) imagePath = preview.storagePath as string;
-      } catch (e) {
-        console.error("Link preview failed", e);
-      }
+    } else if (linkPreviewPath) {
+      // 2. Already-fetched link preview
+      imagePath = linkPreviewPath;
     }
 
     const { data, error } = await supabase
@@ -306,11 +368,9 @@ const CirclePage = () => {
     if (visErr) { toast.error(visErr.message); return; }
     const [signed] = await signPhotoUrls([{ ...data }], "image_path");
     setTips((prev) => [{ ...signed, owner_name: displayName }, ...prev]);
-    setTipTitle(""); setTipUrl(""); setTipComment("");
-    setTipImageFile(null);
-    if (tipImagePreview) { URL.revokeObjectURL(tipImagePreview); setTipImagePreview(null); }
+    resetTipForm();
     setShowTipForm(false);
-    toast.success("Tipset är delat");
+    toast.success("Tipset är publicerat");
   };
 
 
