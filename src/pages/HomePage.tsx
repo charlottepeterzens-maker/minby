@@ -294,7 +294,7 @@ const HorizontalStrip = ({
         ownerName={t.sub}
         size={size}
         gradient={gradient}
-        tag={t.showTag ? "Exempel" : undefined}
+        tag={t.showTag ? "exempel" : undefined}
         roundedLeft={i === 0}
         roundedRight={i === items.length - 1}
       />
