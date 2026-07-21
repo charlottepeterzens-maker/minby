@@ -15,6 +15,7 @@ import HomePage from "./pages/HomePage";
 import CirclePage from "./pages/CirclePage";
 import ChatPage from "./pages/ChatPage";
 import VerifyPage from "./pages/VerifyPage";
+import SettingsPage from "./pages/SettingsPage";
 
 const queryClient = new QueryClient();
 
