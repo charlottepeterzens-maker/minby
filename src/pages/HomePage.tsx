@@ -340,6 +340,8 @@ const ProfilePlaceholders = ({ userId }: { userId: string | null }) => {
           title: m.title,
           meeting_date: m.meeting_date,
           created_by: m.created_by,
+          circle_id: m.circle_id,
+
           host_name: nameById.get(m.created_by) ?? "Någon",
           response_count: counts.get(m.id) ?? 0,
           isMine: m.created_by === userId,
