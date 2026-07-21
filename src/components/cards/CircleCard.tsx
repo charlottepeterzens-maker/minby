@@ -53,7 +53,7 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
       <div className="flex-1 min-w-0">
         <div
           className="text-[13px] mb-2"
-          style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}
+          style={{ fontFamily: "'Outfit', sans-serif", color: "#2E1F3E" }}
         >
           {name}
         </div>

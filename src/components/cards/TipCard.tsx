@@ -50,7 +50,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
         </div>
         <div
           className="text-[15px] font-medium leading-tight truncate"
-          style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}
+          style={{ fontFamily: "'Outfit', sans-serif", color: "#2E1F3E" }}
         >
           {title}
         </div>

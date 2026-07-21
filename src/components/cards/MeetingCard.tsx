@@ -23,7 +23,7 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onO
         </div>
         <div
           className="text-[15px] leading-tight font-medium"
-          style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}
+          style={{ fontFamily: "'Outfit', sans-serif", color: "#2E1F3E" }}
         >
           {dateLabel}
           {dateLabel && <br />}
