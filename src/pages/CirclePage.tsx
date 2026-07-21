@@ -238,13 +238,29 @@ const CirclePage = () => {
   const createTip = async () => {
     if (!user || !id || !tipTitle.trim()) return;
     setSavingTip(true);
+
+    // Try to fetch link preview image if URL provided
+    let imagePath: string | null = null;
+    const trimmedUrl = tipUrl.trim();
+    if (trimmedUrl) {
+      try {
+        const { data: preview } = await supabase.functions.invoke("fetch-link-preview", {
+          body: { url: trimmedUrl, uploadBucket: "circle-photos", uploadPrefix: `${id}/tips` },
+        });
+        if (preview?.storagePath) imagePath = preview.storagePath as string;
+      } catch (e) {
+        console.error("Link preview failed", e);
+      }
+    }
+
     const { data, error } = await supabase
       .from("tips")
       .insert({
         owner_id: user.id,
         title: tipTitle.trim(),
-        url: tipUrl.trim() || null,
+        url: trimmedUrl || null,
         comment: tipComment.trim() || null,
+        image_path: imagePath,
       })
       .select("id, title, url, comment, created_at, owner_id, image_path")
       .single();
@@ -252,10 +268,12 @@ const CirclePage = () => {
     const { error: visErr } = await supabase.from("tip_visibility").insert({ tip_id: data.id, circle_id: id });
     setSavingTip(false);
     if (visErr) { toast.error(visErr.message); return; }
-    setTips((prev) => [{ ...data, owner_name: displayName, image_url: null }, ...prev]);
+    const [signed] = await signPhotoUrls([{ ...data }], "image_path");
+    setTips((prev) => [{ ...signed, owner_name: displayName }, ...prev]);
     setTipTitle(""); setTipUrl(""); setTipComment(""); setShowTipForm(false);
     toast.success("Tipset är delat");
   };
+
 
   const uploadPhoto = async (file: File) => {
     if (!user || !id) return;
