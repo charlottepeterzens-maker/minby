@@ -106,43 +106,13 @@ const HomePage = () => {
       <div className="max-w-lg mx-auto px-5 pt-safe pb-safe">
         <header className="flex items-center justify-between py-6">
           <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "lowercase" }}>minby</span>
-          <div className="relative">
-            <button
-              onClick={() => setMenuOpen((v) => !v)}
-              className="text-foreground p-2"
-              aria-label="Inställningar"
-              aria-expanded={menuOpen}
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            {menuOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-                <div
-                  className="absolute right-0 top-full mt-2 w-56 rounded-2xl py-2 z-50 shadow-lg"
-                  style={{ backgroundColor: "#F9F3E1" }}
-                  role="menu"
-                >
-                  <MenuItem
-                    icon={<UserIcon className="w-4 h-4" />}
-                    label="Redigera profil"
-                    onClick={() => { setMenuOpen(false); openEdit(); }}
-                  />
-                  <MenuItem
-                    icon={<ImageIcon className="w-4 h-4" />}
-                    label={profile.avatar_url ? "Byt profilbild" : "Lägg till profilbild"}
-                    onClick={() => { setMenuOpen(false); fileRef.current?.click(); }}
-                  />
-                  <div className="my-1 h-px" style={{ backgroundColor: "#E8DDC6" }} />
-                  <MenuItem
-                    icon={<LogOut className="w-4 h-4" />}
-                    label="Logga ut"
-                    onClick={() => { setMenuOpen(false); signOut(); }}
-                  />
-                </div>
-              </>
-            )}
-          </div>
+          <button
+            onClick={() => navigate("/settings")}
+            className="text-foreground p-2"
+            aria-label="Inställningar"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
         </header>
 
         {/* Profile header */}
