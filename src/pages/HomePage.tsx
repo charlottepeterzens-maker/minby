@@ -632,26 +632,53 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     </p>
 
 
-    {/* Mina tips */}
-    <SectionHeader title="Mina tips" cta="+ Dela ett tips" onCta={openTipForm} disabled={!circles.length} />
+    {/* Mina tips — overview preview */}
+    <div className="mt-10 mb-3">
+      <h2 className="font-display text-xl text-foreground">Mina tips</h2>
+    </div>
     {hasTips ? (
-      <HorizontalStrip
-        gradient="tips"
-        items={myTips!.map((t) => ({ title: t.title, sub: displayName || "Du", bg: "#E8DDC6", imageUrl: t.image_url }))}
-      />
+      <>
+        <div className="relative">
+          <div className="space-y-3 max-h-[280px] overflow-hidden">
+            {myTips!.slice(0, 3).map((t) => (
+              <TipCard
+                key={t.id}
+                imageUrl={t.image_url}
+                ownerName={displayName || "Du"}
+                ownerAvatar={null}
+                dateLabel={formatTipDate(t.created_at)}
+                title={t.title}
+                description={t.comment}
+                url={t.url}
+                onOpen={() => setShowAllTips(true)}
+              />
+            ))}
+          </div>
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
+            style={{ background: "linear-gradient(to bottom, hsla(42,20%,95%,0), hsl(var(--background)) 85%)" }}
+          />
+        </div>
+        <div className="mt-4 flex justify-center">
+          <TextButton onClick={() => setShowAllTips(true)}>Visa alla tips</TextButton>
+        </div>
+      </>
     ) : (
-      <HorizontalStrip
-        gradient="tips"
-        items={[
-          { title: "Bagarstugan", sub: "Du", bg: "#E8DDC6", showTag: true },
-          { title: "podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
-          { title: "bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
-        ]}
-      />
+      <>
+        <HorizontalStrip
+          gradient="tips"
+          items={[
+            { title: "Bagarstugan", sub: "Du", bg: "#E8DDC6", showTag: true },
+            { title: "podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
+            { title: "bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
+          ]}
+        />
+        <p className="text-sm mt-2" style={{ color: "#561828" }}>
+          {circles.length ? "Dela en plats, bok, podd eller länk du gillar med en krets." : "Skapa en krets så kan du dela tips."}
+        </p>
+      </>
     )}
-    <p className="text-sm mt-2" style={{ color: "#561828" }}>
-      {circles.length ? "Dela en plats, bok, podd eller länk du gillar med en krets." : "Skapa en krets så kan du dela tips."}
-    </p>
+
 
     {/* Foton */}
     <SectionHeader title="Mina foton" cta="+ Ladda upp foto" onCta={openPhotoForm} disabled={!circles.length} />
