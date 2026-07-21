@@ -171,7 +171,7 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.2;
     -webkit-font-smoothing: antialiased;
     /* Faster taps, no double-tap zoom on the app shell */
@@ -231,13 +231,13 @@
     font-weight: 400;
   }
   .text-body {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.2;
     letter-spacing: 0;
     font-weight: 400;
   }
   .text-button {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1;
     letter-spacing: 0;
     font-weight: 500;

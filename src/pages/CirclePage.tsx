@@ -500,7 +500,7 @@ const CirclePage = () => {
                   <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(20, 4%, 40%)" }}>
                     {sinceLast.label}
                   </div>
-                  <p className="text-[14px] leading-relaxed" style={{ color: "#2B2B2B" }}>
+                  <p className="text-[16px] leading-relaxed" style={{ color: "#2B2B2B" }}>
                     {sinceLast.body}
                   </p>
                 </div>
@@ -555,18 +555,18 @@ const CirclePage = () => {
                   Senast uppdaterad: {formatTimestamp(aiSummary.generated_at)}
                   {aiSummary.author ? ` av ${aiSummary.author}` : ""}
                 </div>
-                <p className="text-[14px] leading-relaxed" style={{ color: "#2B2B2B" }}>
+                <p className="text-[16px] leading-relaxed" style={{ color: "#2B2B2B" }}>
                   {aiSummary.content}
                 </p>
               </>
             ) : (
-              <p className="text-[14px] leading-relaxed" style={{ color: "#2B2B2B" }}>
+              <p className="text-[16px] leading-relaxed" style={{ color: "#2B2B2B" }}>
                 Ingen sammanfattning ännu. Skriv några meddelanden så plockar vi upp tråden.
               </p>
             )}
             <TextButton
               onClick={() => navigate(`/chat/${circle.id}`)}
-              className="mt-4 text-[14px]"
+              className="mt-4 text-[16px]"
             >
               <MessageCircle className="w-4 h-4" /> Se hela chatten
             </TextButton>
@@ -888,7 +888,7 @@ const CirclePage = () => {
                 </SheetDescription>
               </SheetHeader>
               {selectedMeeting.description && (
-                <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
+                <p className="mt-4 text-[16px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
                   {selectedMeeting.description}
                 </p>
               )}
@@ -901,7 +901,7 @@ const CirclePage = () => {
                 ) : (
                   <ul className="space-y-1">
                     {meetingAttendees.map((a) => (
-                      <li key={a.user_id} className="text-[14px]" style={{ color: "#2B2B2B" }}>
+                      <li key={a.user_id} className="text-[16px]" style={{ color: "#2B2B2B" }}>
                         {a.display_name ?? "Anonym"}
                       </li>
                     ))}
@@ -936,7 +936,7 @@ const CirclePage = () => {
                 <div className={`mt-4 w-full h-[160px] ${CARD_RADIUS_CLASS.photo} bg-center bg-cover`} style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
               )}
               {selectedTip.comment && (
-                <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
+                <p className="mt-4 text-[16px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
                   {selectedTip.comment}
                 </p>
               )}
