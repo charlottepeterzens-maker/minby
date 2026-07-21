@@ -385,13 +385,12 @@ const CirclePage = () => {
         <section className="mt-8">
           <div className="px-4 mb-3 flex items-center justify-between">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra förslag att ses</h2>
-            <button
+            <TextButton
               onClick={() => setShowMeetingForm(true)}
-              className="text-[13px] font-medium underline underline-offset-4"
-              style={LINK_STYLE}
+              className="text-[13px]"
             >
               + Föreslå en träff
-            </button>
+            </TextButton>
           </div>
           {loadingContent ? (
             <div className="flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
