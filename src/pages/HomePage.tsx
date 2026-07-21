@@ -347,7 +347,7 @@ const ProfilePlaceholders = () => (
     {/* Mina tips */}
     <SectionHeader title="Mina tips" cta="+ Dela ett tips" />
     <HorizontalStrip
-      gradient={TIPS_GRADIENT}
+      gradient="tips"
       items={[
         { title: "Bagarstugan", sub: "Du", bg: "#E8DDC6", showTag: true },
         { title: "Podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
@@ -361,7 +361,7 @@ const ProfilePlaceholders = () => (
     {/* Foton */}
     <SectionHeader title="Mina foton" cta="+ Ladda upp foto" />
     <HorizontalStrip
-      gradient={PHOTOS_GRADIENT}
+      gradient="photos"
       items={[
         { title: "Barnen", sub: "Du", bg: "#E8DDC6", showTag: true },
         { title: "Huset", sub: "Du", bg: "#DCEAF8" },
