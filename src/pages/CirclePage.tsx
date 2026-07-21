@@ -6,7 +6,7 @@ import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, Plus } from "lucide-react";
+import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, Plus, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import PhotoTile from "@/components/cards/PhotoTile";
