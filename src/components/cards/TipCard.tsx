@@ -6,22 +6,26 @@ interface Props {
   title: string;
   description?: string | null;
   url?: string | null;
+  onOpen?: () => void;
 }
 
-const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, description, url }: Props) => {
+const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, description, url, onOpen }: Props) => {
   const initials = ownerName
     .split(" ")
     .slice(0, 2)
     .map((w) => w[0]?.toUpperCase())
     .join("");
 
-  const open = () => {
+  const openLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (url) window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <div
-      className="w-full rounded-[20px] p-3 flex gap-3"
+    <button
+      type="button"
+      onClick={onOpen}
+      className="w-full text-left rounded-[20px] p-3 flex gap-3"
       style={{ backgroundColor: "#F9F3E1" }}
     >
       <div
@@ -59,16 +63,19 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
           </p>
         )}
         {url && (
-          <button
-            onClick={open}
-            className="mt-auto text-left text-[14px] font-medium underline underline-offset-4"
+          <span
+            role="link"
+            tabIndex={0}
+            onClick={openLink}
+            onKeyDown={(e) => { if (e.key === "Enter") openLink(e as any); }}
+            className="mt-auto text-left text-[14px] font-medium underline underline-offset-4 cursor-pointer"
             style={{ color: "#C4522A" }}
           >
             Till tipset
-          </button>
+          </span>
         )}
       </div>
-    </div>
+    </button>
   );
 };
 

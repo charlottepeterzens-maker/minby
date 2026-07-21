@@ -4,12 +4,13 @@ interface Props {
   title: string;
   responseCount: number;
   onRespond: () => void;
+  onOpen?: () => void;
 }
 
-const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond }: Props) => {
+const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onOpen }: Props) => {
   return (
     <button
-      onClick={onRespond}
+      onClick={onOpen}
       className="w-[130px] flex-shrink-0 h-[166px] text-left rounded-[30px] p-4 flex flex-col justify-between"
       style={{ backgroundColor: "#F2ECE3" }}
     >
@@ -34,7 +35,11 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond }: P
           {responseCount} har svarat
         </div>
         <span
-          className="text-[13px] font-medium underline underline-offset-4"
+          role="button"
+          tabIndex={0}
+          onClick={(e) => { e.stopPropagation(); onRespond(); }}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onRespond(); } }}
+          className="text-[13px] font-medium underline underline-offset-4 cursor-pointer"
           style={{ color: "#2E1F3E" }}
         >
           Jag kan
