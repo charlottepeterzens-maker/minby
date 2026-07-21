@@ -151,12 +151,12 @@ const HomePage = () => {
               {profile.display_name ? (
                 <span className="font-display text-xl text-foreground truncate">{profile.display_name}</span>
               ) : (
-                <span
-                  className="text-[15px] font-medium underline underline-offset-[6px] decoration-2"
-                  style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
-                >
-                  Lägg till ditt namn
-                </span>
+                  <span
+                    className="text-[15px] font-medium underline underline-offset-2 decoration-2"
+                    style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+                  >
+                    Lägg till ditt namn
+                  </span>
               )}
               <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
@@ -303,12 +303,12 @@ const ProfilePlaceholders = () => (
             <div className="text-[12px] mb-1" style={{ color: "#561828" }}>
               {m.count === 0 ? "Ingen har svarat" : `${m.count} har svarat`}
             </div>
-            <span
-              className="text-[15px] font-medium underline underline-offset-[6px] decoration-2"
-              style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
-            >
-              Häng med!
-            </span>
+              <span
+                className="text-[15px] font-medium underline underline-offset-2 decoration-2"
+                style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+              >
+                Häng med!
+              </span>
           </div>
         </div>
       ))}
@@ -406,12 +406,12 @@ const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: strin
       <p className="text-[15px] leading-snug mb-3" style={{ color: "#2B2B2B" }}>
         {summary}
       </p>
-      <span
-        className="text-[15px] font-medium underline underline-offset-[6px] decoration-2"
-        style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
-      >
-        Skapa din egen
-      </span>
+        <span
+          className="text-[15px] font-medium underline underline-offset-2 decoration-2"
+          style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+        >
+          Skapa din egen
+        </span>
     </div>
     <div className="flex-shrink-0 w-[92px] h-[92px] relative">
       <div className="absolute top-0 right-0 w-12 h-12 rounded-full" style={{ backgroundColor: "#DCEAF8" }} />
