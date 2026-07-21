@@ -385,13 +385,12 @@ const CirclePage = () => {
         <section className="mt-8">
           <div className="px-4 mb-3 flex items-center justify-between">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra förslag att ses</h2>
-            <button
+            <TextButton
               onClick={() => setShowMeetingForm(true)}
-              className="text-[13px] font-medium underline underline-offset-4"
-              style={LINK_STYLE}
+              className="text-[13px]"
             >
               + Föreslå en träff
-            </button>
+            </TextButton>
           </div>
           {loadingContent ? (
             <div className="flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
@@ -437,13 +436,12 @@ const CirclePage = () => {
                 Ingen sammanfattning ännu. Skriv några meddelanden så plockar vi upp tråden.
               </p>
             )}
-            <button
+            <TextButton
               onClick={() => navigate(`/chat/${circle.id}`)}
-              className="mt-4 text-[14px] font-medium underline underline-offset-4 inline-flex items-center gap-1"
-              style={LINK_STYLE}
+              className="mt-4 text-[14px]"
             >
               <MessageCircle className="w-4 h-4" /> Se hela chatten
-            </button>
+            </TextButton>
           </div>
         </section>
 
@@ -451,13 +449,12 @@ const CirclePage = () => {
         <section className="mt-8">
           <div className="px-4 mb-3 flex items-center justify-between">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra tips</h2>
-            <button
+            <TextButton
               onClick={() => setShowTipForm(true)}
-              className="text-[13px] font-medium underline underline-offset-4"
-              style={LINK_STYLE}
+              className="text-[13px]"
             >
               + Lägg till tips
-            </button>
+            </TextButton>
           </div>
           {loadingContent ? (
             <div className="flex overflow-x-auto pl-4 pr-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
@@ -488,14 +485,13 @@ const CirclePage = () => {
         <section className="mt-8 mb-10">
           <div className="px-4 mb-3 flex items-center justify-between">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra foton</h2>
-            <button
+            <TextButton
               onClick={() => photoInputRef.current?.click()}
               disabled={uploadingPhoto}
-              className="text-[13px] font-medium underline underline-offset-4 disabled:opacity-50"
-              style={LINK_STYLE}
+              className="text-[13px]"
             >
               {uploadingPhoto ? "Laddar upp…" : "+ Lägg foto"}
-            </button>
+            </TextButton>
             <input
               ref={photoInputRef}
               type="file"
