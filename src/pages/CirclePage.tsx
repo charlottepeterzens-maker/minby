@@ -50,6 +50,7 @@ const CirclePage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [circle, setCircle] = useState<Circle | null>(null);
+  const [sinceLastOpen, setSinceLastOpen] = useState(false);
   const [members, setMembers] = useState<{ user_id: string; display_name: string | null }[]>([]);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [tips, setTips] = useState<Tip[]>([]);
