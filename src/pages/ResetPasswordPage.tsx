@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -61,13 +62,11 @@ const ResetPasswordPage = () => {
         <div className="w-full max-w-sm text-center">
           <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
           <p className="text-muted-foreground mt-4 text-sm">Ogiltig eller utgången återställningslänk.</p>
-          <Button
-            onClick={() => navigate("/auth")}
-            className="mt-6 w-full rounded-lg font-medium text-sm"
-            style={{ backgroundColor: "#561828", color: "#fff" }}
-          >
-            Tillbaka till inloggning
-          </Button>
+          <div className="mt-6 flex justify-center">
+            <TextButton onClick={() => navigate("/auth")}>
+              Tillbaka till inloggning
+            </TextButton>
+          </div>
         </div>
       </div>
     );
@@ -111,14 +110,11 @@ const ResetPasswordPage = () => {
               required
             />
           </div>
-          <Button
-            type="submit"
-            className="w-full rounded-lg font-medium text-sm"
-            disabled={loading}
-            style={{ backgroundColor: "#561828", color: "#fff" }}
-          >
-            {loading ? "..." : "Uppdatera lösenord"}
-          </Button>
+          <div className="pt-2 flex justify-center">
+            <TextButton type="submit" disabled={loading}>
+              {loading ? "..." : "Uppdatera lösenord"}
+            </TextButton>
+          </div>
         </form>
       </div>
     </div>

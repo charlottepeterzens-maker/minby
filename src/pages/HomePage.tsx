@@ -217,7 +217,7 @@ const HomePage = () => {
             />
             <div className="pt-4 flex justify-center">
               <TextButton onClick={() => setCreating(true)}>
-                <Plus className="w-4 h-4" /> Skapa din första krets
+                + Skapa din första krets
               </TextButton>
             </div>
           </div>
@@ -249,7 +249,7 @@ const HomePage = () => {
             ) : (
               <div className="pt-4 flex justify-center">
                 <TextButton onClick={() => setCreating(true)}>
-                  <Plus className="w-4 h-4" /> Ny krets
+                  + Ny krets
                 </TextButton>
               </div>
             )}

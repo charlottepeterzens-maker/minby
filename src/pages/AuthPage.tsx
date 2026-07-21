@@ -20,6 +20,7 @@ const t = (key: string): string => {
 };
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
@@ -243,14 +244,11 @@ const AuthPage = () => {
                 required
               />
             </div>
-            <Button
-              type="submit"
-              className="w-full rounded-lg font-medium text-sm"
-              disabled={loading}
-              style={{ backgroundColor: "#561828", color: "#fff" }}
-            >
-              {loading ? "..." : "Skicka återställningslänk"}
-            </Button>
+            <div className="pt-2 flex justify-center">
+              <TextButton type="submit" disabled={loading}>
+                {loading ? "..." : "Skicka återställningslänk"}
+              </TextButton>
+            </div>
           </form>
           <p className="text-center text-sm text-muted-foreground mt-8">
             <button onClick={() => setView("login")} className="text-foreground font-medium hover:underline">
@@ -336,18 +334,11 @@ const AuthPage = () => {
             </label>
           )}
 
-          <Button
-            type="submit"
-            className="w-full font-medium text-sm"
-            disabled={loading || (isSignUp && !consent)}
-            style={{
-              borderRadius: 8,
-              ...(isSignUp && consent ? { backgroundColor: "#561828", color: "#fff" } : 
-                !isSignUp ? { backgroundColor: "#561828", color: "#fff" } : {}),
-            }}
-          >
-            {loading ? "..." : isSignUp ? t("createAccount") : t("signIn")}
-          </Button>
+          <div className="pt-2 flex justify-center">
+            <TextButton type="submit" disabled={loading || (isSignUp && !consent)}>
+              {loading ? "..." : isSignUp ? t("createAccount") : t("signIn")}
+            </TextButton>
+          </div>
         </form>
 
         {!isSignUp && (
