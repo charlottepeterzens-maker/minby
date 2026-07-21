@@ -71,9 +71,11 @@ const InvitePage = () => {
     <div className="min-h-screen bg-background flex items-center justify-center px-6">
       <div className="w-full max-w-sm text-center space-y-6">
         <h1 className="font-display text-2xl">Du är inbjuden till <em style={{ color: "#C85A2E" }}>{circleName}</em></h1>
-        <Button onClick={accept} disabled={busy} className="w-full rounded-lg" style={{ backgroundColor: "#561828", color: "#fff" }}>
-          {busy ? "…" : user ? "Gå med" : "Logga in för att gå med"}
-        </Button>
+        <div className="flex justify-center">
+          <TextButton onClick={accept} disabled={busy}>
+            {busy ? "…" : user ? "Gå med" : "Logga in för att gå med"}
+          </TextButton>
+        </div>
       </div>
     </div>
   );
