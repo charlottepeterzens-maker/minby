@@ -47,25 +47,25 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
   return (
     <button
       onClick={onOpen}
-      className="w-full text-left rounded-[20px] p-5 flex gap-4"
-      style={{ backgroundColor: "#F9F3E1" }}
+      className="w-full text-left rounded-3xl p-5 flex gap-4"
+      style={{ backgroundColor: "#F5EFD9" }}
     >
       <div className="flex-1 min-w-0">
         <div
           className="text-[13px] mb-2"
-          style={{ fontFamily: "'Outfit', sans-serif", color: "#2E1F3E" }}
+          style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}
         >
           {name}
         </div>
         <p
           className="text-[15px] leading-snug line-clamp-4 mb-3"
-          style={{ color: "#2E1F3E" }}
+          style={{ color: "#2B2B2B" }}
         >
           {summary ?? "Här samlas kretsen. Öppna för att se vad som händer."}
         </p>
         <span
           className="text-[15px] font-medium underline underline-offset-4"
-          style={{ color: "#2E1F3E" }}
+          style={{ color: "#2B2B2B" }}
         >
           Kika in!
         </span>
@@ -84,7 +84,7 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
         {extra > 0 && (
           <div
             className="absolute bottom-0 right-2 w-10 h-10 rounded-full flex items-center justify-center text-[13px] font-medium"
-            style={{ backgroundColor: "#DAEAF6", color: "#2E1F3E" }}
+            style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
           >
             +{extra}
           </div>
@@ -103,7 +103,7 @@ const Avatar = ({ src, name, className }: { src: string | null; name: string | n
   return (
     <div
       className={`rounded-full overflow-hidden flex items-center justify-center text-xs ${className ?? ""}`}
-      style={{ backgroundColor: "#DAEAF6", color: "#2E1F3E" }}
+      style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
     >
       {src ? (
         <img src={src} alt="" className="w-full h-full object-cover" />

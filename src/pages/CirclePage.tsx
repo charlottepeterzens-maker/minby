@@ -36,10 +36,10 @@ const formatTimestamp = (iso: string) => {
   return `${d.getDate()} ${monthNames[d.getMonth()].slice(0, 3)}, ${d.getHours().toString().padStart(2, "0")}.${d.getMinutes().toString().padStart(2, "0")}`;
 };
 
-const HEADING_STYLE = { fontFamily: "'Outfit', sans-serif", color: "#2E1F3E" } as const;
-const LINK_STYLE = { color: "#C4522A" } as const;
-const CARD_YELLOW = "hsl(44, 65%, 93%)";
-const CARD_BLUE = "hsl(210, 45%, 94%)";
+const HEADING_STYLE = { fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" } as const;
+const LINK_STYLE = { color: "#C85A2E" } as const;
+const CARD_YELLOW = "#F5EFD9";
+const CARD_BLUE = "#DCEAF8";
 
 const CirclePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -374,7 +374,7 @@ const CirclePage = () => {
               <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(20, 4%, 40%)" }}>
                 {sinceLast.label}
               </div>
-              <p className="text-[14px] leading-relaxed" style={{ color: "#2E1F3E" }}>
+              <p className="text-[14px] leading-relaxed" style={{ color: "#2B2B2B" }}>
                 {sinceLast.body}
               </p>
             </div>
@@ -428,12 +428,12 @@ const CirclePage = () => {
                   Senast uppdaterad: {formatTimestamp(aiSummary.generated_at)}
                   {aiSummary.author ? ` av ${aiSummary.author}` : ""}
                 </div>
-                <p className="text-[14px] leading-relaxed" style={{ color: "#2E1F3E" }}>
+                <p className="text-[14px] leading-relaxed" style={{ color: "#2B2B2B" }}>
                   {aiSummary.content}
                 </p>
               </>
             ) : (
-              <p className="text-[14px] leading-relaxed" style={{ color: "#2E1F3E" }}>
+              <p className="text-[14px] leading-relaxed" style={{ color: "#2B2B2B" }}>
                 Ingen sammanfattning ännu. Skriv några meddelanden så plockar vi upp tråden.
               </p>
             )}
@@ -581,7 +581,7 @@ const CirclePage = () => {
                 </SheetDescription>
               </SheetHeader>
               {selectedMeeting.description && (
-                <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2E1F3E" }}>
+                <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
                   {selectedMeeting.description}
                 </p>
               )}
@@ -594,7 +594,7 @@ const CirclePage = () => {
                 ) : (
                   <ul className="space-y-1">
                     {meetingAttendees.map((a) => (
-                      <li key={a.user_id} className="text-[14px]" style={{ color: "#2E1F3E" }}>
+                      <li key={a.user_id} className="text-[14px]" style={{ color: "#2B2B2B" }}>
                         {a.display_name ?? "Anonym"}
                       </li>
                     ))}
@@ -629,7 +629,7 @@ const CirclePage = () => {
                 <div className="mt-4 w-full h-[160px] rounded-lg bg-center bg-cover" style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
               )}
               {selectedTip.comment && (
-                <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2E1F3E" }}>
+                <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
                   {selectedTip.comment}
                 </p>
               )}

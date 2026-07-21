@@ -47,7 +47,7 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
             fontFamily: "'Outfit', sans-serif",
             fontSize: 13,
             fontWeight: 400,
-            color: "#C4522A",
+            color: "#C85A2E",
             letterSpacing: "0.2em",
             textTransform: "lowercase",
             marginBottom: 48,
@@ -68,7 +68,7 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
           }}
         >
           Äntligen ett ställe{" "}
-          <em style={{ fontStyle: "italic", color: "#C4522A" }}>bara för er.</em>
+          <em style={{ fontStyle: "italic", color: "#C85A2E" }}>bara för er.</em>
         </h1>
 
         {/* Subheading */}
@@ -225,7 +225,7 @@ const AuthPage = () => {
       <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <div className="w-full max-w-sm">
           <div className="text-center mb-10">
-            <span style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.2em", color: "#C4522A", textTransform: "uppercase" as const }}>minby</span>
+            <span style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "uppercase" as const }}>minby</span>
             <h1 className="font-display font-medium text-[20px] text-foreground mt-4">Glömt lösenord?</h1>
             <p className="text-muted-foreground mt-2 text-sm">Ange din e-post så skickar vi en återställningslänk</p>
           </div>
@@ -266,7 +266,7 @@ const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <span style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.2em", color: "#C4522A", textTransform: "lowercase" as const }}>minby</span>
+          <span style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "lowercase" as const }}>minby</span>
           <h1 className="font-display font-medium text-[20px] text-foreground mt-4">
             {isSignUp ? t("joinMinby") : t("welcomeBack")}
           </h1>
