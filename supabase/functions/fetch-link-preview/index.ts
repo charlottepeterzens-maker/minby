@@ -51,7 +51,12 @@ Deno.serve(async (req) => {
     }
 
     const response = await fetch(formattedUrl, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Lovable/1.0; +https://lovable.dev)', 'Accept': 'text/html' },
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'sv,en;q=0.9',
+      },
       redirect: 'follow',
     });
     if (!response.ok) {
@@ -81,6 +86,44 @@ Deno.serve(async (req) => {
       }, new Uint8Array())
     );
 
+    const decodeEntities = (s: string): string => {
+      if (!s) return s;
+      let out = s
+        .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+        .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)));
+      const named: Record<string, string> = {
+        amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ',
+        ndash: '–', mdash: '—', hellip: '…', laquo: '«', raquo: '»',
+        lsquo: '‘', rsquo: '’', ldquo: '“', rdquo: '”',
+        auml: 'ä', ouml: 'ö', aring: 'å', Auml: 'Ä', Ouml: 'Ö', Aring: 'Å',
+      };
+      out = out.replace(/&([a-zA-Z]+);/g, (m, n) => (named[n] ?? m));
+      return out;
+    };
+
+    const cleanTitle = (raw: string | null, siteName: string | null): string | null => {
+      if (!raw) return null;
+      let t = decodeEntities(raw).replace(/\s+/g, ' ').trim();
+      // Strip common site suffix: "Article — Site", "Article | Site", "Article - Site", "Article :: Site"
+      const separators = [' — ', ' – ', ' | ', ' • ', ' :: ', ' - '];
+      for (const sep of separators) {
+        const idx = t.lastIndexOf(sep);
+        if (idx > 8 && idx > t.length / 2) {
+          const tail = t.slice(idx + sep.length).trim();
+          const head = t.slice(0, idx).trim();
+          // Only strip if the tail looks like a site (short, no ending punctuation) or matches siteName
+          if (
+            (siteName && tail.toLowerCase() === siteName.toLowerCase()) ||
+            (tail.length <= 30 && !/[.!?]$/.test(tail))
+          ) {
+            t = head;
+            break;
+          }
+        }
+      }
+      return t.replace(/\s+/g, ' ').trim() || null;
+    };
+
     const getMetaContent = (property: string): string | null => {
       for (const attr of ['property', 'name']) {
         const regex = new RegExp(`<meta[^>]+${attr}=["']${property}["'][^>]+content=["']([^"']*)["']`, 'i');
@@ -93,8 +136,33 @@ Deno.serve(async (req) => {
       return null;
     };
 
-    const title = getMetaContent('og:title') || getMetaContent('twitter:title') || html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1]?.trim() || null;
-    let image = getMetaContent('og:image') || getMetaContent('twitter:image') || null;
+    const getLinkHref = (rel: string): string | null => {
+      const regex = new RegExp(`<link[^>]+rel=["']${rel}["'][^>]+href=["']([^"']*)["']`, 'i');
+      const m = html.match(regex);
+      if (m) return m[1];
+      const regex2 = new RegExp(`<link[^>]+href=["']([^"']*)["'][^>]+rel=["']${rel}["']`, 'i');
+      const m2 = html.match(regex2);
+      return m2?.[1] ?? null;
+    };
+
+    const rawTitle =
+      getMetaContent('og:title') ||
+      getMetaContent('twitter:title') ||
+      html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() ||
+      null;
+    const siteName = getMetaContent('og:site_name');
+    const title = cleanTitle(rawTitle, siteName);
+
+    let image =
+      getMetaContent('og:image:secure_url') ||
+      getMetaContent('og:image:url') ||
+      getMetaContent('og:image') ||
+      getMetaContent('twitter:image:src') ||
+      getMetaContent('twitter:image') ||
+      getLinkHref('image_src') ||
+      getLinkHref('apple-touch-icon') ||
+      null;
+    if (image) image = decodeEntities(image).trim();
     if (image && !image.startsWith('http')) {
       try { image = new URL(image, formattedUrl).href; } catch { /* ignore */ }
     }
