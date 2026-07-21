@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
       redirect: 'follow',
     });
     if (!response.ok) {
-      return new Response(JSON.stringify({ error: `Failed to fetch: ${response.status}` }), { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify({ title: null, image: null, storagePath: null }), { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
     const reader = response.body?.getReader();
