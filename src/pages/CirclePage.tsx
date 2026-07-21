@@ -412,6 +412,18 @@ const CirclePage = () => {
           />
         )}
 
+        {/* Welcome card for newly joined members */}
+        {showWelcome && circle && (
+          <WelcomeToCircleCard
+            circleName={circle.name}
+            onSayHi={() => navigate(`/chat/${circle.id}`)}
+          />
+        )}
+
+        {/* Stepwise, non-blocking profile onboarding */}
+        <ProfileNudge />
+
+
         {/* Sedan sist — collapsible */}
         {sinceLast && (
           <section className="mt-6 px-4">
