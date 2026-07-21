@@ -55,7 +55,7 @@ const CircleOnboarding = ({ circleId, circleName, hasMembers, hasPhotos, hasTips
 
   return (
     <section className="mt-6 px-4">
-      <div className="rounded-[28px] p-5" style={{ backgroundColor: "#F9F3E1" }}>
+      <div className="rounded-[26px] p-5" style={{ backgroundColor: "#F9F3E1" }}>
         <div className="flex items-start justify-between mb-1">
           <div className="text-[11px] font-medium" style={{ color: "#675332" }}>
             {doneCount} av {STEPS.length} klara

@@ -482,7 +482,7 @@ const CirclePage = () => {
         {/* Sedan sist — collapsible */}
         {sinceLast && (
           <section className="mt-6 px-4">
-            <div className="rounded-[28px]" style={{ backgroundColor: CARD_YELLOW }}>
+            <div className="rounded-[26px]" style={{ backgroundColor: CARD_YELLOW }}>
               <button
                 type="button"
                 onClick={() => setSinceLastOpen((v) => !v)}
@@ -548,7 +548,7 @@ const CirclePage = () => {
         {/* Chatt */}
         <section className="mt-8 px-4">
           <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Chatt</h2>
-          <div className="rounded-[28px] p-4" style={{ backgroundColor: CARD_BLUE }}>
+          <div className="rounded-[26px] p-4" style={{ backgroundColor: CARD_BLUE }}>
             {aiSummary ? (
               <>
                 <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(210, 20%, 35%)" }}>

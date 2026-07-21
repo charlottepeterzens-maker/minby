@@ -168,7 +168,7 @@ const HomePage = () => {
         </section>
 
         {editingProfile && (
-          <div className="mb-6 rounded-[28px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
+          <div className="mb-6 rounded-[26px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
             <input
               autoFocus
               value={nameDraft}
@@ -225,7 +225,7 @@ const HomePage = () => {
             ))}
 
             {creating ? (
-              <div className="rounded-[28px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
+              <div className="rounded-[26px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
                 <input
                   autoFocus
                   value={newName}
@@ -557,7 +557,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
           <button
             key={m.id}
             onClick={() => navigate(`/circle/${m.circle_id}`)}
-            className="w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between relative text-left"
+            className="w-[176px] flex-shrink-0 h-[184px] rounded-[26px] p-4 flex flex-col justify-between relative text-left"
             style={{ backgroundColor: "#F2ECE3" }}
           >
             <div>
@@ -590,7 +590,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
         ].map((m, i) => (
           <div
             key={i}
-            className="w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between relative"
+            className="w-[176px] flex-shrink-0 h-[184px] rounded-[26px] p-4 flex flex-col justify-between relative"
             style={{ backgroundColor: "#F2ECE3" }}
           >
             <div className="absolute top-3 right-3"><PlaceholderTag /></div>
@@ -760,7 +760,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
 
 const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: string }) => (
   <div
-    className="w-full rounded-[28px] p-5 flex gap-4 relative"
+    className="w-full rounded-[26px] p-5 flex gap-4 relative"
     style={{ backgroundColor: "#F9F3E1" }}
   >
     <ExampleTag className="absolute top-3 right-3" />

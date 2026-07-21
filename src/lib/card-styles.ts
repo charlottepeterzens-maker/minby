@@ -18,8 +18,8 @@ export const CARD_RADIUS = {
 } as const;
 
 export const CARD_RADIUS_CLASS = {
-  card: "rounded-[28px]",
-  photo: "rounded-[24px]",
+  card: "rounded-[26px]",
+  photo: "rounded-[26px]",
   bubble: "rounded-[20px]",
   thumb: "rounded-[16px]",
   avatar: "rounded-[32%]",
