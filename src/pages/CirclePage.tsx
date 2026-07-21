@@ -242,10 +242,26 @@ const CirclePage = () => {
     if (!user || !id || !tipTitle.trim()) return;
     setSavingTip(true);
 
-    // Try to fetch link preview image if URL provided
     let imagePath: string | null = null;
     const trimmedUrl = tipUrl.trim();
-    if (trimmedUrl) {
+
+    // 1. Prefer user-uploaded photo
+    if (tipImageFile) {
+      try {
+        const ext = tipImageFile.name.split(".").pop() || "jpg";
+        const path = `${id}/tips/${user.id}/${crypto.randomUUID()}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("circle-photos")
+          .upload(path, tipImageFile, { contentType: tipImageFile.type });
+        if (upErr) throw upErr;
+        imagePath = path;
+      } catch (e: any) {
+        setSavingTip(false);
+        toast.error(e?.message ?? "Kunde inte ladda upp bilden");
+        return;
+      }
+    } else if (trimmedUrl) {
+      // 2. Fallback: fetch OG image from the link
       try {
         const { data: preview } = await supabase.functions.invoke("fetch-link-preview", {
           body: { url: trimmedUrl, uploadBucket: "circle-photos", uploadPrefix: `${id}/tips` },
@@ -273,7 +289,10 @@ const CirclePage = () => {
     if (visErr) { toast.error(visErr.message); return; }
     const [signed] = await signPhotoUrls([{ ...data }], "image_path");
     setTips((prev) => [{ ...signed, owner_name: displayName }, ...prev]);
-    setTipTitle(""); setTipUrl(""); setTipComment(""); setShowTipForm(false);
+    setTipTitle(""); setTipUrl(""); setTipComment("");
+    setTipImageFile(null);
+    if (tipImagePreview) { URL.revokeObjectURL(tipImagePreview); setTipImagePreview(null); }
+    setShowTipForm(false);
     toast.success("Tipset är delat");
   };
 
