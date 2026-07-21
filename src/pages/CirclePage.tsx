@@ -306,25 +306,30 @@ const CirclePage = () => {
   };
 
 
-  const uploadPhoto = async (file: File) => {
-    if (!user || !id) return;
+  const uploadPhoto = async () => {
+    if (!user || !id || !photoFile) return;
     setUploadingPhoto(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
+      const ext = photoFile.name.split(".").pop() || "jpg";
       const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("circle-photos").upload(path, file, { contentType: file.type });
+      const { error: upErr } = await supabase.storage.from("circle-photos").upload(path, photoFile, { contentType: photoFile.type });
       if (upErr) throw upErr;
+      const caption = photoCaption.trim() || null;
       const { data: photoRow, error: insErr } = await supabase
         .from("photos")
-        .insert({ owner_id: user.id, storage_path: path })
-        .select("id, storage_path, owner_id, created_at")
+        .insert({ owner_id: user.id, storage_path: path, caption })
+        .select("id, storage_path, owner_id, created_at, caption")
         .single();
       if (insErr || !photoRow) throw insErr ?? new Error("Kunde inte spara foto");
       const { error: visErr } = await supabase.from("photo_visibility").insert({ photo_id: photoRow.id, circle_id: id });
       if (visErr) throw visErr;
       const { data: signed } = await supabase.storage.from("circle-photos").createSignedUrl(path, 60 * 60);
-      setPhotos((prev) => [{ ...photoRow, owner_name: displayName, image_url: signed?.signedUrl ?? null }, ...prev]);
+      setPhotos((prev) => [{ ...(photoRow as any), caption: (photoRow as any).caption ?? null, owner_name: displayName, image_url: signed?.signedUrl ?? null }, ...prev]);
       toast.success("Fotot är delat");
+      setPhotoFile(null);
+      setPhotoCaption("");
+      if (photoPreview) { URL.revokeObjectURL(photoPreview); setPhotoPreview(null); }
+      setShowPhotoForm(false);
     } catch (e: any) {
       toast.error(e?.message ?? "Kunde inte ladda upp");
     } finally {
