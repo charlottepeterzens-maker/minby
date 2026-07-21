@@ -239,7 +239,10 @@ const ShareTipSheet = ({
             </div>
             <Input
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setTitleTouched(true);
+              }}
               placeholder="Namnge ditt tips"
               className="h-11 rounded-lg"
             />
@@ -259,6 +262,20 @@ const ShareTipSheet = ({
               autoCorrect="off"
               className="h-11 rounded-lg"
             />
+            {(previewLoading || linkPreview?.image) && !imagePreview && (
+              <div className="flex items-center gap-3 pt-1">
+                <div
+                  className="w-12 h-12 rounded-[12px] bg-cover bg-center flex-shrink-0"
+                  style={{
+                    backgroundImage: linkPreview?.image ? `url(${linkPreview.image})` : undefined,
+                    backgroundColor: "#F2ECE3",
+                  }}
+                />
+                <span className="text-caption" style={{ color: "hsl(20, 4%, 40%)" }}>
+                  {previewLoading ? "Hämtar förhandsvisning…" : "Bild hämtad från länken"}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Kategori */}
