@@ -74,6 +74,14 @@ const CirclePage = () => {
   const [tipImageFile, setTipImageFile] = useState<File | null>(null);
   const [tipImagePreview, setTipImagePreview] = useState<string | null>(null);
   const tipImageInputRef = useRef<HTMLInputElement>(null);
+  // Live link preview state
+  const [linkPreviewLoading, setLinkPreviewLoading] = useState(false);
+  const [linkPreviewImage, setLinkPreviewImage] = useState<string | null>(null);
+  const [linkPreviewPath, setLinkPreviewPath] = useState<string | null>(null);
+  const [linkPreviewTitle, setLinkPreviewTitle] = useState<string | null>(null);
+  const linkPreviewSeqRef = useRef(0);
+  const linkPreviewTimerRef = useRef<number | null>(null);
+  const [titleTouched, setTitleTouched] = useState(false);
   const [savingTip, setSavingTip] = useState(false);
 
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
