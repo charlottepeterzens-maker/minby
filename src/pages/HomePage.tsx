@@ -385,13 +385,6 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
   // Creation sheet state
   const [showTipForm, setShowTipForm] = useState(false);
   const [showAllTips, setShowAllTips] = useState(false);
-  const [tipTitle, setTipTitle] = useState("");
-  const [tipUrl, setTipUrl] = useState("");
-  const [tipComment, setTipComment] = useState("");
-  const [tipImageFile, setTipImageFile] = useState<File | null>(null);
-  const [tipImagePreview, setTipImagePreview] = useState<string | null>(null);
-  const tipImageInputRef = useRef<HTMLInputElement>(null);
-  const [savingTip, setSavingTip] = useState(false);
   const [selectedCircles, setSelectedCircles] = useState<string[]>([]);
 
   const [showPhotoForm, setShowPhotoForm] = useState(false);
