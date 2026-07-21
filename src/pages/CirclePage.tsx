@@ -63,6 +63,7 @@ const CirclePage = () => {
   const [aiSummary, setAiSummary] = useState<{ content: string; generated_at: string; author?: string | null } | null>(null);
   const [sinceLast, setSinceLast] = useState<{ label: string; body: string } | null>(null);
   const [loadingContent, setLoadingContent] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   const [displayName, setDisplayName] = useState("");
 
