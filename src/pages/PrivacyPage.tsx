@@ -15,41 +15,41 @@ const PrivacyPage = () => {
 
         <div className="space-y-6 text-[13px] leading-[1.7]" style={{ color: "#5A4A65" }}>
           <section>
-            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Vad vi samlar in</h2>
+            <h2 className="font-medium text-[16px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Vad vi samlar in</h2>
             <p>Namn, e-postadress, profilbild, inlägg i delar av min vardag, gruppchattar och meddelanden, datum och aktiviteter för 'Hitta på något'.</p>
           </section>
 
           <section>
-            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Varför vi samlar in det</h2>
+            <h2 className="font-medium text-[16px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Varför vi samlar in det</h2>
             <p>För att driva och förbättra Minby-tjänsten.</p>
           </section>
 
           <section>
-            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Hur länge vi sparar det</h2>
+            <h2 className="font-medium text-[16px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Hur länge vi sparar det</h2>
             <p>All data sparas tills du raderar ditt konto.</p>
           </section>
 
           <section>
-            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Delning med tredje part</h2>
+            <h2 className="font-medium text-[16px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Delning med tredje part</h2>
             <p>Din data säljs aldrig och delas aldrig med tredje part.</p>
           </section>
 
           <section>
-            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Dina rättigheter</h2>
+            <h2 className="font-medium text-[16px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Dina rättigheter</h2>
             <p>Du har rätt att begära ut, korrigera eller radera din data genom att kontakta oss på{" "}
               <a href="mailto:hi@minby.online" className="underline" style={{ color: "hsl(var(--color-text-primary))" }}>hi@minby.online</a>.
             </p>
           </section>
 
           <section>
-            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Kontakt</h2>
+            <h2 className="font-medium text-[16px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Kontakt</h2>
             <p>Charlotte Peterzéns,{" "}
               <a href="mailto:hi@minby.online" className="underline" style={{ color: "hsl(var(--color-text-primary))" }}>hi@minby.online</a>
             </p>
           </section>
 
           <section>
-            <h2 className="font-medium text-[14px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Push-notiser</h2>
+            <h2 className="font-medium text-[16px] mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Push-notiser</h2>
             <p>Vi skickar push-notiser för att hålla dig uppdaterad om din krets. Du kan när som helst stänga av notiser i Inställningar eller i din enhets inställningar.</p>
           </section>
 

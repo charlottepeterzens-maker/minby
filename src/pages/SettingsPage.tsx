@@ -44,7 +44,7 @@ const Row = ({
   >
     <span className="text-[15px]" style={{ color: danger ? "#561828" : "#2B2B2B" }}>{label}</span>
     {value !== undefined && (
-      <span className="text-[14px] truncate ml-4" style={{ color: "#675332" }}>{value}</span>
+      <span className="text-[16px] truncate ml-4" style={{ color: "#675332" }}>{value}</span>
     )}
   </button>
 );
@@ -121,9 +121,9 @@ const SettingsPage = () => {
             aria-label="Tillbaka"
           >
             <ChevronLeft className="w-5 h-5" />
-            <span className="text-[14px]">Tillbaka</span>
+            <span className="text-[16px]">Tillbaka</span>
           </button>
-          <span className="text-[14px]" style={{ color: "#675332" }}>Inställningar</span>
+          <span className="text-[16px]" style={{ color: "#675332" }}>Inställningar</span>
           <div className="w-16" />
         </header>
 

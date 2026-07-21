@@ -84,7 +84,7 @@ const CircleOnboarding = ({ circleId, circleName, hasMembers, hasPhotos, hasTips
               <li key={s.key} className="py-3 flex items-baseline gap-3">
                 <span className="flex-1 min-w-0">
                   <span
-                    className="block text-[14px] font-medium"
+                    className="block text-[16px] font-medium"
                     style={{
                       color: "#2B2B2B",
                       textDecoration: isDone ? "line-through" : "none",
@@ -105,7 +105,7 @@ const CircleOnboarding = ({ circleId, circleName, hasMembers, hasPhotos, hasTips
                   <button
                     type="button"
                     onClick={() => handlers[s.key]()}
-                    className="text-[14px] font-medium underline underline-offset-2 decoration-1 flex-shrink-0"
+                    className="text-[16px] font-medium underline underline-offset-2 decoration-1 flex-shrink-0"
                     style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
                   >
                     {s.cta}

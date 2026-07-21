@@ -22,8 +22,8 @@ export default {
         "heading-lg": ["24px", { lineHeight: "1", letterSpacing: "0" }],
         "heading-md": ["18px", { lineHeight: "1", letterSpacing: "0", fontWeight: "600" }],
         "eyebrow": ["10px", { lineHeight: "1", letterSpacing: "0.02em" }],
-        "body": ["14px", { lineHeight: "1.2", letterSpacing: "0" }],
-        "button": ["14px", { lineHeight: "1", letterSpacing: "0" }],
+        "body": ["16px", { lineHeight: "1.2", letterSpacing: "0" }],
+        "button": ["16px", { lineHeight: "1", letterSpacing: "0" }],
       },
 
       colors: {

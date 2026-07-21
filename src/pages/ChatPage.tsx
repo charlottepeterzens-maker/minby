@@ -280,9 +280,9 @@ const ChatPage = () => {
               <span className="text-[11px] uppercase tracking-wider">AI-sammanfattning</span>
             </div>
             {summarizing ? (
-              <p className="text-[14px] opacity-80">Läser chatten…</p>
+              <p className="text-[16px] opacity-80">Läser chatten…</p>
             ) : (
-              <p className="text-[14px] leading-snug whitespace-pre-wrap">{summary}</p>
+              <p className="text-[16px] leading-snug whitespace-pre-wrap">{summary}</p>
             )}
           </div>
         )}
@@ -388,7 +388,7 @@ const ChatPage = () => {
                         color: mine ? "#F0EAE2" : "#2B2B2B",
                       }}
                     >
-                      <div className="text-[14px] leading-snug whitespace-pre-wrap">{m.body}</div>
+                      <div className="text-[16px] leading-snug whitespace-pre-wrap">{m.body}</div>
                       <div
                         className={`text-[11px] mt-1 ${mine ? "text-right" : ""}`}
                         style={{ color: mine ? "#E8A87C" : "#675332" }}
@@ -422,7 +422,7 @@ const ChatPage = () => {
                 type="date"
                 value={mDate}
                 onChange={(e) => setMDate(e.target.value)}
-                className="w-full bg-transparent border-0 outline-none text-[14px]"
+                className="w-full bg-transparent border-0 outline-none text-[16px]"
                 style={{ color: "#2B2B2B" }}
               />
               <div className="flex gap-5 pt-1">
