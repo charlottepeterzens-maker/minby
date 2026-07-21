@@ -12,12 +12,12 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onO
     <button
       onClick={onOpen}
       className="w-[176px] flex-shrink-0 h-[184px] text-left rounded-[28px] p-4 flex flex-col justify-between"
-      style={{ backgroundColor: "#F9F3E1" }}
+      style={{ backgroundColor: "#F2ECE3" }}
     >
       <div>
         <div
           className="text-[13px] mb-2 truncate"
-          style={{ color: "#561828" }}
+          style={{ color: "#675332" }}
         >
           {hostName}
         </div>

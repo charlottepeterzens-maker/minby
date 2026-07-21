@@ -22,7 +22,7 @@ export const CircleCardSkeleton = () => (
 export const MeetingCardSkeleton = () => (
   <div
     className={`w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between ${shimmer}`}
-    style={{ backgroundColor: "#F9F3E1" }}
+    style={{ backgroundColor: "#F2ECE3" }}
   >
     <div className="space-y-2">
       <div className="h-2.5 w-16 rounded" style={{ backgroundColor: "#E8DDC6" }} />
