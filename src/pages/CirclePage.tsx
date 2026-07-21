@@ -77,6 +77,7 @@ const CirclePage = () => {
   const [meetingAttendees, setMeetingAttendees] = useState<{ user_id: string; display_name: string | null }[]>([]);
   const [selectedTip, setSelectedTip] = useState<Tip | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [showTipsList, setShowTipsList] = useState(false);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
