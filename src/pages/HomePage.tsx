@@ -31,6 +31,7 @@ const HomePage = () => {
   const [newName, setNewName] = useState("");
   const [profile, setProfile] = useState<Profile>({ display_name: null, avatar_url: null, bio: null });
   const [editingProfile, setEditingProfile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
   const [bioDraft, setBioDraft] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
