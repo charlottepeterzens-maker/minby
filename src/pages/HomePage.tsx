@@ -197,7 +197,7 @@ const HomePage = () => {
             <CircleCardSkeleton />
             <CircleCardSkeleton />
           </div>
-        ) : circles.length === 0 && !creating ? (
+        ) : circles.length === 0 ? (
           <div className="space-y-3">
             <PlaceholderCircleCard
               name="Din första krets"
@@ -223,30 +223,14 @@ const HomePage = () => {
                 onOpen={() => navigate(`/circle/${c.id}`)}
               />
             ))}
-
-            {creating ? (
-              <div className="rounded-[26px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
-                <input
-                  autoFocus
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  placeholder="Namn på kretsen"
-                  className="w-full bg-transparent border-0 outline-none text-foreground"
-                />
-                <div className="flex gap-6">
-                  <TextButton onClick={createCircle}>Skapa</TextButton>
-                  <TextButton variant="secondary" onClick={() => { setCreating(false); setNewName(""); }}>Avbryt</TextButton>
-                </div>
-              </div>
-            ) : (
-              <div className="pt-4 flex justify-center">
-                <TextButton onClick={() => setCreating(true)}>
-                  + Skapa och bjud in till en krets
-                </TextButton>
-              </div>
-            )}
+            <div className="pt-4 flex justify-center">
+              <TextButton onClick={() => setCreating(true)}>
+                + Skapa och bjud in till en krets
+              </TextButton>
+            </div>
           </div>
         )}
+
 
         <ProfilePlaceholders
           userId={user?.id ?? null}
