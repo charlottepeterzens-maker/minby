@@ -253,18 +253,6 @@ const HomePage = () => {
 
 const PlaceholderTag = () => <ExampleTag />;
 
-const MenuItem = ({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) => (
-  <button
-    type="button"
-    role="menuitem"
-    onClick={onClick}
-    className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-[14px] hover:bg-black/5 transition-colors"
-    style={{ color: "#2B2B2B" }}
-  >
-    <span style={{ color: "#561828" }}>{icon}</span>
-    {label}
-  </button>
-);
 
 const SectionHeader = ({ title, cta, onCta }: { title: string; cta: string; onCta?: () => void }) => (
   <div className="flex items-baseline justify-between mb-3 mt-10">
