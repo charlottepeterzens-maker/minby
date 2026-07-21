@@ -5,8 +5,23 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, MessageCircle, Share2 } from "lucide-react";
 import { toast } from "sonner";
+import MeetingCard from "@/components/cards/MeetingCard";
+import TipCard from "@/components/cards/TipCard";
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
+interface Meeting { id: string; title: string; meeting_date: string | null; created_by: string; response_count: number; host_name: string; }
+interface Tip { id: string; title: string; url: string | null; comment: string | null; created_at: string; owner_id: string; owner_name: string; owner_avatar: string | null; }
+
+const monthNames = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
+const formatDate = (iso: string | null) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return `${d.getDate()} ${monthNames[d.getMonth()]}`;
+};
+const formatDateYear = (iso: string) => {
+  const d = new Date(iso);
+  return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+};
 
 const CirclePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,6 +29,8 @@ const CirclePage = () => {
   const navigate = useNavigate();
   const [circle, setCircle] = useState<Circle | null>(null);
   const [memberCount, setMemberCount] = useState(0);
+  const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [tips, setTips] = useState<Tip[]>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -22,6 +39,52 @@ const CirclePage = () => {
       setCircle(data as Circle | null);
       const { count } = await supabase.from("circle_members").select("*", { count: "exact", head: true }).eq("circle_id", id);
       setMemberCount(count ?? 0);
+
+      const { data: mtgs } = await supabase
+        .from("meetings")
+        .select("id, title, meeting_date, created_by")
+        .eq("circle_id", id)
+        .order("meeting_date", { ascending: true })
+        .limit(6);
+      const meetingList = mtgs ?? [];
+      const hostIds = [...new Set(meetingList.map((m) => m.created_by))];
+      const { data: hostProfiles } = hostIds.length
+        ? await supabase.from("profiles").select("user_id, display_name").in("user_id", hostIds)
+        : { data: [] as { user_id: string; display_name: string | null }[] };
+      const nameMap = new Map((hostProfiles ?? []).map((p) => [p.user_id, p.display_name ?? ""]));
+
+      const withCounts = await Promise.all(
+        meetingList.map(async (m) => {
+          const { count: rc } = await supabase
+            .from("meeting_responses")
+            .select("*", { count: "exact", head: true })
+            .eq("meeting_id", m.id)
+            .eq("status", "yes");
+          return { ...m, response_count: rc ?? 0, host_name: nameMap.get(m.created_by) ?? "" };
+        })
+      );
+      setMeetings(withCounts);
+
+      // Tips visible to this circle
+      const { data: tipRows } = await supabase
+        .from("tip_visibility")
+        .select("tip_id, tips!inner(id, title, url, comment, created_at, owner_id)")
+        .eq("circle_id", id)
+        .order("tip_id", { ascending: false })
+        .limit(10);
+      const tipList = (tipRows ?? []).map((r: any) => r.tips).filter(Boolean) as Tip[];
+      const ownerIds = [...new Set(tipList.map((t) => t.owner_id))];
+      const { data: ownerProfs } = ownerIds.length
+        ? await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", ownerIds)
+        : { data: [] as { user_id: string; display_name: string | null; avatar_url: string | null }[] };
+      const ownerMap = new Map((ownerProfs ?? []).map((p) => [p.user_id, p]));
+      setTips(
+        tipList.map((t) => ({
+          ...t,
+          owner_name: ownerMap.get(t.owner_id)?.display_name ?? "",
+          owner_avatar: ownerMap.get(t.owner_id)?.avatar_url ?? null,
+        }))
+      );
     })();
   }, [id]);
 
@@ -42,6 +105,18 @@ const CirclePage = () => {
     }
   };
 
+  const respondYes = async (meetingId: string) => {
+    if (!user) return;
+    const { error } = await supabase
+      .from("meeting_responses")
+      .upsert({ meeting_id: meetingId, user_id: user.id, status: "yes" }, { onConflict: "meeting_id,user_id" });
+    if (error) toast.error(error.message);
+    else {
+      setMeetings((prev) => prev.map((m) => m.id === meetingId ? { ...m, response_count: m.response_count + 1 } : m));
+      toast.success("Du är med!");
+    }
+  };
+
   if (!circle) {
     return <div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground text-sm">Laddar…</div>;
   }
@@ -57,18 +132,54 @@ const CirclePage = () => {
         </header>
 
         <div className="px-5 space-y-4">
-          <div className="bg-card rounded-lg p-6">
-            <p className="text-sm text-muted-foreground">{memberCount} {memberCount === 1 ? "medlem" : "medlemmar"}</p>
+          <p className="text-sm text-muted-foreground">{memberCount} {memberCount === 1 ? "medlem" : "medlemmar"}</p>
+
+          <div className="flex gap-2">
+            <Button onClick={() => navigate(`/chat/${circle.id}`)} className="flex-1 rounded-lg justify-center gap-2" style={{ backgroundColor: "#561828", color: "#fff" }}>
+              <MessageCircle className="w-4 h-4" /> Öppna chatten
+            </Button>
+            <Button onClick={invite} variant="outline" className="rounded-lg justify-center gap-2">
+              <Share2 className="w-4 h-4" /> Bjud in
+            </Button>
           </div>
-
-          <Button onClick={() => navigate(`/chat/${circle.id}`)} className="w-full rounded-lg justify-center gap-2" style={{ backgroundColor: "#561828", color: "#fff" }}>
-            <MessageCircle className="w-4 h-4" /> Öppna chatten
-          </Button>
-
-          <Button onClick={invite} variant="outline" className="w-full rounded-lg justify-center gap-2">
-            <Share2 className="w-4 h-4" /> Bjud in
-          </Button>
         </div>
+
+        {meetings.length > 0 && (
+          <section className="mt-8">
+            <h2 className="px-5 mb-3 text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Träffar</h2>
+            <div className="flex gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              {meetings.map((m) => (
+                <MeetingCard
+                  key={m.id}
+                  hostName={m.host_name}
+                  dateLabel={formatDate(m.meeting_date)}
+                  title={m.title}
+                  responseCount={m.response_count}
+                  onRespond={() => respondYes(m.id)}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {tips.length > 0 && (
+          <section className="mt-8 px-5">
+            <h2 className="mb-3 text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Tips</h2>
+            <div className="space-y-3">
+              {tips.map((t) => (
+                <TipCard
+                  key={t.id}
+                  ownerName={t.owner_name}
+                  ownerAvatar={t.owner_avatar}
+                  dateLabel={formatDateYear(t.created_at)}
+                  title={t.title}
+                  description={t.comment}
+                  url={t.url}
+                />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

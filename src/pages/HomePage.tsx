@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Plus, LogOut } from "lucide-react";
+import CircleCard from "@/components/cards/CircleCard";
 import { toast } from "sonner";
 
 interface Circle {
@@ -70,17 +71,12 @@ const HomePage = () => {
         ) : (
           <div className="space-y-3">
             {circles.map((c) => (
-              <button
+              <CircleCard
                 key={c.id}
-                onClick={() => navigate(`/circle/${c.id}`)}
-                className="w-full bg-card rounded-lg p-4 flex items-center gap-3 text-left"
-              >
-                <div className="w-12 h-12 rounded-lg bg-muted flex-shrink-0" style={{
-                  backgroundImage: c.hero_image_url ? `url(${c.hero_image_url})` : undefined,
-                  backgroundSize: "cover", backgroundPosition: "center",
-                }} />
-                <span className="font-display text-lg text-foreground">{c.name}</span>
-              </button>
+                circleId={c.id}
+                name={c.name}
+                onOpen={() => navigate(`/circle/${c.id}`)}
+              />
             ))}
 
             {creating ? (
