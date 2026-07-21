@@ -475,7 +475,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       url: trimmedUrl || null,
       comment: tipComment.trim() || null,
       image_path: imagePath,
-    }).select("id, title, image_path").single();
+    }).select("id, title, image_path, created_at, comment, url").single();
     if (error || !data) { setSavingTip(false); toast.error(error?.message ?? "Kunde inte spara"); return; }
 
     const { error: visErr } = await supabase.from("tip_visibility")
@@ -488,7 +488,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       const { data: s } = await supabase.storage.from("circle-photos").createSignedUrl(data.image_path, 60 * 60);
       signedUrl = s?.signedUrl ?? null;
     }
-    setMyTips((prev) => [{ id: data.id, title: data.title, image_url: signedUrl }, ...(prev ?? [])]);
+    setMyTips((prev) => [{ id: data.id, title: data.title, image_url: signedUrl, created_at: (data as any).created_at, comment: (data as any).comment ?? null, url: (data as any).url ?? null }, ...(prev ?? [])]);
     setTipTitle(""); setTipUrl(""); setTipComment("");
     setTipImageFile(null);
     if (tipImagePreview) { URL.revokeObjectURL(tipImagePreview); setTipImagePreview(null); }
