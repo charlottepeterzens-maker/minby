@@ -255,10 +255,138 @@ const HomePage = () => {
             )}
           </div>
         )}
+
+        <ProfilePlaceholders />
       </div>
     </div>
   );
 };
+
+const PlaceholderTag = () => (
+  <span
+    className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded"
+    style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.12em" }}
+  >
+    Exempel
+  </span>
+);
+
+const SectionHeader = ({ title, cta, onCta }: { title: string; cta: string; onCta?: () => void }) => (
+  <div className="flex items-baseline justify-between mb-3 mt-10">
+    <h2 className="font-display text-xl text-foreground">{title}</h2>
+    <TextButton onClick={onCta}>{cta}</TextButton>
+  </div>
+);
+
+const ProfilePlaceholders = () => (
+  <>
+    {/* Kommande träffar */}
+    <SectionHeader title="Mina träffar" cta="+ Föreslå träff" />
+    <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2">
+      {[
+        { host: "Sara", date: "Fre 21 nov", title: "Fika på Café Pascal", count: 2 },
+        { host: "Mia", date: "Lör 29 nov", title: "Promenad i Hagaparken", count: 0 },
+      ].map((m, i) => (
+        <div
+          key={i}
+          className="w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between relative"
+          style={{ backgroundColor: "#F2ECE3", opacity: 0.85, border: "1px dashed #C85A2E" }}
+        >
+          <div className="absolute top-3 right-3"><PlaceholderTag /></div>
+          <div>
+            <div className="text-[13px] mb-2" style={{ color: "#675332" }}>{m.host}</div>
+            <div className="text-[16px] leading-tight font-medium" style={{ color: "#2B2B2B" }}>
+              {m.date}<br />{m.title}
+            </div>
+          </div>
+          <div>
+            <div className="text-[12px] mb-1" style={{ color: "#561828" }}>
+              {m.count === 0 ? "Ingen har svarat" : `${m.count} har svarat`}
+            </div>
+            <span
+              className="text-[15px] font-medium underline underline-offset-[6px] decoration-2"
+              style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+            >
+              Häng med!
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+    <p className="text-sm mt-2" style={{ color: "#561828" }}>
+      Föreslå en träff i någon av dina kretsar så syns den här.
+    </p>
+
+    {/* Mina tips */}
+    <SectionHeader title="Mina tips" cta="+ Dela ett tips" />
+    <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2">
+      {[
+        { title: "Bagarstugan", author: "Du", bg: "#E8DDC6" },
+        { title: "Podd: Filosofiska rummet", author: "Du", bg: "#DCEAF8" },
+        { title: "Bok: Klara och solen", author: "Du", bg: "#F5EFD9" },
+      ].map((t, i) => (
+        <div
+          key={i}
+          className="w-[150px] h-[210px] flex-shrink-0 rounded-[24px] relative overflow-hidden"
+          style={{ backgroundColor: t.bg, opacity: 0.85, border: "1px dashed #C85A2E" }}
+        >
+          <div className="absolute top-2 left-2"><PlaceholderTag /></div>
+          <div
+            className="absolute bottom-0 left-0 right-0 p-3"
+            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55), transparent)" }}
+          >
+            <div className="text-[13px] text-white font-medium leading-tight">{t.title}</div>
+            <div className="text-[11px] text-white/80 mt-0.5">{t.author}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+    <p className="text-sm mt-2" style={{ color: "#561828" }}>
+      Dela en plats, bok, podd eller länk du gillar med en krets.
+    </p>
+
+    {/* Foton */}
+    <SectionHeader title="Mina foton" cta="+ Ladda upp foto" />
+    <div className="grid grid-cols-3 gap-2">
+      {["#E8DDC6", "#DCEAF8", "#F5EFD9", "#F2ECE3", "#E8DDC6", "#DCEAF8"].map((bg, i) => (
+        <div
+          key={i}
+          className="aspect-square rounded-[20px] relative"
+          style={{ backgroundColor: bg, opacity: 0.85, border: "1px dashed #C85A2E" }}
+        >
+          {i === 0 && <div className="absolute top-1.5 left-1.5"><PlaceholderTag /></div>}
+        </div>
+      ))}
+    </div>
+    <p className="text-sm mt-2" style={{ color: "#561828" }}>
+      Bilder du delar i dina kretsar samlas här som ett gemensamt minne.
+    </p>
+
+    {/* Om mig */}
+    <SectionHeader title="Om mig" cta="+ Lägg till" />
+    <div
+      className="rounded-[28px] p-5 space-y-3"
+      style={{ backgroundColor: "#F9F3E1", opacity: 0.9, border: "1px dashed #C85A2E" }}
+    >
+      <div className="absolute-none flex items-center justify-between">
+        <span className="text-[13px]" style={{ color: "#675332" }}>Bor i</span>
+        <span className="text-[15px]" style={{ color: "#2B2B2B" }}>Stockholm</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-[13px]" style={{ color: "#675332" }}>Jobbar med</span>
+        <span className="text-[15px]" style={{ color: "#2B2B2B" }}>Illustration</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-[13px]" style={{ color: "#675332" }}>Gillar</span>
+        <span className="text-[15px]" style={{ color: "#2B2B2B" }}>Långa promenader, keramik</span>
+      </div>
+      <div className="pt-1"><PlaceholderTag /></div>
+    </div>
+    <p className="text-sm mt-2 mb-8" style={{ color: "#561828" }}>
+      Lägg till några små saker om dig så dina vänner lär känna dig bättre.
+    </p>
+  </>
+);
 
 const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: string }) => (
   <div
