@@ -361,7 +361,7 @@ const ProfilePlaceholders = ({ userId }: { userId: string | null }) => {
         {meetings!.map((m) => (
           <button
             key={m.id}
-            onClick={() => navigate(`/circle/${(m as any).circle_id ?? ""}`)}
+            onClick={() => navigate(`/circle/${m.circle_id}`)}
             className="w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between relative text-left"
             style={{ backgroundColor: "#F2ECE3" }}
           >
