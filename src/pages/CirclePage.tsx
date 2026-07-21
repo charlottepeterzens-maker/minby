@@ -668,7 +668,7 @@ const CirclePage = () => {
 
       {/* Tips list sheet */}
       <Sheet open={showTipsList} onOpenChange={setShowTipsList}>
-        <SheetContent side="bottom" className="rounded-t-[28px] max-h-[90vh] overflow-y-auto p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+        <SheetContent side="bottom" className="rounded-t-[26px] max-h-[90vh] overflow-y-auto p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
           <SheetHeader className="text-center px-4 pt-4 pb-2 border-b border-black/5 relative">
             <button
               type="button"
