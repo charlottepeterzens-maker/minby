@@ -276,7 +276,7 @@ const HorizontalStrip = ({
   gradient: "tips" | "photos";
   size?: "sm" | "lg";
 }) => (
-  <div className="flex overflow-x-auto -mx-5 px-5 pb-2 scrollbar-hide">
+  <div className="flex overflow-x-auto -mx-4 px-4 pb-2 scrollbar-hide">
     {items.map((t, i) => (
       <PhotoTile
         key={i}
@@ -551,7 +551,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     {/* Kommande träffar */}
     <SectionHeader title="Mina träffar" cta="+ Föreslå träff" onCta={() => circles[0] && navigate(`/circle/${circles[0].id}`)} disabled={!circles.length} />
     {hasMeetings ? (
-      <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2">
+      <div className="flex gap-3 overflow-x-auto -mx-4 px-4 pb-2">
         {meetings!.map((m) => (
           <button
             key={m.id}
@@ -582,7 +582,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
         ))}
       </div>
     ) : (
-      <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2">
+      <div className="flex gap-3 overflow-x-auto -mx-4 px-4 pb-2">
         {[
           { host: "Sara", date: "Fre 21 nov", title: "Fika på Café Pascal", count: 2 },
           { host: "Mia", date: "Lör 29 nov", title: "Promenad i Hagaparken", count: 0 },

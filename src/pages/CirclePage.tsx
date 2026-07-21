@@ -424,7 +424,7 @@ const CirclePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-lg mx-auto pb-safe">
+      <div className="max-w-md mx-auto pb-safe">
         {/* Hero — always uses the most recently uploaded photo, fallback to stored hero */}
         <div
           className="relative w-full h-[220px] overflow-hidden"
