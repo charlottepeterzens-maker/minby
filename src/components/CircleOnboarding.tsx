@@ -1,28 +1,32 @@
-<section className="mt-6 px-4">
+<div className="flex items-start justify-between mb-2">
   <div
-    className="rounded-[28px] p-5"
-    style={{ backgroundColor: "#561828" }}
+    className="text-[10px] font-normal tracking-[0.02em]"
+    style={{ color: "#C85A2E" }}
   >
-    <div className="flex items-start justify-between mb-2">
-      <div
-        className="text-[10px] font-normal tracking-[0.02em]"
-        style={{ color: "#C85A2E" }}
-      >
-        {doneCount} av {STEPS.length} klara
-      </div>
+    {doneCount} av {STEPS.length} klara
+  </div>
 
-      <button
-        type="button"
-        onClick={dismiss}
-        className="text-[14px] font-medium underline underline-offset-2 decoration-1"
-        style={{
-          color: "#FFFFFF",
-          textDecorationColor: "#C85A2E",
-        }}
-      >
-        Stäng
-      </button>
-    </div>
+  <button
+    type="button"
+    onClick={dismiss}
+    aria-label="Stäng onboarding"
+    className="flex h-8 w-8 items-center justify-center rounded-full transition-opacity hover:opacity-70"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#FFFFFF"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5"
+    >
+      <path d="M18 6L6 18" />
+      <path d="M6 6L18 18" />
+    </svg>
+  </button>
+</div>
 
     <h3
       className="text-[18px] font-semibold leading-none mb-2"
