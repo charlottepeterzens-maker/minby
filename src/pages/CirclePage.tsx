@@ -85,6 +85,11 @@ const CirclePage = () => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoCaption, setPhotoCaption] = useState("");
 
+  // invite sheet (layered on top of Create Hub)
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteUrl, setInviteUrl] = useState<string | null>(null);
+  const [creatingInvite, setCreatingInvite] = useState(false);
+
   useEffect(() => {
     if (!user) return;
     supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle()
@@ -193,7 +198,23 @@ const CirclePage = () => {
     })();
   }, [id]);
 
+  const openInviteSheet = async () => {
+    if (!id || !user) return;
+    setInviteOpen(true);
+    if (inviteUrl) return;
+    setCreatingInvite(true);
+    const token = crypto.randomUUID().replace(/-/g, "");
+    const { error } = await supabase.from("circle_invites").insert({
+      token, circle_id: id, created_by: user.id,
+      expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
+    });
+    setCreatingInvite(false);
+    if (error) { toast.error(error.message); setInviteOpen(false); return; }
+    setInviteUrl(`${window.location.origin}/invite/${token}`);
+  };
+
   const invite = async () => {
+    // legacy entry point used elsewhere on the page — keep direct share behaviour
     if (!id || !user) return;
     const token = crypto.randomUUID().replace(/-/g, "");
     const { error } = await supabase.from("circle_invites").insert({
@@ -208,6 +229,22 @@ const CirclePage = () => {
       await navigator.clipboard.writeText(url);
       toast.success("Länken är kopierad");
     }
+  };
+
+  const shareInviteNative = async () => {
+    if (!inviteUrl) return;
+    if (navigator.share) {
+      try { await navigator.share({ title: circle?.name ?? "Krets", url: inviteUrl }); } catch { /* cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(inviteUrl);
+      toast.success("Länken är kopierad");
+    }
+  };
+
+  const copyInvite = async () => {
+    if (!inviteUrl) return;
+    await navigator.clipboard.writeText(inviteUrl);
+    toast.success("Länken är kopierad");
   };
 
   const respondYes = async (meetingId: string) => {
@@ -544,12 +581,69 @@ const CirclePage = () => {
       </div>
 
       <CreateHub
-        actions={[
-          { label: "Föreslå en träff", onSelect: () => setShowMeetingForm(true) },
-          { label: "Lägg till tips", onSelect: () => setShowTipForm(true) },
-          { label: "Lägg upp foto", onSelect: () => photoInputRef.current?.click() },
+        sections={[
+          {
+            title: "Dela med kretsen",
+            actions: [
+              { label: "Dela foto", onSelect: () => photoInputRef.current?.click() },
+              { label: "Dela tips", onSelect: () => setShowTipForm(true) },
+              { label: "Föreslå en träff", onSelect: () => setShowMeetingForm(true) },
+            ],
+          },
+          {
+            title: "Bjud in fler",
+            actions: [
+              { label: "Bjud in till kretsen", keepOpen: true, onSelect: openInviteSheet },
+            ],
+          },
         ]}
       />
+
+      {/* Invite sheet — layered on top of the Create Hub */}
+      <Sheet open={inviteOpen} onOpenChange={setInviteOpen}>
+        <SheetContent
+          side="bottom"
+          className="rounded-t-[26px] border-0 p-0"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          style={{ backgroundColor: "#FFFFFF" }}
+        >
+          <SheetHeader className="px-5 pt-5 pb-2 flex-row items-center justify-between">
+            <SheetTitle className="text-heading-md text-left" style={HEADING_STYLE}>
+              Bjud in till kretsen
+            </SheetTitle>
+            <button
+              type="button"
+              onClick={() => setInviteOpen(false)}
+              className="p-2 -mr-2"
+              aria-label="Stäng"
+            >
+              <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
+            </button>
+          </SheetHeader>
+          <div className="px-5 pb-8 pt-2 space-y-5">
+            <p className="text-body" style={{ color: "#5B5B5B" }}>
+              Bjud in familj och vänner så att ni kan dela foton, tips och planera träffar tillsammans.
+            </p>
+
+            <div
+              className="rounded-[16px] px-4 py-3 text-body break-all"
+              style={{ backgroundColor: "#F5EFD9", color: "#2B2B2B" }}
+            >
+              {creatingInvite ? "Skapar länk…" : inviteUrl ?? ""}
+            </div>
+
+            <div className="flex flex-col gap-3 pt-1">
+              <TextButton onClick={shareInviteNative} disabled={!inviteUrl}>
+                Dela länk
+              </TextButton>
+              <TextButton onClick={copyInvite} disabled={!inviteUrl}>
+                Kopiera länk
+              </TextButton>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
 
 
 

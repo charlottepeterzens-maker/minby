@@ -5,21 +5,45 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 export interface CreateHubAction {
   label: string;
   onSelect: () => void;
+  /** If true, the hub sheet stays open (used to layer another sheet on top). */
+  keepOpen?: boolean;
+}
+
+export interface CreateHubSection {
+  title: string;
+  actions: CreateHubAction[];
 }
 
 interface Props {
-  actions: CreateHubAction[];
+  /** Grouped actions (preferred). */
+  sections?: CreateHubSection[];
+  /** Flat action list (legacy). */
+  actions?: CreateHubAction[];
   title?: string;
   ariaLabel?: string;
 }
 
 /**
  * Minby Create Hub — the single floating "+" per view.
- * Tapping it opens a bottom sheet listing the create-actions
- * relevant to the current page. Replaces per-section "+"-buttons.
+ * Opens a bottom sheet acting as an action menu for the current context
+ * (e.g. the current Circle). Actions can be grouped into sections.
  */
-const CreateHub = ({ actions, title = "Skapa nytt", ariaLabel = "Skapa nytt" }: Props) => {
+const CreateHub = ({
+  sections,
+  actions,
+  title = "Vad vill du göra?",
+  ariaLabel = "Öppna åtgärder",
+}: Props) => {
   const [open, setOpen] = useState(false);
+
+  const resolvedSections: CreateHubSection[] =
+    sections ?? (actions ? [{ title: "", actions }] : []);
+
+  const handleSelect = (a: CreateHubAction) => {
+    if (!a.keepOpen) setOpen(false);
+    // let the sheet close before opening a follow-up sheet
+    setTimeout(a.onSelect, a.keepOpen ? 0 : 200);
+  };
 
   return (
     <>
@@ -63,24 +87,34 @@ const CreateHub = ({ actions, title = "Skapa nytt", ariaLabel = "Skapa nytt" }: 
               <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
             </button>
           </SheetHeader>
-          <ul className="px-2 pb-8">
-            {actions.map((a, i) => (
-              <li key={i}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOpen(false);
-                    // let the sheet close before opening a follow-up sheet
-                    setTimeout(a.onSelect, 200);
-                  }}
-                  className="w-full text-left text-body px-3 py-4 rounded-[16px] active:opacity-70"
-                  style={{ color: "#2B2B2B" }}
-                >
-                  {a.label}
-                </button>
-              </li>
+          <div className="px-2 pb-8">
+            {resolvedSections.map((section, si) => (
+              <div key={si} className={si === 0 ? "" : "mt-4"}>
+                {section.title && (
+                  <div
+                    className="px-3 pt-3 pb-1 text-body-sm"
+                    style={{ color: "#7A7A7A" }}
+                  >
+                    {section.title}
+                  </div>
+                )}
+                <ul>
+                  {section.actions.map((a, i) => (
+                    <li key={i}>
+                      <button
+                        type="button"
+                        onClick={() => handleSelect(a)}
+                        className="w-full text-left text-body px-3 py-4 rounded-[16px] active:opacity-70"
+                        style={{ color: "#2B2B2B" }}
+                      >
+                        {a.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         </SheetContent>
       </Sheet>
     </>
