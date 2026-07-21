@@ -340,7 +340,7 @@ const CirclePage = () => {
           <button
             onClick={() => navigate("/")}
             aria-label="Tillbaka"
-            className="absolute top-3 left-3 p-2 rounded-lg backdrop-blur-md pt-safe"
+            className="absolute top-3 left-3 p-2 rounded-2xl backdrop-blur-md pt-safe"
             style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "#2B2B2B" }}
           >
             <ChevronLeft className="w-5 h-5" />
@@ -348,7 +348,7 @@ const CirclePage = () => {
           <button
             onClick={invite}
             aria-label="Bjud in"
-            className="absolute top-3 right-3 p-2 rounded-lg backdrop-blur-md pt-safe"
+            className="absolute top-3 right-3 p-2 rounded-2xl backdrop-blur-md pt-safe"
             style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "#2B2B2B" }}
           >
             <Share2 className="w-5 h-5" />
@@ -370,7 +370,7 @@ const CirclePage = () => {
         {sinceLast && (
           <section className="mt-6 px-4">
             <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Sedan sist</h2>
-            <div className="rounded-lg p-4" style={{ backgroundColor: CARD_YELLOW }}>
+            <div className="rounded-[28px] p-4" style={{ backgroundColor: CARD_YELLOW }}>
               <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(20, 4%, 40%)" }}>
                 {sinceLast.label}
               </div>
@@ -421,7 +421,7 @@ const CirclePage = () => {
         {/* Chatt */}
         <section className="mt-8 px-4">
           <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Chatt</h2>
-          <div className="rounded-lg p-4" style={{ backgroundColor: CARD_BLUE }}>
+          <div className="rounded-[28px] p-4" style={{ backgroundColor: CARD_BLUE }}>
             {aiSummary ? (
               <>
                 <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(210, 20%, 35%)" }}>
@@ -626,7 +626,7 @@ const CirclePage = () => {
                 </SheetDescription>
               </SheetHeader>
               {selectedTip.image_url && (
-                <div className="mt-4 w-full h-[160px] rounded-lg bg-center bg-cover" style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
+                <div className="mt-4 w-full h-[160px] rounded-[24px] bg-center bg-cover" style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
               )}
               {selectedTip.comment && (
                 <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
@@ -655,7 +655,7 @@ const CirclePage = () => {
                 </SheetDescription>
               </SheetHeader>
               {selectedPhoto.image_url && (
-                <img src={selectedPhoto.image_url} alt="" className="mt-4 w-full rounded-lg object-cover max-h-[70vh]" />
+                <img src={selectedPhoto.image_url} alt="" className="mt-4 w-full rounded-[24px] object-cover max-h-[70vh]" />
               )}
             </>
           )}
