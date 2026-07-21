@@ -64,6 +64,7 @@ const CirclePage = () => {
   const [sinceLast, setSinceLast] = useState<{ label: string; body: string } | null>(null);
   const [loadingContent, setLoadingContent] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [hasSentInvite, setHasSentInvite] = useState(true); // default true → hide until we know
 
   const [displayName, setDisplayName] = useState("");
 
@@ -215,6 +216,20 @@ const CirclePage = () => {
     })();
   }, [id, user]);
 
+  // Track whether creator has sent their first invite (drives creator welcome card)
+  useEffect(() => {
+    if (!id || !user) return;
+    (async () => {
+      const { count } = await supabase
+        .from("circle_invites")
+        .select("*", { count: "exact", head: true })
+        .eq("circle_id", id)
+        .eq("created_by", user.id);
+      setHasSentInvite((count ?? 0) > 0);
+    })();
+  }, [id, user]);
+
+
   const openInviteSheet = async () => {
     if (!id || !user) return;
     setInviteOpen(true);
@@ -228,6 +243,7 @@ const CirclePage = () => {
     setCreatingInvite(false);
     if (error) { toast.error(error.message); setInviteOpen(false); return; }
     setInviteUrl(`${window.location.origin}/invite/${token}`);
+    setHasSentInvite(true);
   };
 
   const invite = async () => {
@@ -239,6 +255,7 @@ const CirclePage = () => {
       expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
     });
     if (error) { toast.error(error.message); return; }
+    setHasSentInvite(true);
     const url = `${window.location.origin}/invite/${token}`;
     if (navigator.share) {
       try { await navigator.share({ title: circle?.name ?? "Krets", url }); } catch { /* cancelled */ }
@@ -398,8 +415,17 @@ const CirclePage = () => {
             )}
           </div>
         </div>
-        {/* Onboarding checklist for new circles */}
-        {circle && user && circle.created_by === user.id && (
+        {/* Creator welcome — shown until the first invite is sent */}
+        {circle && user && circle.created_by === user.id && !hasSentInvite && (
+          <WelcomeToCircleCard
+            circleName={circle.name}
+            variant="created"
+            onInvite={openInviteSheet}
+          />
+        )}
+
+        {/* Gentle checklist for creator after first invite (photo/tip suggestions) */}
+        {circle && user && circle.created_by === user.id && hasSentInvite && (
           <CircleOnboarding
             circleId={circle.id}
             circleName={circle.name}
@@ -412,13 +438,14 @@ const CirclePage = () => {
           />
         )}
 
-        {/* Welcome card for newly joined members */}
-        {showWelcome && circle && (
+        {/* Welcome card for newly joined members (non-creator) */}
+        {showWelcome && circle && user && circle.created_by !== user.id && (
           <WelcomeToCircleCard
             circleName={circle.name}
             onSayHi={() => navigate(`/chat/${circle.id}`)}
           />
         )}
+
 
         {/* Stepwise, non-blocking profile onboarding */}
         <ProfileNudge />
