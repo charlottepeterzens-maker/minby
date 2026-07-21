@@ -269,7 +269,7 @@ const HomePage = () => {
             ) : (
               <div className="pt-4 flex justify-center">
                 <TextButton onClick={() => setCreating(true)}>
-                  + Ny krets
+                  + Skapa och bjud in till en krets
                 </TextButton>
               </div>
             )}
