@@ -216,7 +216,49 @@ const CirclePage = () => {
         </div>
 
         <section className="mt-8">
-          <h2 className="px-5 mb-3 text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Träffar</h2>
+          <div className="px-5 mb-3 flex items-center justify-between">
+            <h2 className="text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Träffar</h2>
+            <button
+              onClick={() => setShowMeetingForm((v) => !v)}
+              aria-label={showMeetingForm ? "Stäng" : "Ny träff"}
+              className="p-1.5 rounded-lg hover:bg-black/5"
+            >
+              {showMeetingForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            </button>
+          </div>
+          {showMeetingForm && (
+            <div className="mx-5 mb-4 p-4 rounded-lg bg-white space-y-2">
+              <Input
+                placeholder="Vad ska ni göra?"
+                value={meetingTitle}
+                onChange={(e) => setMeetingTitle(e.target.value)}
+                className="rounded-lg"
+              />
+              <Input
+                type="date"
+                value={meetingDate}
+                onChange={(e) => setMeetingDate(e.target.value)}
+                className="rounded-lg"
+              />
+              <Textarea
+                placeholder="Beskrivning (valfritt)"
+                value={meetingDesc}
+                onChange={(e) => setMeetingDesc(e.target.value)}
+                rows={2}
+                className="rounded-lg resize-none"
+              />
+              <div className="flex justify-end pt-1">
+                <Button
+                  onClick={createMeeting}
+                  disabled={!meetingTitle.trim() || savingMeeting}
+                  className="rounded-lg"
+                  style={{ backgroundColor: "#561828", color: "#fff" }}
+                >
+                  {savingMeeting ? "Sparar…" : "Skapa träff"}
+                </Button>
+              </div>
+            </div>
+          )}
           {loadingContent ? (
             <div className="flex gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <MeetingCardSkeleton />
@@ -242,7 +284,49 @@ const CirclePage = () => {
         </section>
 
         <section className="mt-8 px-5">
-          <h2 className="mb-3 text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Tips</h2>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Tips</h2>
+            <button
+              onClick={() => setShowTipForm((v) => !v)}
+              aria-label={showTipForm ? "Stäng" : "Nytt tips"}
+              className="p-1.5 rounded-lg hover:bg-black/5"
+            >
+              {showTipForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            </button>
+          </div>
+          {showTipForm && (
+            <div className="mb-4 p-4 rounded-lg bg-white space-y-2">
+              <Input
+                placeholder="Titel"
+                value={tipTitle}
+                onChange={(e) => setTipTitle(e.target.value)}
+                className="rounded-lg"
+              />
+              <Input
+                placeholder="Länk (valfritt)"
+                value={tipUrl}
+                onChange={(e) => setTipUrl(e.target.value)}
+                className="rounded-lg"
+              />
+              <Textarea
+                placeholder="Kommentar (valfritt)"
+                value={tipComment}
+                onChange={(e) => setTipComment(e.target.value)}
+                rows={2}
+                className="rounded-lg resize-none"
+              />
+              <div className="flex justify-end pt-1">
+                <Button
+                  onClick={createTip}
+                  disabled={!tipTitle.trim() || savingTip}
+                  className="rounded-lg"
+                  style={{ backgroundColor: "#561828", color: "#fff" }}
+                >
+                  {savingTip ? "Sparar…" : "Dela tips"}
+                </Button>
+              </div>
+            </div>
+          )}
           {loadingContent ? (
             <div className="space-y-3">
               <TipCardSkeleton />
