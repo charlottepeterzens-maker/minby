@@ -158,8 +158,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 14px;
+    line-height: 1.2;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -167,6 +167,7 @@
     font-family: var(--font-display);
     font-weight: 500;
   }
+
 }
 
 @layer utilities {
