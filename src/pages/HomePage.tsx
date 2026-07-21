@@ -484,58 +484,11 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     setSelectedCircles((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]);
   };
 
-  const createTip = async () => {
-    if (!userId || !tipTitle.trim() || !selectedCircles.length) return;
-    setSavingTip(true);
-    let imagePath: string | null = null;
-    const trimmedUrl = tipUrl.trim();
-    const bucketPrefix = selectedCircles[0];
-
-    if (tipImageFile) {
-      try {
-        const ext = tipImageFile.name.split(".").pop() || "jpg";
-        const path = `${bucketPrefix}/tips/${userId}/${crypto.randomUUID()}.${ext}`;
-        const { error: upErr } = await supabase.storage.from("circle-photos").upload(path, tipImageFile, { contentType: tipImageFile.type });
-        if (upErr) throw upErr;
-        imagePath = path;
-      } catch (e: any) {
-        setSavingTip(false); toast.error(e?.message ?? "Kunde inte ladda upp"); return;
-      }
-    } else if (trimmedUrl) {
-      try {
-        const { data: preview } = await supabase.functions.invoke("fetch-link-preview", {
-          body: { url: trimmedUrl, uploadBucket: "circle-photos", uploadPrefix: `${bucketPrefix}/tips` },
-        });
-        if (preview?.storagePath) imagePath = preview.storagePath as string;
-      } catch (e) { console.error(e); }
-    }
-
-    const { data, error } = await supabase.from("tips").insert({
-      owner_id: userId,
-      title: tipTitle.trim(),
-      url: trimmedUrl || null,
-      comment: tipComment.trim() || null,
-      image_path: imagePath,
-    }).select("id, title, image_path, created_at, comment, url").single();
-    if (error || !data) { setSavingTip(false); toast.error(error?.message ?? "Kunde inte spara"); return; }
-
-    const { error: visErr } = await supabase.from("tip_visibility")
-      .insert(selectedCircles.map((c) => ({ tip_id: data.id, circle_id: c })));
-    setSavingTip(false);
-    if (visErr) { toast.error(visErr.message); return; }
-
-    let signedUrl: string | null = null;
-    if (data.image_path) {
-      const { data: s } = await supabase.storage.from("circle-photos").createSignedUrl(data.image_path, 60 * 60);
-      signedUrl = s?.signedUrl ?? null;
-    }
-    setMyTips((prev) => [{ id: data.id, title: data.title, image_url: signedUrl, created_at: (data as any).created_at, comment: (data as any).comment ?? null, url: (data as any).url ?? null }, ...(prev ?? [])]);
-    setTipTitle(""); setTipUrl(""); setTipComment("");
-    setTipImageFile(null);
-    if (tipImagePreview) { URL.revokeObjectURL(tipImagePreview); setTipImagePreview(null); }
-    setShowTipForm(false);
-    toast.success("Tipset är delat");
+  const addTipToList = (t: { id: string; title: string; image_url: string | null; created_at: string; comment: string | null; url: string | null; category: string | null }) => {
+    setMyTips((prev) => [t, ...(prev ?? [])]);
   };
+
+
 
   const uploadPhoto = async () => {
     if (!userId || !photoFile || !selectedCircles.length) return;
