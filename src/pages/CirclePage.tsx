@@ -602,26 +602,9 @@ const CirclePage = () => {
 
       {/* Invite sheet — layered on top of the Create Hub */}
       <Sheet open={inviteOpen} onOpenChange={setInviteOpen}>
-        <SheetContent
-          side="bottom"
-          className="rounded-t-[26px] border-0 p-0"
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          style={{ backgroundColor: "#FFFFFF" }}
-        >
-          <SheetHeader className="px-5 pt-5 pb-2 flex-row items-center justify-between">
-            <SheetTitle className="text-heading-md text-left" style={HEADING_STYLE}>
-              Bjud in till kretsen
-            </SheetTitle>
-            <button
-              type="button"
-              onClick={() => setInviteOpen(false)}
-              className="p-2 -mr-2"
-              aria-label="Stäng"
-            >
-              <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
-            </button>
-          </SheetHeader>
-          <div className="px-5 pb-8 pt-2 space-y-5">
+        <BottomSheetContent>
+          <BottomSheetHeader title="Bjud in till kretsen" />
+          <BottomSheetBody className="px-5 pt-4 pb-8 space-y-5">
             <p className="text-body" style={{ color: "#5B5B5B" }}>
               Bjud in familj och vänner så att ni kan dela foton, tips och planera träffar tillsammans.
             </p>
@@ -641,8 +624,8 @@ const CirclePage = () => {
                 Kopiera länk
               </TextButton>
             </div>
-          </div>
-        </SheetContent>
+          </BottomSheetBody>
+        </BottomSheetContent>
       </Sheet>
 
 
