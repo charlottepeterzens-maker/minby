@@ -336,7 +336,7 @@ const CirclePage = () => {
             <Share2 className="w-5 h-5" />
           </button>
           <div
-            className="absolute inset-x-0 bottom-0 px-5 pt-10 pb-4"
+            className="absolute inset-x-0 bottom-0 px-4 pt-10 pb-4"
             style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)" }}
           >
             <h1 className="text-white text-[26px] leading-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
@@ -350,7 +350,7 @@ const CirclePage = () => {
 
         {/* Sedan sist */}
         {sinceLast && (
-          <section className="mt-6 px-5">
+          <section className="mt-6 px-4">
             <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Sedan sist</h2>
             <div className="rounded-lg p-4" style={{ backgroundColor: CARD_YELLOW }}>
               <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(20, 4%, 40%)" }}>
@@ -365,7 +365,7 @@ const CirclePage = () => {
 
         {/* Våra förslag att ses */}
         <section className="mt-8">
-          <div className="px-5 mb-3 flex items-center justify-between">
+          <div className="px-4 mb-3 flex items-center justify-between">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra förslag att ses</h2>
             <button
               onClick={() => setShowMeetingForm(true)}
@@ -376,15 +376,15 @@ const CirclePage = () => {
             </button>
           </div>
           {loadingContent ? (
-            <div className="flex gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <MeetingCardSkeleton />
               <MeetingCardSkeleton />
               <MeetingCardSkeleton />
             </div>
           ) : meetings.length === 0 ? (
-            <p className="px-5 text-sm text-muted-foreground">Ingen träff planerad ännu.</p>
+            <p className="px-4 text-sm text-muted-foreground">Ingen träff planerad ännu.</p>
           ) : (
-            <div className="flex gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {meetings.map((m) => (
                 <MeetingCard
                   key={m.id}
@@ -401,7 +401,7 @@ const CirclePage = () => {
         </section>
 
         {/* Chatt */}
-        <section className="mt-8 px-5">
+        <section className="mt-8 px-4">
           <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Chatt</h2>
           <div className="rounded-lg p-4" style={{ backgroundColor: CARD_BLUE }}>
             {aiSummary ? (
@@ -431,7 +431,7 @@ const CirclePage = () => {
 
         {/* Våra tips */}
         <section className="mt-8">
-          <div className="px-5 mb-3 flex items-center justify-between">
+          <div className="px-4 mb-3 flex items-center justify-between">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra tips</h2>
             <button
               onClick={() => setShowTipForm(true)}
@@ -442,15 +442,15 @@ const CirclePage = () => {
             </button>
           </div>
           {loadingContent ? (
-            <div className="flex gap-2 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <PhotoTileSkeleton />
               <PhotoTileSkeleton />
               <PhotoTileSkeleton />
             </div>
           ) : tips.length === 0 ? (
-            <p className="px-5 text-sm text-muted-foreground">Inga tips delade ännu.</p>
+            <p className="px-4 text-sm text-muted-foreground">Inga tips delade ännu.</p>
           ) : (
-            <div className="flex gap-2 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {tips.map((t) => (
                 <PhotoTile
                   key={t.id}
@@ -466,7 +466,7 @@ const CirclePage = () => {
 
         {/* Våra foton */}
         <section className="mt-8 mb-10">
-          <div className="px-5 mb-3 flex items-center justify-between">
+          <div className="px-4 mb-3 flex items-center justify-between">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra foton</h2>
             <button
               onClick={() => photoInputRef.current?.click()}
@@ -489,15 +489,15 @@ const CirclePage = () => {
             />
           </div>
           {loadingContent ? (
-            <div className="flex gap-2 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <PhotoTileSkeleton />
               <PhotoTileSkeleton />
               <PhotoTileSkeleton />
             </div>
           ) : photos.length === 0 ? (
-            <p className="px-5 text-sm text-muted-foreground">Inga foton delade ännu.</p>
+            <p className="px-4 text-sm text-muted-foreground">Inga foton delade ännu.</p>
           ) : (
-            <div className="flex gap-2 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {photos.map((p) => (
                 <PhotoTile
                   key={p.id}
