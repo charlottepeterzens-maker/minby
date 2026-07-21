@@ -243,6 +243,7 @@ const CirclePage = () => {
     setCreatingInvite(false);
     if (error) { toast.error(error.message); setInviteOpen(false); return; }
     setInviteUrl(`${window.location.origin}/invite/${token}`);
+    setHasSentInvite(true);
   };
 
   const invite = async () => {
