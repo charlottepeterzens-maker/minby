@@ -39,7 +39,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
       <div className="flex-1 min-w-0 flex flex-col py-3 pr-4">
         <div className="flex items-center gap-2 mb-1">
           <div
-            className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center text-[10px]"
+            className="w-6 h-6 rounded-[32%] overflow-hidden flex items-center justify-center text-[10px]"
             style={{ backgroundColor: "#DCEAF8", color: "#561828" }}
           >
             {ownerAvatar ? <img src={ownerAvatar} alt="" className="w-full h-full object-cover" /> : initials}
