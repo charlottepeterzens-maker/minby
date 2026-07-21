@@ -12,6 +12,8 @@ import MeetingCard from "@/components/cards/MeetingCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import TipCard from "@/components/cards/TipCard";
 import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
+import { OVERLAY_GRADIENT, CARD_RADIUS_CLASS } from "@/lib/card-styles";
+
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
@@ -379,7 +381,7 @@ const CirclePage = () => {
           </button>
           <div
             className="absolute inset-x-0 bottom-0 px-4 pt-10 pb-4"
-            style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)" }}
+            style={{ background: OVERLAY_GRADIENT.hero }}
           >
             <h1 className="text-white text-[26px] leading-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
               {circle.name}
@@ -762,7 +764,7 @@ const CirclePage = () => {
                 </SheetDescription>
               </SheetHeader>
               {selectedTip.image_url && (
-                <div className="mt-4 w-full h-[160px] rounded-[24px] bg-center bg-cover" style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
+                <div className={`mt-4 w-full h-[160px] ${CARD_RADIUS_CLASS.photo} bg-center bg-cover`} style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
               )}
               {selectedTip.comment && (
                 <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
@@ -791,7 +793,7 @@ const CirclePage = () => {
                 </SheetDescription>
               </SheetHeader>
               {selectedPhoto.image_url && (
-                <img src={selectedPhoto.image_url} alt="" className="mt-4 w-full rounded-[24px] object-cover max-h-[70vh]" />
+                <img src={selectedPhoto.image_url} alt="" className={`mt-4 w-full ${CARD_RADIUS_CLASS.photo} object-cover max-h-[70vh]`} />
               )}
             </>
           )}

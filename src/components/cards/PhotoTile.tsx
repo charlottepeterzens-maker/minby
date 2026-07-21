@@ -1,3 +1,5 @@
+import { CARD_RADIUS, OVERLAY_GRADIENT } from "@/lib/card-styles";
+
 interface Props {
   imageUrl?: string | null;
   title: string;
@@ -10,12 +12,6 @@ interface Props {
   tag?: string;
 }
 
-const GRADIENTS: Record<NonNullable<Props["gradient"]>, string> = {
-  dark: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.15) 60%, rgba(0,0,0,0) 100%)",
-  tips: "linear-gradient(to top, #561828 0%, rgba(86,24,40,0.35) 55%, rgba(86,24,40,0) 100%)",
-  photos: "linear-gradient(to top, #765D19 0%, rgba(118,93,25,0.35) 55%, rgba(118,93,25,0) 100%)",
-};
-
 const PhotoTile = ({
   imageUrl,
   title,
@@ -27,11 +23,12 @@ const PhotoTile = ({
   gradient = "dark",
   tag,
 }: Props) => {
-  const radius = "24px";
+  const radius = `${CARD_RADIUS.photo}px`;
   const dims = size === "lg" ? "w-[150px] h-[210px]" : "w-[110px] h-[130px]";
   const titleSize = size === "lg" ? "text-[13px]" : "text-[11px]";
   const nameSize = size === "lg" ? "text-[11px]" : "text-[10px]";
   const pad = size === "lg" ? "p-3 pt-10" : "p-2 pt-6";
+
   return (
     <button
       type="button"
@@ -58,7 +55,7 @@ const PhotoTile = ({
       )}
       <div
         className={`absolute inset-x-0 bottom-0 ${pad}`}
-        style={{ background: GRADIENTS[gradient] }}
+        style={{ background: OVERLAY_GRADIENT[gradient] }}
       >
         {title && (
           <div
