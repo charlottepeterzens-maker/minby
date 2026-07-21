@@ -365,6 +365,7 @@ export type Database = {
           comment: string | null
           created_at: string
           id: string
+          image_path: string | null
           owner_id: string
           title: string
           updated_at: string
@@ -375,6 +376,7 @@ export type Database = {
           comment?: string | null
           created_at?: string
           id?: string
+          image_path?: string | null
           owner_id: string
           title: string
           updated_at?: string
@@ -385,6 +387,7 @@ export type Database = {
           comment?: string | null
           created_at?: string
           id?: string
+          image_path?: string | null
           owner_id?: string
           title?: string
           updated_at?: string
