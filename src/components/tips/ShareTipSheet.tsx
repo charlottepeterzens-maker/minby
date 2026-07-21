@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Sheet } from "@/components/ui/sheet";
+import { BottomSheetBody, BottomSheetContent, BottomSheetFooter, BottomSheetHeader } from "@/components/ui/bottom-sheet";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import TextButton from "@/components/ui/text-button";
