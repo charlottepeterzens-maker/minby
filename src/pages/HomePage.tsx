@@ -315,6 +315,7 @@ interface MyPhoto {
   id: string;
   image_url: string | null;
   created_at: string;
+  caption: string | null;
 }
 
 const formatMeetingDate = (iso: string | null) => {
