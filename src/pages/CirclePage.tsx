@@ -415,8 +415,17 @@ const CirclePage = () => {
             )}
           </div>
         </div>
-        {/* Onboarding checklist for new circles */}
-        {circle && user && circle.created_by === user.id && (
+        {/* Creator welcome — shown until the first invite is sent */}
+        {circle && user && circle.created_by === user.id && !hasSentInvite && (
+          <WelcomeToCircleCard
+            circleName={circle.name}
+            variant="created"
+            onInvite={openInviteSheet}
+          />
+        )}
+
+        {/* Gentle checklist for creator after first invite (photo/tip suggestions) */}
+        {circle && user && circle.created_by === user.id && hasSentInvite && (
           <CircleOnboarding
             circleId={circle.id}
             circleName={circle.name}
@@ -429,13 +438,14 @@ const CirclePage = () => {
           />
         )}
 
-        {/* Welcome card for newly joined members */}
-        {showWelcome && circle && (
+        {/* Welcome card for newly joined members (non-creator) */}
+        {showWelcome && circle && user && circle.created_by !== user.id && (
           <WelcomeToCircleCard
             circleName={circle.name}
             onSayHi={() => navigate(`/chat/${circle.id}`)}
           />
         )}
+
 
         {/* Stepwise, non-blocking profile onboarding */}
         <ProfileNudge />
