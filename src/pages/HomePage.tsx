@@ -310,6 +310,9 @@ interface MyTip {
   id: string;
   title: string;
   image_url: string | null;
+  created_at: string;
+  comment: string | null;
+  url: string | null;
 }
 interface MyPhoto {
   id: string;
