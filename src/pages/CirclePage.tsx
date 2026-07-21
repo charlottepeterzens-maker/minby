@@ -511,14 +511,8 @@ const CirclePage = () => {
 
         {/* Våra förslag att ses */}
         <section className="mt-8">
-          <div className="px-4 mb-3 flex items-center justify-between">
+          <div className="px-4 mb-3">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra förslag att ses</h2>
-            <TextButton
-              onClick={() => setShowMeetingForm(true)}
-              className="text-[13px]"
-            >
-              + Föreslå en träff
-            </TextButton>
           </div>
           {loadingContent ? (
             <div className="flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
@@ -575,7 +569,7 @@ const CirclePage = () => {
 
         {/* Våra tips */}
         <section className="mt-8">
-          <div className="px-4 mb-3 flex items-center justify-between">
+          <div className="px-4 mb-3">
             <button
               type="button"
               onClick={() => setShowTipsList(true)}
@@ -584,12 +578,6 @@ const CirclePage = () => {
             >
               Våra tips
             </button>
-            <TextButton
-              onClick={() => setShowTipForm(true)}
-              className="text-[13px]"
-            >
-              + Lägg till tips
-            </TextButton>
           </div>
           {loadingContent ? (
             <div className="flex overflow-x-auto pl-4 pr-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
@@ -619,15 +607,8 @@ const CirclePage = () => {
 
         {/* Våra foton */}
         <section className="mt-8 mb-10">
-          <div className="px-4 mb-3 flex items-center justify-between">
+          <div className="px-4 mb-3">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra foton</h2>
-            <TextButton
-              onClick={() => photoInputRef.current?.click()}
-              disabled={uploadingPhoto}
-              className="text-[13px]"
-            >
-              {uploadingPhoto ? "Laddar upp…" : "+ Lägg foto"}
-            </TextButton>
             <input
               ref={photoInputRef}
               type="file"
