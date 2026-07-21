@@ -745,11 +745,9 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
 
     {/* Photo upload sheet */}
     <Sheet open={showPhotoForm} onOpenChange={(o) => { setShowPhotoForm(o); if (!o) { setPhotoFile(null); setPhotoCaption(""); if (photoPreview) URL.revokeObjectURL(photoPreview); setPhotoPreview(null); } }}>
-      <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
-        <SheetHeader className="text-left">
-          <SheetTitle style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}>Ladda upp foto</SheetTitle>
-        </SheetHeader>
-        <div className="mt-4 space-y-3">
+      <BottomSheetContent>
+        <BottomSheetHeader title="Ladda upp foto" />
+        <BottomSheetBody className="px-4 pt-4 pb-8 space-y-3">
           {photoPreview && (
             <img src={photoPreview} alt="" className="w-full max-h-[240px] object-cover rounded-2xl" />
           )}
@@ -767,8 +765,8 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
               {uploadingPhoto ? "Laddar upp…" : "Dela foto"}
             </TextButton>
           </div>
-        </div>
-      </SheetContent>
+        </BottomSheetBody>
+      </BottomSheetContent>
     </Sheet>
 
   </>
