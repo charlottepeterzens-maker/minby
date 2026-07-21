@@ -153,6 +153,19 @@
 @layer base {
   * {
     @apply border-transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    /* Prevent iOS Safari rubber-band from revealing white behind the app */
+    overscroll-behavior-y: none;
+    /* Prevent horizontal scroll from rogue elements */
+    overflow-x: hidden;
+  }
+
+  html {
+    /* Use dynamic viewport so 100dvh accounts for iOS URL bar */
+    height: 100%;
   }
 
   body {
@@ -161,6 +174,11 @@
     font-size: 14px;
     line-height: 1.2;
     -webkit-font-smoothing: antialiased;
+    /* Faster taps, no double-tap zoom on the app shell */
+    touch-action: manipulation;
+    /* iOS momentum scroll */
+    -webkit-overflow-scrolling: touch;
+    min-height: 100dvh;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -168,7 +186,21 @@
     font-weight: 500;
   }
 
+  /* iOS zooms in on focus when input font-size < 16px. Force 16px on touch devices. */
+  @supports (-webkit-touch-callout: none) {
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+      font-size: 16px;
+    }
+  }
+
+  button, [role="button"], a {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 }
+
 
 @layer utilities {
   .font-display {
