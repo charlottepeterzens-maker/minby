@@ -568,76 +568,84 @@ const CirclePage = () => {
           </div>
         </section>
 
-        {/* Våra tips */}
-        <section className="mt-8">
-          <div className="px-4 mb-3">
-            <button
-              type="button"
-              onClick={() => setShowTipsList(true)}
-              className="text-[16px]"
-              style={HEADING_STYLE}
-            >
-              Våra tips
-            </button>
+        {/* Våra tips — overview preview */}
+        <section className="px-4">
+          <div className="mt-10 mb-3">
+            <h2 className="font-display text-xl text-foreground">Våra tips</h2>
           </div>
           {loadingContent ? (
-            <div className="flex overflow-x-auto pl-4 pr-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              <PhotoTileSkeleton />
-              <PhotoTileSkeleton />
-              <PhotoTileSkeleton />
+            <div className="space-y-3">
+              <TipCardSkeleton />
+              <TipCardSkeleton />
             </div>
           ) : tips.length === 0 ? (
-            <p className="px-4 text-sm text-muted-foreground">Inga tips delade ännu.</p>
+            <p className="text-sm mt-2" style={{ color: "#561828" }}>
+              Inga tips delade ännu. Dela en plats, bok, podd eller länk du gillar.
+            </p>
           ) : (
-            <div className={`flex overflow-x-auto pl-4 ${tips.length <= 3 ? "pr-4" : "pr-0"} pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}>
-              {tips.map((t, i) => (
-                <PhotoTile
-                  key={t.id}
-                  imageUrl={t.image_url ?? null}
-                  title={t.title}
-                  ownerName={t.owner_name}
-                  onOpen={() => setSelectedTip(t)}
-                  roundedLeft={i === 0}
-                  roundedRight={tips.length <= 3 && i === tips.length - 1}
-                  gradient="tips"
+            <>
+              <div className="relative">
+                <div className="space-y-3 max-h-[280px] overflow-hidden">
+                  {tips.slice(0, 3).map((t) => (
+                    <TipCard
+                      key={t.id}
+                      imageUrl={t.image_url ?? null}
+                      ownerName={t.owner_name}
+                      dateLabel={formatDateYear(t.created_at)}
+                      title={t.title}
+                      description={t.comment}
+                      url={t.url}
+                      onOpen={() => setSelectedTip(t)}
+                    />
+                  ))}
+                </div>
+                <div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
+                  style={{ background: "linear-gradient(to bottom, hsla(42,20%,95%,0), hsl(var(--background)) 85%)" }}
                 />
-              ))}
-            </div>
+              </div>
+              <div className="mt-4 flex justify-center">
+                <TextButton onClick={() => setShowTipsList(true)}>Visa alla tips</TextButton>
+              </div>
+            </>
           )}
         </section>
 
         {/* Våra foton */}
-        <section className="mt-8 mb-10">
-          <div className="px-4 mb-3">
-            <h2 className="text-[16px]" style={HEADING_STYLE}>Våra foton</h2>
-            <input
-              ref={photoInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) {
-                  setPhotoFile(f);
-                  if (photoPreview) URL.revokeObjectURL(photoPreview);
-                  setPhotoPreview(URL.createObjectURL(f));
-                  setPhotoCaption("");
-                  setShowPhotoForm(true);
-                }
-                e.target.value = "";
-              }}
-            />
+        <section className="px-4 mb-10">
+          <div className="flex items-baseline justify-between mb-3 mt-10">
+            <h2 className="font-display text-xl text-foreground">Våra foton</h2>
+            <TextButton onClick={() => photoInputRef.current?.click()}>+ Ladda upp foto</TextButton>
           </div>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) {
+                setPhotoFile(f);
+                if (photoPreview) URL.revokeObjectURL(photoPreview);
+                setPhotoPreview(URL.createObjectURL(f));
+                setPhotoCaption("");
+                setShowPhotoForm(true);
+              }
+              e.target.value = "";
+            }}
+          />
           {loadingContent ? (
-            <div className="flex overflow-x-auto pl-4 pr-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex overflow-x-auto -mx-4 px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <PhotoSmallSkeleton />
               <PhotoSmallSkeleton />
               <PhotoSmallSkeleton />
             </div>
           ) : photos.length === 0 ? (
-            <p className="px-4 text-sm text-muted-foreground">Inga foton delade ännu.</p>
+            <p className="text-sm mt-2" style={{ color: "#561828" }}>
+              Inga foton delade ännu. Bilder ni delar samlas här som ett gemensamt minne.
+            </p>
           ) : (
-            <div className={`flex overflow-x-auto pl-4 ${photos.length <= 3 ? "pr-4" : "pr-0"} pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}>
+            <div className="flex overflow-x-auto -mx-4 px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {photos.map((p, i) => (
                 <PhotoTile
                   key={p.id}
@@ -668,54 +676,67 @@ const CirclePage = () => {
 
       {/* Tips list sheet */}
       <Sheet open={showTipsList} onOpenChange={setShowTipsList}>
-        <SheetContent side="bottom" className="rounded-t-[26px] max-h-[90vh] overflow-y-auto p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
-          <SheetHeader className="text-center px-4 pt-4 pb-2 border-b border-black/5 relative">
+        <SheetContent
+          side="bottom"
+          className="rounded-t-[26px] border-0 p-0 h-[92dvh] flex flex-col"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          style={{ backgroundColor: "hsl(var(--background))" }}
+        >
+          <SheetHeader
+            className="sticky top-0 z-10 px-4 pt-5 pb-3 flex-row items-center gap-3 space-y-0"
+            style={{ backgroundColor: "hsl(var(--background))" }}
+          >
             <button
               type="button"
               onClick={() => setShowTipsList(false)}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-1"
               aria-label="Stäng"
+              className="p-2 -ml-2"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
             </button>
-            <SheetTitle className="text-center text-[16px] font-semibold" style={HEADING_STYLE}>
+            <SheetTitle className="text-heading-md text-left" style={HEADING_STYLE}>
               Våra tips
             </SheetTitle>
           </SheetHeader>
-          <div className="relative min-h-[60vh]">
-            <div className="p-4 space-y-3 pb-28">
-              {loadingContent ? (
-                <>
-                  <TipCardSkeleton />
-                  <TipCardSkeleton />
-                </>
-              ) : tips.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">Inga tips delade ännu.</p>
-              ) : (
-                tips.map((t) => (
-                  <TipCard
-                    key={t.id}
-                    imageUrl={t.image_url ?? null}
-                    ownerName={t.owner_name}
-                    dateLabel={formatDateYear(t.created_at)}
-                    title={t.title}
-                    description={t.comment}
-                    url={t.url}
-                    onOpen={() => { setShowTipsList(false); setSelectedTip(t); }}
-                  />
-                ))
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={() => { setShowTipsList(false); setShowTipForm(true); }}
-              className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
-              style={{ backgroundColor: "#561828", color: "white" }}
-              aria-label="Lägg till tips"
-            >
-              <Plus className="w-6 h-6" />
-            </button>
+          <div className="flex-1 overflow-y-auto px-4 pb-32 space-y-3">
+            {loadingContent ? (
+              <>
+                <TipCardSkeleton />
+                <TipCardSkeleton />
+              </>
+            ) : tips.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-8">Inga tips delade ännu.</p>
+            ) : (
+              tips.map((t) => (
+                <TipCard
+                  key={t.id}
+                  imageUrl={t.image_url ?? null}
+                  ownerName={t.owner_name}
+                  dateLabel={formatDateYear(t.created_at)}
+                  title={t.title}
+                  description={t.comment}
+                  url={t.url}
+                  onOpen={() => { setShowTipsList(false); setSelectedTip(t); }}
+                />
+              ))
+            )}
           </div>
+          <button
+            type="button"
+            onClick={() => { setShowTipsList(false); setShowTipForm(true); }}
+            aria-label="Lägg till tips"
+            className="absolute z-20 flex items-center justify-center rounded-full shadow-lg active:scale-95 transition-transform"
+            style={{
+              width: 64,
+              height: 64,
+              right: "max(16px, env(safe-area-inset-right))",
+              bottom: "calc(max(16px, env(safe-area-inset-bottom)) + 16px)",
+              backgroundColor: "#561828",
+              color: "#FFFFFF",
+            }}
+          >
+            <Plus className="w-6 h-6" strokeWidth={2} />
+          </button>
         </SheetContent>
       </Sheet>
 
