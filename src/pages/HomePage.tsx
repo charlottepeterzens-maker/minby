@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
-import { Camera, Menu } from "lucide-react";
+import { Camera, Menu, Plus, X } from "lucide-react";
+import TipCard from "@/components/cards/TipCard";
 import CircleCard from "@/components/cards/CircleCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
@@ -309,6 +310,9 @@ interface MyTip {
   id: string;
   title: string;
   image_url: string | null;
+  created_at: string;
+  comment: string | null;
+  url: string | null;
 }
 interface MyPhoto {
   id: string;
@@ -325,6 +329,14 @@ const formatMeetingDate = (iso: string | null) => {
   return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
 };
 
+const formatTipDate = (iso: string) => {
+  const d = new Date(iso);
+  const months = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+  return `${d.getDate()} ${months[d.getMonth()]}`;
+};
+
+
+
 const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string | null; circles: Circle[]; displayName: string }) => {
   const navigate = useNavigate();
   const [meetings, setMeetings] = useState<MeetingItem[] | null>(null);
@@ -333,6 +345,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
 
   // Creation sheet state
   const [showTipForm, setShowTipForm] = useState(false);
+  const [showAllTips, setShowAllTips] = useState(false);
   const [tipTitle, setTipTitle] = useState("");
   const [tipUrl, setTipUrl] = useState("");
   const [tipComment, setTipComment] = useState("");
@@ -359,7 +372,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
           .order("meeting_date", { ascending: true, nullsFirst: false }),
         supabase
           .from("tips")
-          .select("id, title, image_path")
+          .select("id, title, image_path, created_at, comment, url")
           .eq("owner_id", userId)
           .order("created_at", { ascending: false })
           .limit(10),
@@ -414,7 +427,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       ]);
       const tipMap = new Map((tipSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
       const photoMap = new Map((photoSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
-      setMyTips((tipRows ?? []).map((t) => ({ id: t.id, title: t.title, image_url: t.image_path ? tipMap.get(t.image_path) ?? null : null })));
+      setMyTips((tipRows ?? []).map((t: any) => ({ id: t.id, title: t.title, created_at: t.created_at, comment: t.comment ?? null, url: t.url ?? null, image_url: t.image_path ? tipMap.get(t.image_path) ?? null : null })));
       setMyPhotos((photoRows ?? []).map((p: any) => ({ id: p.id, created_at: p.created_at, caption: p.caption ?? null, image_url: p.storage_path ? photoMap.get(p.storage_path) ?? null : null })));
     })();
   }, [userId]);
@@ -471,7 +484,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       url: trimmedUrl || null,
       comment: tipComment.trim() || null,
       image_path: imagePath,
-    }).select("id, title, image_path").single();
+    }).select("id, title, image_path, created_at, comment, url").single();
     if (error || !data) { setSavingTip(false); toast.error(error?.message ?? "Kunde inte spara"); return; }
 
     const { error: visErr } = await supabase.from("tip_visibility")
@@ -484,7 +497,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       const { data: s } = await supabase.storage.from("circle-photos").createSignedUrl(data.image_path, 60 * 60);
       signedUrl = s?.signedUrl ?? null;
     }
-    setMyTips((prev) => [{ id: data.id, title: data.title, image_url: signedUrl }, ...(prev ?? [])]);
+    setMyTips((prev) => [{ id: data.id, title: data.title, image_url: signedUrl, created_at: (data as any).created_at, comment: (data as any).comment ?? null, url: (data as any).url ?? null }, ...(prev ?? [])]);
     setTipTitle(""); setTipUrl(""); setTipComment("");
     setTipImageFile(null);
     if (tipImagePreview) { URL.revokeObjectURL(tipImagePreview); setTipImagePreview(null); }
@@ -619,26 +632,53 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     </p>
 
 
-    {/* Mina tips */}
-    <SectionHeader title="Mina tips" cta="+ Dela ett tips" onCta={openTipForm} disabled={!circles.length} />
+    {/* Mina tips — overview preview */}
+    <div className="mt-10 mb-3">
+      <h2 className="font-display text-xl text-foreground">Mina tips</h2>
+    </div>
     {hasTips ? (
-      <HorizontalStrip
-        gradient="tips"
-        items={myTips!.map((t) => ({ title: t.title, sub: displayName || "Du", bg: "#E8DDC6", imageUrl: t.image_url }))}
-      />
+      <>
+        <div className="relative">
+          <div className="space-y-3 max-h-[280px] overflow-hidden">
+            {myTips!.slice(0, 3).map((t) => (
+              <TipCard
+                key={t.id}
+                imageUrl={t.image_url}
+                ownerName={displayName || "Du"}
+                ownerAvatar={null}
+                dateLabel={formatTipDate(t.created_at)}
+                title={t.title}
+                description={t.comment}
+                url={t.url}
+                onOpen={() => setShowAllTips(true)}
+              />
+            ))}
+          </div>
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
+            style={{ background: "linear-gradient(to bottom, hsla(42,20%,95%,0), hsl(var(--background)) 85%)" }}
+          />
+        </div>
+        <div className="mt-4 flex justify-center">
+          <TextButton onClick={() => setShowAllTips(true)}>Visa alla tips</TextButton>
+        </div>
+      </>
     ) : (
-      <HorizontalStrip
-        gradient="tips"
-        items={[
-          { title: "Bagarstugan", sub: "Du", bg: "#E8DDC6", showTag: true },
-          { title: "podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
-          { title: "bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
-        ]}
-      />
+      <>
+        <HorizontalStrip
+          gradient="tips"
+          items={[
+            { title: "Bagarstugan", sub: "Du", bg: "#E8DDC6", showTag: true },
+            { title: "podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
+            { title: "bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
+          ]}
+        />
+        <p className="text-sm mt-2" style={{ color: "#561828" }}>
+          {circles.length ? "Dela en plats, bok, podd eller länk du gillar med en krets." : "Skapa en krets så kan du dela tips."}
+        </p>
+      </>
     )}
-    <p className="text-sm mt-2" style={{ color: "#561828" }}>
-      {circles.length ? "Dela en plats, bok, podd eller länk du gillar med en krets." : "Skapa en krets så kan du dela tips."}
-    </p>
+
 
     {/* Foton */}
     <SectionHeader title="Mina foton" cta="+ Ladda upp foto" onCta={openPhotoForm} disabled={!circles.length} />
@@ -677,6 +717,66 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     <p className="text-sm mt-2" style={{ color: "#561828" }}>
       {circles.length ? "Bilder du delar i dina kretsar samlas här som ett gemensamt minne." : "Skapa en krets så kan du dela foton."}
     </p>
+
+    {/* Våra tips — full browsing sheet */}
+    <Sheet open={showAllTips} onOpenChange={setShowAllTips}>
+      <SheetContent
+        side="bottom"
+        className="rounded-t-[26px] border-0 p-0 h-[92dvh] flex flex-col"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        style={{ backgroundColor: "hsl(var(--background))" }}
+      >
+        <SheetHeader
+          className="sticky top-0 z-10 px-4 pt-5 pb-3 flex-row items-center gap-3 space-y-0"
+          style={{ backgroundColor: "hsl(var(--background))" }}
+        >
+          <button
+            type="button"
+            onClick={() => setShowAllTips(false)}
+            aria-label="Stäng"
+            className="p-2 -ml-2"
+          >
+            <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
+          </button>
+          <SheetTitle
+            className="text-heading-md text-left"
+            style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}
+          >
+            Våra tips
+          </SheetTitle>
+        </SheetHeader>
+        <div className="flex-1 overflow-y-auto px-4 pb-32 space-y-3">
+          {(myTips ?? []).map((t) => (
+            <TipCard
+              key={t.id}
+              imageUrl={t.image_url}
+              ownerName={displayName || "Du"}
+              ownerAvatar={null}
+              dateLabel={formatTipDate(t.created_at)}
+              title={t.title}
+              description={t.comment}
+              url={t.url}
+            />
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={openTipForm}
+          aria-label="Dela ett tips"
+          className="absolute z-20 flex items-center justify-center rounded-full shadow-lg active:scale-95 transition-transform"
+          style={{
+            width: 64,
+            height: 64,
+            right: "max(16px, env(safe-area-inset-right))",
+            bottom: "calc(max(16px, env(safe-area-inset-bottom)) + 16px)",
+            backgroundColor: "#561828",
+            color: "#FFFFFF",
+          }}
+        >
+          <Plus className="w-6 h-6" strokeWidth={2} />
+        </button>
+      </SheetContent>
+    </Sheet>
 
     {/* Tip create sheet */}
     <Sheet open={showTipForm} onOpenChange={setShowTipForm}>
