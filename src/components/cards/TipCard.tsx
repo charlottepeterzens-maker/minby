@@ -8,10 +8,11 @@ interface Props {
   title: string;
   description?: string | null;
   url?: string | null;
+  category?: string | null;
   onOpen?: () => void;
 }
 
-const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, description, url, onOpen }: Props) => {
+const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, description, url, category, onOpen }: Props) => {
   const initials = ownerName
     .split(" ")
     .slice(0, 2)
@@ -31,12 +32,21 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
       style={{ backgroundColor: "#F9F3E1" }}
     >
       <div
-        className="w-[134px] h-[134px] flex-shrink-0 bg-center bg-cover"
+        className="relative w-[134px] h-[134px] flex-shrink-0 bg-center bg-cover"
         style={{
           backgroundColor: "#E8DDC6",
           backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
         }}
-      />
+      >
+        {category && (
+          <span
+            className="absolute top-2 left-2 text-[11px] px-2.5 py-1 rounded-full"
+            style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.06em" }}
+          >
+            {category}
+          </span>
+        )}
+      </div>
 
       <div className="flex-1 min-w-0 flex flex-col py-3 pr-4">
         <div className="flex items-center gap-2 mb-1">
