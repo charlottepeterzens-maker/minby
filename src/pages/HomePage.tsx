@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
-import { LogOut, Camera, Menu, User as UserIcon, Image as ImageIcon } from "lucide-react";
+import { Camera, Menu } from "lucide-react";
 import CircleCard from "@/components/cards/CircleCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
@@ -23,7 +23,7 @@ interface Profile {
 }
 
 const HomePage = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [circles, setCircles] = useState<Circle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,6 @@ const HomePage = () => {
   const [newName, setNewName] = useState("");
   const [profile, setProfile] = useState<Profile>({ display_name: null, avatar_url: null, bio: null });
   const [editingProfile, setEditingProfile] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
   const [bioDraft, setBioDraft] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
@@ -106,43 +105,13 @@ const HomePage = () => {
       <div className="max-w-lg mx-auto px-5 pt-safe pb-safe">
         <header className="flex items-center justify-between py-6">
           <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "lowercase" }}>minby</span>
-          <div className="relative">
-            <button
-              onClick={() => setMenuOpen((v) => !v)}
-              className="text-foreground p-2"
-              aria-label="Inställningar"
-              aria-expanded={menuOpen}
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-            {menuOpen && (
-              <>
-                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
-                <div
-                  className="absolute right-0 top-full mt-2 w-56 rounded-2xl py-2 z-50 shadow-lg"
-                  style={{ backgroundColor: "#F9F3E1" }}
-                  role="menu"
-                >
-                  <MenuItem
-                    icon={<UserIcon className="w-4 h-4" />}
-                    label="Redigera profil"
-                    onClick={() => { setMenuOpen(false); openEdit(); }}
-                  />
-                  <MenuItem
-                    icon={<ImageIcon className="w-4 h-4" />}
-                    label={profile.avatar_url ? "Byt profilbild" : "Lägg till profilbild"}
-                    onClick={() => { setMenuOpen(false); fileRef.current?.click(); }}
-                  />
-                  <div className="my-1 h-px" style={{ backgroundColor: "#E8DDC6" }} />
-                  <MenuItem
-                    icon={<LogOut className="w-4 h-4" />}
-                    label="Logga ut"
-                    onClick={() => { setMenuOpen(false); signOut(); }}
-                  />
-                </div>
-              </>
-            )}
-          </div>
+          <button
+            onClick={() => navigate("/settings")}
+            className="text-foreground p-2"
+            aria-label="Inställningar"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
         </header>
 
         {/* Profile header */}
@@ -284,18 +253,6 @@ const HomePage = () => {
 
 const PlaceholderTag = () => <ExampleTag />;
 
-const MenuItem = ({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) => (
-  <button
-    type="button"
-    role="menuitem"
-    onClick={onClick}
-    className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-[14px] hover:bg-black/5 transition-colors"
-    style={{ color: "#2B2B2B" }}
-  >
-    <span style={{ color: "#561828" }}>{icon}</span>
-    {label}
-  </button>
-);
 
 const SectionHeader = ({ title, cta, onCta }: { title: string; cta: string; onCta?: () => void }) => (
   <div className="flex items-baseline justify-between mb-3 mt-10">

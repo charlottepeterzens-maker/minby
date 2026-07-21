@@ -15,6 +15,7 @@ import HomePage from "./pages/HomePage";
 import CirclePage from "./pages/CirclePage";
 import ChatPage from "./pages/ChatPage";
 import VerifyPage from "./pages/VerifyPage";
+import SettingsPage from "./pages/SettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
             <Route path="/circle/:id" element={<ProtectedRoute><CirclePage /></ProtectedRoute>} />
             <Route path="/chat/:id" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
             <Route path="/invite/:token" element={<InvitePage />} />
