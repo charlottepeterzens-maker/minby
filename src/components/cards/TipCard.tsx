@@ -1,3 +1,5 @@
+import TextButton from "@/components/ui/text-button";
+
 interface Props {
   imageUrl?: string | null;
   ownerName: string;
