@@ -316,7 +316,7 @@ const ProfilePlaceholders = ({ userId }: { userId: string | null }) => {
     (async () => {
       const { data: mtgs, error } = await supabase
         .from("meetings")
-        .select("id, title, meeting_date, created_by")
+        .select("id, title, meeting_date, created_by, circle_id")
         .order("meeting_date", { ascending: true, nullsFirst: false });
       if (error || !mtgs) { setMeetings([]); return; }
 
