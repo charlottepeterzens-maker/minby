@@ -55,22 +55,22 @@ const CircleOnboarding = ({ circleId, circleName, hasMembers, hasPhotos, hasTips
 
   return (
     <section className="mt-6 px-4">
-      <div className="rounded-[26px] p-5" style={{ backgroundColor: "#F9F3E1" }}>
+      <div className="rounded-[26px] p-5" style={{ backgroundColor: "#F561828" }}>
         <div className="flex items-start justify-between mb-1">
-          <div className="text-[11px] font-medium" style={{ color: "#675332" }}>
+          <div className="text-[10px] font-medium" style={{ color: "#C85A2E" }}>
             {doneCount} av {STEPS.length} klara
           </div>
           <button
             type="button"
             onClick={dismiss}
             className="text-[13px] font-medium underline underline-offset-2 decoration-1"
-            style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+            style={{ color: "#FFFFFF", textDecorationColor: "#C85A2E" }}
           >
             Stäng
           </button>
         </div>
 
-        <h3 className="text-[18px] mb-1" style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}>
+        <h3 className="text-[18px] mb-1" style={{ fontFamily: "'Outfit', sans-serif", color: "#FFFFFF" }}>
           Kom igång med {circleName}
         </h3>
         <p className="text-[13px] mb-4" style={{ color: "#675332" }}>
@@ -86,7 +86,7 @@ const CircleOnboarding = ({ circleId, circleName, hasMembers, hasPhotos, hasTips
                   <span
                     className="block text-[16px] font-medium"
                     style={{
-                      color: "#2B2B2B",
+                      color: "#FFFFFF",
                       textDecoration: isDone ? "line-through" : "none",
                       opacity: isDone ? 0.6 : 1,
                     }}
@@ -94,19 +94,19 @@ const CircleOnboarding = ({ circleId, circleName, hasMembers, hasPhotos, hasTips
                     {s.label}
                   </span>
                   {!isDone && (
-                    <span className="block text-[12px] mt-0.5" style={{ color: "#675332" }}>
+                    <span className="block text-[12px] mt-0.5" style={{ color: "#DAEAF6" }}>
                       {s.hint}
                     </span>
                   )}
                 </span>
                 {isDone ? (
-                  <span className="text-[12px]" style={{ color: "#675332" }}>Klart</span>
+                  <span className="text-[12px]" style={{ color: "#DAEAF6" }}>Klart</span>
                 ) : (
                   <button
                     type="button"
                     onClick={() => handlers[s.key]()}
                     className="text-[16px] font-medium underline underline-offset-2 decoration-1 flex-shrink-0"
-                    style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+                    style={{ color: "#FFFFFF", textDecorationColor: "#C85A2E" }}
                   >
                     {s.cta}
                   </button>
