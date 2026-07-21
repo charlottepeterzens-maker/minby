@@ -687,32 +687,9 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
 
     {/* Våra tips — full browsing sheet */}
     <Sheet open={showAllTips} onOpenChange={setShowAllTips}>
-      <SheetContent
-        side="bottom"
-        className="rounded-t-[26px] border-0 p-0 h-[92dvh] flex flex-col"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        style={{ backgroundColor: "hsl(var(--background))" }}
-      >
-        <SheetHeader
-          className="sticky top-0 z-10 px-4 pt-5 pb-3 flex-row items-center gap-3 space-y-0"
-          style={{ backgroundColor: "hsl(var(--background))" }}
-        >
-          <button
-            type="button"
-            onClick={() => setShowAllTips(false)}
-            aria-label="Stäng"
-            className="p-2 -ml-2"
-          >
-            <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
-          </button>
-          <SheetTitle
-            className="text-heading-md text-left"
-            style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}
-          >
-            Våra tips
-          </SheetTitle>
-        </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-4 pb-32 space-y-3">
+      <BottomSheetContent height={92}>
+        <BottomSheetHeader title="Våra tips" />
+        <BottomSheetBody className="px-4 pt-4 pb-32 space-y-3">
           {(myTips ?? []).map((t) => (
             <TipCard
               key={t.id}
@@ -726,7 +703,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
               category={t.category}
             />
           ))}
-        </div>
+        </BottomSheetBody>
         <button
           type="button"
           onClick={openTipForm}
@@ -743,7 +720,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
         >
           <Plus className="w-6 h-6" strokeWidth={2} />
         </button>
-      </SheetContent>
+      </BottomSheetContent>
     </Sheet>
 
     {/* Tip create sheet */}
