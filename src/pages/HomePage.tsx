@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
-import { Plus, LogOut, Camera, Pencil } from "lucide-react";
+import { LogOut, Camera, Menu, User as UserIcon, Image as ImageIcon } from "lucide-react";
 import CircleCard from "@/components/cards/CircleCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
@@ -31,6 +31,7 @@ const HomePage = () => {
   const [newName, setNewName] = useState("");
   const [profile, setProfile] = useState<Profile>({ display_name: null, avatar_url: null, bio: null });
   const [editingProfile, setEditingProfile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
   const [bioDraft, setBioDraft] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
@@ -105,23 +106,54 @@ const HomePage = () => {
       <div className="max-w-lg mx-auto px-5 pt-safe pb-safe">
         <header className="flex items-center justify-between py-6">
           <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "lowercase" }}>minby</span>
-          <button onClick={signOut} className="text-muted-foreground p-2" aria-label="Logga ut">
-            <LogOut className="w-4 h-4" />
-          </button>
+          <div className="relative">
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              className="text-foreground p-2"
+              aria-label="Inställningar"
+              aria-expanded={menuOpen}
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            {menuOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+                <div
+                  className="absolute right-0 top-full mt-2 w-56 rounded-2xl py-2 z-50 shadow-lg"
+                  style={{ backgroundColor: "#F9F3E1" }}
+                  role="menu"
+                >
+                  <MenuItem
+                    icon={<UserIcon className="w-4 h-4" />}
+                    label="Redigera profil"
+                    onClick={() => { setMenuOpen(false); openEdit(); }}
+                  />
+                  <MenuItem
+                    icon={<ImageIcon className="w-4 h-4" />}
+                    label={profile.avatar_url ? "Byt profilbild" : "Lägg till profilbild"}
+                    onClick={() => { setMenuOpen(false); fileRef.current?.click(); }}
+                  />
+                  <div className="my-1 h-px" style={{ backgroundColor: "#E8DDC6" }} />
+                  <MenuItem
+                    icon={<LogOut className="w-4 h-4" />}
+                    label="Logga ut"
+                    onClick={() => { setMenuOpen(false); signOut(); }}
+                  />
+                </div>
+              </>
+            )}
+          </div>
         </header>
 
         {/* Profile header */}
         <section className="flex items-center gap-4 mb-8">
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
+          <div
             className="relative w-20 h-20 rounded-[32%] overflow-hidden flex items-center justify-center flex-shrink-0"
             style={{
               backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1",
               border: profile.avatar_url ? "none" : "1px dashed #C85A2E",
               color: "#561828",
             }}
-            aria-label={profile.avatar_url ? "Byt profilbild" : "Lägg till profilbild"}
           >
             {profile.avatar_url ? (
               <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -130,13 +162,7 @@ const HomePage = () => {
             ) : (
               <Camera className="w-5 h-5" />
             )}
-            <span
-              className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center"
-              style={{ backgroundColor: "#C85A2E", color: "#fff" }}
-            >
-              <Camera className="w-3 h-3" />
-            </span>
-          </button>
+          </div>
           <input
             ref={fileRef}
             type="file"
@@ -145,23 +171,18 @@ const HomePage = () => {
             onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])}
           />
           <div className="flex-1 min-w-0">
-            <button
-              type="button"
-              onClick={openEdit}
-              className="flex items-center gap-2 text-left"
-            >
-              {profile.display_name ? (
-                <span className="font-display text-xl text-foreground truncate">{profile.display_name}</span>
-              ) : (
+            {profile.display_name ? (
+              <span className="font-display text-xl text-foreground truncate block">{profile.display_name}</span>
+            ) : (
+              <button type="button" onClick={openEdit} className="text-left">
                 <span
                   className="text-button underline underline-offset-2 decoration-1"
                   style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
                 >
                   Lägg till ditt namn
                 </span>
-              )}
-              <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
-            </button>
+              </button>
+            )}
             {profile.bio ? (
               <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{profile.bio}</p>
             ) : (
@@ -197,7 +218,7 @@ const HomePage = () => {
           </div>
         )}
 
-        <h1 className="font-display text-2xl text-foreground mb-4">Dina kretsar</h1>
+        <h1 className="font-display text-2xl text-foreground mb-4">Mina kretsar</h1>
 
         {loading ? (
           <div className="space-y-3">
@@ -248,7 +269,7 @@ const HomePage = () => {
             ) : (
               <div className="pt-4 flex justify-center">
                 <TextButton onClick={() => setCreating(true)}>
-                  + Ny krets
+                  + Skapa och bjud in till en krets
                 </TextButton>
               </div>
             )}
@@ -262,6 +283,19 @@ const HomePage = () => {
 };
 
 const PlaceholderTag = () => <ExampleTag />;
+
+const MenuItem = ({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) => (
+  <button
+    type="button"
+    role="menuitem"
+    onClick={onClick}
+    className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-[14px] hover:bg-black/5 transition-colors"
+    style={{ color: "#2B2B2B" }}
+  >
+    <span style={{ color: "#561828" }}>{icon}</span>
+    {label}
+  </button>
+);
 
 const SectionHeader = ({ title, cta, onCta }: { title: string; cta: string; onCta?: () => void }) => (
   <div className="flex items-baseline justify-between mb-3 mt-10">
