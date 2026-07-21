@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Plus, LogOut } from "lucide-react";
 import CircleCard from "@/components/cards/CircleCard";
+import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
 import { toast } from "sonner";
 
 interface Circle {
@@ -60,7 +61,10 @@ const HomePage = () => {
         <h1 className="font-display text-2xl text-foreground mb-6">Dina kretsar</h1>
 
         {loading ? (
-          <p className="text-muted-foreground text-sm">Laddar…</p>
+          <div className="space-y-3">
+            <CircleCardSkeleton />
+            <CircleCardSkeleton />
+          </div>
         ) : circles.length === 0 && !creating ? (
           <div className="py-12">
             <p className="text-muted-foreground text-sm mb-6">Du har inga kretsar än. Skapa din första för att komma igång.</p>
