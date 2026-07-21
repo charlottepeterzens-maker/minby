@@ -478,17 +478,32 @@ const CirclePage = () => {
           />
         )}
 
-        {/* Sedan sist */}
+        {/* Sedan sist — collapsible */}
         {sinceLast && (
           <section className="mt-6 px-4">
-            <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Sedan sist</h2>
-            <div className="rounded-[28px] p-4" style={{ backgroundColor: CARD_YELLOW }}>
-              <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(20, 4%, 40%)" }}>
-                {sinceLast.label}
-              </div>
-              <p className="text-[14px] leading-relaxed" style={{ color: "#2B2B2B" }}>
-                {sinceLast.body}
-              </p>
+            <div className="rounded-[28px]" style={{ backgroundColor: CARD_YELLOW }}>
+              <button
+                type="button"
+                onClick={() => setSinceLastOpen((v) => !v)}
+                aria-expanded={sinceLastOpen}
+                className="w-full flex items-center justify-between px-4 py-3 text-left"
+              >
+                <h2 className="text-[16px]" style={HEADING_STYLE}>Sedan sist</h2>
+                <ChevronDown
+                  className={`w-5 h-5 transition-transform duration-200 ${sinceLastOpen ? "rotate-180" : ""}`}
+                  style={{ color: "hsl(20, 4%, 40%)" }}
+                />
+              </button>
+              {sinceLastOpen && (
+                <div className="px-4 pb-4">
+                  <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(20, 4%, 40%)" }}>
+                    {sinceLast.label}
+                  </div>
+                  <p className="text-[14px] leading-relaxed" style={{ color: "#2B2B2B" }}>
+                    {sinceLast.body}
+                  </p>
+                </div>
+              )}
             </div>
           </section>
         )}
