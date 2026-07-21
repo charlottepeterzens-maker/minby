@@ -568,76 +568,84 @@ const CirclePage = () => {
           </div>
         </section>
 
-        {/* Våra tips */}
-        <section className="mt-8">
-          <div className="px-4 mb-3">
-            <button
-              type="button"
-              onClick={() => setShowTipsList(true)}
-              className="text-[16px]"
-              style={HEADING_STYLE}
-            >
-              Våra tips
-            </button>
+        {/* Våra tips — overview preview */}
+        <section className="px-4">
+          <div className="mt-10 mb-3">
+            <h2 className="font-display text-xl text-foreground">Våra tips</h2>
           </div>
           {loadingContent ? (
-            <div className="flex overflow-x-auto pl-4 pr-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              <PhotoTileSkeleton />
-              <PhotoTileSkeleton />
-              <PhotoTileSkeleton />
+            <div className="space-y-3">
+              <TipCardSkeleton />
+              <TipCardSkeleton />
             </div>
           ) : tips.length === 0 ? (
-            <p className="px-4 text-sm text-muted-foreground">Inga tips delade ännu.</p>
+            <p className="text-sm mt-2" style={{ color: "#561828" }}>
+              Inga tips delade ännu. Dela en plats, bok, podd eller länk du gillar.
+            </p>
           ) : (
-            <div className={`flex overflow-x-auto pl-4 ${tips.length <= 3 ? "pr-4" : "pr-0"} pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}>
-              {tips.map((t, i) => (
-                <PhotoTile
-                  key={t.id}
-                  imageUrl={t.image_url ?? null}
-                  title={t.title}
-                  ownerName={t.owner_name}
-                  onOpen={() => setSelectedTip(t)}
-                  roundedLeft={i === 0}
-                  roundedRight={tips.length <= 3 && i === tips.length - 1}
-                  gradient="tips"
+            <>
+              <div className="relative">
+                <div className="space-y-3 max-h-[280px] overflow-hidden">
+                  {tips.slice(0, 3).map((t) => (
+                    <TipCard
+                      key={t.id}
+                      imageUrl={t.image_url ?? null}
+                      ownerName={t.owner_name}
+                      dateLabel={formatDateYear(t.created_at)}
+                      title={t.title}
+                      description={t.comment}
+                      url={t.url}
+                      onOpen={() => setSelectedTip(t)}
+                    />
+                  ))}
+                </div>
+                <div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
+                  style={{ background: "linear-gradient(to bottom, hsla(42,20%,95%,0), hsl(var(--background)) 85%)" }}
                 />
-              ))}
-            </div>
+              </div>
+              <div className="mt-4 flex justify-center">
+                <TextButton onClick={() => setShowTipsList(true)}>Visa alla tips</TextButton>
+              </div>
+            </>
           )}
         </section>
 
         {/* Våra foton */}
-        <section className="mt-8 mb-10">
-          <div className="px-4 mb-3">
-            <h2 className="text-[16px]" style={HEADING_STYLE}>Våra foton</h2>
-            <input
-              ref={photoInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) {
-                  setPhotoFile(f);
-                  if (photoPreview) URL.revokeObjectURL(photoPreview);
-                  setPhotoPreview(URL.createObjectURL(f));
-                  setPhotoCaption("");
-                  setShowPhotoForm(true);
-                }
-                e.target.value = "";
-              }}
-            />
+        <section className="px-4 mb-10">
+          <div className="flex items-baseline justify-between mb-3 mt-10">
+            <h2 className="font-display text-xl text-foreground">Våra foton</h2>
+            <TextButton onClick={() => photoInputRef.current?.click()}>+ Ladda upp foto</TextButton>
           </div>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) {
+                setPhotoFile(f);
+                if (photoPreview) URL.revokeObjectURL(photoPreview);
+                setPhotoPreview(URL.createObjectURL(f));
+                setPhotoCaption("");
+                setShowPhotoForm(true);
+              }
+              e.target.value = "";
+            }}
+          />
           {loadingContent ? (
-            <div className="flex overflow-x-auto pl-4 pr-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex overflow-x-auto -mx-4 px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <PhotoSmallSkeleton />
               <PhotoSmallSkeleton />
               <PhotoSmallSkeleton />
             </div>
           ) : photos.length === 0 ? (
-            <p className="px-4 text-sm text-muted-foreground">Inga foton delade ännu.</p>
+            <p className="text-sm mt-2" style={{ color: "#561828" }}>
+              Inga foton delade ännu. Bilder ni delar samlas här som ett gemensamt minne.
+            </p>
           ) : (
-            <div className={`flex overflow-x-auto pl-4 ${photos.length <= 3 ? "pr-4" : "pr-0"} pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}>
+            <div className="flex overflow-x-auto -mx-4 px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {photos.map((p, i) => (
                 <PhotoTile
                   key={p.id}
