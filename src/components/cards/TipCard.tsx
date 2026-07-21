@@ -25,7 +25,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
     <button
       type="button"
       onClick={onOpen}
-      className="w-full text-left rounded-[20px] overflow-hidden flex gap-4 h-[134px]"
+      className="w-full text-left rounded-[28px] overflow-hidden flex gap-4 h-[134px]"
       style={{ backgroundColor: "#F9F3E1" }}
     >
       <div

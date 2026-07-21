@@ -176,7 +176,7 @@ const HomePage = () => {
         </section>
 
         {editingProfile && (
-          <div className="mb-6 rounded-[20px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
+          <div className="mb-6 rounded-[28px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
             <input
               autoFocus
               value={nameDraft}
@@ -233,7 +233,7 @@ const HomePage = () => {
             ))}
 
             {creating ? (
-              <div className="rounded-[20px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
+              <div className="rounded-[28px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
                 <input
                   autoFocus
                   value={newName}
@@ -262,7 +262,7 @@ const HomePage = () => {
 
 const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: string }) => (
   <div
-    className="w-full rounded-[20px] p-5 flex gap-4 relative"
+    className="w-full rounded-[28px] p-5 flex gap-4 relative"
     style={{ backgroundColor: "#F9F3E1", opacity: 0.75, border: "1px dashed #C85A2E" }}
   >
     <span
