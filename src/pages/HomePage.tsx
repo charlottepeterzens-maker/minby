@@ -726,7 +726,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     </Sheet>
 
     {/* Photo upload sheet */}
-    <Sheet open={showPhotoForm} onOpenChange={(o) => { setShowPhotoForm(o); if (!o) { setPhotoFile(null); if (photoPreview) URL.revokeObjectURL(photoPreview); setPhotoPreview(null); } }}>
+    <Sheet open={showPhotoForm} onOpenChange={(o) => { setShowPhotoForm(o); if (!o) { setPhotoFile(null); setPhotoCaption(""); if (photoPreview) URL.revokeObjectURL(photoPreview); setPhotoPreview(null); } }}>
       <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
         <SheetHeader className="text-left">
           <SheetTitle style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}>Ladda upp foto</SheetTitle>
@@ -735,6 +735,14 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
           {photoPreview && (
             <img src={photoPreview} alt="" className="w-full max-h-[240px] object-cover rounded-2xl" />
           )}
+          <Textarea
+            placeholder="Bildtext (valfritt)"
+            value={photoCaption}
+            onChange={(e) => setPhotoCaption(e.target.value)}
+            rows={2}
+            maxLength={140}
+            className="rounded-lg resize-none"
+          />
           <CirclePicker />
           <div className="flex justify-end pt-2">
             <TextButton onClick={uploadPhoto} disabled={!photoFile || !selectedCircles.length || uploadingPhoto}>
