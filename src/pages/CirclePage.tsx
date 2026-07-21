@@ -64,6 +64,7 @@ const CirclePage = () => {
   const [sinceLast, setSinceLast] = useState<{ label: string; body: string } | null>(null);
   const [loadingContent, setLoadingContent] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [hasSentInvite, setHasSentInvite] = useState(true); // default true → hide until we know
 
   const [displayName, setDisplayName] = useState("");
 
