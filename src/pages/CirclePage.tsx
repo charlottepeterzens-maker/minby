@@ -506,6 +506,7 @@ const CirclePage = () => {
                   onOpen={() => setSelectedTip(t)}
                   roundedLeft={i === 0}
                   roundedRight={tips.length <= 3 && i === tips.length - 1}
+                  gradient="tips"
                 />
               ))}
             </div>
