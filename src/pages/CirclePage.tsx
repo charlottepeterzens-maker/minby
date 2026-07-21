@@ -19,7 +19,7 @@ import CreateHub from "@/components/ui/create-hub";
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
-interface Tip { id: string; title: string; url: string | null; comment: string | null; created_at: string; owner_id: string; owner_name: string; image_path: string | null; image_url?: string | null; }
+interface Tip { id: string; title: string; url: string | null; comment: string | null; category: string | null; created_at: string; owner_id: string; owner_name: string; image_path: string | null; image_url?: string | null; }
 interface Photo { id: string; storage_path: string; owner_id: string; owner_name: string; created_at: string; caption: string | null; image_url?: string | null; }
 
 const monthNames = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
@@ -150,7 +150,7 @@ const CirclePage = () => {
       // Tips
       const { data: tipRows } = await supabase
         .from("tip_visibility")
-        .select("tip_id, tips!inner(id, title, url, comment, created_at, owner_id, image_path)")
+        .select("tip_id, tips!inner(id, title, url, comment, category, created_at, owner_id, image_path)")
         .eq("circle_id", id)
         .order("tip_id", { ascending: false })
         .limit(20);
