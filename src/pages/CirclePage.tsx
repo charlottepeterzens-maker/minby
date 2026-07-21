@@ -202,6 +202,19 @@ const CirclePage = () => {
     })();
   }, [id]);
 
+  // Welcome card: show if user has never sent a message in this circle
+  useEffect(() => {
+    if (!id || !user) return;
+    (async () => {
+      const { count } = await supabase
+        .from("messages")
+        .select("*", { count: "exact", head: true })
+        .eq("circle_id", id)
+        .eq("user_id", user.id);
+      setShowWelcome((count ?? 0) === 0);
+    })();
+  }, [id, user]);
+
   const openInviteSheet = async () => {
     if (!id || !user) return;
     setInviteOpen(true);
