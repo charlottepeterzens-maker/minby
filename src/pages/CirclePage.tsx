@@ -84,6 +84,10 @@ const CirclePage = () => {
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [showPhotoForm, setShowPhotoForm] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoCaption, setPhotoCaption] = useState("");
 
   useEffect(() => {
     if (!user) return;
