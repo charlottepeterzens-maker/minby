@@ -7,6 +7,7 @@ import { ChevronLeft, MessageCircle, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import TipCard from "@/components/cards/TipCard";
+import { MeetingCardSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; created_by: string; response_count: number; host_name: string; }
@@ -31,6 +32,7 @@ const CirclePage = () => {
   const [memberCount, setMemberCount] = useState(0);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [tips, setTips] = useState<Tip[]>([]);
+  const [loadingContent, setLoadingContent] = useState(true);
 
   useEffect(() => {
     if (!id) return;
@@ -85,6 +87,7 @@ const CirclePage = () => {
           owner_avatar: ownerMap.get(t.owner_id)?.avatar_url ?? null,
         }))
       );
+      setLoadingContent(false);
     })();
   }, [id]);
 
@@ -144,9 +147,17 @@ const CirclePage = () => {
           </div>
         </div>
 
-        {meetings.length > 0 && (
-          <section className="mt-8">
-            <h2 className="px-5 mb-3 text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Träffar</h2>
+        <section className="mt-8">
+          <h2 className="px-5 mb-3 text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Träffar</h2>
+          {loadingContent ? (
+            <div className="flex gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              <MeetingCardSkeleton />
+              <MeetingCardSkeleton />
+              <MeetingCardSkeleton />
+            </div>
+          ) : meetings.length === 0 ? (
+            <p className="px-5 text-sm text-muted-foreground">Ingen träff planerad ännu.</p>
+          ) : (
             <div className="flex gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {meetings.map((m) => (
                 <MeetingCard
@@ -159,12 +170,19 @@ const CirclePage = () => {
                 />
               ))}
             </div>
-          </section>
-        )}
+          )}
+        </section>
 
-        {tips.length > 0 && (
-          <section className="mt-8 px-5">
-            <h2 className="mb-3 text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Tips</h2>
+        <section className="mt-8 px-5">
+          <h2 className="mb-3 text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Tips</h2>
+          {loadingContent ? (
+            <div className="space-y-3">
+              <TipCardSkeleton />
+              <TipCardSkeleton />
+            </div>
+          ) : tips.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Inga tips delade ännu.</p>
+          ) : (
             <div className="space-y-3">
               {tips.map((t) => (
                 <TipCard
@@ -178,8 +196,8 @@ const CirclePage = () => {
                 />
               ))}
             </div>
-          </section>
-        )}
+          )}
+        </section>
       </div>
     </div>
   );
