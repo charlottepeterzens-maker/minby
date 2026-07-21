@@ -1,7 +1,23 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/contexts/LanguageContext";
+const t = (key: string): string => {
+  const map: Record<string, string> = {
+    checkEmail: "Kolla din e-post för att bekräfta kontot!",
+    email: "E-post",
+    password: "Lösenord",
+    yourName: "Ditt namn",
+    howFriendsKnowYou: "Så dina vänner känner igen dig",
+    joinMinby: "Gå med i minby",
+    welcomeBack: "Välkommen tillbaka",
+    createAccount: "Skapa konto",
+    signIn: "Logga in",
+    signUp: "Registrera dig",
+    alreadyHaveAccount: "Har du redan ett konto?",
+    dontHaveAccount: "Har du inget konto?",
+  };
+  return map[key] ?? key;
+};
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -115,7 +131,6 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
 };
 
 const AuthPage = () => {
-  const { t } = useLanguage();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [view, setView] = useState<"welcome" | "signup" | "login" | "forgot">("welcome");
