@@ -218,7 +218,7 @@ const HomePage = () => {
           </div>
         )}
 
-        <h1 className="font-display text-2xl text-foreground mb-4">Dina kretsar</h1>
+        <h1 className="font-display text-2xl text-foreground mb-4">Mina kretsar</h1>
 
         {loading ? (
           <div className="space-y-3">
