@@ -262,8 +262,8 @@ const HomePage = () => {
 
 const PlaceholderTag = () => (
   <span
-    className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded"
-    style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.12em" }}
+    className="text-[11px] uppercase px-3 py-1 rounded-full"
+    style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.08em" }}
   >
     Exempel
   </span>
@@ -402,8 +402,8 @@ const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: strin
     style={{ backgroundColor: "#F9F3E1" }}
   >
     <span
-      className="absolute top-3 right-3 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded"
-      style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.12em" }}
+      className="absolute top-3 right-3 text-[11px] uppercase px-3 py-1 rounded-full"
+      style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.08em" }}
     >
       Exempel
     </span>
