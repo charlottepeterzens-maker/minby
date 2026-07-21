@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
+import TextButton from "@/components/ui/text-button";
 import { Plus, LogOut, Camera, Pencil } from "lucide-react";
 import CircleCard from "@/components/cards/CircleCard";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
@@ -191,9 +191,9 @@ const HomePage = () => {
               rows={2}
               className="w-full bg-transparent border-0 outline-none text-foreground resize-none"
             />
-            <div className="flex gap-2">
-              <Button onClick={saveProfile} className="rounded-lg" style={{ backgroundColor: "#561828", color: "#fff" }}>Spara</Button>
-              <Button variant="ghost" onClick={() => setEditingProfile(false)} className="rounded-lg">Avbryt</Button>
+            <div className="flex gap-6">
+              <TextButton onClick={saveProfile}>Spara</TextButton>
+              <TextButton variant="secondary" onClick={() => setEditingProfile(false)}>Avbryt</TextButton>
             </div>
           </div>
         )}
@@ -215,13 +215,11 @@ const HomePage = () => {
               name="Familjen"
               summary="En krets för dem du delar vardag med — tips, träffar och bilder samlade på ett ställe."
             />
-            <button
-              onClick={() => setCreating(true)}
-              className="w-full rounded-[20px] py-5 text-[15px] font-medium flex items-center justify-center gap-2"
-              style={{ backgroundColor: "#561828", color: "#fff" }}
-            >
-              <Plus className="w-4 h-4" /> Skapa din första krets
-            </button>
+            <div className="pt-4 flex justify-center">
+              <TextButton onClick={() => setCreating(true)}>
+                <Plus className="w-4 h-4" /> Skapa din första krets
+              </TextButton>
+            </div>
           </div>
         ) : (
           <div className="space-y-3">
@@ -243,18 +241,17 @@ const HomePage = () => {
                   placeholder="Namn på kretsen"
                   className="w-full bg-transparent border-0 outline-none text-foreground"
                 />
-                <div className="flex gap-2">
-                  <Button onClick={createCircle} className="rounded-lg" style={{ backgroundColor: "#561828", color: "#fff" }}>Skapa</Button>
-                  <Button variant="ghost" onClick={() => { setCreating(false); setNewName(""); }} className="rounded-lg">Avbryt</Button>
+                <div className="flex gap-6">
+                  <TextButton onClick={createCircle}>Skapa</TextButton>
+                  <TextButton variant="secondary" onClick={() => { setCreating(false); setNewName(""); }}>Avbryt</TextButton>
                 </div>
               </div>
             ) : (
-              <button
-                onClick={() => setCreating(true)}
-                className="w-full mt-4 rounded-[20px] py-4 text-sm text-muted-foreground border border-dashed border-border flex items-center justify-center gap-2"
-              >
-                <Plus className="w-4 h-4" /> Ny krets
-              </button>
+              <div className="pt-4 flex justify-center">
+                <TextButton onClick={() => setCreating(true)}>
+                  <Plus className="w-4 h-4" /> Ny krets
+                </TextButton>
+              </div>
             )}
           </div>
         )}
