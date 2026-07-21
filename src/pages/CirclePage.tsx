@@ -793,7 +793,7 @@ const CirclePage = () => {
                 </SheetDescription>
               </SheetHeader>
               {selectedPhoto.image_url && (
-                <img src={selectedPhoto.image_url} alt="" className="mt-4 w-full rounded-[24px] object-cover max-h-[70vh]" />
+                <img src={selectedPhoto.image_url} alt="" className={`mt-4 w-full ${CARD_RADIUS_CLASS.photo} object-cover max-h-[70vh]`} />
               )}
             </>
           )}
