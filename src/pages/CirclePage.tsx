@@ -472,7 +472,14 @@ const CirclePage = () => {
         {/* Våra tips */}
         <section className="mt-8">
           <div className="px-4 mb-3 flex items-center justify-between">
-            <h2 className="text-[16px]" style={HEADING_STYLE}>Våra tips</h2>
+            <button
+              type="button"
+              onClick={() => setShowTipsList(true)}
+              className="text-[16px]"
+              style={HEADING_STYLE}
+            >
+              Våra tips
+            </button>
             <TextButton
               onClick={() => setShowTipForm(true)}
               className="text-[13px]"
