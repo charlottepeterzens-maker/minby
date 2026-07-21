@@ -337,6 +337,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
 
   // Creation sheet state
   const [showTipForm, setShowTipForm] = useState(false);
+  const [showAllTips, setShowAllTips] = useState(false);
   const [tipTitle, setTipTitle] = useState("");
   const [tipUrl, setTipUrl] = useState("");
   const [tipComment, setTipComment] = useState("");
