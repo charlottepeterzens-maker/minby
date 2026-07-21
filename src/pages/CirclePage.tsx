@@ -554,6 +554,7 @@ const CirclePage = () => {
                   ownerName={formatDateShort(p.created_at)}
                   onOpen={() => setSelectedPhoto(p)}
                   size="sm"
+                  gradient="photos"
                 />
               ))}
             </div>
