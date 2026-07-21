@@ -345,6 +345,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
   const [showPhotoForm, setShowPhotoForm] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoCaption, setPhotoCaption] = useState("");
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
