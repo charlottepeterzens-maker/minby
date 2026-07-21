@@ -287,44 +287,139 @@ const HorizontalStrip = ({
   </div>
 );
 
-const ProfilePlaceholders = () => (
+interface MeetingItem {
+  id: string;
+  title: string;
+  meeting_date: string | null;
+  created_by: string;
+  host_name: string;
+  response_count: number;
+  isMine: boolean;
+}
+
+const formatMeetingDate = (iso: string | null) => {
+  if (!iso) return "Datum ej satt";
+  const d = new Date(iso);
+  const weekdays = ["sön", "mån", "tis", "ons", "tor", "fre", "lör"];
+  const months = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+  return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+};
+
+const ProfilePlaceholders = ({ userId }: { userId: string | null }) => {
+  const navigate = useNavigate();
+  const [meetings, setMeetings] = useState<MeetingItem[] | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    (async () => {
+      const { data: mtgs, error } = await supabase
+        .from("meetings")
+        .select("id, title, meeting_date, created_by")
+        .order("meeting_date", { ascending: true, nullsFirst: false });
+      if (error || !mtgs) { setMeetings([]); return; }
+
+      const creatorIds = Array.from(new Set(mtgs.map((m) => m.created_by)));
+      const ids = mtgs.map((m) => m.id);
+      const [{ data: profs }, { data: resps }] = await Promise.all([
+        creatorIds.length
+          ? supabase.from("profiles").select("user_id, display_name").in("user_id", creatorIds)
+          : Promise.resolve({ data: [] as { user_id: string; display_name: string | null }[] }),
+        ids.length
+          ? supabase.from("meeting_responses").select("meeting_id").in("meeting_id", ids)
+          : Promise.resolve({ data: [] as { meeting_id: string }[] }),
+      ]);
+      const nameById = new Map((profs ?? []).map((p) => [p.user_id, p.display_name ?? "Någon"]));
+      const counts = new Map<string, number>();
+      (resps ?? []).forEach((r) => counts.set(r.meeting_id, (counts.get(r.meeting_id) ?? 0) + 1));
+
+      setMeetings(
+        mtgs.map((m) => ({
+          id: m.id,
+          title: m.title,
+          meeting_date: m.meeting_date,
+          created_by: m.created_by,
+          host_name: nameById.get(m.created_by) ?? "Någon",
+          response_count: counts.get(m.id) ?? 0,
+          isMine: m.created_by === userId,
+        })),
+      );
+    })();
+  }, [userId]);
+
+  const hasMeetings = meetings && meetings.length > 0;
+
+  return (
   <>
     {/* Kommande träffar */}
     <SectionHeader title="Mina träffar" cta="+ Föreslå träff" />
-    <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2">
-      {[
-        { host: "Sara", date: "Fre 21 nov", title: "Fika på Café Pascal", count: 2 },
-        { host: "Mia", date: "Lör 29 nov", title: "Promenad i Hagaparken", count: 0 },
-      ].map((m, i) => (
-        <div
-          key={i}
-          className="w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between relative"
-          style={{ backgroundColor: "#F2ECE3" }}
-        >
-          <div className="absolute top-3 right-3"><PlaceholderTag /></div>
-          <div>
-            <div className="text-[13px] mb-2" style={{ color: "#675332" }}>{m.host}</div>
-            <div className="text-[16px] leading-tight font-medium" style={{ color: "#2B2B2B" }}>
-              {m.date}<br />{m.title}
+    {hasMeetings ? (
+      <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2">
+        {meetings!.map((m) => (
+          <button
+            key={m.id}
+            onClick={() => navigate(`/circle/${(m as any).circle_id ?? ""}`)}
+            className="w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between relative text-left"
+            style={{ backgroundColor: "#F2ECE3" }}
+          >
+            <div>
+              <div className="text-[13px] mb-2" style={{ color: "#675332" }}>
+                {m.isMine ? "Du" : m.host_name}
+              </div>
+              <div className="text-[16px] leading-tight font-medium" style={{ color: "#2B2B2B" }}>
+                {formatMeetingDate(m.meeting_date)}<br />{m.title}
+              </div>
+            </div>
+            <div>
+              <div className="text-[12px] mb-1" style={{ color: "#561828" }}>
+                {m.response_count === 0 ? "Ingen har svarat" : `${m.response_count} har svarat`}
+              </div>
+              <span
+                className="text-[15px] font-medium underline underline-offset-2 decoration-2"
+                style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+              >
+                {m.isMine ? "Öppna" : "Häng med!"}
+              </span>
+            </div>
+          </button>
+        ))}
+      </div>
+    ) : (
+      <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2">
+        {[
+          { host: "Sara", date: "Fre 21 nov", title: "Fika på Café Pascal", count: 2 },
+          { host: "Mia", date: "Lör 29 nov", title: "Promenad i Hagaparken", count: 0 },
+        ].map((m, i) => (
+          <div
+            key={i}
+            className="w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between relative"
+            style={{ backgroundColor: "#F2ECE3" }}
+          >
+            <div className="absolute top-3 right-3"><PlaceholderTag /></div>
+            <div>
+              <div className="text-[13px] mb-2" style={{ color: "#675332" }}>{m.host}</div>
+              <div className="text-[16px] leading-tight font-medium" style={{ color: "#2B2B2B" }}>
+                {m.date}<br />{m.title}
+              </div>
+            </div>
+            <div>
+              <div className="text-[12px] mb-1" style={{ color: "#561828" }}>
+                {m.count === 0 ? "Ingen har svarat" : `${m.count} har svarat`}
+              </div>
+              <span
+                className="text-[15px] font-medium underline underline-offset-2 decoration-2"
+                style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+              >
+                Häng med!
+              </span>
             </div>
           </div>
-          <div>
-            <div className="text-[12px] mb-1" style={{ color: "#561828" }}>
-              {m.count === 0 ? "Ingen har svarat" : `${m.count} har svarat`}
-            </div>
-            <span
-              className="text-[15px] font-medium underline underline-offset-2 decoration-2"
-              style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
-            >
-              Häng med!
-            </span>
-          </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    )}
     <p className="text-sm mt-2" style={{ color: "#561828" }}>
       Föreslå en träff i någon av dina kretsar så syns den här.
     </p>
+
 
     {/* Mina tips */}
     <SectionHeader title="Mina tips" cta="+ Dela ett tips" />
