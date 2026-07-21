@@ -473,6 +473,7 @@ const CirclePage = () => {
                       title={t.title}
                       description={t.comment}
                       url={t.url}
+                      category={t.category}
                       onOpen={() => setSelectedTip(t)}
                     />
                   ))}
@@ -594,6 +595,7 @@ const CirclePage = () => {
                   title={t.title}
                   description={t.comment}
                   url={t.url}
+                  category={t.category}
                   onOpen={() => { setShowTipsList(false); setSelectedTip(t); }}
                 />
               ))
