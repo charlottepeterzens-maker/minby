@@ -635,6 +635,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
                 title={t.title}
                 description={t.comment}
                 url={t.url}
+                category={t.category}
                 onOpen={() => setShowAllTips(true)}
               />
             ))}
