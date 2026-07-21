@@ -1,3 +1,5 @@
+import TextButton from "@/components/ui/text-button";
+
 interface Props {
   imageUrl?: string | null;
   ownerName: string;
@@ -44,37 +46,30 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
           >
             {ownerAvatar ? <img src={ownerAvatar} alt="" className="w-full h-full object-cover" /> : initials}
           </div>
-          <span className="text-[13px]" style={{ color: "#561828" }}>
+          <span className="text-eyebrow" style={{ color: "#561828" }}>
             {dateLabel}
           </span>
         </div>
         <div
           className="text-[16px] font-medium leading-tight truncate"
-          style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}
+          style={{ color: "#2B2B2B" }}
         >
           {title}
         </div>
         {description && (
-          <p
-            className="text-[14px] mt-1 line-clamp-2 leading-snug"
-            style={{ color: "#2B2B2B" }}
-          >
+          <p className="text-body mt-1 line-clamp-2" style={{ color: "#2B2B2B" }}>
             {description}
           </p>
         )}
         {url && (
-          <span
-            role="link"
-            tabIndex={0}
-            onClick={openLink}
-            onKeyDown={(e) => { if (e.key === "Enter") openLink(e as any); }}
-            className="mt-auto text-left text-[15px] font-medium underline underline-offset-[6px] cursor-pointer decoration-2"
-            style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
-          >
-            Till tipset
-          </span>
+          <div className="mt-auto">
+            <TextButton variant="primary" onClick={openLink}>
+              Till tipset
+            </TextButton>
+          </div>
         )}
       </div>
+
     </button>
   );
 };

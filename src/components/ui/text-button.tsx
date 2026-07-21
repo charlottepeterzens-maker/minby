@@ -17,7 +17,8 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 const TextButton = forwardRef<HTMLButtonElement, Props>(
   ({ variant = "primary", className, children, style, ...rest }, ref) => {
     const base =
-      "inline-flex items-center justify-center gap-2 font-medium text-[15px] leading-none underline underline-offset-[6px] decoration-2 disabled:opacity-40 disabled:cursor-not-allowed";
+      "inline-flex items-center justify-center gap-2 text-button underline underline-offset-[6px] decoration-1 disabled:opacity-40 disabled:cursor-not-allowed";
+
 
     if (variant === "primaryOnPhoto") {
       return (

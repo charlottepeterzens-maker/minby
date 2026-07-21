@@ -1,8 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
 
-.font-fraunces {
-  font-family: 'Outfit', sans-serif;
-}
 
 @tailwind base;
 @tailwind components;
@@ -161,8 +158,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 14px;
+    line-height: 1.2;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -170,6 +167,7 @@
     font-family: var(--font-display);
     font-weight: 500;
   }
+
 }
 
 @layer utilities {
@@ -180,6 +178,39 @@
   .font-body {
     font-family: var(--font-body);
   }
+
+  /* Minby typography scale — https://fonts.google.com/specimen/Outfit */
+  .text-heading-lg {
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: 0;
+    font-weight: 500;
+  }
+  .text-heading-md {
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: 0;
+    font-weight: 600;
+  }
+  .text-eyebrow {
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+  }
+  .text-body {
+    font-size: 14px;
+    line-height: 1.2;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+  .text-button {
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0;
+    font-weight: 500;
+  }
+
   .pt-safe {
     padding-top: env(safe-area-inset-top, 0px);
   }
@@ -190,6 +221,7 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 }
+
 
 /* Fix yellow autofill background in Chrome/iOS */
 input:-webkit-autofill,
