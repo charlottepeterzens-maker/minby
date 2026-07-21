@@ -236,7 +236,7 @@ const ChatPage = () => {
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.35))" }} />
+        <div className="absolute inset-0" style={{ background: OVERLAY_GRADIENT.heroSubtle }} />
         <div className="absolute bottom-4 left-5 right-5 text-white">
           <h1 className="text-heading-lg" style={{ fontSize: 28, fontWeight: 500 }}>{circle?.name ?? ""}</h1>
           {memberPreview && <p className="text-[13px] opacity-90 mt-1 truncate">{memberPreview}</p>}
