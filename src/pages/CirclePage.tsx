@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
+import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
@@ -340,16 +340,16 @@ const CirclePage = () => {
           <button
             onClick={() => navigate("/")}
             aria-label="Tillbaka"
-            className="absolute top-3 left-3 p-2 rounded-lg text-white pt-safe"
-            style={{ backgroundColor: "rgba(0,0,0,0.25)" }}
+            className="absolute top-3 left-3 p-2 rounded-lg backdrop-blur-md pt-safe"
+            style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "#2B2B2B" }}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={invite}
             aria-label="Bjud in"
-            className="absolute top-3 right-3 p-2 rounded-lg text-white pt-safe"
-            style={{ backgroundColor: "rgba(0,0,0,0.25)" }}
+            className="absolute top-3 right-3 p-2 rounded-lg backdrop-blur-md pt-safe"
+            style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "#2B2B2B" }}
           >
             <Share2 className="w-5 h-5" />
           </button>
@@ -541,9 +541,9 @@ const CirclePage = () => {
             <Input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} className="rounded-lg" />
             <Textarea placeholder="Beskrivning (valfritt)" value={meetingDesc} onChange={(e) => setMeetingDesc(e.target.value)} rows={3} className="rounded-lg resize-none" />
             <div className="flex justify-end pt-2">
-              <Button onClick={createMeeting} disabled={!meetingTitle.trim() || savingMeeting} className="rounded-lg" style={{ backgroundColor: "#561828", color: "#fff" }}>
+              <TextButton onClick={createMeeting} disabled={!meetingTitle.trim() || savingMeeting}>
                 {savingMeeting ? "Sparar…" : "Skapa träff"}
-              </Button>
+              </TextButton>
             </div>
           </div>
         </SheetContent>
@@ -560,9 +560,9 @@ const CirclePage = () => {
             <Input placeholder="Länk (valfritt)" value={tipUrl} onChange={(e) => setTipUrl(e.target.value)} className="rounded-lg" />
             <Textarea placeholder="Kommentar (valfritt)" value={tipComment} onChange={(e) => setTipComment(e.target.value)} rows={3} className="rounded-lg resize-none" />
             <div className="flex justify-end pt-2">
-              <Button onClick={createTip} disabled={!tipTitle.trim() || savingTip} className="rounded-lg" style={{ backgroundColor: "#561828", color: "#fff" }}>
+              <TextButton onClick={createTip} disabled={!tipTitle.trim() || savingTip}>
                 {savingTip ? "Sparar…" : "Dela tips"}
-              </Button>
+              </TextButton>
             </div>
           </div>
         </SheetContent>
@@ -601,13 +601,13 @@ const CirclePage = () => {
                   </ul>
                 )}
               </div>
-              <div className="mt-6 flex gap-2">
-                <Button onClick={() => { respondYes(selectedMeeting.id); setSelectedMeeting(null); }} className="flex-1 rounded-lg" style={{ backgroundColor: "#561828", color: "#fff" }}>
+              <div className="mt-6 flex gap-6">
+                <TextButton onClick={() => { respondYes(selectedMeeting.id); setSelectedMeeting(null); }}>
                   Häng med!
-                </Button>
-                <Button variant="outline" onClick={() => { navigate(`/chat/${circle.id}`); setSelectedMeeting(null); }} className="rounded-lg">
-                  <MessageCircle className="w-4 h-4 mr-1" /> Till chatten
-                </Button>
+                </TextButton>
+                <TextButton variant="secondary" onClick={() => { navigate(`/chat/${circle.id}`); setSelectedMeeting(null); }}>
+                  <MessageCircle className="w-4 h-4" /> Till chatten
+                </TextButton>
               </div>
             </>
           )}
