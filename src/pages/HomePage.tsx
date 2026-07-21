@@ -7,6 +7,7 @@ import { Plus, LogOut, Camera, Pencil } from "lucide-react";
 import CircleCard from "@/components/cards/CircleCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
+import { ExampleTag } from "@/components/ui/example-tag";
 import { toast } from "sonner";
 
 interface Circle {
