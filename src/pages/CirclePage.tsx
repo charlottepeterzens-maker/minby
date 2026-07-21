@@ -632,6 +632,7 @@ const CirclePage = () => {
 
 
       {/* Tips list sheet */}
+      <Sheet open={showTipsList} onOpenChange={setShowTipsList}>
         <BottomSheetContent height={92}>
           <BottomSheetHeader title="Våra tips" />
           <BottomSheetBody className="px-4 pt-4 pb-32 space-y-3">
