@@ -105,7 +105,7 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-lg mx-auto px-5 pt-safe pb-safe">
+      <div className="max-w-md mx-auto px-4 pt-safe pb-safe">
         <header className="flex items-center justify-between py-6">
           <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "lowercase" }}>minby</span>
           <button
