@@ -7,6 +7,7 @@ import { Plus, LogOut, Camera, Pencil } from "lucide-react";
 import CircleCard from "@/components/cards/CircleCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
+import { ExampleTag } from "@/components/ui/example-tag";
 import { toast } from "sonner";
 
 interface Circle {
@@ -260,14 +261,7 @@ const HomePage = () => {
   );
 };
 
-const PlaceholderTag = () => (
-  <span
-    className="text-[11px] px-3 py-1 rounded-full"
-    style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.08em" }}
-  >
-    exempel
-  </span>
-);
+const PlaceholderTag = () => <ExampleTag />;
 
 const SectionHeader = ({ title, cta, onCta }: { title: string; cta: string; onCta?: () => void }) => (
   <div className="flex items-baseline justify-between mb-3 mt-10">
@@ -401,12 +395,7 @@ const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: strin
     className="w-full rounded-[28px] p-5 flex gap-4 relative"
     style={{ backgroundColor: "#F9F3E1" }}
   >
-    <span
-      className="absolute top-3 right-3 text-[11px] px-3 py-1 rounded-full"
-      style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.08em" }}
-    >
-      exempel
-    </span>
+    <ExampleTag className="absolute top-3 right-3" />
     <div className="flex-1 min-w-0">
       <div className="text-[13px] mb-2" style={{ fontFamily: "'Outfit', sans-serif", color: "#561828" }}>
         {name}
