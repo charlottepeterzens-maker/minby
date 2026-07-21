@@ -35,6 +35,29 @@ const CirclePage = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [tips, setTips] = useState<Tip[]>([]);
   const [loadingContent, setLoadingContent] = useState(true);
+  const [displayName, setDisplayName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  const [showMeetingForm, setShowMeetingForm] = useState(false);
+  const [meetingTitle, setMeetingTitle] = useState("");
+  const [meetingDate, setMeetingDate] = useState("");
+  const [meetingDesc, setMeetingDesc] = useState("");
+  const [savingMeeting, setSavingMeeting] = useState(false);
+
+  const [showTipForm, setShowTipForm] = useState(false);
+  const [tipTitle, setTipTitle] = useState("");
+  const [tipUrl, setTipUrl] = useState("");
+  const [tipComment, setTipComment] = useState("");
+  const [savingTip, setSavingTip] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("display_name, avatar_url").eq("user_id", user.id).maybeSingle()
+      .then(({ data }) => {
+        setDisplayName(data?.display_name ?? "");
+        setAvatarUrl(data?.avatar_url ?? null);
+      });
+  }, [user]);
 
   useEffect(() => {
     if (!id) return;
