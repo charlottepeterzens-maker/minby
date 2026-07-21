@@ -12,7 +12,7 @@ import TipCard from "@/components/cards/TipCard";
 import { MeetingCardSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
-interface Meeting { id: string; title: string; meeting_date: string | null; created_by: string; response_count: number; host_name: string; }
+interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
 interface Tip { id: string; title: string; url: string | null; comment: string | null; created_at: string; owner_id: string; owner_name: string; owner_avatar: string | null; }
 
 const monthNames = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
