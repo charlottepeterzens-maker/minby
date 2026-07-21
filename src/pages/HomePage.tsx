@@ -152,26 +152,23 @@ const HomePage = () => {
               {profile.display_name ? (
                 <span className="font-display text-xl text-foreground truncate">{profile.display_name}</span>
               ) : (
-                  <span
-                    className="text-[15px] font-medium underline underline-offset-2 decoration-2"
-                    style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
-                  >
-                    Lägg till ditt namn
-                  </span>
+                <span
+                  className="text-button underline underline-offset-2 decoration-1"
+                  style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+                >
+                  Lägg till ditt namn
+                </span>
               )}
               <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
             </button>
             {profile.bio ? (
               <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{profile.bio}</p>
             ) : (
-              <button
-                type="button"
-                onClick={openEdit}
-                className="text-sm mt-1"
-                style={{ color: "#561828" }}
-              >
-                Skriv en kort presentation
-              </button>
+              <div className="mt-1">
+                <TextButton type="button" onClick={openEdit}>
+                  Skriv en kort presentation
+                </TextButton>
+              </div>
             )}
           </div>
         </section>

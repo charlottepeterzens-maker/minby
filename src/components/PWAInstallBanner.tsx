@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, Download, Share } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import TextButton from "@/components/ui/text-button";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -113,13 +114,9 @@ const PWAInstallBanner = () => {
             </div>
 
             {!isIOS && (
-              <button
-                onClick={handleInstall}
-                className="shrink-0 rounded-lg px-4 py-2 text-[12px] font-medium text-white"
-                style={{ backgroundColor: "#561828" }}
-              >
+              <TextButton onClick={handleInstall} className="shrink-0">
                 Lägg till
-              </button>
+              </TextButton>
             )}
 
             <button onClick={dismiss} className="shrink-0 p-1">
