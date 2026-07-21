@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import { Plus, LogOut, Camera, Pencil } from "lucide-react";
 import CircleCard from "@/components/cards/CircleCard";
+import PhotoTile from "@/components/cards/PhotoTile";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
 import { toast } from "sonner";
 
