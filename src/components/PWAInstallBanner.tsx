@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { X, Download, Share } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import TextButton from "@/components/ui/text-button";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -10,122 +10,143 @@ interface BeforeInstallPromptEvent extends Event {
 
 const DISMISS_KEY = "pwa-install-dismissed";
 const SHOW_COUNT_KEY = "pwa-install-show-count";
+
 const MAX_SHOWS = 3;
-const DELAY_MS = 10_000; // Show after 10 seconds in the app
+const DELAY_MS = 10000;
 
 const PWAInstallBanner = () => {
   const [show, setShow] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isIOS, setIsIOS] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
-    // Never show if already dismissed or already installed
     if (localStorage.getItem(DISMISS_KEY)) return;
 
-    // Stop showing after MAX_SHOWS appearances
-    const shownCount = parseInt(localStorage.getItem(SHOW_COUNT_KEY) || "0", 10);
+    const shownCount = Number(localStorage.getItem(SHOW_COUNT_KEY) ?? 0);
+
     if (shownCount >= MAX_SHOWS) {
       localStorage.setItem(DISMISS_KEY, "true");
       return;
     }
 
-    const isStandalone =
+    const standalone =
       window.matchMedia("(display-mode: standalone)").matches ||
-      (navigator as any).standalone === true;
-    if (isStandalone) return;
+      (navigator as any).standalone;
 
-    // Capture beforeinstallprompt (Android/Chrome)
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
+    if (standalone) return;
+
+    const beforeInstall = (event: Event) => {
+      event.preventDefault();
+      setDeferredPrompt(event as BeforeInstallPromptEvent);
     };
-    window.addEventListener("beforeinstallprompt", handler);
 
-    // Delay showing to let user settle in
+    window.addEventListener("beforeinstallprompt", beforeInstall);
+
     const timer = setTimeout(() => {
-      const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-      setIsIOS(ios);
+      setIsIOS(/iphone|ipad|ipod/i.test(navigator.userAgent));
+
       setShow(true);
-      const next = parseInt(localStorage.getItem(SHOW_COUNT_KEY) || "0", 10) + 1;
-      localStorage.setItem(SHOW_COUNT_KEY, String(next));
-      if (next >= MAX_SHOWS) {
-        localStorage.setItem(DISMISS_KEY, "true");
-      }
+
+      localStorage.setItem(
+        SHOW_COUNT_KEY,
+        String(shownCount + 1)
+      );
     }, DELAY_MS);
 
     return () => {
-      window.removeEventListener("beforeinstallprompt", handler);
       clearTimeout(timer);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        beforeInstall
+      );
     };
   }, []);
 
-  const handleInstall = async () => {
-    if (deferredPrompt) {
-      await deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === "accepted") {
-        dismiss();
-      }
-      setDeferredPrompt(null);
-      return;
-    }
-    dismiss();
+  const dismiss = () => {
+    localStorage.setItem(DISMISS_KEY, "true");
+    setShow(false);
   };
 
-  const dismiss = () => {
-    setShow(false);
-    localStorage.setItem(DISMISS_KEY, "true");
+  const handleInstall = async () => {
+    if (isIOS) {
+      setShowGuide(true);
+      return;
+    }
+
+    if (!deferredPrompt) return;
+
+    await deferredPrompt.prompt();
+
+    const { outcome } = await deferredPrompt.userChoice;
+
+    if (outcome === "accepted") {
+      dismiss();
+    }
+
+    setDeferredPrompt(null);
   };
 
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
-          transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="fixed bottom-36 left-4 right-4 z-50 rounded-2xl p-4 shadow-lg"
-          style={{ backgroundColor: "hsl(var(--color-surface-card))", boxShadow: "0 4px 16px rgba(0,0,0,0.1)" }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="shrink-0 flex items-center justify-center rounded-full"
-              style={{ width: 40, height: 40, backgroundColor: "#561828" }}
-            >
-              {isIOS ? (
-                <Share className="w-5 h-5" style={{ color: "hsl(var(--color-surface))" }} />
-              ) : (
-                <Download className="w-5 h-5" style={{ color: "hsl(var(--color-surface))" }} />
-              )}
-            </div>
+    <>
+      <AnimatePresence>
+        {show && (
+          <motion.section
+            initial={{ y: 40, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 40, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed bottom-32 inset-x-4 z-50"
+          >
+            <div className="rounded-card bg-burgundy p-5 shadow-soft">
 
-            <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium" style={{ color: "hsl(var(--color-text-primary))" }}>
-                Lägg Minby på hemskärmen
+              <div className="flex items-start justify-between mb-2">
+
+                <span className="text-eyebrow text-accent-primary">
+                  Tips
+                </span>
+
+                <button
+                  onClick={dismiss}
+                  aria-label="Stäng"
+                  className="flex h-8 w-8 items-center justify-center rounded-full hover:opacity-70 transition-opacity"
+                >
+                  <X
+                    size={18}
+                    className="text-white"
+                  />
+                </button>
+
+              </div>
+
+              <h3 className="text-heading-md text-white mb-2">
+                Ha Minby nära till hands
+              </h3>
+
+              <p className="text-body text-surface-card-primary mb-5">
+                Lägg Minby på hemskärmen så öppnas appen direkt,
+                precis som vilken annan app som helst.
               </p>
-              {isIOS && (
-                <p className="text-[11px] mt-1 leading-snug" style={{ color: "hsl(var(--color-text-secondary))" }}>
-                  Tryck på{" "}
-                  <Share className="inline w-3 h-3 -mt-0.5" style={{ color: "hsl(var(--color-text-secondary))" }} />{" "}
-                  Dela → Lägg till på hemskärmen
-                </p>
-              )}
-            </div>
 
-            {!isIOS && (
-              <TextButton onClick={handleInstall} className="shrink-0">
-                Lägg till
+              <TextButton
+                onClick={handleInstall}
+              >
+                Lägg till på hemskärmen
               </TextButton>
-            )}
 
-            <button onClick={dismiss} className="shrink-0 p-1">
-              <X className="w-4 h-4" style={{ color: "hsl(var(--color-text-secondary))" }} />
-            </button>
-          </div>
-        </motion.div>
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
+
+      {showGuide && (
+        <IOSInstallBottomSheet
+          open={showGuide}
+          onClose={() => setShowGuide(false)}
+        />
       )}
-    </AnimatePresence>
+    </>
   );
 };
 
