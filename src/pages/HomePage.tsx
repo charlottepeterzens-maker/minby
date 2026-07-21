@@ -292,6 +292,8 @@ interface MeetingItem {
   title: string;
   meeting_date: string | null;
   created_by: string;
+  circle_id: string;
+
   host_name: string;
   response_count: number;
   isMine: boolean;
