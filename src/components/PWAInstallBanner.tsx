@@ -113,13 +113,9 @@ const PWAInstallBanner = () => {
             </div>
 
             {!isIOS && (
-              <button
-                onClick={handleInstall}
-                className="shrink-0 rounded-lg px-4 py-2 text-[12px] font-medium text-white"
-                style={{ backgroundColor: "#561828" }}
-              >
+              <TextButton onClick={handleInstall} className="shrink-0">
                 Lägg till
-              </button>
+              </TextButton>
             )}
 
             <button onClick={dismiss} className="shrink-0 p-1">
