@@ -5,6 +5,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { X, Send, Camera, CalendarPlus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import TextButton from "@/components/ui/text-button";
+import { OVERLAY_GRADIENT } from "@/lib/card-styles";
+
 
 interface Message {
   id: string;
