@@ -460,7 +460,7 @@ const CirclePage = () => {
             </button>
           </div>
           {loadingContent ? (
-            <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex overflow-x-auto pl-4 pr-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <PhotoTileSkeleton />
               <PhotoTileSkeleton />
               <PhotoTileSkeleton />
@@ -468,14 +468,16 @@ const CirclePage = () => {
           ) : tips.length === 0 ? (
             <p className="px-4 text-sm text-muted-foreground">Inga tips delade ännu.</p>
           ) : (
-            <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              {tips.map((t) => (
+            <div className={`flex overflow-x-auto pl-4 ${tips.length <= 3 ? "pr-4" : "pr-0"} pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}>
+              {tips.map((t, i) => (
                 <PhotoTile
                   key={t.id}
                   imageUrl={t.image_url ?? null}
                   title={t.title}
                   ownerName={t.owner_name}
                   onOpen={() => setSelectedTip(t)}
+                  roundedLeft={i === 0}
+                  roundedRight={tips.length <= 3 && i === tips.length - 1}
                 />
               ))}
             </div>
