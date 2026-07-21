@@ -58,10 +58,13 @@
     --color-text-secondary: 20 6% 40%;     /* muted warm gray */
     --color-text-muted: 20 5% 46%;
     --color-text-faint: 20 4% 54%;
-    --color-border-subtle: 30 15% 89%;     /* #EDE8E0 */
+    --color-border-subtle: 39 25% 80%;     /* #DDD2BF — dividers only */
     --color-border-lavender: 206 45% 80%;  /* soft blue border */
     --color-accent-red: 0 55% 49%;         /* #A32D2D */
     --color-accent-terra: 17 63% 48%;      /* #C85A2E */
+    --color-accent-secondary: 208 63% 91%; /* #DAEAF6 — secondary CTA */
+    --color-text-tertiary: 39 34% 30%;     /* #675332 */
+    --color-text-photo: 41 66% 28%;        /* #765D19 */
     --color-accent-sage-text: 44 65% 28%;  /* #7A5C14 amber */
     --color-badge: 347 40% 35%;
 

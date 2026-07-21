@@ -20,7 +20,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
     >
       {title}
     </h2>
-    <div className="rounded-[28px] overflow-hidden" style={{ backgroundColor: "#F9F3E1" }}>
+    <div className="rounded-[26px] overflow-hidden" style={{ backgroundColor: "#F9F3E1" }}>
       {children}
     </div>
   </section>
@@ -128,7 +128,7 @@ const SettingsPage = () => {
         </header>
 
         {loading ? (
-          <div className="h-40 rounded-[28px] animate-pulse" style={{ backgroundColor: "#F2ECE3" }} />
+          <div className="h-40 rounded-[26px] animate-pulse" style={{ backgroundColor: "#F2ECE3" }} />
         ) : (
           <>
             {/* Avatar */}

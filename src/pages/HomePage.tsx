@@ -105,7 +105,7 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-lg mx-auto px-5 pt-safe pb-safe">
+      <div className="max-w-md mx-auto px-4 pt-safe pb-safe">
         <header className="flex items-center justify-between py-6">
           <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "lowercase" }}>minby</span>
           <button
@@ -123,7 +123,6 @@ const HomePage = () => {
             className="relative w-20 h-20 rounded-[32%] overflow-hidden flex items-center justify-center flex-shrink-0"
             style={{
               backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1",
-              border: profile.avatar_url ? "none" : "1px dashed #C85A2E",
               color: "#561828",
             }}
           >
@@ -168,7 +167,7 @@ const HomePage = () => {
         </section>
 
         {editingProfile && (
-          <div className="mb-6 rounded-[28px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
+          <div className="mb-6 rounded-[26px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
             <input
               autoFocus
               value={nameDraft}
@@ -225,7 +224,7 @@ const HomePage = () => {
             ))}
 
             {creating ? (
-              <div className="rounded-[28px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
+              <div className="rounded-[26px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
                 <input
                   autoFocus
                   value={newName}
@@ -277,7 +276,7 @@ const HorizontalStrip = ({
   gradient: "tips" | "photos";
   size?: "sm" | "lg";
 }) => (
-  <div className="flex overflow-x-auto -mx-5 px-5 pb-2 scrollbar-hide">
+  <div className="flex overflow-x-auto -mx-4 px-4 pb-2 scrollbar-hide">
     {items.map((t, i) => (
       <PhotoTile
         key={i}
@@ -552,12 +551,12 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     {/* Kommande träffar */}
     <SectionHeader title="Mina träffar" cta="+ Föreslå träff" onCta={() => circles[0] && navigate(`/circle/${circles[0].id}`)} disabled={!circles.length} />
     {hasMeetings ? (
-      <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2">
+      <div className="flex gap-3 overflow-x-auto -mx-4 px-4 pb-2">
         {meetings!.map((m) => (
           <button
             key={m.id}
             onClick={() => navigate(`/circle/${m.circle_id}`)}
-            className="w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between relative text-left"
+            className="w-[176px] flex-shrink-0 h-[184px] rounded-[26px] p-4 flex flex-col justify-between relative text-left"
             style={{ backgroundColor: "#F2ECE3" }}
           >
             <div>
@@ -583,14 +582,14 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
         ))}
       </div>
     ) : (
-      <div className="flex gap-3 overflow-x-auto -mx-5 px-5 pb-2">
+      <div className="flex gap-3 overflow-x-auto -mx-4 px-4 pb-2">
         {[
           { host: "Sara", date: "Fre 21 nov", title: "Fika på Café Pascal", count: 2 },
           { host: "Mia", date: "Lör 29 nov", title: "Promenad i Hagaparken", count: 0 },
         ].map((m, i) => (
           <div
             key={i}
-            className="w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between relative"
+            className="w-[176px] flex-shrink-0 h-[184px] rounded-[26px] p-4 flex flex-col justify-between relative"
             style={{ backgroundColor: "#F2ECE3" }}
           >
             <div className="absolute top-3 right-3"><PlaceholderTag /></div>
@@ -760,7 +759,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
 
 const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: string }) => (
   <div
-    className="w-full rounded-[28px] p-5 flex gap-4 relative"
+    className="w-full rounded-[26px] p-5 flex gap-4 relative"
     style={{ backgroundColor: "#F9F3E1" }}
   >
     <ExampleTag className="absolute top-3 right-3" />

@@ -14,6 +14,7 @@ import TipCard from "@/components/cards/TipCard";
 import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 import { OVERLAY_GRADIENT, CARD_RADIUS_CLASS } from "@/lib/card-styles";
 import CircleOnboarding from "@/components/CircleOnboarding";
+import CreateHub from "@/components/ui/create-hub";
 
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
@@ -424,7 +425,7 @@ const CirclePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-lg mx-auto pb-safe">
+      <div className="max-w-md mx-auto pb-safe">
         {/* Hero — always uses the most recently uploaded photo, fallback to stored hero */}
         <div
           className="relative w-full h-[220px] overflow-hidden"
@@ -482,7 +483,7 @@ const CirclePage = () => {
         {/* Sedan sist — collapsible */}
         {sinceLast && (
           <section className="mt-6 px-4">
-            <div className="rounded-[28px]" style={{ backgroundColor: CARD_YELLOW }}>
+            <div className="rounded-[26px]" style={{ backgroundColor: CARD_YELLOW }}>
               <button
                 type="button"
                 onClick={() => setSinceLastOpen((v) => !v)}
@@ -511,14 +512,8 @@ const CirclePage = () => {
 
         {/* Våra förslag att ses */}
         <section className="mt-8">
-          <div className="px-4 mb-3 flex items-center justify-between">
+          <div className="px-4 mb-3">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra förslag att ses</h2>
-            <TextButton
-              onClick={() => setShowMeetingForm(true)}
-              className="text-[13px]"
-            >
-              + Föreslå en träff
-            </TextButton>
           </div>
           {loadingContent ? (
             <div className="flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
@@ -548,7 +543,7 @@ const CirclePage = () => {
         {/* Chatt */}
         <section className="mt-8 px-4">
           <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Chatt</h2>
-          <div className="rounded-[28px] p-4" style={{ backgroundColor: CARD_BLUE }}>
+          <div className="rounded-[26px] p-4" style={{ backgroundColor: CARD_BLUE }}>
             {aiSummary ? (
               <>
                 <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(210, 20%, 35%)" }}>
@@ -575,7 +570,7 @@ const CirclePage = () => {
 
         {/* Våra tips */}
         <section className="mt-8">
-          <div className="px-4 mb-3 flex items-center justify-between">
+          <div className="px-4 mb-3">
             <button
               type="button"
               onClick={() => setShowTipsList(true)}
@@ -584,12 +579,6 @@ const CirclePage = () => {
             >
               Våra tips
             </button>
-            <TextButton
-              onClick={() => setShowTipForm(true)}
-              className="text-[13px]"
-            >
-              + Lägg till tips
-            </TextButton>
           </div>
           {loadingContent ? (
             <div className="flex overflow-x-auto pl-4 pr-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
@@ -619,15 +608,8 @@ const CirclePage = () => {
 
         {/* Våra foton */}
         <section className="mt-8 mb-10">
-          <div className="px-4 mb-3 flex items-center justify-between">
+          <div className="px-4 mb-3">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra foton</h2>
-            <TextButton
-              onClick={() => photoInputRef.current?.click()}
-              disabled={uploadingPhoto}
-              className="text-[13px]"
-            >
-              {uploadingPhoto ? "Laddar upp…" : "+ Lägg foto"}
-            </TextButton>
             <input
               ref={photoInputRef}
               type="file"
@@ -674,9 +656,19 @@ const CirclePage = () => {
         </section>
       </div>
 
+      <CreateHub
+        actions={[
+          { label: "Föreslå en träff", onSelect: () => setShowMeetingForm(true) },
+          { label: "Lägg till tips", onSelect: () => setShowTipForm(true) },
+          { label: "Lägg upp foto", onSelect: () => photoInputRef.current?.click() },
+        ]}
+      />
+
+
+
       {/* Tips list sheet */}
       <Sheet open={showTipsList} onOpenChange={setShowTipsList}>
-        <SheetContent side="bottom" className="rounded-t-[28px] max-h-[90vh] overflow-y-auto p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+        <SheetContent side="bottom" className="rounded-t-[26px] max-h-[90vh] overflow-y-auto p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
           <SheetHeader className="text-center px-4 pt-4 pb-2 border-b border-black/5 relative">
             <button
               type="button"

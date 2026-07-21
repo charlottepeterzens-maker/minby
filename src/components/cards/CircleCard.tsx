@@ -47,7 +47,7 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
   return (
     <button
       onClick={onOpen}
-      className="w-full text-left rounded-[28px] p-5 flex gap-4"
+      className="w-full text-left rounded-[26px] p-5 flex gap-4"
       style={{ backgroundColor: "#F9F3E1" }}
     >
       <div className="flex-1 min-w-0">

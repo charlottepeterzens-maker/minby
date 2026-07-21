@@ -2,7 +2,7 @@ const shimmer = "animate-pulse";
 
 export const CircleCardSkeleton = () => (
   <div
-    className={`w-full rounded-[28px] p-5 flex gap-4 ${shimmer}`}
+    className={`w-full rounded-[26px] p-5 flex gap-4 ${shimmer}`}
     style={{ backgroundColor: "#F9F3E1" }}
   >
     <div className="flex-1 space-y-2">
@@ -21,7 +21,7 @@ export const CircleCardSkeleton = () => (
 
 export const MeetingCardSkeleton = () => (
   <div
-    className={`w-[176px] flex-shrink-0 h-[184px] rounded-[28px] p-4 flex flex-col justify-between ${shimmer}`}
+    className={`w-[176px] flex-shrink-0 h-[184px] rounded-[26px] p-4 flex flex-col justify-between ${shimmer}`}
     style={{ backgroundColor: "#F2ECE3" }}
   >
     <div className="space-y-2">
@@ -38,7 +38,7 @@ export const MeetingCardSkeleton = () => (
 
 export const TipTileSkeleton = ({ size = "lg" }: { size?: "sm" | "lg" }) => (
   <div
-    className={`${size === "lg" ? "w-[150px] h-[210px]" : "w-[110px] h-[130px]"} flex-shrink-0 rounded-[24px] ${shimmer}`}
+    className={`${size === "lg" ? "w-[150px] h-[210px]" : "w-[110px] h-[130px]"} flex-shrink-0 rounded-[26px] ${shimmer}`}
     style={{ backgroundColor: "#E8DDC6" }}
   />
 );
