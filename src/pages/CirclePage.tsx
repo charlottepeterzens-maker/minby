@@ -3,7 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, MessageCircle, Share2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { ChevronLeft, MessageCircle, Share2, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import TipCard from "@/components/cards/TipCard";
@@ -33,6 +35,29 @@ const CirclePage = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [tips, setTips] = useState<Tip[]>([]);
   const [loadingContent, setLoadingContent] = useState(true);
+  const [displayName, setDisplayName] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  const [showMeetingForm, setShowMeetingForm] = useState(false);
+  const [meetingTitle, setMeetingTitle] = useState("");
+  const [meetingDate, setMeetingDate] = useState("");
+  const [meetingDesc, setMeetingDesc] = useState("");
+  const [savingMeeting, setSavingMeeting] = useState(false);
+
+  const [showTipForm, setShowTipForm] = useState(false);
+  const [tipTitle, setTipTitle] = useState("");
+  const [tipUrl, setTipUrl] = useState("");
+  const [tipComment, setTipComment] = useState("");
+  const [savingTip, setSavingTip] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("display_name, avatar_url").eq("user_id", user.id).maybeSingle()
+      .then(({ data }) => {
+        setDisplayName(data?.display_name ?? "");
+        setAvatarUrl(data?.avatar_url ?? null);
+      });
+  }, [user]);
 
   useEffect(() => {
     if (!id) return;
@@ -120,6 +145,49 @@ const CirclePage = () => {
     }
   };
 
+  const createMeeting = async () => {
+    if (!user || !id || !meetingTitle.trim()) return;
+    setSavingMeeting(true);
+    const { data, error } = await supabase
+      .from("meetings")
+      .insert({
+        circle_id: id,
+        created_by: user.id,
+        title: meetingTitle.trim(),
+        meeting_date: meetingDate || null,
+        description: meetingDesc.trim() || null,
+      })
+      .select("id, title, meeting_date, created_by")
+      .single();
+    setSavingMeeting(false);
+    if (error || !data) { toast.error(error?.message ?? "Kunde inte spara"); return; }
+    setMeetings((prev) => [...prev, { ...data, response_count: 0, host_name: displayName }]);
+    setMeetingTitle(""); setMeetingDate(""); setMeetingDesc(""); setShowMeetingForm(false);
+    toast.success("Träffen är skapad");
+  };
+
+  const createTip = async () => {
+    if (!user || !id || !tipTitle.trim()) return;
+    setSavingTip(true);
+    const { data, error } = await supabase
+      .from("tips")
+      .insert({
+        owner_id: user.id,
+        title: tipTitle.trim(),
+        url: tipUrl.trim() || null,
+        comment: tipComment.trim() || null,
+      })
+      .select("id, title, url, comment, created_at, owner_id")
+      .single();
+    if (error || !data) { setSavingTip(false); toast.error(error?.message ?? "Kunde inte spara"); return; }
+    const { error: visErr } = await supabase.from("tip_visibility").insert({ tip_id: data.id, circle_id: id });
+    setSavingTip(false);
+    if (visErr) { toast.error(visErr.message); return; }
+    setTips((prev) => [{ ...data, owner_name: displayName, owner_avatar: avatarUrl }, ...prev]);
+    setTipTitle(""); setTipUrl(""); setTipComment(""); setShowTipForm(false);
+    toast.success("Tipset är delat");
+  };
+
   if (!circle) {
     return <div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground text-sm">Laddar…</div>;
   }
@@ -148,7 +216,49 @@ const CirclePage = () => {
         </div>
 
         <section className="mt-8">
-          <h2 className="px-5 mb-3 text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Träffar</h2>
+          <div className="px-5 mb-3 flex items-center justify-between">
+            <h2 className="text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Träffar</h2>
+            <button
+              onClick={() => setShowMeetingForm((v) => !v)}
+              aria-label={showMeetingForm ? "Stäng" : "Ny träff"}
+              className="p-1.5 rounded-lg hover:bg-black/5"
+            >
+              {showMeetingForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            </button>
+          </div>
+          {showMeetingForm && (
+            <div className="mx-5 mb-4 p-4 rounded-lg bg-white space-y-2">
+              <Input
+                placeholder="Vad ska ni göra?"
+                value={meetingTitle}
+                onChange={(e) => setMeetingTitle(e.target.value)}
+                className="rounded-lg"
+              />
+              <Input
+                type="date"
+                value={meetingDate}
+                onChange={(e) => setMeetingDate(e.target.value)}
+                className="rounded-lg"
+              />
+              <Textarea
+                placeholder="Beskrivning (valfritt)"
+                value={meetingDesc}
+                onChange={(e) => setMeetingDesc(e.target.value)}
+                rows={2}
+                className="rounded-lg resize-none"
+              />
+              <div className="flex justify-end pt-1">
+                <Button
+                  onClick={createMeeting}
+                  disabled={!meetingTitle.trim() || savingMeeting}
+                  className="rounded-lg"
+                  style={{ backgroundColor: "#561828", color: "#fff" }}
+                >
+                  {savingMeeting ? "Sparar…" : "Skapa träff"}
+                </Button>
+              </div>
+            </div>
+          )}
           {loadingContent ? (
             <div className="flex gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <MeetingCardSkeleton />
@@ -174,7 +284,49 @@ const CirclePage = () => {
         </section>
 
         <section className="mt-8 px-5">
-          <h2 className="mb-3 text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Tips</h2>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-[15px]" style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>Tips</h2>
+            <button
+              onClick={() => setShowTipForm((v) => !v)}
+              aria-label={showTipForm ? "Stäng" : "Nytt tips"}
+              className="p-1.5 rounded-lg hover:bg-black/5"
+            >
+              {showTipForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            </button>
+          </div>
+          {showTipForm && (
+            <div className="mb-4 p-4 rounded-lg bg-white space-y-2">
+              <Input
+                placeholder="Titel"
+                value={tipTitle}
+                onChange={(e) => setTipTitle(e.target.value)}
+                className="rounded-lg"
+              />
+              <Input
+                placeholder="Länk (valfritt)"
+                value={tipUrl}
+                onChange={(e) => setTipUrl(e.target.value)}
+                className="rounded-lg"
+              />
+              <Textarea
+                placeholder="Kommentar (valfritt)"
+                value={tipComment}
+                onChange={(e) => setTipComment(e.target.value)}
+                rows={2}
+                className="rounded-lg resize-none"
+              />
+              <div className="flex justify-end pt-1">
+                <Button
+                  onClick={createTip}
+                  disabled={!tipTitle.trim() || savingTip}
+                  className="rounded-lg"
+                  style={{ backgroundColor: "#561828", color: "#fff" }}
+                >
+                  {savingTip ? "Sparar…" : "Dela tips"}
+                </Button>
+              </div>
+            </div>
+          )}
           {loadingContent ? (
             <div className="space-y-3">
               <TipCardSkeleton />
