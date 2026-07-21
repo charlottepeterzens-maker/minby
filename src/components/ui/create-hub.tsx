@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Plus, X } from "lucide-react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Plus } from "lucide-react";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 
 export interface CreateHubAction {
   label: string;
@@ -67,44 +67,36 @@ const CreateHub = ({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
           side="bottom"
-          className="rounded-t-[26px] border-0 p-0 flex flex-col"
+          className="rounded-t-[28px] border-0 p-0 flex flex-col overflow-hidden"
           onOpenAutoFocus={(e) => e.preventDefault()}
           style={{ backgroundColor: "#FFFFFF", height: "85dvh" }}
         >
-          <SheetHeader className="px-5 pt-5 pb-2 flex-row items-center justify-between shrink-0">
+          <div className="px-5 pt-5 pb-4 shrink-0">
             <SheetTitle
-              className="text-heading-md text-left"
+              className="text-heading-md text-left pr-10"
               style={{ color: "#2B2B2B" }}
             >
               {title}
             </SheetTitle>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="p-2 -mr-2"
-              aria-label="Stäng"
-            >
-              <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
-            </button>
-          </SheetHeader>
+          </div>
           <div className="px-2 pb-8 flex-1 overflow-y-auto">
             {resolvedSections.map((section, si) => (
-              <div key={si} className={si === 0 ? "" : "mt-4"}>
+              <div key={si} className={si === 0 ? "" : "mt-8"}>
                 {section.title && (
                   <div
-                    className="px-3 pt-3 pb-1 text-body-sm"
-                    style={{ color: "#7A7A7A" }}
+                    className="px-3 pt-3 pb-2 text-eyebrow uppercase"
+                    style={{ color: "#675332" }}
                   >
                     {section.title}
                   </div>
                 )}
-                <ul>
+                <ul className="space-y-1">
                   {section.actions.map((a, i) => (
                     <li key={i}>
                       <button
                         type="button"
                         onClick={() => handleSelect(a)}
-                        className="w-full text-left text-body px-3 py-4 rounded-[16px] active:opacity-70"
+                        className="w-full text-left text-body px-3 py-3 rounded-[16px] active:opacity-70"
                         style={{ color: "#2B2B2B" }}
                       >
                         {a.label}
