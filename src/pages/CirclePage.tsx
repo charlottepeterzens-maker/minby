@@ -69,7 +69,7 @@ const CirclePage = () => {
 
       const { data: mtgs } = await supabase
         .from("meetings")
-        .select("id, title, meeting_date, created_by")
+        .select("id, title, meeting_date, description, created_by")
         .eq("circle_id", id)
         .order("meeting_date", { ascending: true })
         .limit(6);
@@ -157,7 +157,7 @@ const CirclePage = () => {
         meeting_date: meetingDate || null,
         description: meetingDesc.trim() || null,
       })
-      .select("id, title, meeting_date, created_by")
+      .select("id, title, meeting_date, description, created_by")
       .single();
     setSavingMeeting(false);
     if (error || !data) { toast.error(error?.message ?? "Kunde inte spara"); return; }
