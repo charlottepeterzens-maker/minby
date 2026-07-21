@@ -12,7 +12,7 @@ import { MeetingCardSkeleton, CircleCardSkeleton, TipTileSkeleton } from "../Car
 const MEETING_BG = "rgb(242, 236, 227)"; // #F2ECE3
 const EYEBROW = "rgb(103, 83, 50)";      // #675332
 const RESPONSE = "rgb(86, 24, 40)";      // #561828
-const CORAL_UNDERLINE = "rgb(200, 90, 46)"; // #C85A2E
+const CORAL_UNDERLINE = "#C85A2E";
 const CIRCLE_BG = "rgb(249, 243, 225)";  // #F9F3E1
 const SKELETON_BLOCK = "rgb(232, 221, 198)"; // #E8DDC6
 
