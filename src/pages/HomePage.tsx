@@ -315,6 +315,7 @@ interface MyPhoto {
   id: string;
   image_url: string | null;
   created_at: string;
+  caption: string | null;
 }
 
 const formatMeetingDate = (iso: string | null) => {
@@ -345,6 +346,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
   const [showPhotoForm, setShowPhotoForm] = useState(false);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoCaption, setPhotoCaption] = useState("");
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
@@ -364,7 +366,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
           .limit(10),
         supabase
           .from("photos")
-          .select("id, storage_path, created_at")
+          .select("id, storage_path, created_at, caption")
           .eq("owner_id", userId)
           .order("created_at", { ascending: false })
           .limit(10),
@@ -414,7 +416,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       const tipMap = new Map((tipSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
       const photoMap = new Map((photoSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
       setMyTips((tipRows ?? []).map((t) => ({ id: t.id, title: t.title, image_url: t.image_path ? tipMap.get(t.image_path) ?? null : null })));
-      setMyPhotos((photoRows ?? []).map((p) => ({ id: p.id, created_at: p.created_at, image_url: p.storage_path ? photoMap.get(p.storage_path) ?? null : null })));
+      setMyPhotos((photoRows ?? []).map((p: any) => ({ id: p.id, created_at: p.created_at, caption: p.caption ?? null, image_url: p.storage_path ? photoMap.get(p.storage_path) ?? null : null })));
     })();
   }, [userId]);
 
@@ -500,16 +502,17 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       const { error: upErr } = await supabase.storage.from("circle-photos").upload(path, photoFile, { contentType: photoFile.type });
       if (upErr) throw upErr;
       const { data: photoRow, error: insErr } = await supabase.from("photos")
-        .insert({ owner_id: userId, storage_path: path })
-        .select("id, storage_path, created_at").single();
+        .insert({ owner_id: userId, storage_path: path, caption: photoCaption.trim() || null })
+        .select("id, storage_path, created_at, caption").single();
       if (insErr || !photoRow) throw insErr ?? new Error("Kunde inte spara foto");
       const { error: visErr } = await supabase.from("photo_visibility")
         .insert(selectedCircles.map((c) => ({ photo_id: photoRow.id, circle_id: c })));
       if (visErr) throw visErr;
       const { data: signed } = await supabase.storage.from("circle-photos").createSignedUrl(path, 60 * 60);
-      setMyPhotos((prev) => [{ id: photoRow.id, created_at: photoRow.created_at, image_url: signed?.signedUrl ?? null }, ...(prev ?? [])]);
+      setMyPhotos((prev) => [{ id: photoRow.id, created_at: photoRow.created_at, caption: (photoRow as any).caption ?? null, image_url: signed?.signedUrl ?? null }, ...(prev ?? [])]);
       toast.success("Fotot är delat");
       setPhotoFile(null);
+      setPhotoCaption("");
       if (photoPreview) { URL.revokeObjectURL(photoPreview); setPhotoPreview(null); }
       setShowPhotoForm(false);
     } catch (e: any) {
@@ -659,7 +662,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     {hasPhotos ? (
       <HorizontalStrip
         gradient="photos"
-        items={myPhotos!.map((p) => ({ title: displayName || "Du", sub: new Date(p.created_at).toLocaleDateString("sv-SE", { day: "numeric", month: "short" }), bg: "#E8DDC6", imageUrl: p.image_url }))}
+        items={myPhotos!.map((p) => ({ title: p.caption || "", sub: new Date(p.created_at).toLocaleDateString("sv-SE", { day: "numeric", month: "short" }), bg: "#E8DDC6", imageUrl: p.image_url }))}
       />
     ) : (
       <HorizontalStrip
@@ -723,7 +726,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
     </Sheet>
 
     {/* Photo upload sheet */}
-    <Sheet open={showPhotoForm} onOpenChange={(o) => { setShowPhotoForm(o); if (!o) { setPhotoFile(null); if (photoPreview) URL.revokeObjectURL(photoPreview); setPhotoPreview(null); } }}>
+    <Sheet open={showPhotoForm} onOpenChange={(o) => { setShowPhotoForm(o); if (!o) { setPhotoFile(null); setPhotoCaption(""); if (photoPreview) URL.revokeObjectURL(photoPreview); setPhotoPreview(null); } }}>
       <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
         <SheetHeader className="text-left">
           <SheetTitle style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}>Ladda upp foto</SheetTitle>
@@ -732,6 +735,14 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
           {photoPreview && (
             <img src={photoPreview} alt="" className="w-full max-h-[240px] object-cover rounded-2xl" />
           )}
+          <Textarea
+            placeholder="Bildtext (valfritt)"
+            value={photoCaption}
+            onChange={(e) => setPhotoCaption(e.target.value)}
+            rows={2}
+            maxLength={140}
+            className="rounded-lg resize-none"
+          />
           <CirclePicker />
           <div className="flex justify-end pt-2">
             <TextButton onClick={uploadPhoto} disabled={!photoFile || !selectedCircles.length || uploadingPhoto}>

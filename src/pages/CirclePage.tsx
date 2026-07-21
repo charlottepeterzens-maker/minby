@@ -19,7 +19,7 @@ import CircleOnboarding from "@/components/CircleOnboarding";
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
 interface Tip { id: string; title: string; url: string | null; comment: string | null; created_at: string; owner_id: string; owner_name: string; image_path: string | null; image_url?: string | null; }
-interface Photo { id: string; storage_path: string; owner_id: string; owner_name: string; created_at: string; image_url?: string | null; }
+interface Photo { id: string; storage_path: string; owner_id: string; owner_name: string; created_at: string; caption: string | null; image_url?: string | null; }
 
 const monthNames = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
 const formatDate = (iso: string | null) => {
@@ -84,6 +84,10 @@ const CirclePage = () => {
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [showPhotoForm, setShowPhotoForm] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoCaption, setPhotoCaption] = useState("");
 
   useEffect(() => {
     if (!user) return;
@@ -150,14 +154,14 @@ const CirclePage = () => {
       // Photos
       const { data: photoRows } = await supabase
         .from("photo_visibility")
-        .select("photo_id, photos!inner(id, storage_path, owner_id, created_at)")
+        .select("photo_id, photos!inner(id, storage_path, owner_id, created_at, caption)")
         .eq("circle_id", id)
         .order("photo_id", { ascending: false })
         .limit(20);
       const photoList = (photoRows ?? [])
         .map((r: any) => r.photos)
         .filter(Boolean)
-        .map((p: any) => ({ ...p, owner_name: nameMap.get(p.owner_id) ?? "" })) as Photo[];
+        .map((p: any) => ({ ...p, caption: p.caption ?? null, owner_name: nameMap.get(p.owner_id) ?? "" })) as Photo[];
       const signedPhotos = await signPhotoUrls(photoList, "storage_path");
       setPhotos(signedPhotos);
 
@@ -302,25 +306,30 @@ const CirclePage = () => {
   };
 
 
-  const uploadPhoto = async (file: File) => {
-    if (!user || !id) return;
+  const uploadPhoto = async () => {
+    if (!user || !id || !photoFile) return;
     setUploadingPhoto(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
+      const ext = photoFile.name.split(".").pop() || "jpg";
       const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("circle-photos").upload(path, file, { contentType: file.type });
+      const { error: upErr } = await supabase.storage.from("circle-photos").upload(path, photoFile, { contentType: photoFile.type });
       if (upErr) throw upErr;
+      const caption = photoCaption.trim() || null;
       const { data: photoRow, error: insErr } = await supabase
         .from("photos")
-        .insert({ owner_id: user.id, storage_path: path })
-        .select("id, storage_path, owner_id, created_at")
+        .insert({ owner_id: user.id, storage_path: path, caption })
+        .select("id, storage_path, owner_id, created_at, caption")
         .single();
       if (insErr || !photoRow) throw insErr ?? new Error("Kunde inte spara foto");
       const { error: visErr } = await supabase.from("photo_visibility").insert({ photo_id: photoRow.id, circle_id: id });
       if (visErr) throw visErr;
       const { data: signed } = await supabase.storage.from("circle-photos").createSignedUrl(path, 60 * 60);
-      setPhotos((prev) => [{ ...photoRow, owner_name: displayName, image_url: signed?.signedUrl ?? null }, ...prev]);
+      setPhotos((prev) => [{ ...(photoRow as any), caption: (photoRow as any).caption ?? null, owner_name: displayName, image_url: signed?.signedUrl ?? null }, ...prev]);
       toast.success("Fotot är delat");
+      setPhotoFile(null);
+      setPhotoCaption("");
+      if (photoPreview) { URL.revokeObjectURL(photoPreview); setPhotoPreview(null); }
+      setShowPhotoForm(false);
     } catch (e: any) {
       toast.error(e?.message ?? "Kunde inte ladda upp");
     } finally {
@@ -547,7 +556,13 @@ const CirclePage = () => {
               className="hidden"
               onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f) uploadPhoto(f);
+                if (f) {
+                  setPhotoFile(f);
+                  if (photoPreview) URL.revokeObjectURL(photoPreview);
+                  setPhotoPreview(URL.createObjectURL(f));
+                  setPhotoCaption("");
+                  setShowPhotoForm(true);
+                }
                 e.target.value = "";
               }}
             />
@@ -566,8 +581,8 @@ const CirclePage = () => {
                 <PhotoTile
                   key={p.id}
                   imageUrl={p.image_url ?? null}
-                  title={p.owner_name}
-                  ownerName={formatDateShort(p.created_at)}
+                  title={p.caption || p.owner_name}
+                  ownerName={p.caption ? p.owner_name : formatDateShort(p.created_at)}
                   onOpen={() => setSelectedPhoto(p)}
                   size="sm"
                   gradient="photos"
@@ -811,6 +826,44 @@ const CirclePage = () => {
               )}
             </>
           )}
+        </SheetContent>
+      </Sheet>
+
+      {/* Photo upload sheet */}
+      <Sheet
+        open={showPhotoForm}
+        onOpenChange={(o) => {
+          setShowPhotoForm(o);
+          if (!o) {
+            setPhotoFile(null);
+            setPhotoCaption("");
+            if (photoPreview) URL.revokeObjectURL(photoPreview);
+            setPhotoPreview(null);
+          }
+        }}
+      >
+        <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
+          <SheetHeader className="text-left">
+            <SheetTitle style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}>Ladda upp foto</SheetTitle>
+          </SheetHeader>
+          <div className="mt-4 space-y-3">
+            {photoPreview && (
+              <img src={photoPreview} alt="" className="w-full max-h-[240px] object-cover rounded-2xl" />
+            )}
+            <Textarea
+              placeholder="Bildtext (valfritt)"
+              value={photoCaption}
+              onChange={(e) => setPhotoCaption(e.target.value)}
+              rows={2}
+              maxLength={140}
+              className="rounded-lg resize-none"
+            />
+            <div className="flex justify-end pt-2">
+              <TextButton onClick={uploadPhoto} disabled={!photoFile || uploadingPhoto}>
+                {uploadingPhoto ? "Laddar upp…" : "Dela foto"}
+              </TextButton>
+            </div>
+          </div>
         </SheetContent>
       </Sheet>
     </div>
