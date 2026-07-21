@@ -560,6 +560,59 @@ const CirclePage = () => {
         </section>
       </div>
 
+      {/* Tips list sheet */}
+      <Sheet open={showTipsList} onOpenChange={setShowTipsList}>
+        <SheetContent side="bottom" className="rounded-t-[28px] max-h-[90vh] overflow-y-auto p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+          <SheetHeader className="text-center px-4 pt-4 pb-2 border-b border-black/5 relative">
+            <button
+              type="button"
+              onClick={() => setShowTipsList(false)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 p-1"
+              aria-label="Stäng"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <SheetTitle className="text-center text-[16px] font-semibold" style={HEADING_STYLE}>
+              Våra tips
+            </SheetTitle>
+          </SheetHeader>
+          <div className="relative min-h-[60vh]">
+            <div className="p-4 space-y-3 pb-28">
+              {loadingContent ? (
+                <>
+                  <TipCardSkeleton />
+                  <TipCardSkeleton />
+                </>
+              ) : tips.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-8">Inga tips delade ännu.</p>
+              ) : (
+                tips.map((t) => (
+                  <TipCard
+                    key={t.id}
+                    imageUrl={t.image_url ?? null}
+                    ownerName={t.owner_name}
+                    dateLabel={formatDateYear(t.created_at)}
+                    title={t.title}
+                    description={t.comment}
+                    url={t.url}
+                    onOpen={() => { setShowTipsList(false); setSelectedTip(t); }}
+                  />
+                ))
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => { setShowTipsList(false); setShowTipForm(true); }}
+              className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
+              style={{ backgroundColor: "#561828", color: "white" }}
+              aria-label="Lägg till tips"
+            >
+              <Plus className="w-6 h-6" />
+            </button>
+          </div>
+        </SheetContent>
+      </Sheet>
+
       {/* Meeting create sheet */}
       <Sheet open={showMeetingForm} onOpenChange={setShowMeetingForm}>
         <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
