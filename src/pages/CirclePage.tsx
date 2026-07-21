@@ -436,13 +436,12 @@ const CirclePage = () => {
                 Ingen sammanfattning ännu. Skriv några meddelanden så plockar vi upp tråden.
               </p>
             )}
-            <button
+            <TextButton
               onClick={() => navigate(`/chat/${circle.id}`)}
-              className="mt-4 text-[14px] font-medium underline underline-offset-4 inline-flex items-center gap-1"
-              style={LINK_STYLE}
+              className="mt-4 text-[14px]"
             >
               <MessageCircle className="w-4 h-4" /> Se hela chatten
-            </button>
+            </TextButton>
           </div>
         </section>
 
