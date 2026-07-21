@@ -375,6 +375,94 @@ const CirclePage = () => {
           )}
         </section>
       </div>
+
+      <Sheet open={!!selectedMeeting} onOpenChange={(o) => !o && setSelectedMeeting(null)}>
+        <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+          {selectedMeeting && (
+            <>
+              <SheetHeader className="text-left">
+                <SheetTitle style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>
+                  {selectedMeeting.title}
+                </SheetTitle>
+                <SheetDescription className="text-[13px]">
+                  {selectedMeeting.host_name}
+                  {selectedMeeting.meeting_date ? ` · ${formatDateYear(selectedMeeting.meeting_date)}` : ""}
+                </SheetDescription>
+              </SheetHeader>
+              {selectedMeeting.description && (
+                <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2E1F3E" }}>
+                  {selectedMeeting.description}
+                </p>
+              )}
+              <div className="mt-6">
+                <div className="text-[12px] uppercase tracking-wide mb-2" style={{ color: "hsl(20, 4%, 54%)" }}>
+                  Med på träffen
+                </div>
+                {meetingAttendees.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Ingen har svarat ännu.</p>
+                ) : (
+                  <ul className="space-y-1">
+                    {meetingAttendees.map((a) => (
+                      <li key={a.user_id} className="text-[14px]" style={{ color: "#2E1F3E" }}>
+                        {a.display_name ?? "Anonym"}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div className="mt-6 flex gap-2">
+                <Button
+                  onClick={() => { respondYes(selectedMeeting.id); setSelectedMeeting(null); }}
+                  className="flex-1 rounded-lg"
+                  style={{ backgroundColor: "#561828", color: "#fff" }}
+                >
+                  Jag kan
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => { navigate(`/chat/${circle.id}`); setSelectedMeeting(null); }}
+                  className="rounded-lg"
+                >
+                  <MessageCircle className="w-4 h-4 mr-1" /> Till chatten
+                </Button>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      <Sheet open={!!selectedTip} onOpenChange={(o) => !o && setSelectedTip(null)}>
+        <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+          {selectedTip && (
+            <>
+              <SheetHeader className="text-left">
+                <SheetTitle style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>
+                  {selectedTip.title}
+                </SheetTitle>
+                <SheetDescription className="text-[13px]">
+                  {selectedTip.owner_name} · {formatDateYear(selectedTip.created_at)}
+                </SheetDescription>
+              </SheetHeader>
+              {selectedTip.comment && (
+                <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2E1F3E" }}>
+                  {selectedTip.comment}
+                </p>
+              )}
+              {selectedTip.url && (
+                <a
+                  href={selectedTip.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 text-[15px] font-medium underline underline-offset-4"
+                  style={{ color: "#C4522A" }}
+                >
+                  <ExternalLink className="w-4 h-4" /> Öppna länken
+                </a>
+              )}
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
