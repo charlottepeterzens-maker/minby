@@ -17,6 +17,8 @@ import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkel
 import { OVERLAY_GRADIENT, CARD_RADIUS_CLASS } from "@/lib/card-styles";
 import CircleOnboarding from "@/components/CircleOnboarding";
 import CreateHub from "@/components/ui/create-hub";
+import WelcomeToCircleCard from "@/components/circle/WelcomeToCircleCard";
+import ProfileNudge from "@/components/profile/ProfileNudge";
 
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
@@ -61,6 +63,7 @@ const CirclePage = () => {
   const [aiSummary, setAiSummary] = useState<{ content: string; generated_at: string; author?: string | null } | null>(null);
   const [sinceLast, setSinceLast] = useState<{ label: string; body: string } | null>(null);
   const [loadingContent, setLoadingContent] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
 
   const [displayName, setDisplayName] = useState("");
 
@@ -198,6 +201,19 @@ const CirclePage = () => {
       setLoadingContent(false);
     })();
   }, [id]);
+
+  // Welcome card: show if user has never sent a message in this circle
+  useEffect(() => {
+    if (!id || !user) return;
+    (async () => {
+      const { count } = await supabase
+        .from("messages")
+        .select("*", { count: "exact", head: true })
+        .eq("circle_id", id)
+        .eq("user_id", user.id);
+      setShowWelcome((count ?? 0) === 0);
+    })();
+  }, [id, user]);
 
   const openInviteSheet = async () => {
     if (!id || !user) return;
@@ -395,6 +411,18 @@ const CirclePage = () => {
             onTip={() => setShowTipForm(true)}
           />
         )}
+
+        {/* Welcome card for newly joined members */}
+        {showWelcome && circle && (
+          <WelcomeToCircleCard
+            circleName={circle.name}
+            onSayHi={() => navigate(`/chat/${circle.id}`)}
+          />
+        )}
+
+        {/* Stepwise, non-blocking profile onboarding */}
+        <ProfileNudge />
+
 
         {/* Sedan sist — collapsible */}
         {sinceLast && (
