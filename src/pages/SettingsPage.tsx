@@ -76,10 +76,13 @@ const SettingsPage = () => {
 
   const saveField = async (field: "display_name" | "bio", value: string) => {
     if (!user) return;
-    const payload = { user_id: user.id, [field]: value.trim() || null };
+    const trimmed = value.trim() || null;
+    const payload = field === "display_name"
+      ? { user_id: user.id, display_name: trimmed }
+      : { user_id: user.id, bio: trimmed };
     const { error } = await supabase.from("profiles").upsert(payload, { onConflict: "user_id" });
     if (error) { toast.error(error.message); return; }
-    setProfile((p) => ({ ...p, [field]: payload[field] as string | null }));
+    setProfile((p) => ({ ...p, [field]: trimmed }));
     setEditing(null);
     toast.success("Sparat");
   };
