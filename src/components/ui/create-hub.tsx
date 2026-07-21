@@ -67,11 +67,11 @@ const CreateHub = ({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
           side="bottom"
-          className="rounded-t-[26px] border-0 p-0"
+          className="rounded-t-[26px] border-0 p-0 flex flex-col"
           onOpenAutoFocus={(e) => e.preventDefault()}
-          style={{ backgroundColor: "#FFFFFF" }}
+          style={{ backgroundColor: "#FFFFFF", height: "85dvh" }}
         >
-          <SheetHeader className="px-5 pt-5 pb-2 flex-row items-center justify-between">
+          <SheetHeader className="px-5 pt-5 pb-2 flex-row items-center justify-between shrink-0">
             <SheetTitle
               className="text-heading-md text-left"
               style={{ color: "#2B2B2B" }}
@@ -87,7 +87,7 @@ const CreateHub = ({
               <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
             </button>
           </SheetHeader>
-          <div className="px-2 pb-8">
+          <div className="px-2 pb-8 flex-1 overflow-y-auto">
             {resolvedSections.map((section, si) => (
               <div key={si} className={si === 0 ? "" : "mt-4"}>
                 {section.title && (
@@ -115,6 +115,7 @@ const CreateHub = ({
               </div>
             ))}
           </div>
+
         </SheetContent>
       </Sheet>
     </>
