@@ -12,6 +12,8 @@ import MeetingCard from "@/components/cards/MeetingCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import TipCard from "@/components/cards/TipCard";
 import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
+import { OVERLAY_GRADIENT, CARD_RADIUS_CLASS } from "@/lib/card-styles";
+
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
