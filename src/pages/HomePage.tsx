@@ -451,7 +451,9 @@ const ProfilePlaceholders = ({ userId }: { userId: string | null }) => {
     </p>
 
   </>
-);
+  );
+};
+
 
 const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: string }) => (
   <div
