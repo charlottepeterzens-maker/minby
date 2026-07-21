@@ -25,38 +25,38 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
     <button
       type="button"
       onClick={onOpen}
-      className="w-full text-left rounded-3xl p-3 flex gap-3"
-      style={{ backgroundColor: "#F5EFD9" }}
+      className="w-full text-left rounded-[20px] overflow-hidden flex gap-4 h-[134px]"
+      style={{ backgroundColor: "#F9F3E1" }}
     >
       <div
-        className="w-[110px] h-[110px] rounded-[14px] flex-shrink-0 bg-center bg-cover"
+        className="w-[134px] h-[134px] flex-shrink-0 bg-center bg-cover"
         style={{
           backgroundColor: "#E8DDC6",
           backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
         }}
       />
 
-      <div className="flex-1 min-w-0 flex flex-col">
+      <div className="flex-1 min-w-0 flex flex-col py-3 pr-4">
         <div className="flex items-center gap-2 mb-1">
           <div
             className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center text-[10px]"
-            style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
+            style={{ backgroundColor: "#DCEAF8", color: "#561828" }}
           >
             {ownerAvatar ? <img src={ownerAvatar} alt="" className="w-full h-full object-cover" /> : initials}
           </div>
-          <span className="text-[11px]" style={{ color: "hsl(20, 4%, 54%)" }}>
+          <span className="text-[13px]" style={{ color: "#561828" }}>
             {dateLabel}
           </span>
         </div>
         <div
-          className="text-[15px] font-medium leading-tight truncate"
+          className="text-[16px] font-medium leading-tight truncate"
           style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}
         >
           {title}
         </div>
         {description && (
           <p
-            className="text-[13px] mt-1 line-clamp-2"
+            className="text-[14px] mt-1 line-clamp-2 leading-snug"
             style={{ color: "#2B2B2B" }}
           >
             {description}
@@ -68,8 +68,8 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
             tabIndex={0}
             onClick={openLink}
             onKeyDown={(e) => { if (e.key === "Enter") openLink(e as any); }}
-            className="mt-auto text-left text-[14px] font-medium underline underline-offset-4 cursor-pointer"
-            style={{ color: "#C85A2E" }}
+            className="mt-auto text-left text-[15px] font-medium underline underline-offset-[6px] cursor-pointer decoration-2"
+            style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
           >
             Till tipset
           </span>

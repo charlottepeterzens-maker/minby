@@ -47,13 +47,13 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
   return (
     <button
       onClick={onOpen}
-      className="w-full text-left rounded-3xl p-5 flex gap-4"
-      style={{ backgroundColor: "#F5EFD9" }}
+      className="w-full text-left rounded-[20px] p-5 flex gap-4"
+      style={{ backgroundColor: "#F9F3E1" }}
     >
       <div className="flex-1 min-w-0">
         <div
           className="text-[13px] mb-2"
-          style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}
+          style={{ fontFamily: "'Outfit', sans-serif", color: "#561828" }}
         >
           {name}
         </div>
@@ -64,8 +64,8 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
           {summary ?? "Här samlas kretsen. Öppna för att se vad som händer."}
         </p>
         <span
-          className="text-[15px] font-medium underline underline-offset-4"
-          style={{ color: "#2B2B2B" }}
+          className="text-[15px] font-medium underline underline-offset-[6px] decoration-2"
+          style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
         >
           Kika in!
         </span>

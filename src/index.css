@@ -13,7 +13,7 @@
     --safe-top: env(safe-area-inset-top, 0px);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     /* Minby — warm linen + burgundy + powder blue */
-    --background: 40 27% 96%;
+    --background: 40 20% 98%;
     --foreground: 20 10% 12%;
 
     --card: 0 0% 100%;
