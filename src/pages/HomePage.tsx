@@ -363,7 +363,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
           .order("meeting_date", { ascending: true, nullsFirst: false }),
         supabase
           .from("tips")
-          .select("id, title, image_path")
+          .select("id, title, image_path, created_at, comment, url")
           .eq("owner_id", userId)
           .order("created_at", { ascending: false })
           .limit(10),
