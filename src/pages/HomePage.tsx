@@ -10,7 +10,8 @@ import CircleCard from "@/components/cards/CircleCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
 import { ExampleTag } from "@/components/ui/example-tag";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Sheet } from "@/components/ui/sheet";
+import { BottomSheetBody, BottomSheetContent, BottomSheetFooter, BottomSheetHeader } from "@/components/ui/bottom-sheet";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -248,29 +249,9 @@ const HomePage = () => {
           if (!o) setNewName("");
         }}
       >
-        <SheetContent
-          side="bottom"
-          className="rounded-t-[26px] border-0 p-0"
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          style={{ backgroundColor: "hsl(var(--background))" }}
-        >
-          <SheetHeader
-            className="sticky top-0 z-10 px-4 pt-5 pb-3 flex-row items-center gap-3 space-y-0"
-            style={{ backgroundColor: "hsl(var(--background))" }}
-          >
-            <button
-              type="button"
-              onClick={() => { setCreating(false); setNewName(""); }}
-              aria-label="Stäng"
-              className="p-2 -ml-2"
-            >
-              <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
-            </button>
-            <SheetTitle className="text-heading-md text-left">
-              Skapa en krets
-            </SheetTitle>
-          </SheetHeader>
-          <div className="px-4 pb-8 space-y-4">
+        <BottomSheetContent>
+          <BottomSheetHeader title="Skapa en krets" />
+          <BottomSheetBody className="px-4 pt-4 pb-8 space-y-4">
             <p className="text-body text-muted-foreground">
               Ge din krets ett namn. Du kan bjuda in dina närmaste direkt efteråt.
             </p>
@@ -289,8 +270,8 @@ const HomePage = () => {
                 Skapa krets
               </TextButton>
             </div>
-          </div>
-        </SheetContent>
+          </BottomSheetBody>
+        </BottomSheetContent>
       </Sheet>
     </div>
   );
@@ -706,32 +687,9 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
 
     {/* Våra tips — full browsing sheet */}
     <Sheet open={showAllTips} onOpenChange={setShowAllTips}>
-      <SheetContent
-        side="bottom"
-        className="rounded-t-[26px] border-0 p-0 h-[92dvh] flex flex-col"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        style={{ backgroundColor: "hsl(var(--background))" }}
-      >
-        <SheetHeader
-          className="sticky top-0 z-10 px-4 pt-5 pb-3 flex-row items-center gap-3 space-y-0"
-          style={{ backgroundColor: "hsl(var(--background))" }}
-        >
-          <button
-            type="button"
-            onClick={() => setShowAllTips(false)}
-            aria-label="Stäng"
-            className="p-2 -ml-2"
-          >
-            <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
-          </button>
-          <SheetTitle
-            className="text-heading-md text-left"
-            style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}
-          >
-            Våra tips
-          </SheetTitle>
-        </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-4 pb-32 space-y-3">
+      <BottomSheetContent height={92}>
+        <BottomSheetHeader title="Våra tips" />
+        <BottomSheetBody className="px-4 pt-4 pb-32 space-y-3">
           {(myTips ?? []).map((t) => (
             <TipCard
               key={t.id}
@@ -745,7 +703,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
               category={t.category}
             />
           ))}
-        </div>
+        </BottomSheetBody>
         <button
           type="button"
           onClick={openTipForm}
@@ -762,7 +720,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
         >
           <Plus className="w-6 h-6" strokeWidth={2} />
         </button>
-      </SheetContent>
+      </BottomSheetContent>
     </Sheet>
 
     {/* Tip create sheet */}
@@ -787,11 +745,9 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
 
     {/* Photo upload sheet */}
     <Sheet open={showPhotoForm} onOpenChange={(o) => { setShowPhotoForm(o); if (!o) { setPhotoFile(null); setPhotoCaption(""); if (photoPreview) URL.revokeObjectURL(photoPreview); setPhotoPreview(null); } }}>
-      <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
-        <SheetHeader className="text-left">
-          <SheetTitle style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}>Ladda upp foto</SheetTitle>
-        </SheetHeader>
-        <div className="mt-4 space-y-3">
+      <BottomSheetContent>
+        <BottomSheetHeader title="Ladda upp foto" />
+        <BottomSheetBody className="px-4 pt-4 pb-8 space-y-3">
           {photoPreview && (
             <img src={photoPreview} alt="" className="w-full max-h-[240px] object-cover rounded-2xl" />
           )}
@@ -809,8 +765,8 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
               {uploadingPhoto ? "Laddar upp…" : "Dela foto"}
             </TextButton>
           </div>
-        </div>
-      </SheetContent>
+        </BottomSheetBody>
+      </BottomSheetContent>
     </Sheet>
 
   </>

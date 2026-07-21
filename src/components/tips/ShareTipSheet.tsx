@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Sheet } from "@/components/ui/sheet";
+import { BottomSheetBody, BottomSheetContent, BottomSheetFooter, BottomSheetHeader } from "@/components/ui/bottom-sheet";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import TextButton from "@/components/ui/text-button";
@@ -214,24 +215,11 @@ const ShareTipSheet = ({
         if (!o) reset();
       }}
     >
-      <SheetContent
-        side="bottom"
-        onOpenAutoFocus={(e) => e.preventDefault()}
-        className="!p-0 !gap-0 !max-h-none border-0 rounded-t-[28px] h-[85dvh] flex flex-col overflow-hidden"
-        style={{ backgroundColor: "#FFFFFF" }}
-      >
-        {/* Sticky header */}
-        <div
-          className="shrink-0 px-5 pt-5 pb-4"
-          style={{ backgroundColor: "#FFFFFF" }}
-        >
-          <SheetTitle className="text-heading-md text-left" style={{ color: "#2B2B2B" }}>
-            Dela ett tips
-          </SheetTitle>
-        </div>
+      <BottomSheetContent>
+        <BottomSheetHeader title="Dela ett tips" />
 
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto px-5 pb-6 space-y-5">
+        <BottomSheetBody className="px-5 pt-4 pb-6 space-y-5">
           {/* Titel */}
           <div className="space-y-2">
             <div className="text-eyebrow uppercase" style={{ color: "#675332" }}>
@@ -389,21 +377,14 @@ const ShareTipSheet = ({
             value={selectedCircles}
             onChange={setSelectedCircles}
           />
-        </div>
+        </BottomSheetBody>
 
-        {/* Sticky footer */}
-        <div
-          className="shrink-0 px-5 pt-3 pb-4 flex justify-end"
-          style={{
-            backgroundColor: "#FFFFFF",
-            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 16px)",
-          }}
-        >
+        <BottomSheetFooter className="flex justify-end">
           <TextButton onClick={submit} disabled={!canSubmit}>
             {saving ? "Delar…" : "Dela tips"}
           </TextButton>
-        </div>
-      </SheetContent>
+        </BottomSheetFooter>
+      </BottomSheetContent>
     </Sheet>
   );
 };

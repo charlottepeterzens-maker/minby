@@ -5,7 +5,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { Sheet, SheetDescription } from "@/components/ui/sheet";
+import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
 import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, Plus, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
@@ -601,26 +602,9 @@ const CirclePage = () => {
 
       {/* Invite sheet — layered on top of the Create Hub */}
       <Sheet open={inviteOpen} onOpenChange={setInviteOpen}>
-        <SheetContent
-          side="bottom"
-          className="rounded-t-[26px] border-0 p-0"
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          style={{ backgroundColor: "#FFFFFF" }}
-        >
-          <SheetHeader className="px-5 pt-5 pb-2 flex-row items-center justify-between">
-            <SheetTitle className="text-heading-md text-left" style={HEADING_STYLE}>
-              Bjud in till kretsen
-            </SheetTitle>
-            <button
-              type="button"
-              onClick={() => setInviteOpen(false)}
-              className="p-2 -mr-2"
-              aria-label="Stäng"
-            >
-              <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
-            </button>
-          </SheetHeader>
-          <div className="px-5 pb-8 pt-2 space-y-5">
+        <BottomSheetContent>
+          <BottomSheetHeader title="Bjud in till kretsen" />
+          <BottomSheetBody className="px-5 pt-4 pb-8 space-y-5">
             <p className="text-body" style={{ color: "#5B5B5B" }}>
               Bjud in familj och vänner så att ni kan dela foton, tips och planera träffar tillsammans.
             </p>
@@ -640,8 +624,8 @@ const CirclePage = () => {
                 Kopiera länk
               </TextButton>
             </div>
-          </div>
-        </SheetContent>
+          </BottomSheetBody>
+        </BottomSheetContent>
       </Sheet>
 
 
@@ -649,29 +633,9 @@ const CirclePage = () => {
 
       {/* Tips list sheet */}
       <Sheet open={showTipsList} onOpenChange={setShowTipsList}>
-        <SheetContent
-          side="bottom"
-          className="rounded-t-[26px] border-0 p-0 h-[92dvh] flex flex-col"
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          style={{ backgroundColor: "hsl(var(--background))" }}
-        >
-          <SheetHeader
-            className="sticky top-0 z-10 px-4 pt-5 pb-3 flex-row items-center gap-3 space-y-0"
-            style={{ backgroundColor: "hsl(var(--background))" }}
-          >
-            <button
-              type="button"
-              onClick={() => setShowTipsList(false)}
-              aria-label="Stäng"
-              className="p-2 -ml-2"
-            >
-              <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
-            </button>
-            <SheetTitle className="text-heading-md text-left" style={HEADING_STYLE}>
-              Våra tips
-            </SheetTitle>
-          </SheetHeader>
-          <div className="flex-1 overflow-y-auto px-4 pb-32 space-y-3">
+        <BottomSheetContent height={92}>
+          <BottomSheetHeader title="Våra tips" />
+          <BottomSheetBody className="px-4 pt-4 pb-32 space-y-3">
             {loadingContent ? (
               <>
                 <TipCardSkeleton />
@@ -694,7 +658,7 @@ const CirclePage = () => {
                 />
               ))
             )}
-          </div>
+          </BottomSheetBody>
           <button
             type="button"
             onClick={() => { setShowTipsList(false); setShowTipForm(true); }}
@@ -711,16 +675,14 @@ const CirclePage = () => {
           >
             <Plus className="w-6 h-6" strokeWidth={2} />
           </button>
-        </SheetContent>
+        </BottomSheetContent>
       </Sheet>
 
       {/* Meeting create sheet */}
       <Sheet open={showMeetingForm} onOpenChange={setShowMeetingForm}>
-        <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
-          <SheetHeader className="text-left">
-            <SheetTitle style={HEADING_STYLE}>Föreslå en träff</SheetTitle>
-          </SheetHeader>
-          <div className="mt-4 space-y-2">
+        <BottomSheetContent>
+          <BottomSheetHeader title="Föreslå en träff" />
+          <BottomSheetBody className="px-5 pt-4 pb-8 space-y-2">
             <Input placeholder="Vad ska ni göra?" value={meetingTitle} onChange={(e) => setMeetingTitle(e.target.value)} className="rounded-lg" />
             <Input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} className="rounded-lg" />
             <Textarea placeholder="Beskrivning (valfritt)" value={meetingDesc} onChange={(e) => setMeetingDesc(e.target.value)} rows={3} className="rounded-lg resize-none" />
@@ -729,8 +691,8 @@ const CirclePage = () => {
                 {savingMeeting ? "Sparar…" : "Skapa träff"}
               </TextButton>
             </div>
-          </div>
-        </SheetContent>
+          </BottomSheetBody>
+        </BottomSheetContent>
       </Sheet>
 
       {/* Tip create sheet */}
@@ -759,96 +721,96 @@ const CirclePage = () => {
 
       {/* Meeting detail sheet */}
       <Sheet open={!!selectedMeeting} onOpenChange={(o) => !o && setSelectedMeeting(null)}>
-        <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+        <BottomSheetContent>
           {selectedMeeting && (
             <>
-              <SheetHeader className="text-left">
-                <SheetTitle style={HEADING_STYLE}>{selectedMeeting.title}</SheetTitle>
-                <SheetDescription className="text-[13px]">
+              <BottomSheetHeader title={selectedMeeting.title} />
+              <BottomSheetBody className="px-5 pt-4 pb-8">
+                <p className="text-[13px]" style={{ color: "hsl(20, 4%, 40%)" }}>
                   {selectedMeeting.host_name}
                   {selectedMeeting.meeting_date ? ` · ${formatDateYear(selectedMeeting.meeting_date)}` : ""}
-                </SheetDescription>
-              </SheetHeader>
-              {selectedMeeting.description && (
-                <p className="mt-4 text-[16px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
-                  {selectedMeeting.description}
                 </p>
-              )}
-              <div className="mt-6">
-                <div className="text-[12px] uppercase tracking-wide mb-2" style={{ color: "hsl(20, 4%, 54%)" }}>
-                  Med på träffen
-                </div>
-                {meetingAttendees.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">Ingen har svarat ännu.</p>
-                ) : (
-                  <ul className="space-y-1">
-                    {meetingAttendees.map((a) => (
-                      <li key={a.user_id} className="text-[16px]" style={{ color: "#2B2B2B" }}>
-                        {a.display_name ?? "Anonym"}
-                      </li>
-                    ))}
-                  </ul>
+                {selectedMeeting.description && (
+                  <p className="mt-4 text-[16px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
+                    {selectedMeeting.description}
+                  </p>
                 )}
-              </div>
-              <div className="mt-6 flex gap-6">
-                <TextButton onClick={() => { respondYes(selectedMeeting.id); setSelectedMeeting(null); }}>
-                  Häng med!
-                </TextButton>
-                <TextButton variant="secondary" onClick={() => { navigate(`/chat/${circle.id}`); setSelectedMeeting(null); }}>
-                  <MessageCircle className="w-4 h-4" /> Till chatten
-                </TextButton>
-              </div>
+                <div className="mt-6">
+                  <div className="text-[12px] uppercase tracking-wide mb-2" style={{ color: "hsl(20, 4%, 54%)" }}>
+                    Med på träffen
+                  </div>
+                  {meetingAttendees.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">Ingen har svarat ännu.</p>
+                  ) : (
+                    <ul className="space-y-1">
+                      {meetingAttendees.map((a) => (
+                        <li key={a.user_id} className="text-[16px]" style={{ color: "#2B2B2B" }}>
+                          {a.display_name ?? "Anonym"}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <div className="mt-6 flex gap-6">
+                  <TextButton onClick={() => { respondYes(selectedMeeting.id); setSelectedMeeting(null); }}>
+                    Häng med!
+                  </TextButton>
+                  <TextButton variant="secondary" onClick={() => { navigate(`/chat/${circle.id}`); setSelectedMeeting(null); }}>
+                    <MessageCircle className="w-4 h-4" /> Till chatten
+                  </TextButton>
+                </div>
+              </BottomSheetBody>
             </>
           )}
-        </SheetContent>
+        </BottomSheetContent>
       </Sheet>
 
       {/* Tip detail sheet */}
       <Sheet open={!!selectedTip} onOpenChange={(o) => !o && setSelectedTip(null)}>
-        <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+        <BottomSheetContent>
           {selectedTip && (
             <>
-              <SheetHeader className="text-left">
-                <SheetTitle style={HEADING_STYLE}>{selectedTip.title}</SheetTitle>
-                <SheetDescription className="text-[13px]">
+              <BottomSheetHeader title={selectedTip.title} />
+              <BottomSheetBody className="px-5 pt-4 pb-8">
+                <p className="text-[13px]" style={{ color: "hsl(20, 4%, 40%)" }}>
                   {selectedTip.owner_name} · {formatDateYear(selectedTip.created_at)}
-                </SheetDescription>
-              </SheetHeader>
-              {selectedTip.image_url && (
-                <div className={`mt-4 w-full h-[160px] ${CARD_RADIUS_CLASS.photo} bg-center bg-cover`} style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
-              )}
-              {selectedTip.comment && (
-                <p className="mt-4 text-[16px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
-                  {selectedTip.comment}
                 </p>
-              )}
-              {selectedTip.url && (
-                <a href={selectedTip.url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-[15px] font-medium underline underline-offset-2" style={LINK_STYLE}>
-                  <ExternalLink className="w-4 h-4" /> Öppna länken
-                </a>
-              )}
+                {selectedTip.image_url && (
+                  <div className={`mt-4 w-full h-[160px] ${CARD_RADIUS_CLASS.photo} bg-center bg-cover`} style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
+                )}
+                {selectedTip.comment && (
+                  <p className="mt-4 text-[16px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
+                    {selectedTip.comment}
+                  </p>
+                )}
+                {selectedTip.url && (
+                  <a href={selectedTip.url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-[15px] font-medium underline underline-offset-2" style={LINK_STYLE}>
+                    <ExternalLink className="w-4 h-4" /> Öppna länken
+                  </a>
+                )}
+              </BottomSheetBody>
             </>
           )}
-        </SheetContent>
+        </BottomSheetContent>
       </Sheet>
 
       {/* Photo detail sheet */}
       <Sheet open={!!selectedPhoto} onOpenChange={(o) => !o && setSelectedPhoto(null)}>
-        <SheetContent side="bottom" className="rounded-t-2xl max-h-[90vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+        <BottomSheetContent height={90}>
           {selectedPhoto && (
             <>
-              <SheetHeader className="text-left">
-                <SheetTitle style={HEADING_STYLE}>{selectedPhoto.owner_name}</SheetTitle>
-                <SheetDescription className="text-[13px]">
+              <BottomSheetHeader title={selectedPhoto.owner_name} />
+              <BottomSheetBody className="px-5 pt-4 pb-8">
+                <p className="text-[13px]" style={{ color: "hsl(20, 4%, 40%)" }}>
                   {formatDateYear(selectedPhoto.created_at)}
-                </SheetDescription>
-              </SheetHeader>
-              {selectedPhoto.image_url && (
-                <img src={selectedPhoto.image_url} alt="" className={`mt-4 w-full ${CARD_RADIUS_CLASS.photo} object-cover max-h-[70vh]`} />
-              )}
+                </p>
+                {selectedPhoto.image_url && (
+                  <img src={selectedPhoto.image_url} alt="" className={`mt-4 w-full ${CARD_RADIUS_CLASS.photo} object-cover max-h-[70vh]`} />
+                )}
+              </BottomSheetBody>
             </>
           )}
-        </SheetContent>
+        </BottomSheetContent>
       </Sheet>
 
       {/* Photo upload sheet */}
@@ -864,11 +826,9 @@ const CirclePage = () => {
           }
         }}
       >
-        <SheetContent side="bottom" className="rounded-t-2xl" onOpenAutoFocus={(e) => e.preventDefault()}>
-          <SheetHeader className="text-left">
-            <SheetTitle style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}>Ladda upp foto</SheetTitle>
-          </SheetHeader>
-          <div className="mt-4 space-y-3">
+        <BottomSheetContent>
+          <BottomSheetHeader title="Ladda upp foto" />
+          <BottomSheetBody className="px-5 pt-4 pb-8 space-y-3">
             {photoPreview && (
               <img src={photoPreview} alt="" className="w-full max-h-[240px] object-cover rounded-2xl" />
             )}
@@ -885,8 +845,8 @@ const CirclePage = () => {
                 {uploadingPhoto ? "Laddar upp…" : "Dela foto"}
               </TextButton>
             </div>
-          </div>
-        </SheetContent>
+          </BottomSheetBody>
+        </BottomSheetContent>
       </Sheet>
     </div>
   );

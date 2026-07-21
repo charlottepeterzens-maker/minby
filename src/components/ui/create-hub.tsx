@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Sheet } from "@/components/ui/sheet";
+import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
 
 export interface CreateHubAction {
   label: string;
@@ -65,21 +66,9 @@ const CreateHub = ({
       </button>
 
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetContent
-          side="bottom"
-          className="rounded-t-[28px] border-0 p-0 flex flex-col overflow-hidden"
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          style={{ backgroundColor: "#FFFFFF", height: "85dvh" }}
-        >
-          <div className="px-5 pt-5 pb-4 shrink-0">
-            <SheetTitle
-              className="text-heading-md text-left pr-10"
-              style={{ color: "#2B2B2B" }}
-            >
-              {title}
-            </SheetTitle>
-          </div>
-          <div className="px-2 pb-8 flex-1 overflow-y-auto">
+        <BottomSheetContent>
+          <BottomSheetHeader title={title} />
+          <BottomSheetBody className="px-2 pt-4 pb-8">
             {resolvedSections.map((section, si) => (
               <div key={si} className={si === 0 ? "" : "mt-8"}>
                 {section.title && (
@@ -106,9 +95,8 @@ const CreateHub = ({
                 </ul>
               </div>
             ))}
-          </div>
-
-        </SheetContent>
+          </BottomSheetBody>
+        </BottomSheetContent>
       </Sheet>
     </>
   );
