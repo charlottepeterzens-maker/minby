@@ -5,14 +5,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, MessageCircle, Share2, Plus, X } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { ChevronLeft, MessageCircle, Share2, Plus, X, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import TipCard from "@/components/cards/TipCard";
 import { MeetingCardSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
-interface Meeting { id: string; title: string; meeting_date: string | null; created_by: string; response_count: number; host_name: string; }
+interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
 interface Tip { id: string; title: string; url: string | null; comment: string | null; created_at: string; owner_id: string; owner_name: string; owner_avatar: string | null; }
 
 const monthNames = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
@@ -50,6 +51,10 @@ const CirclePage = () => {
   const [tipComment, setTipComment] = useState("");
   const [savingTip, setSavingTip] = useState(false);
 
+  const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
+  const [meetingAttendees, setMeetingAttendees] = useState<{ user_id: string; display_name: string | null }[]>([]);
+  const [selectedTip, setSelectedTip] = useState<Tip | null>(null);
+
   useEffect(() => {
     if (!user) return;
     supabase.from("profiles").select("display_name, avatar_url").eq("user_id", user.id).maybeSingle()
@@ -69,7 +74,7 @@ const CirclePage = () => {
 
       const { data: mtgs } = await supabase
         .from("meetings")
-        .select("id, title, meeting_date, created_by")
+        .select("id, title, meeting_date, description, created_by")
         .eq("circle_id", id)
         .order("meeting_date", { ascending: true })
         .limit(6);
@@ -157,7 +162,7 @@ const CirclePage = () => {
         meeting_date: meetingDate || null,
         description: meetingDesc.trim() || null,
       })
-      .select("id, title, meeting_date, created_by")
+      .select("id, title, meeting_date, description, created_by")
       .single();
     setSavingMeeting(false);
     if (error || !data) { toast.error(error?.message ?? "Kunde inte spara"); return; }
@@ -186,6 +191,23 @@ const CirclePage = () => {
     setTips((prev) => [{ ...data, owner_name: displayName, owner_avatar: avatarUrl }, ...prev]);
     setTipTitle(""); setTipUrl(""); setTipComment(""); setShowTipForm(false);
     toast.success("Tipset är delat");
+  };
+
+  const openMeeting = async (m: Meeting) => {
+    setSelectedMeeting(m);
+    setMeetingAttendees([]);
+    const { data } = await supabase
+      .from("meeting_responses")
+      .select("user_id")
+      .eq("meeting_id", m.id)
+      .eq("status", "yes");
+    const ids = (data ?? []).map((r) => r.user_id);
+    if (!ids.length) return;
+    const { data: profs } = await supabase
+      .from("profiles")
+      .select("user_id, display_name")
+      .in("user_id", ids);
+    setMeetingAttendees(profs ?? []);
   };
 
   if (!circle) {
@@ -277,6 +299,7 @@ const CirclePage = () => {
                   title={m.title}
                   responseCount={m.response_count}
                   onRespond={() => respondYes(m.id)}
+                  onOpen={() => openMeeting(m)}
                 />
               ))}
             </div>
@@ -345,12 +368,101 @@ const CirclePage = () => {
                   title={t.title}
                   description={t.comment}
                   url={t.url}
+                  onOpen={() => setSelectedTip(t)}
                 />
               ))}
             </div>
           )}
         </section>
       </div>
+
+      <Sheet open={!!selectedMeeting} onOpenChange={(o) => !o && setSelectedMeeting(null)}>
+        <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+          {selectedMeeting && (
+            <>
+              <SheetHeader className="text-left">
+                <SheetTitle style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>
+                  {selectedMeeting.title}
+                </SheetTitle>
+                <SheetDescription className="text-[13px]">
+                  {selectedMeeting.host_name}
+                  {selectedMeeting.meeting_date ? ` · ${formatDateYear(selectedMeeting.meeting_date)}` : ""}
+                </SheetDescription>
+              </SheetHeader>
+              {selectedMeeting.description && (
+                <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2E1F3E" }}>
+                  {selectedMeeting.description}
+                </p>
+              )}
+              <div className="mt-6">
+                <div className="text-[12px] uppercase tracking-wide mb-2" style={{ color: "hsl(20, 4%, 54%)" }}>
+                  Med på träffen
+                </div>
+                {meetingAttendees.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">Ingen har svarat ännu.</p>
+                ) : (
+                  <ul className="space-y-1">
+                    {meetingAttendees.map((a) => (
+                      <li key={a.user_id} className="text-[14px]" style={{ color: "#2E1F3E" }}>
+                        {a.display_name ?? "Anonym"}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div className="mt-6 flex gap-2">
+                <Button
+                  onClick={() => { respondYes(selectedMeeting.id); setSelectedMeeting(null); }}
+                  className="flex-1 rounded-lg"
+                  style={{ backgroundColor: "#561828", color: "#fff" }}
+                >
+                  Jag kan
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => { navigate(`/chat/${circle.id}`); setSelectedMeeting(null); }}
+                  className="rounded-lg"
+                >
+                  <MessageCircle className="w-4 h-4 mr-1" /> Till chatten
+                </Button>
+              </div>
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
+
+      <Sheet open={!!selectedTip} onOpenChange={(o) => !o && setSelectedTip(null)}>
+        <SheetContent side="bottom" className="rounded-t-2xl max-h-[85vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+          {selectedTip && (
+            <>
+              <SheetHeader className="text-left">
+                <SheetTitle style={{ fontFamily: "'Fraunces', serif", color: "#2E1F3E" }}>
+                  {selectedTip.title}
+                </SheetTitle>
+                <SheetDescription className="text-[13px]">
+                  {selectedTip.owner_name} · {formatDateYear(selectedTip.created_at)}
+                </SheetDescription>
+              </SheetHeader>
+              {selectedTip.comment && (
+                <p className="mt-4 text-[14px] whitespace-pre-wrap" style={{ color: "#2E1F3E" }}>
+                  {selectedTip.comment}
+                </p>
+              )}
+              {selectedTip.url && (
+                <a
+                  href={selectedTip.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 text-[15px] font-medium underline underline-offset-4"
+                  style={{ color: "#C4522A" }}
+                >
+                  <ExternalLink className="w-4 h-4" /> Öppna länken
+                </a>
+              )}
+            </>
+          )}
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
