@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import PhotoTile from "@/components/cards/PhotoTile";
 import TipCard from "@/components/cards/TipCard";
+import ShareTipSheet from "@/components/tips/ShareTipSheet";
 import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 import { OVERLAY_GRADIENT, CARD_RADIUS_CLASS } from "@/lib/card-styles";
 import CircleOnboarding from "@/components/CircleOnboarding";
@@ -637,133 +638,28 @@ const CirclePage = () => {
       </Sheet>
 
       {/* Tip create sheet */}
-      <Sheet
+      <ShareTipSheet
         open={showTipForm}
-        onOpenChange={(o) => {
-          setShowTipForm(o);
-          if (!o) resetTipForm();
-        }}
-      >
-        <SheetContent side="bottom" className="rounded-t-2xl max-h-[92vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
-          <SheetHeader className="text-left">
-            <SheetTitle style={HEADING_STYLE}>Dela ett tips</SheetTitle>
-          </SheetHeader>
-
-          {(() => {
-            const displayImage = tipImagePreview || linkPreviewImage;
-            const showLoader = !tipImagePreview && linkPreviewLoading;
-            return (
-              <div className="mt-4 space-y-3">
-                {/* Hidden file input */}
-                <input
-                  ref={tipImageInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) {
-                      setTipImageFile(f);
-                      if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
-                      setTipImagePreview(URL.createObjectURL(f));
-                    }
-                    e.target.value = "";
-                  }}
-                />
-
-                {/* Preview hero — always occupies the same slot so layout doesn't jump */}
-                <div
-                  className="relative w-full overflow-hidden rounded-[20px] transition-all"
-                  style={{
-                    aspectRatio: "16 / 9",
-                    background: displayImage ? "#F2ECE3" : "#F5EFE6",
-                    border: displayImage ? "none" : "1px dashed rgba(43,43,43,0.18)",
-                  }}
-                >
-                  {displayImage ? (
-                    <>
-                      <img src={displayImage} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/45 to-transparent" />
-                      <div className="absolute right-3 bottom-3 flex gap-3">
-                        <TextButton
-                          variant="primaryOnPhoto"
-                          onClick={() => tipImageInputRef.current?.click()}
-                          className="text-[13px]"
-                        >
-                          Byt bild
-                        </TextButton>
-                        <TextButton
-                          variant="primaryOnPhoto"
-                          onClick={() => {
-                            setTipImageFile(null);
-                            if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
-                            setTipImagePreview(null);
-                            setLinkPreviewImage(null);
-                            setLinkPreviewPath(null);
-                          }}
-                          className="text-[13px]"
-                        >
-                          Ta bort
-                        </TextButton>
-                      </div>
-                    </>
-                  ) : showLoader ? (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-[13px]" style={{ color: "hsl(20, 4%, 54%)" }}>
-                        Hämtar bild från länken…
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 px-6 text-center">
-                      <p className="text-[13px]" style={{ color: "hsl(20, 4%, 40%)" }}>
-                        Ingen bild ännu
-                      </p>
-                      <TextButton onClick={() => tipImageInputRef.current?.click()} className="text-[13px]">
-                        + Lägg till foto
-                      </TextButton>
-                      <p className="text-[11px]" style={{ color: "hsl(20, 4%, 54%)" }}>
-                        eller klistra in en länk nedan
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <Input
-                  placeholder="Titel"
-                  value={tipTitle}
-                  onChange={(e) => { setTipTitle(e.target.value); setTitleTouched(true); }}
-                  className="rounded-lg"
-                />
-                <Input
-                  placeholder="Länk (valfritt)"
-                  value={tipUrl}
-                  onChange={(e) => onTipUrlChange(e.target.value)}
-                  inputMode="url"
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                  className="rounded-lg"
-                />
-                <Textarea
-                  placeholder="Kommentar (valfritt)"
-                  value={tipComment}
-                  onChange={(e) => setTipComment(e.target.value)}
-                  rows={3}
-                  className="rounded-lg resize-none"
-                />
-
-                <div className="flex items-center justify-between pt-2">
-                  <span className="text-[12px]" style={{ color: "hsl(20, 4%, 54%)" }}>
-                    {tipTitle.trim() ? "Klart att publicera" : "Skriv en titel för att publicera"}
-                  </span>
-                  <TextButton onClick={createTip} disabled={!tipTitle.trim() || savingTip || linkPreviewLoading}>
-                    {savingTip ? "Publicerar…" : "Publicera"}
-                  </TextButton>
-                </div>
-              </div>
-            );
-          })()}
-        </SheetContent>
-      </Sheet>
+        onOpenChange={setShowTipForm}
+        userId={user?.id ?? ""}
+        circles={circle ? [{ id: circle.id, name: circle.name }] : []}
+        defaultCircleIds={circle ? [circle.id] : []}
+        storagePrefix={id}
+        onCreated={(t) =>
+          addTipToList({
+            id: t.id,
+            title: t.title,
+            url: t.url,
+            comment: t.comment,
+            category: t.category,
+            created_at: t.created_at,
+            owner_id: user?.id ?? "",
+            owner_name: displayName,
+            image_path: t.image_path,
+            image_url: t.image_url,
+          })
+        }
+      />
 
       {/* Meeting detail sheet */}
       <Sheet open={!!selectedMeeting} onOpenChange={(o) => !o && setSelectedMeeting(null)}>
