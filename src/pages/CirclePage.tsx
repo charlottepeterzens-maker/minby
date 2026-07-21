@@ -485,14 +485,13 @@ const CirclePage = () => {
         <section className="mt-8 mb-10">
           <div className="px-4 mb-3 flex items-center justify-between">
             <h2 className="text-[16px]" style={HEADING_STYLE}>Våra foton</h2>
-            <button
+            <TextButton
               onClick={() => photoInputRef.current?.click()}
               disabled={uploadingPhoto}
-              className="text-[13px] font-medium underline underline-offset-4 disabled:opacity-50"
-              style={LINK_STYLE}
+              className="text-[13px]"
             >
               {uploadingPhoto ? "Laddar upp…" : "+ Lägg foto"}
-            </button>
+            </TextButton>
             <input
               ref={photoInputRef}
               type="file"
