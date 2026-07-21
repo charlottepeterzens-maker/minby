@@ -197,7 +197,7 @@ const HomePage = () => {
             <CircleCardSkeleton />
             <CircleCardSkeleton />
           </div>
-        ) : circles.length === 0 && !creating ? (
+        ) : circles.length === 0 ? (
           <div className="space-y-3">
             <PlaceholderCircleCard
               name="Din första krets"
@@ -223,30 +223,14 @@ const HomePage = () => {
                 onOpen={() => navigate(`/circle/${c.id}`)}
               />
             ))}
-
-            {creating ? (
-              <div className="rounded-[26px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
-                <input
-                  autoFocus
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  placeholder="Namn på kretsen"
-                  className="w-full bg-transparent border-0 outline-none text-foreground"
-                />
-                <div className="flex gap-6">
-                  <TextButton onClick={createCircle}>Skapa</TextButton>
-                  <TextButton variant="secondary" onClick={() => { setCreating(false); setNewName(""); }}>Avbryt</TextButton>
-                </div>
-              </div>
-            ) : (
-              <div className="pt-4 flex justify-center">
-                <TextButton onClick={() => setCreating(true)}>
-                  + Skapa och bjud in till en krets
-                </TextButton>
-              </div>
-            )}
+            <div className="pt-4 flex justify-center">
+              <TextButton onClick={() => setCreating(true)}>
+                + Skapa och bjud in till en krets
+              </TextButton>
+            </div>
           </div>
         )}
+
 
         <ProfilePlaceholders
           userId={user?.id ?? null}
@@ -254,6 +238,59 @@ const HomePage = () => {
           displayName={profile.display_name ?? ""}
         />
       </div>
+
+      {/* Create circle sheet */}
+      <Sheet
+        open={creating}
+        onOpenChange={(o) => {
+          setCreating(o);
+          if (!o) setNewName("");
+        }}
+      >
+        <SheetContent
+          side="bottom"
+          className="rounded-t-[26px] border-0 p-0"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+          style={{ backgroundColor: "hsl(var(--background))" }}
+        >
+          <SheetHeader
+            className="sticky top-0 z-10 px-4 pt-5 pb-3 flex-row items-center gap-3 space-y-0"
+            style={{ backgroundColor: "hsl(var(--background))" }}
+          >
+            <button
+              type="button"
+              onClick={() => { setCreating(false); setNewName(""); }}
+              aria-label="Stäng"
+              className="p-2 -ml-2"
+            >
+              <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
+            </button>
+            <SheetTitle className="text-heading-md text-left">
+              Skapa en krets
+            </SheetTitle>
+          </SheetHeader>
+          <div className="px-4 pb-8 space-y-4">
+            <p className="text-body text-muted-foreground">
+              Ge din krets ett namn. Du kan bjuda in dina närmaste direkt efteråt.
+            </p>
+            <div className="rounded-[26px] p-4" style={{ backgroundColor: "#F9F3E1" }}>
+              <input
+                autoFocus
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") createCircle(); }}
+                placeholder="Namn på kretsen"
+                className="w-full bg-transparent border-0 outline-none text-foreground text-body"
+              />
+            </div>
+            <div className="pt-2 flex justify-center">
+              <TextButton onClick={createCircle} disabled={!newName.trim()}>
+                Skapa krets
+              </TextButton>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
