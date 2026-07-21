@@ -193,6 +193,23 @@ const CirclePage = () => {
     toast.success("Tipset är delat");
   };
 
+  const openMeeting = async (m: Meeting) => {
+    setSelectedMeeting(m);
+    setMeetingAttendees([]);
+    const { data } = await supabase
+      .from("meeting_responses")
+      .select("user_id")
+      .eq("meeting_id", m.id)
+      .eq("status", "yes");
+    const ids = (data ?? []).map((r) => r.user_id);
+    if (!ids.length) return;
+    const { data: profs } = await supabase
+      .from("profiles")
+      .select("user_id, display_name")
+      .in("user_id", ids);
+    setMeetingAttendees(profs ?? []);
+  };
+
   if (!circle) {
     return <div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground text-sm">Laddar…</div>;
   }
