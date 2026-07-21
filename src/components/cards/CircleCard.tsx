@@ -83,7 +83,7 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
         )}
         {extra > 0 && (
           <div
-            className="absolute bottom-0 right-2 w-10 h-10 rounded-full flex items-center justify-center text-[13px] font-medium"
+            className="absolute bottom-0 right-2 w-10 h-10 rounded-[32%] flex items-center justify-center text-[13px] font-medium"
             style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
           >
             +{extra}
@@ -102,7 +102,7 @@ const Avatar = ({ src, name, className }: { src: string | null; name: string | n
     .join("");
   return (
     <div
-      className={`rounded-full overflow-hidden flex items-center justify-center text-xs ${className ?? ""}`}
+      className={`rounded-[32%] overflow-hidden flex items-center justify-center text-xs ${className ?? ""}`}
       style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
     >
       {src ? (
