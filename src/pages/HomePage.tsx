@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Plus, LogOut } from "lucide-react";
+import CircleCard from "@/components/cards/CircleCard";
 import { toast } from "sonner";
 
 interface Circle {
