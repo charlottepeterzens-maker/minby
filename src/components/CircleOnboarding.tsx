@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
-import { Check, X, Users, Image as ImageIcon, Lightbulb } from "lucide-react";
 
 interface Step {
   key: "invite" | "photo" | "tip";
   label: string;
   hint: string;
-  icon: React.ComponentType<{ className?: string }>;
+  cta: string;
 }
 
 const STEPS: Step[] = [
-  { key: "invite", label: "Bjud in dina vänner", hint: "En krets blir liv när fler är med.", icon: Users },
-  { key: "photo", label: "Lägg upp ett foto", hint: "Ett minne, en stämning, en ny plats.", icon: ImageIcon },
-  { key: "tip", label: "Dela ett tips", hint: "Något du älskar just nu.", icon: Lightbulb },
+  { key: "invite", label: "Bjud in dina vänner", hint: "En krets blir liv när fler är med.", cta: "Bjud in" },
+  { key: "photo", label: "Lägg upp ett foto", hint: "Ett minne, en stämning, en ny plats.", cta: "Ladda upp" },
+  { key: "tip", label: "Dela ett tips", hint: "Något du älskar just nu.", cta: "Dela" },
 ];
 
 interface Props {
@@ -56,20 +55,21 @@ const CircleOnboarding = ({ circleId, circleName, hasMembers, hasPhotos, hasTips
 
   return (
     <section className="mt-6 px-4">
-      <div className="rounded-[28px] p-5 relative" style={{ backgroundColor: "#F9F3E1" }}>
-        <button
-          type="button"
-          onClick={dismiss}
-          aria-label="Stäng"
-          className="absolute top-3 right-3 p-1.5 rounded-full"
-          style={{ color: "#561828" }}
-        >
-          <X className="w-4 h-4" />
-        </button>
-
-        <div className="text-[11px] mb-2 font-medium" style={{ color: "#561828" }}>
-          {doneCount} av {STEPS.length} klara
+      <div className="rounded-[28px] p-5" style={{ backgroundColor: "#F9F3E1" }}>
+        <div className="flex items-start justify-between mb-1">
+          <div className="text-[11px] font-medium" style={{ color: "#675332" }}>
+            {doneCount} av {STEPS.length} klara
+          </div>
+          <button
+            type="button"
+            onClick={dismiss}
+            className="text-[13px] font-medium underline underline-offset-2 decoration-1"
+            style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+          >
+            Stäng
+          </button>
         </div>
+
         <h3 className="text-[18px] mb-1" style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}>
           Kom igång med {circleName}
         </h3>
@@ -77,56 +77,40 @@ const CircleOnboarding = ({ circleId, circleName, hasMembers, hasPhotos, hasTips
           Tre snabba steg så börjar det hända grejer här.
         </p>
 
-        <ul className="space-y-2">
+        <ul className="divide-y" style={{ borderColor: "rgba(103,83,50,0.15)" }}>
           {STEPS.map((s) => {
             const isDone = done[s.key];
-            const Icon = s.icon;
             return (
-              <li key={s.key}>
-                <button
-                  type="button"
-                  onClick={() => !isDone && handlers[s.key]()}
-                  disabled={isDone}
-                  className="w-full flex items-center gap-3 text-left rounded-2xl p-3"
-                  style={{
-                    backgroundColor: isDone ? "rgba(200,90,46,0.08)" : "white",
-                    opacity: isDone ? 0.7 : 1,
-                  }}
-                >
+              <li key={s.key} className="py-3 flex items-baseline gap-3">
+                <span className="flex-1 min-w-0">
                   <span
-                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                    className="block text-[14px] font-medium"
                     style={{
-                      backgroundColor: isDone ? "#C85A2E" : "#F2ECE3",
-                      color: isDone ? "white" : "#561828",
+                      color: "#2B2B2B",
+                      textDecoration: isDone ? "line-through" : "none",
+                      opacity: isDone ? 0.6 : 1,
                     }}
                   >
-                    {isDone ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span
-                      className="block text-[14px] font-medium"
-                      style={{
-                        color: "#2B2B2B",
-                        textDecoration: isDone ? "line-through" : "none",
-                      }}
-                    >
-                      {s.label}
-                    </span>
-                    {!isDone && (
-                      <span className="block text-[12px] mt-0.5" style={{ color: "#675332" }}>
-                        {s.hint}
-                      </span>
-                    )}
+                    {s.label}
                   </span>
                   {!isDone && (
-                    <span
-                      className="text-[13px] font-medium underline underline-offset-2 decoration-1 flex-shrink-0"
-                      style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
-                    >
-                      Kör
+                    <span className="block text-[12px] mt-0.5" style={{ color: "#675332" }}>
+                      {s.hint}
                     </span>
                   )}
-                </button>
+                </span>
+                {isDone ? (
+                  <span className="text-[12px]" style={{ color: "#675332" }}>Klart</span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handlers[s.key]()}
+                    className="text-[14px] font-medium underline underline-offset-2 decoration-1 flex-shrink-0"
+                    style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+                  >
+                    {s.cta}
+                  </button>
+                )}
               </li>
             );
           })}
