@@ -52,7 +52,7 @@ const HomePage = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-lg mx-auto px-5 pt-safe pb-safe">
         <header className="flex items-center justify-between py-6">
-          <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, letterSpacing: "0.2em", color: "#C4522A", textTransform: "lowercase" }}>minby</span>
+          <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "lowercase" }}>minby</span>
           <button onClick={signOut} className="text-muted-foreground p-2" aria-label="Logga ut">
             <LogOut className="w-4 h-4" />
           </button>

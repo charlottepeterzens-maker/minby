@@ -12,7 +12,7 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onO
     <button
       onClick={onOpen}
       className="w-[168px] flex-shrink-0 h-[176px] text-left rounded-lg p-4 flex flex-col justify-between"
-      style={{ backgroundColor: "hsl(44, 65%, 93%)" }}
+      style={{ backgroundColor: "#F5EFD9" }}
     >
       <div>
         <div
@@ -23,7 +23,7 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onO
         </div>
         <div
           className="text-[15px] leading-tight font-medium"
-          style={{ fontFamily: "'Outfit', sans-serif", color: "#2E1F3E" }}
+          style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}
         >
           {dateLabel}
           {dateLabel && <br />}
@@ -40,7 +40,7 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onO
           onClick={(e) => { e.stopPropagation(); onRespond(); }}
           onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onRespond(); } }}
           className="text-[14px] font-medium underline underline-offset-4 cursor-pointer"
-          style={{ color: "#C4522A" }}
+          style={{ color: "#C85A2E" }}
         >
           Häng med!
         </span>

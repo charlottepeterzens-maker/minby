@@ -25,13 +25,13 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
     <button
       type="button"
       onClick={onOpen}
-      className="w-full text-left rounded-[20px] p-3 flex gap-3"
-      style={{ backgroundColor: "#F9F3E1" }}
+      className="w-full text-left rounded-3xl p-3 flex gap-3"
+      style={{ backgroundColor: "#F5EFD9" }}
     >
       <div
         className="w-[110px] h-[110px] rounded-[14px] flex-shrink-0 bg-center bg-cover"
         style={{
-          backgroundColor: "#E8DFC9",
+          backgroundColor: "#E8DDC6",
           backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
         }}
       />
@@ -40,7 +40,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
         <div className="flex items-center gap-2 mb-1">
           <div
             className="w-6 h-6 rounded-full overflow-hidden flex items-center justify-center text-[10px]"
-            style={{ backgroundColor: "#DAEAF6", color: "#2E1F3E" }}
+            style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
           >
             {ownerAvatar ? <img src={ownerAvatar} alt="" className="w-full h-full object-cover" /> : initials}
           </div>
@@ -50,14 +50,14 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
         </div>
         <div
           className="text-[15px] font-medium leading-tight truncate"
-          style={{ fontFamily: "'Outfit', sans-serif", color: "#2E1F3E" }}
+          style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}
         >
           {title}
         </div>
         {description && (
           <p
             className="text-[13px] mt-1 line-clamp-2"
-            style={{ color: "#2E1F3E" }}
+            style={{ color: "#2B2B2B" }}
           >
             {description}
           </p>
@@ -69,7 +69,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
             onClick={openLink}
             onKeyDown={(e) => { if (e.key === "Enter") openLink(e as any); }}
             className="mt-auto text-left text-[14px] font-medium underline underline-offset-4 cursor-pointer"
-            style={{ color: "#C4522A" }}
+            style={{ color: "#C85A2E" }}
           >
             Till tipset
           </span>
