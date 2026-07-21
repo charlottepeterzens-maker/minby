@@ -6,11 +6,12 @@ import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { ChevronLeft, MessageCircle, Share2, ExternalLink, X } from "lucide-react";
+import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, Plus } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import PhotoTile from "@/components/cards/PhotoTile";
-import { MeetingCardSkeleton, PhotoTileSkeleton } from "@/components/cards/CardSkeletons";
+import TipCard from "@/components/cards/TipCard";
+import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
@@ -76,6 +77,7 @@ const CirclePage = () => {
   const [meetingAttendees, setMeetingAttendees] = useState<{ user_id: string; display_name: string | null }[]>([]);
   const [selectedTip, setSelectedTip] = useState<Tip | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [showTipsList, setShowTipsList] = useState(false);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -470,7 +472,14 @@ const CirclePage = () => {
         {/* Våra tips */}
         <section className="mt-8">
           <div className="px-4 mb-3 flex items-center justify-between">
-            <h2 className="text-[16px]" style={HEADING_STYLE}>Våra tips</h2>
+            <button
+              type="button"
+              onClick={() => setShowTipsList(true)}
+              className="text-[16px]"
+              style={HEADING_STYLE}
+            >
+              Våra tips
+            </button>
             <TextButton
               onClick={() => setShowTipForm(true)}
               className="text-[13px]"
@@ -528,9 +537,9 @@ const CirclePage = () => {
           </div>
           {loadingContent ? (
             <div className="flex gap-2 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              <PhotoTileSkeleton />
-              <PhotoTileSkeleton />
-              <PhotoTileSkeleton />
+              <PhotoSmallSkeleton />
+              <PhotoSmallSkeleton />
+              <PhotoSmallSkeleton />
             </div>
           ) : photos.length === 0 ? (
             <p className="px-4 text-sm text-muted-foreground">Inga foton delade ännu.</p>
@@ -543,12 +552,66 @@ const CirclePage = () => {
                   title={p.owner_name}
                   ownerName={formatDateShort(p.created_at)}
                   onOpen={() => setSelectedPhoto(p)}
+                  size="sm"
                 />
               ))}
             </div>
           )}
         </section>
       </div>
+
+      {/* Tips list sheet */}
+      <Sheet open={showTipsList} onOpenChange={setShowTipsList}>
+        <SheetContent side="bottom" className="rounded-t-[28px] max-h-[90vh] overflow-y-auto p-0" onOpenAutoFocus={(e) => e.preventDefault()}>
+          <SheetHeader className="text-center px-4 pt-4 pb-2 border-b border-black/5 relative">
+            <button
+              type="button"
+              onClick={() => setShowTipsList(false)}
+              className="absolute left-4 top-1/2 -translate-y-1/2 p-1"
+              aria-label="Stäng"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <SheetTitle className="text-center text-[16px] font-semibold" style={HEADING_STYLE}>
+              Våra tips
+            </SheetTitle>
+          </SheetHeader>
+          <div className="relative min-h-[60vh]">
+            <div className="p-4 space-y-3 pb-28">
+              {loadingContent ? (
+                <>
+                  <TipCardSkeleton />
+                  <TipCardSkeleton />
+                </>
+              ) : tips.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-8">Inga tips delade ännu.</p>
+              ) : (
+                tips.map((t) => (
+                  <TipCard
+                    key={t.id}
+                    imageUrl={t.image_url ?? null}
+                    ownerName={t.owner_name}
+                    dateLabel={formatDateYear(t.created_at)}
+                    title={t.title}
+                    description={t.comment}
+                    url={t.url}
+                    onOpen={() => { setShowTipsList(false); setSelectedTip(t); }}
+                  />
+                ))
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => { setShowTipsList(false); setShowTipForm(true); }}
+              className="fixed bottom-6 right-6 w-14 h-14 rounded-full flex items-center justify-center shadow-lg"
+              style={{ backgroundColor: "#561828", color: "white" }}
+              aria-label="Lägg till tips"
+            >
+              <Plus className="w-6 h-6" />
+            </button>
+          </div>
+        </SheetContent>
+      </Sheet>
 
       {/* Meeting create sheet */}
       <Sheet open={showMeetingForm} onOpenChange={setShowMeetingForm}>

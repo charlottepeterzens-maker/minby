@@ -36,12 +36,13 @@ export const MeetingCardSkeleton = () => (
   </div>
 );
 
-export const TipTileSkeleton = () => (
+export const TipTileSkeleton = ({ size = "lg" }: { size?: "sm" | "lg" }) => (
   <div
-    className={`w-[110px] h-[130px] flex-shrink-0 rounded-[24px] ${shimmer}`}
+    className={`${size === "lg" ? "w-[150px] h-[210px]" : "w-[110px] h-[130px]"} flex-shrink-0 rounded-[24px] ${shimmer}`}
     style={{ backgroundColor: "#E8DDC6" }}
   />
 );
 
 export const TipCardSkeleton = TipTileSkeleton;
 export const PhotoTileSkeleton = TipTileSkeleton;
+export const PhotoSmallSkeleton = () => <TipTileSkeleton size="sm" />;
