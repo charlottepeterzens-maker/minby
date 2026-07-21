@@ -198,7 +198,23 @@ const CirclePage = () => {
     })();
   }, [id]);
 
+  const openInviteSheet = async () => {
+    if (!id || !user) return;
+    setInviteOpen(true);
+    if (inviteUrl) return;
+    setCreatingInvite(true);
+    const token = crypto.randomUUID().replace(/-/g, "");
+    const { error } = await supabase.from("circle_invites").insert({
+      token, circle_id: id, created_by: user.id,
+      expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
+    });
+    setCreatingInvite(false);
+    if (error) { toast.error(error.message); setInviteOpen(false); return; }
+    setInviteUrl(`${window.location.origin}/invite/${token}`);
+  };
+
   const invite = async () => {
+    // legacy entry point used elsewhere on the page — keep direct share behaviour
     if (!id || !user) return;
     const token = crypto.randomUUID().replace(/-/g, "");
     const { error } = await supabase.from("circle_invites").insert({
@@ -213,6 +229,22 @@ const CirclePage = () => {
       await navigator.clipboard.writeText(url);
       toast.success("Länken är kopierad");
     }
+  };
+
+  const shareInviteNative = async () => {
+    if (!inviteUrl) return;
+    if (navigator.share) {
+      try { await navigator.share({ title: circle?.name ?? "Krets", url: inviteUrl }); } catch { /* cancelled */ }
+    } else {
+      await navigator.clipboard.writeText(inviteUrl);
+      toast.success("Länken är kopierad");
+    }
+  };
+
+  const copyInvite = async () => {
+    if (!inviteUrl) return;
+    await navigator.clipboard.writeText(inviteUrl);
+    toast.success("Länken är kopierad");
   };
 
   const respondYes = async (meetingId: string) => {
