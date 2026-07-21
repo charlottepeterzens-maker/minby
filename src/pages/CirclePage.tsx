@@ -255,6 +255,7 @@ const CirclePage = () => {
       expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
     });
     if (error) { toast.error(error.message); return; }
+    setHasSentInvite(true);
     const url = `${window.location.origin}/invite/${token}`;
     if (navigator.share) {
       try { await navigator.share({ title: circle?.name ?? "Krets", url }); } catch { /* cancelled */ }
