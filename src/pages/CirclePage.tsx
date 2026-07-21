@@ -424,12 +424,14 @@ const CirclePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-lg mx-auto pb-safe">
-        {/* Hero */}
+        {/* Hero — always uses the most recently uploaded photo, fallback to stored hero */}
         <div
           className="relative w-full h-[220px] overflow-hidden"
           style={{
             backgroundColor: "#8b6f5e",
-            backgroundImage: circle.hero_image_url ? `url(${circle.hero_image_url})` : undefined,
+            backgroundImage: (photos[0]?.image_url || circle.hero_image_url)
+              ? `url(${photos[0]?.image_url || circle.hero_image_url})`
+              : undefined,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
