@@ -347,8 +347,8 @@ const ProfilePlaceholders = () => (
       gradient="tips"
       items={[
         { title: "Bagarstugan", sub: "Du", bg: "#E8DDC6", showTag: true },
-        { title: "Podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
-        { title: "Bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
+        { title: "podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
+        { title: "bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
       ]}
     />
     <p className="text-sm mt-2" style={{ color: "#561828" }}>
