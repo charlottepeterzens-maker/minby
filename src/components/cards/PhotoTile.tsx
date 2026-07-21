@@ -55,7 +55,7 @@ const PhotoTile = ({
       )}
       <div
         className={`absolute inset-x-0 bottom-0 ${pad}`}
-        style={{ background: GRADIENTS[gradient] }}
+        style={{ background: OVERLAY_GRADIENT[gradient] }}
       >
         {title && (
           <div
