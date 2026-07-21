@@ -1,3 +1,5 @@
+import TextButton from "@/components/ui/text-button";
+
 interface Props {
   hostName: string;
   dateLabel: string;
@@ -6,6 +8,7 @@ interface Props {
   onRespond: () => void;
   onOpen?: () => void;
 }
+
 
 const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onOpen }: Props) => {
   return (
