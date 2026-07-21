@@ -150,14 +150,14 @@ const CirclePage = () => {
       // Photos
       const { data: photoRows } = await supabase
         .from("photo_visibility")
-        .select("photo_id, photos!inner(id, storage_path, owner_id, created_at)")
+        .select("photo_id, photos!inner(id, storage_path, owner_id, created_at, caption)")
         .eq("circle_id", id)
         .order("photo_id", { ascending: false })
         .limit(20);
       const photoList = (photoRows ?? [])
         .map((r: any) => r.photos)
         .filter(Boolean)
-        .map((p: any) => ({ ...p, owner_name: nameMap.get(p.owner_id) ?? "" })) as Photo[];
+        .map((p: any) => ({ ...p, caption: p.caption ?? null, owner_name: nameMap.get(p.owner_id) ?? "" })) as Photo[];
       const signedPhotos = await signPhotoUrls(photoList, "storage_path");
       setPhotos(signedPhotos);
 
