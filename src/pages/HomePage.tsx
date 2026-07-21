@@ -278,45 +278,29 @@ const SectionHeader = ({ title, cta, onCta }: { title: string; cta: string; onCt
   </div>
 );
 
-const TIPS_GRADIENT = "linear-gradient(to top, #561828 0%, rgba(86,24,40,0.35) 55%, rgba(86,24,40,0) 100%)";
-const PHOTOS_GRADIENT = "linear-gradient(to top, #765D19 0%, rgba(118,93,25,0.35) 55%, rgba(118,93,25,0) 100%)";
-
 const HorizontalStrip = ({
   items,
   gradient,
-  radius = 24,
+  size = "lg",
 }: {
   items: { title: string; sub: string; bg: string; showTag?: boolean }[];
-  gradient: string;
-  radius?: number;
+  gradient: "tips" | "photos";
+  size?: "sm" | "lg";
 }) => (
   <div className="flex overflow-x-auto -mx-5 px-5 pb-2 scrollbar-hide">
-    {items.map((t, i) => {
-      const isFirst = i === 0;
-      const isLast = i === items.length - 1;
-      return (
-        <div
-          key={i}
-          className="w-[150px] h-[210px] flex-shrink-0 relative overflow-hidden"
-          style={{
-            backgroundColor: t.bg,
-            borderTopLeftRadius: isFirst ? radius : 0,
-            borderBottomLeftRadius: isFirst ? radius : 0,
-            borderTopRightRadius: isLast ? radius : 0,
-            borderBottomRightRadius: isLast ? radius : 0,
-          }}
-        >
-          {t.showTag && <div className="absolute top-2 left-2 z-10"><PlaceholderTag /></div>}
-          <div
-            className="absolute bottom-0 left-0 right-0 p-3 pt-10"
-            style={{ background: gradient }}
-          >
-            <div className="text-[13px] text-white font-medium leading-tight">{t.title}</div>
-            <div className="text-[11px] text-white/80 mt-0.5">{t.sub}</div>
-          </div>
-        </div>
-      );
-    })}
+    {items.map((t, i) => (
+      <PhotoTile
+        key={i}
+        imageUrl={null}
+        title={t.title}
+        ownerName={t.sub}
+        size={size}
+        gradient={gradient}
+        tag={t.showTag ? "Exempel" : undefined}
+        roundedLeft={i === 0}
+        roundedRight={i === items.length - 1}
+      />
+    ))}
   </div>
 );
 
