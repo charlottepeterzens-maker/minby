@@ -579,6 +579,57 @@ const CirclePage = () => {
             <Input placeholder="Titel" value={tipTitle} onChange={(e) => setTipTitle(e.target.value)} className="rounded-lg" />
             <Input placeholder="Länk (valfritt)" value={tipUrl} onChange={(e) => setTipUrl(e.target.value)} className="rounded-lg" />
             <Textarea placeholder="Kommentar (valfritt)" value={tipComment} onChange={(e) => setTipComment(e.target.value)} rows={3} className="rounded-lg resize-none" />
+
+            {/* Photo picker */}
+            <input
+              ref={tipImageInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) {
+                  setTipImageFile(f);
+                  if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
+                  setTipImagePreview(URL.createObjectURL(f));
+                }
+                e.target.value = "";
+              }}
+            />
+            {tipImagePreview ? (
+              <div className="pt-1 flex items-center gap-3">
+                <div
+                  className="w-16 h-16 rounded-[16px] bg-cover bg-center flex-shrink-0"
+                  style={{ backgroundImage: `url(${tipImagePreview})` }}
+                />
+                <div className="flex flex-col items-start gap-1">
+                  <TextButton onClick={() => tipImageInputRef.current?.click()} className="text-[13px]">
+                    Byt bild
+                  </TextButton>
+                  <TextButton
+                    variant="secondary"
+                    onClick={() => {
+                      setTipImageFile(null);
+                      if (tipImagePreview) URL.revokeObjectURL(tipImagePreview);
+                      setTipImagePreview(null);
+                    }}
+                    className="text-[13px]"
+                  >
+                    Ta bort bild
+                  </TextButton>
+                </div>
+              </div>
+            ) : (
+              <div className="pt-1">
+                <TextButton onClick={() => tipImageInputRef.current?.click()} className="text-[13px]">
+                  + Lägg till eget foto
+                </TextButton>
+                <p className="text-[12px] mt-1" style={{ color: "hsl(20, 4%, 54%)" }}>
+                  Om du inte laddar upp något använder vi bilden från länken.
+                </p>
+              </div>
+            )}
+
             <div className="flex justify-end pt-2">
               <TextButton onClick={createTip} disabled={!tipTitle.trim() || savingTip}>
                 {savingTip ? "Sparar…" : "Dela tips"}
