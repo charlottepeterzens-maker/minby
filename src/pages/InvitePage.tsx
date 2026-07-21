@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
+import TextButton from "@/components/ui/text-button";
 import { Heart, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
