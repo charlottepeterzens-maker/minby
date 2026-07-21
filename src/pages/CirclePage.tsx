@@ -6,11 +6,12 @@ import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import { ChevronLeft, MessageCircle, Share2, ExternalLink, X } from "lucide-react";
+import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, Plus } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import PhotoTile from "@/components/cards/PhotoTile";
-import { MeetingCardSkeleton, PhotoTileSkeleton } from "@/components/cards/CardSkeletons";
+import TipCard from "@/components/cards/TipCard";
+import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
