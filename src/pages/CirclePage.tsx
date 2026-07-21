@@ -51,6 +51,10 @@ const CirclePage = () => {
   const [tipComment, setTipComment] = useState("");
   const [savingTip, setSavingTip] = useState(false);
 
+  const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
+  const [meetingAttendees, setMeetingAttendees] = useState<{ user_id: string; display_name: string | null }[]>([]);
+  const [selectedTip, setSelectedTip] = useState<Tip | null>(null);
+
   useEffect(() => {
     if (!user) return;
     supabase.from("profiles").select("display_name, avatar_url").eq("user_id", user.id).maybeSingle()
