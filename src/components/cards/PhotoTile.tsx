@@ -1,4 +1,5 @@
 import { CARD_RADIUS, OVERLAY_GRADIENT } from "@/lib/card-styles";
+import { ExampleTag } from "@/components/ui/example-tag";
 
 interface Props {
   imageUrl?: string | null;
@@ -45,14 +46,7 @@ const PhotoTile = ({
         borderBottomRightRadius: roundedRight ? radius : 0,
       }}
     >
-      {tag && (
-        <span
-          className="absolute top-2 left-2 z-10 text-[11px] px-3 py-1 rounded-full"
-          style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.08em" }}
-        >
-          {tag}
-        </span>
-      )}
+      {tag && <ExampleTag label={tag} className="absolute top-2 left-2 z-10" />}
       <div
         className={`absolute inset-x-0 bottom-0 ${pad}`}
         style={{ background: OVERLAY_GRADIENT[gradient] }}
