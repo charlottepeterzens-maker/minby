@@ -145,6 +145,49 @@ const CirclePage = () => {
     }
   };
 
+  const createMeeting = async () => {
+    if (!user || !id || !meetingTitle.trim()) return;
+    setSavingMeeting(true);
+    const { data, error } = await supabase
+      .from("meetings")
+      .insert({
+        circle_id: id,
+        created_by: user.id,
+        title: meetingTitle.trim(),
+        meeting_date: meetingDate || null,
+        description: meetingDesc.trim() || null,
+      })
+      .select("id, title, meeting_date, created_by")
+      .single();
+    setSavingMeeting(false);
+    if (error || !data) { toast.error(error?.message ?? "Kunde inte spara"); return; }
+    setMeetings((prev) => [...prev, { ...data, response_count: 0, host_name: displayName }]);
+    setMeetingTitle(""); setMeetingDate(""); setMeetingDesc(""); setShowMeetingForm(false);
+    toast.success("Träffen är skapad");
+  };
+
+  const createTip = async () => {
+    if (!user || !id || !tipTitle.trim()) return;
+    setSavingTip(true);
+    const { data, error } = await supabase
+      .from("tips")
+      .insert({
+        owner_id: user.id,
+        title: tipTitle.trim(),
+        url: tipUrl.trim() || null,
+        comment: tipComment.trim() || null,
+      })
+      .select("id, title, url, comment, created_at, owner_id")
+      .single();
+    if (error || !data) { setSavingTip(false); toast.error(error?.message ?? "Kunde inte spara"); return; }
+    const { error: visErr } = await supabase.from("tip_visibility").insert({ tip_id: data.id, circle_id: id });
+    setSavingTip(false);
+    if (visErr) { toast.error(visErr.message); return; }
+    setTips((prev) => [{ ...data, owner_name: displayName, owner_avatar: avatarUrl }, ...prev]);
+    setTipTitle(""); setTipUrl(""); setTipComment(""); setShowTipForm(false);
+    toast.success("Tipset är delat");
+  };
+
   if (!circle) {
     return <div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground text-sm">Laddar…</div>;
   }
