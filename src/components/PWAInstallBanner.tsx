@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { X, Download, Share } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import TextButton from "@/components/ui/text-button";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
