@@ -18,6 +18,14 @@ export default {
         body: ["Outfit", "sans-serif"],
         sans: ["Outfit", "sans-serif"],
       },
+      fontSize: {
+        "heading-lg": ["24px", { lineHeight: "1", letterSpacing: "0" }],
+        "heading-md": ["18px", { lineHeight: "1", letterSpacing: "0", fontWeight: "600" }],
+        "eyebrow": ["10px", { lineHeight: "1", letterSpacing: "0.02em" }],
+        "body": ["14px", { lineHeight: "1.2", letterSpacing: "0" }],
+        "button": ["14px", { lineHeight: "1", letterSpacing: "0" }],
+      },
+
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
