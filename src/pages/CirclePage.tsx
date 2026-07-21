@@ -36,7 +36,7 @@ const formatTimestamp = (iso: string) => {
   return `${d.getDate()} ${monthNames[d.getMonth()].slice(0, 3)}, ${d.getHours().toString().padStart(2, "0")}.${d.getMinutes().toString().padStart(2, "0")}`;
 };
 
-const HEADING_STYLE = { fontFamily: "'Fraunces', serif", color: "#2E1F3E" } as const;
+const HEADING_STYLE = { fontFamily: "'Outfit', sans-serif", color: "#2E1F3E" } as const;
 const LINK_STYLE = { color: "#C4522A" } as const;
 const CARD_YELLOW = "hsl(44, 65%, 93%)";
 const CARD_BLUE = "hsl(210, 45%, 94%)";
@@ -339,7 +339,7 @@ const CirclePage = () => {
             className="absolute inset-x-0 bottom-0 px-5 pt-10 pb-4"
             style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%)" }}
           >
-            <h1 className="text-white text-[26px] leading-tight" style={{ fontFamily: "'Fraunces', serif" }}>
+            <h1 className="text-white text-[26px] leading-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
               {circle.name}
             </h1>
             {memberNames && (
