@@ -28,100 +28,121 @@ import { X } from "lucide-react";
 import { lovable } from "@/integrations/lovable/index";
 import { motion } from "framer-motion";
 
-const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; onLogin: () => void }) => {
-
+const WelcomeScreen = ({
+  onGetStarted,
+  onLogin,
+}: {
+  onGetStarted: () => void;
+  onLogin: () => void;
+}) => {
   return (
     <div
       style={{
-        backgroundColor: "hsl(42, 20%, 95%)",
-        padding: "0 24px",
+        backgroundColor: "#F9F3E1",
+        padding: "32px 24px",
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
       }}
     >
-      {/* Upper zone – centered vertically */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      {/* Content */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          maxWidth: 360,
+        }}
+      >
         {/* Logo */}
         <span
           style={{
-            fontFamily: "'Outfit', sans-serif",
             fontSize: 13,
-            fontWeight: 400,
+            fontWeight: 500,
             color: "#C85A2E",
-            letterSpacing: "0.2em",
+            letterSpacing: "0.18em",
             textTransform: "lowercase",
-            marginBottom: 48,
+            marginBottom: 56,
           }}
         >
           minby
         </span>
 
-        {/* Headline */}
+        {/* Heading */}
         <h1
           style={{
-            fontFamily: "'Outfit', sans-serif",
-            fontSize: 32,
-            fontWeight: 400,
-            color: "#1C1917",
-            lineHeight: 1.25,
+            fontSize: 28,
+            fontWeight: 500,
+            lineHeight: 1.2,
+            color: "#2B2B2B",
+            margin: 0,
             marginBottom: 24,
           }}
         >
-          Äntligen ett ställe{" "}
-          <em style={{ fontStyle: "italic", color: "#C85A2E" }}>bara för er.</em>
+          Äntligen ett ställe
+          <br />
+          bara för <span style={{ color: "#561828" }}>er.</span>
         </h1>
 
-        {/* Subheading */}
+        {/* Body */}
         <p
           style={{
-            fontSize: 15,
-            fontWeight: 300,
-            color: "#1C1917",
+            fontSize: 16,
+            fontWeight: 400,
             lineHeight: 1.6,
+            color: "#675332",
+            margin: 0,
+            maxWidth: 320,
           }}
         >
-          Minby är din slutna krets. Dela vardagen och ses på riktigt med de som betyder mest.
+          Minby är din slutna krets. Dela vardagen och ses på riktigt med de
+          som betyder mest.
         </p>
       </div>
 
-      {/* Lower zone – always at bottom */}
-      <div style={{ paddingBottom: "env(safe-area-inset-bottom, 24px)", paddingTop: 16 }}>
-
-        {/* Primary button */}
+      {/* Bottom actions */}
+      <div
+        style={{
+          paddingBottom: "max(env(safe-area-inset-bottom), 24px)",
+        }}
+      >
         <motion.button
           onClick={onGetStarted}
-          whileTap={{ scale: 0.96 }}
+          whileTap={{ scale: 0.97 }}
           style={{
-            background: "#561828",
-            color: "#F0EAE2",
-            border: "none",
-            borderRadius: 8,
-            padding: 16,
-            fontSize: 15,
-            fontWeight: 500,
             width: "100%",
-            marginBottom: 14,
+            height: 56,
+            border: "none",
+            borderRadius: 28,
+            background: "#561828",
+            color: "#F9F3E1",
+            fontSize: 16,
+            fontWeight: 500,
             cursor: "pointer",
+            marginBottom: 20,
           }}
         >
           Kom igång
         </motion.button>
 
-        {/* Login link */}
         <p
           style={{
+            margin: 0,
             textAlign: "center",
             fontSize: 14,
-            fontWeight: 300,
-            color: "#9B8BA5",
-            margin: "0 0 16px",
+            color: "#675332",
+            lineHeight: 1.5,
           }}
         >
           Har du redan ett konto?{" "}
           <span
             onClick={onLogin}
-            style={{ color: "#1C1917", fontWeight: 500, cursor: "pointer" }}
+            style={{
+              color: "#561828",
+              fontWeight: 500,
+              cursor: "pointer",
+            }}
           >
             Logga in
           </span>
@@ -130,7 +151,6 @@ const WelcomeScreen = ({ onGetStarted, onLogin }: { onGetStarted: () => void; on
     </div>
   );
 };
-
 const AuthPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
