@@ -60,7 +60,8 @@ export const GRADIENTS = {
 } as const;
 
 // Legacy aliases for backwards compatibility
-export const CARD_RADIUS = RADIUS.card;
-export const CARD_RADIUS_CLASS = RADIUS_CLASS.card;
-export const OVERLAY_GRADIENT = GRADIENTS.hero;
+export const CARD_RADIUS = RADIUS;
+export const CARD_RADIUS_CLASS = RADIUS_CLASS;
+export const OVERLAY_GRADIENT = { ...GRADIENTS, heroSubtle: GRADIENTS.subtle };
+
 
