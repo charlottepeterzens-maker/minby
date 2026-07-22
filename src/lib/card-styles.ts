@@ -58,3 +58,10 @@ export const GRADIENTS = {
   warm:
     "linear-gradient(to top, #765D19 0%, rgba(118,93,25,0.35) 55%, rgba(118,93,25,0) 100%)",
 } as const;
+
+// Legacy aliases for backwards compatibility
+export const CARD_RADIUS = RADIUS;
+export const CARD_RADIUS_CLASS = RADIUS_CLASS;
+export const OVERLAY_GRADIENT = { ...GRADIENTS, heroSubtle: GRADIENTS.subtle };
+
+
