@@ -140,12 +140,6 @@ const PWAInstallBanner = () => {
         )}
       </AnimatePresence>
 
-      {showGuide && (
-        <IOSInstallBottomSheet
-          open={showGuide}
-          onClose={() => setShowGuide(false)}
-        />
-      )}
     </>
   );
 };
