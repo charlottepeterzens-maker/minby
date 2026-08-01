@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import InvitePage from "./pages/InvitePage";
-import ProfilePage from "./pages/ProfilePage";
+import HomePage from "./pages/HomePage";
 import CirclePage from "./pages/CirclePage";
 import ChatPage from "./pages/ChatPage";
 import VerifyPage from "./pages/VerifyPage";
@@ -43,9 +43,10 @@ const App = () => {
         <AuthProvider>
           <BrowserRouter>
             <Routes>
-              {/* Minby has no visitable profiles: the only profile route is the
-                  signed-in user's own home. Never add /profile/:userId. */}
-              <Route path="/" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+              {/* Minby = Hem, Krets, Inställningar. No global feed.
+                  "/" is Home: the signed-in user's own start page.
+                  Never add /profile/:userId — profiles are not visitable. */}
+              <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
               <Route path="/circle/:id" element={<ProtectedRoute><CirclePage /></ProtectedRoute>} />
               <Route path="/chat/:id" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
