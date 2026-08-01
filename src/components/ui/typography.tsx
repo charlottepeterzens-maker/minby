@@ -48,10 +48,8 @@ type AliasProps = Omit<TypographyProps, "variant">;
 
 export const Display = (p: AliasProps) => <Typography variant="display" {...p} />;
 export const Heading = (p: AliasProps) => <Typography variant="heading" {...p} />;
-export const Title = (p: AliasProps) => <Typography variant="title" {...p} />;
 export const Body = (p: AliasProps) => <Typography variant="body" {...p} />;
 export const Meta = (p: AliasProps) => <Typography variant="meta" {...p} />;
 export const Label = (p: AliasProps) => <Typography variant="label" {...p} />;
-export const Caption = (p: AliasProps) => <Typography variant="meta" {...p} />;
 
 export default Typography;
