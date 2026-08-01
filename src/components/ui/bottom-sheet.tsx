@@ -90,7 +90,7 @@ export const BottomSheetHeader = ({ title, className }: BottomSheetHeaderProps) 
     }}
   >
     <SheetTitle
-      className="text-heading-md text-center truncate"
+      className={cn(typography.heading, "text-center truncate leading-none")}
       style={{ color: "#2B2B2B" }}
     >
       {title}

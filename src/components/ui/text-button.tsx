@@ -1,5 +1,6 @@
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
+import { typography } from "@/design-system/typography";
 
 type Variant = "primary" | "secondary" | "primaryOnPhoto";
 
@@ -9,16 +10,15 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 /**
  * Minby button — text-only with a coloured underline.
- * primary          → dark text, coral underline
- * secondary        → dark text, powder-blue underline
- * primaryOnPhoto   → same as primary, sitting on a translucent blurred pill
- *                    (only used on top of photos)
+ * Typography comes from the design system (`button` variant) — buttons must
+ * never define their own font-size or font-weight.
  */
 const TextButton = forwardRef<HTMLButtonElement, Props>(
   ({ variant = "primary", className, children, style, ...rest }, ref) => {
-    const base =
-      "inline-flex items-center justify-center gap-2 text-button underline underline-offset-2 decoration-1 disabled:opacity-40 disabled:cursor-not-allowed";
-
+    const base = cn(
+      typography.button,
+      "inline-flex items-center justify-center gap-2 underline underline-offset-2 decoration-1 disabled:opacity-40 disabled:cursor-not-allowed",
+    );
 
     if (variant === "primaryOnPhoto") {
       return (

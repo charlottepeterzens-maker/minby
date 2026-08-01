@@ -1,4 +1,5 @@
 import TextButton from "@/components/ui/text-button";
+import { Typography } from "@/components/ui/typography";
 
 interface Props {
   hostName: string;
@@ -18,25 +19,24 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onO
       style={{ backgroundColor: "#F2ECE3" }}
     >
       <div>
-        <div
-          className="text-eyebrow mb-2 truncate"
+        <Typography
+          variant="eyebrow"
+          as="div"
+          className="mb-2 truncate"
           style={{ color: "#675332" }}
         >
           {hostName}
-        </div>
-        <div
-          className="text-[16px] leading-tight font-medium"
-          style={{ color: "#2B2B2B" }}
-        >
+        </Typography>
+        <Typography variant="title" as="div" style={{ color: "#2B2B2B" }}>
           {dateLabel}
           {dateLabel && <br />}
           {title}
-        </div>
+        </Typography>
       </div>
       <div>
-        <div className="text-eyebrow mb-1" style={{ color: "#561828" }}>
+        <Typography variant="eyebrow" as="div" className="mb-1" style={{ color: "#561828" }}>
           {responseCount === 0 ? "Ingen har svarat" : `${responseCount} har svarat`}
-        </div>
+        </Typography>
         <TextButton
           variant="primary"
           onClick={(e) => { e.stopPropagation(); onRespond(); }}

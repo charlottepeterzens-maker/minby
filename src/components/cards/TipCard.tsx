@@ -1,4 +1,7 @@
 import TextButton from "@/components/ui/text-button";
+import { Typography } from "@/components/ui/typography";
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 
 interface Props {
   imageUrl?: string | null;
@@ -40,7 +43,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
       >
         {category && (
           <span
-            className="absolute top-2 left-2 text-[11px] px-2.5 py-1 rounded-full"
+            className={cn(typography.labelSm, "absolute top-2 left-2 px-2.5 py-1 rounded-full font-normal")}
             style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.06em" }}
           >
             {category}
@@ -51,25 +54,25 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
       <div className="flex-1 min-w-0 flex flex-col py-3 pr-4">
         <div className="flex items-center gap-2 mb-1">
           <div
-            className="w-6 h-6 rounded-[32%] overflow-hidden flex items-center justify-center text-[10px]"
+            className={cn(
+              typography.eyebrow,
+              "w-6 h-6 rounded-[32%] overflow-hidden flex items-center justify-center",
+            )}
             style={{ backgroundColor: "#DCEAF8", color: "#561828" }}
           >
             {ownerAvatar ? <img src={ownerAvatar} alt="" className="w-full h-full object-cover" /> : initials}
           </div>
-          <span className="text-eyebrow" style={{ color: "#561828" }}>
+          <Typography variant="eyebrow" style={{ color: "#561828" }}>
             {dateLabel}
-          </span>
+          </Typography>
         </div>
-        <div
-          className="text-[16px] font-medium leading-tight truncate"
-          style={{ color: "#2B2B2B" }}
-        >
+        <Typography variant="title" as="div" className="truncate" style={{ color: "#2B2B2B" }}>
           {title}
-        </div>
+        </Typography>
         {description && (
-          <p className="text-body mt-1 line-clamp-2" style={{ color: "#2B2B2B" }}>
+          <Typography variant="body" className="mt-1 line-clamp-2 leading-[1.2]" style={{ color: "#2B2B2B" }}>
             {description}
-          </p>
+          </Typography>
         )}
         {url && (
           <div className="mt-auto">
