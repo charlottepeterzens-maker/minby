@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
+import PrimaryActionButton from "@/components/ui/primary-action-button";
 import { Camera, Menu, Plus, X } from "lucide-react";
 import TipCard from "@/components/cards/TipCard";
 import ShareTipSheet from "@/components/tips/ShareTipSheet";
@@ -528,7 +529,9 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
   return (
   <>
     {/* Kommande träffar */}
-    <SectionHeader title="Mina träffar" cta="+ Föreslå träff" onCta={() => circles[0] && navigate(`/circle/${circles[0].id}`)} disabled={!circles.length} />
+    <div className="flex items-baseline justify-between mb-3 mt-10">
+      <h2 className="font-display text-xl text-foreground">Mina träffar</h2>
+    </div>
     {hasMeetings ? (
       <div className="flex gap-3 overflow-x-auto -mx-4 px-4 pb-2">
         {meetings!.map((m) => (
@@ -648,7 +651,9 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
 
 
     {/* Foton */}
-    <SectionHeader title="Mina foton" cta="+ Ladda upp foto" onCta={openPhotoForm} disabled={!circles.length} />
+    <div className="flex items-baseline justify-between mb-3 mt-10">
+      <h2 className="font-display text-xl text-foreground">Mina foton</h2>
+    </div>
     <input
       ref={photoInputRef}
       type="file"
@@ -685,6 +690,14 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
       {circles.length ? "Bilder du delar i dina kretsar samlas här som ett gemensamt minne." : "Skapa en krets så kan du dela foton."}
     </p>
 
+    <PrimaryActionButton
+      options={[
+        { label: "Dela från vardagen", onSelect: openPhotoForm, disabled: !circles.length },
+        { label: "Föreslå en träff", onSelect: () => circles[0] && navigate(`/circle/${circles[0].id}`), disabled: !circles.length },
+        { label: "Dela ett tips", onSelect: openTipForm, disabled: !circles.length },
+      ]}
+    />
+
     {/* Våra tips — full browsing sheet */}
     <Sheet open={showAllTips} onOpenChange={setShowAllTips}>
       <BottomSheetContent height={92}>
@@ -704,22 +717,6 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
             />
           ))}
         </BottomSheetBody>
-        <button
-          type="button"
-          onClick={openTipForm}
-          aria-label="Dela ett tips"
-          className="absolute z-20 flex items-center justify-center rounded-full shadow-lg active:scale-95 transition-transform"
-          style={{
-            width: 64,
-            height: 64,
-            right: "max(16px, env(safe-area-inset-right))",
-            bottom: "calc(max(16px, env(safe-area-inset-bottom)) + 16px)",
-            backgroundColor: "#561828",
-            color: "#FFFFFF",
-          }}
-        >
-          <Plus className="w-6 h-6" strokeWidth={2} />
-        </button>
       </BottomSheetContent>
     </Sheet>
 

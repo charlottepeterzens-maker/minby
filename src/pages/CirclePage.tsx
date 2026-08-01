@@ -585,9 +585,8 @@ const CirclePage = () => {
 
         {/* Våra foton */}
         <section className="px-4 mb-10">
-          <div className="flex items-baseline justify-between mb-3 mt-10">
+          <div className="mb-3 mt-10">
             <h2 className="font-display text-xl text-foreground">Våra foton</h2>
-            <TextButton onClick={() => photoInputRef.current?.click()}>+ Ladda upp foto</TextButton>
           </div>
           <input
             ref={photoInputRef}
@@ -705,22 +704,6 @@ const CirclePage = () => {
               ))
             )}
           </BottomSheetBody>
-          <button
-            type="button"
-            onClick={() => { setShowTipsList(false); setShowTipForm(true); }}
-            aria-label="Lägg till tips"
-            className="absolute z-20 flex items-center justify-center rounded-full shadow-lg active:scale-95 transition-transform"
-            style={{
-              width: 64,
-              height: 64,
-              right: "max(16px, env(safe-area-inset-right))",
-              bottom: "calc(max(16px, env(safe-area-inset-bottom)) + 16px)",
-              backgroundColor: "#561828",
-              color: "#FFFFFF",
-            }}
-          >
-            <Plus className="w-6 h-6" strokeWidth={2} />
-          </button>
         </BottomSheetContent>
       </Sheet>
 
