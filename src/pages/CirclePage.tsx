@@ -680,6 +680,7 @@ const CirclePage = () => {
           { label: "Dela i kretsen", onSelect: () => navigate(`/chat/${id}`) },
           { label: "Föreslå en träff", onSelect: () => setShowMeetingForm(true) },
           { label: "Dela ett tips", onSelect: () => setShowTipForm(true) },
+          { label: "Starta omröstning", onSelect: () => setShowPollForm(true) },
           { label: "Ladda upp foto", onSelect: () => photoInputRef.current?.click() },
           { label: "Bjud in till kretsen", keepOpen: true, onSelect: openInviteSheet },
         ]}
