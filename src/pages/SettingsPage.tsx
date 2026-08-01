@@ -5,6 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import { toast } from "sonner";
+import Typography from "@/components/ui/typography";
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 
 interface Profile {
   display_name: string | null;
@@ -14,12 +17,14 @@ interface Profile {
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="mb-8">
-    <h2
-      className="text-[11px] mb-2 px-1"
-      style={{ color: "#675332", letterSpacing: "0.08em", textTransform: "lowercase" }}
+    <Typography
+      variant="meta"
+      as="h2"
+      className="mb-2 px-1"
+      style={{ color: "hsl(var(--color-text-tertiary))", letterSpacing: "0.08em", textTransform: "lowercase" }}
     >
       {title}
-    </h2>
+    </Typography>
     <div className="rounded-[26px] overflow-hidden" style={{ backgroundColor: "#F9F3E1" }}>
       {children}
     </div>
@@ -42,9 +47,9 @@ const Row = ({
     onClick={onClick}
     className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-black/[0.03] transition-colors"
   >
-    <span className="text-[15px]" style={{ color: danger ? "#561828" : "#2B2B2B" }}>{label}</span>
+    <Typography variant="body" as="span" style={{ color: danger ? "#561828" : "hsl(var(--color-text-primary))" }}>{label}</Typography>
     {value !== undefined && (
-      <span className="text-[16px] truncate ml-4" style={{ color: "#675332" }}>{value}</span>
+      <Typography variant="body" as="span" className="truncate ml-4" style={{ color: "hsl(var(--color-text-tertiary))" }}>{value}</Typography>
     )}
   </button>
 );
@@ -121,9 +126,9 @@ const SettingsPage = () => {
             aria-label="Tillbaka"
           >
             <ChevronLeft className="w-5 h-5" />
-            <span className="text-[16px]">Tillbaka</span>
+            <Typography variant="body" as="span">Tillbaka</Typography>
           </button>
-          <span className="text-[16px]" style={{ color: "#675332" }}>Inställningar</span>
+          <Typography variant="body" as="span" style={{ color: "hsl(var(--color-text-tertiary))" }}>Inställningar</Typography>
           <div className="w-16" />
         </header>
 
@@ -139,7 +144,7 @@ const SettingsPage = () => {
                 className="relative w-24 h-24 rounded-[32%] overflow-hidden flex items-center justify-center"
                 style={{
                   backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1",
-                  border: profile.avatar_url ? "none" : "1px dashed #C85A2E",
+                  border: profile.avatar_url ? "none" : "1px dashed hsl(var(--color-accent-terra))",
                   color: "#561828",
                 }}
                 aria-label={profile.avatar_url ? "Byt profilbild" : "Lägg till profilbild"}
@@ -147,7 +152,7 @@ const SettingsPage = () => {
                 {profile.avatar_url ? (
                   <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
                 ) : initials ? (
-                  <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 24 }}>{initials}</span>
+                  <Typography variant="heading" as="span">{initials}</Typography>
                 ) : (
                   <Camera className="w-6 h-6" />
                 )}
@@ -162,8 +167,8 @@ const SettingsPage = () => {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="mt-3 text-button underline underline-offset-2 decoration-1"
-                style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+                className={cn(typography.body, "mt-3 underline underline-offset-2 decoration-1")}
+                style={{ color: "hsl(var(--color-text-primary))", textDecorationColor: "hsl(var(--color-accent-terra))" }}
               >
                 {profile.avatar_url ? "Byt profilbild" : "Lägg till profilbild"}
               </button>
@@ -178,7 +183,7 @@ const SettingsPage = () => {
                     value={nameDraft}
                     onChange={(e) => setNameDraft(e.target.value)}
                     placeholder="Ditt namn"
-                    className="w-full bg-transparent border-0 outline-none text-foreground text-[15px]"
+                    className={cn(typography.body, "w-full bg-transparent border-0 outline-none text-foreground")}
                   />
                   <div className="flex gap-6">
                     <TextButton onClick={() => saveField("display_name", nameDraft)}>Spara</TextButton>
@@ -201,7 +206,7 @@ const SettingsPage = () => {
                     onChange={(e) => setBioDraft(e.target.value)}
                     placeholder="Kort om dig"
                     rows={3}
-                    className="w-full bg-transparent border-0 outline-none text-foreground text-[15px] resize-none"
+                    className={cn(typography.body, "w-full bg-transparent border-0 outline-none text-foreground resize-none")}
                   />
                   <div className="flex gap-6">
                     <TextButton onClick={() => saveField("bio", bioDraft)}>Spara</TextButton>
@@ -236,7 +241,7 @@ const SettingsPage = () => {
               style={{ color: "#561828" }}
             >
               <LogOut className="w-4 h-4" />
-              <span className="text-[15px]">Logga ut</span>
+              <Typography variant="body" as="span">Logga ut</Typography>
             </button>
           </>
         )}

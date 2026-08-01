@@ -1,4 +1,5 @@
 import PollOption from "./PollOption";
+import Typography from "@/components/ui/typography";
 
 export interface PollOptionResult {
   label: string;
@@ -40,13 +41,13 @@ const PollCard = ({ question, authorName, options, myVote, closed, closesAt, onV
 
   return (
     <div className="rounded-[26px] p-4" style={{ backgroundColor: CARD_YELLOW }}>
-      <div className="text-[11px] mb-1 font-medium" style={{ color: "#675332" }}>
+      <Typography variant="label" as="div" className="mb-1" style={{ color: "hsl(var(--color-text-tertiary))" }}>
         {meta}
         {authorName ? ` · ${authorName}` : ""}
-      </div>
-      <h3 className="text-[17px] leading-snug mb-3" style={{ fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" }}>
+      </Typography>
+      <Typography variant="heading" as="h3" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
         {question}
-      </h3>
+      </Typography>
 
       <div className="space-y-2">
         {options.map((o, i) => (
@@ -63,20 +64,21 @@ const PollCard = ({ question, authorName, options, myVote, closed, closesAt, onV
       </div>
 
       <div className="flex items-center justify-between mt-3">
-        <span className="text-[13px]" style={{ color: "#675332" }}>
+        <Typography variant="meta" as="span" style={{ color: "hsl(var(--color-text-tertiary))" }}>
           {total === 0
             ? "Ingen har röstat ännu"
             : `${total} ${total === 1 ? "röst" : "röster"}${!closed && myVote !== null ? " · du kan ändra din röst" : ""}`}
-        </span>
+        </Typography>
         {onClose && !closed && (
-          <button
-            type="button"
+          <Typography
+            variant="meta"
+            as="button"
             onClick={onClose}
-            className="text-[13px] underline underline-offset-2 shrink-0"
+            className="underline underline-offset-2 shrink-0"
             style={{ color: BURGUNDY }}
           >
             Avsluta
-          </button>
+          </Typography>
         )}
       </div>
     </div>

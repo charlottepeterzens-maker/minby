@@ -22,6 +22,9 @@ import ProfileNudge from "@/components/profile/ProfileNudge";
 import PollCard from "@/components/circle/PollCard";
 import CreatePollSheet from "@/components/circle/CreatePollSheet";
 import usePolls from "@/hooks/usePolls";
+import { Typography } from "@/components/ui/typography";
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
@@ -48,8 +51,7 @@ const formatTimestamp = (iso: string) => {
   return `${d.getDate()} ${monthNames[d.getMonth()].slice(0, 3)}, ${d.getHours().toString().padStart(2, "0")}.${d.getMinutes().toString().padStart(2, "0")}`;
 };
 
-const HEADING_STYLE = { fontFamily: "'Outfit', sans-serif", color: "#2B2B2B" } as const;
-const LINK_STYLE = { color: "#C85A2E" } as const;
+const LINK_STYLE = { color: "hsl(var(--color-accent-terra))" } as const;
 const CARD_YELLOW = "#F5EFD9";
 const CARD_BLUE = "#DCEAF8";
 
@@ -379,7 +381,7 @@ const CirclePage = () => {
   };
 
   if (!circle) {
-    return <div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground text-sm">Laddar…</div>;
+    return <div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground"><Typography variant="meta">Laddar…</Typography></div>;
   }
 
   const memberNames = members.map((m) => m.display_name).filter(Boolean).slice(0, 6).join(", ");
@@ -403,7 +405,7 @@ const CirclePage = () => {
             onClick={() => navigate("/")}
             aria-label="Tillbaka"
             className="absolute top-3 left-3 p-2 rounded-2xl backdrop-blur-md pt-safe"
-            style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "#2B2B2B" }}
+            style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "hsl(var(--color-text-primary))" }}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
@@ -411,7 +413,7 @@ const CirclePage = () => {
             onClick={invite}
             aria-label="Bjud in"
             className="absolute top-3 right-3 p-2 rounded-2xl backdrop-blur-md pt-safe"
-            style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "#2B2B2B" }}
+            style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "hsl(var(--color-text-primary))" }}
           >
             <Share2 className="w-5 h-5" />
           </button>
@@ -419,11 +421,11 @@ const CirclePage = () => {
             className="absolute inset-x-0 bottom-0 px-4 pt-10 pb-4"
             style={{ background: OVERLAY_GRADIENT.hero }}
           >
-            <h1 className="text-white text-[26px] leading-tight" style={{ fontFamily: "'Outfit', sans-serif" }}>
+            <Typography as="h1" variant="display" className="text-white">
               {circle.name}
-            </h1>
+            </Typography>
             {memberNames && (
-              <p className="text-white/85 text-[13px] mt-1 truncate">{memberNames}{members.length > 6 ? "…" : ""}</p>
+              <Typography as="p" variant="meta" className="text-white/85 mt-1 truncate">{memberNames}{members.length > 6 ? "…" : ""}</Typography>
             )}
           </div>
         </div>
@@ -473,7 +475,7 @@ const CirclePage = () => {
                 aria-expanded={sinceLastOpen}
                 className="w-full flex items-center justify-between px-4 py-3 text-left"
               >
-                <h2 className="text-[16px]" style={HEADING_STYLE}>Sedan sist</h2>
+                <Typography as="h2" variant="heading" style={{ color: "hsl(var(--color-text-primary))" }}>Sedan sist</Typography>
                 <ChevronDown
                   className={`w-5 h-5 transition-transform duration-200 ${sinceLastOpen ? "rotate-180" : ""}`}
                   style={{ color: "hsl(20, 4%, 40%)" }}
@@ -481,12 +483,12 @@ const CirclePage = () => {
               </button>
               {sinceLastOpen && (
                 <div className="px-4 pb-4">
-                  <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(20, 4%, 40%)" }}>
+                  <Typography as="div" variant="label" className="mb-2" style={{ color: "hsl(20, 4%, 40%)" }}>
                     {sinceLast.label}
-                  </div>
-                  <p className="text-[16px] leading-relaxed" style={{ color: "#2B2B2B" }}>
+                  </Typography>
+                  <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-primary))" }}>
                     {sinceLast.body}
-                  </p>
+                  </Typography>
                 </div>
               )}
             </div>
@@ -496,7 +498,7 @@ const CirclePage = () => {
         {/* Våra förslag att ses */}
         <section className="mt-8">
           <div className="px-4 mb-3">
-            <h2 className="text-[16px]" style={HEADING_STYLE}>Våra förslag att ses</h2>
+            <Typography as="h2" variant="heading" style={{ color: "hsl(var(--color-text-primary))" }}>Våra förslag att ses</Typography>
           </div>
           {loadingContent ? (
             <div className="flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
@@ -505,7 +507,7 @@ const CirclePage = () => {
               <MeetingCardSkeleton />
             </div>
           ) : meetings.length === 0 ? (
-            <p className="px-4 text-sm text-muted-foreground">Ingen träff planerad ännu.</p>
+            <Typography as="p" variant="meta" className="px-4 text-muted-foreground">Ingen träff planerad ännu.</Typography>
           ) : (
             <div className="flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {meetings.map((m) => (
@@ -526,7 +528,7 @@ const CirclePage = () => {
         {/* Våra omröstningar */}
         {(pollsLoading || polls.length > 0) && (
           <section className="mt-8 px-4">
-            <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Att bestämma</h2>
+            <Typography as="h2" variant="heading" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>Att bestämma</Typography>
             {pollsLoading ? (
               <div className="rounded-[26px] h-[160px] animate-pulse" style={{ backgroundColor: CARD_YELLOW }} />
             ) : (
@@ -553,26 +555,26 @@ const CirclePage = () => {
 
         {/* Chatt */}
         <section className="mt-8 px-4">
-          <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Chatt</h2>
+          <Typography as="h2" variant="heading" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>Chatt</Typography>
           <div className="rounded-[26px] p-4" style={{ backgroundColor: CARD_BLUE }}>
             {aiSummary ? (
               <>
-                <div className="text-[11px] mb-2 font-medium" style={{ color: "hsl(210, 20%, 35%)" }}>
+                <Typography as="div" variant="label" className="mb-2" style={{ color: "hsl(210, 20%, 35%)" }}>
                   Senast uppdaterad: {formatTimestamp(aiSummary.generated_at)}
                   {aiSummary.author ? ` av ${aiSummary.author}` : ""}
-                </div>
-                <p className="text-[16px] leading-relaxed" style={{ color: "#2B2B2B" }}>
+                </Typography>
+                <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-primary))" }}>
                   {aiSummary.content}
-                </p>
+                </Typography>
               </>
             ) : (
-              <p className="text-[16px] leading-relaxed" style={{ color: "#2B2B2B" }}>
+              <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-primary))" }}>
                 Ingen sammanfattning ännu. Skriv några meddelanden så plockar vi upp tråden.
-              </p>
+              </Typography>
             )}
             <TextButton
               onClick={() => navigate(`/chat/${circle.id}`)}
-              className="mt-4 text-[16px]"
+              className="mt-4"
             >
               <MessageCircle className="w-4 h-4" /> Se hela chatten
             </TextButton>
@@ -582,7 +584,7 @@ const CirclePage = () => {
         {/* Våra tips — overview preview */}
         <section className="px-4">
           <div className="mt-10 mb-3">
-            <h2 className="font-display text-xl text-foreground">Våra tips</h2>
+            <Typography as="h2" variant="display" className="text-foreground">Våra tips</Typography>
           </div>
           {loadingContent ? (
             <div className="space-y-3">
@@ -590,9 +592,9 @@ const CirclePage = () => {
               <TipCardSkeleton />
             </div>
           ) : tips.length === 0 ? (
-            <p className="text-sm mt-2" style={{ color: "#561828" }}>
+            <Typography as="p" variant="meta" className="mt-2" style={{ color: "#561828" }}>
               Inga tips delade ännu. Dela en plats, bok, podd eller länk du gillar.
-            </p>
+            </Typography>
           ) : (
             <>
               <div className="relative">
@@ -626,7 +628,7 @@ const CirclePage = () => {
         {/* Våra foton */}
         <section className="px-4 mb-10">
           <div className="mb-3 mt-10">
-            <h2 className="font-display text-xl text-foreground">Våra foton</h2>
+            <Typography as="h2" variant="display" className="text-foreground">Våra foton</Typography>
           </div>
           <input
             ref={photoInputRef}
@@ -652,9 +654,9 @@ const CirclePage = () => {
               <PhotoSmallSkeleton />
             </div>
           ) : photos.length === 0 ? (
-            <p className="text-sm mt-2" style={{ color: "#561828" }}>
+            <Typography as="p" variant="meta" className="mt-2" style={{ color: "#561828" }}>
               Inga foton delade ännu. Bilder ni delar samlas här som ett gemensamt minne.
-            </p>
+            </Typography>
           ) : (
             <div className="flex overflow-x-auto -mx-4 px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {photos.map((p, i) => (
@@ -702,16 +704,18 @@ const CirclePage = () => {
         <BottomSheetContent>
           <BottomSheetHeader title="Bjud in till kretsen" />
           <BottomSheetBody className="px-5 pt-4 pb-8 space-y-5">
-            <p className="text-body" style={{ color: "#5B5B5B" }}>
+            <Typography as="p" variant="body" style={{ color: "#5B5B5B" }}>
               Bjud in familj och vänner så att ni kan dela foton, tips och planera träffar tillsammans.
-            </p>
+            </Typography>
 
-            <div
-              className="rounded-[16px] px-4 py-3 text-body break-all"
-              style={{ backgroundColor: "#F5EFD9", color: "#2B2B2B" }}
+            <Typography
+              as="div"
+              variant="body"
+              className="rounded-[16px] px-4 py-3 break-all"
+              style={{ backgroundColor: "#F5EFD9", color: "hsl(var(--color-text-primary))" }}
             >
               {creatingInvite ? "Skapar länk…" : inviteUrl ?? ""}
-            </div>
+            </Typography>
 
             <div className="flex flex-col gap-3 pt-1">
               <TextButton onClick={shareInviteNative} disabled={!inviteUrl}>
@@ -739,7 +743,7 @@ const CirclePage = () => {
                 <TipCardSkeleton />
               </>
             ) : tips.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-8">Inga tips delade ännu.</p>
+              <Typography as="p" variant="meta" className="text-muted-foreground text-center py-8">Inga tips delade ännu.</Typography>
             ) : (
               tips.map((t) => (
                 <TipCard
@@ -807,27 +811,27 @@ const CirclePage = () => {
             <>
               <BottomSheetHeader title={selectedMeeting.title} />
               <BottomSheetBody className="px-5 pt-4 pb-8">
-                <p className="text-[13px]" style={{ color: "hsl(20, 4%, 40%)" }}>
+                <Typography as="p" variant="meta" style={{ color: "hsl(20, 4%, 40%)" }}>
                   {selectedMeeting.host_name}
                   {selectedMeeting.meeting_date ? ` · ${formatDateYear(selectedMeeting.meeting_date)}` : ""}
-                </p>
+                </Typography>
                 {selectedMeeting.description && (
-                  <p className="mt-4 text-[16px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
+                  <Typography as="p" variant="body" className="mt-4 whitespace-pre-wrap" style={{ color: "hsl(var(--color-text-primary))" }}>
                     {selectedMeeting.description}
-                  </p>
+                  </Typography>
                 )}
                 <div className="mt-6">
-                  <div className="text-[12px] uppercase tracking-wide mb-2" style={{ color: "hsl(20, 4%, 54%)" }}>
+                  <Typography as="div" variant="meta" className="uppercase tracking-wide mb-2" style={{ color: "hsl(20, 4%, 54%)" }}>
                     Med på träffen
-                  </div>
+                  </Typography>
                   {meetingAttendees.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">Ingen har svarat ännu.</p>
+                    <Typography as="p" variant="meta" className="text-muted-foreground">Ingen har svarat ännu.</Typography>
                   ) : (
                     <ul className="space-y-1">
                       {meetingAttendees.map((a) => (
-                        <li key={a.user_id} className="text-[16px]" style={{ color: "#2B2B2B" }}>
+                        <Typography as="li" key={a.user_id} variant="body" style={{ color: "hsl(var(--color-text-primary))" }}>
                           {a.display_name ?? "Anonym"}
-                        </li>
+                        </Typography>
                       ))}
                     </ul>
                   )}
@@ -853,19 +857,19 @@ const CirclePage = () => {
             <>
               <BottomSheetHeader title={selectedTip.title} />
               <BottomSheetBody className="px-5 pt-4 pb-8">
-                <p className="text-[13px]" style={{ color: "hsl(20, 4%, 40%)" }}>
+                <Typography as="p" variant="meta" style={{ color: "hsl(20, 4%, 40%)" }}>
                   {selectedTip.owner_name} · {formatDateYear(selectedTip.created_at)}
-                </p>
+                </Typography>
                 {selectedTip.image_url && (
                   <div className={`mt-4 w-full h-[160px] ${CARD_RADIUS_CLASS.photo} bg-center bg-cover`} style={{ backgroundImage: `url(${selectedTip.image_url})` }} />
                 )}
                 {selectedTip.comment && (
-                  <p className="mt-4 text-[16px] whitespace-pre-wrap" style={{ color: "#2B2B2B" }}>
+                  <Typography as="p" variant="body" className="mt-4 whitespace-pre-wrap" style={{ color: "hsl(var(--color-text-primary))" }}>
                     {selectedTip.comment}
-                  </p>
+                  </Typography>
                 )}
                 {selectedTip.url && (
-                  <a href={selectedTip.url} target="_blank" rel="noopener noreferrer" className="mt-6 inline-flex items-center gap-2 text-[15px] font-medium underline underline-offset-2" style={LINK_STYLE}>
+                  <a href={selectedTip.url} target="_blank" rel="noopener noreferrer" className={cn(typography.body, "mt-6 inline-flex items-center gap-2 underline underline-offset-2")} style={LINK_STYLE}>
                     <ExternalLink className="w-4 h-4" /> Öppna länken
                   </a>
                 )}
@@ -882,9 +886,9 @@ const CirclePage = () => {
             <>
               <BottomSheetHeader title={selectedPhoto.owner_name} />
               <BottomSheetBody className="px-5 pt-4 pb-8">
-                <p className="text-[13px]" style={{ color: "hsl(20, 4%, 40%)" }}>
+                <Typography as="p" variant="meta" style={{ color: "hsl(20, 4%, 40%)" }}>
                   {formatDateYear(selectedPhoto.created_at)}
-                </p>
+                </Typography>
                 {selectedPhoto.image_url && (
                   <img src={selectedPhoto.image_url} alt="" className={`mt-4 w-full ${CARD_RADIUS_CLASS.photo} object-cover max-h-[70vh]`} />
                 )}

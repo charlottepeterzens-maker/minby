@@ -6,6 +6,9 @@ import { X, Send, Camera, CalendarPlus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import TextButton from "@/components/ui/text-button";
 import { OVERLAY_GRADIENT } from "@/lib/card-styles";
+import Typography from "@/components/ui/typography";
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 
 
 interface Message {
@@ -238,8 +241,8 @@ const ChatPage = () => {
       >
         <div className="absolute inset-0" style={{ background: OVERLAY_GRADIENT.heroSubtle }} />
         <div className="absolute bottom-4 left-5 right-5 text-white">
-          <h1 className="text-heading-lg" style={{ fontSize: 28, fontWeight: 500 }}>{circle?.name ?? ""}</h1>
-          {memberPreview && <p className="text-[13px] opacity-90 mt-1 truncate">{memberPreview}</p>}
+          <Typography variant="display" as="h1">{circle?.name ?? ""}</Typography>
+          {memberPreview && <Typography variant="meta" as="p" className="opacity-90 mt-1 truncate">{memberPreview}</Typography>}
         </div>
       </div>
 
@@ -256,9 +259,9 @@ const ChatPage = () => {
       >
         <header className="relative flex items-center justify-center px-5 pt-4 pb-3 border-b" style={{ borderColor: "rgba(0,0,0,0.06)" }}>
           <button onClick={() => navigate(`/circle/${id}`)} aria-label="Stäng" className="absolute left-4 p-1">
-            <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
+            <X className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
           </button>
-          <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 18, fontWeight: 600, color: "#2B2B2B" }}>Chatt</h2>
+          <Typography variant="heading" as="h2" style={{ color: "hsl(var(--color-text-primary))" }}>Chatt</Typography>
           <button
             onClick={runSummarize}
             aria-label="Sammanfatta chatten"
@@ -277,12 +280,12 @@ const ChatPage = () => {
             </button>
             <div className="flex items-center gap-2 mb-2">
               <Sparkles className="w-4 h-4" />
-              <span className="text-[11px] uppercase tracking-wider">AI-sammanfattning</span>
+              <Typography variant="meta" as="span" className="uppercase tracking-wider">AI-sammanfattning</Typography>
             </div>
             {summarizing ? (
-              <p className="text-[16px] opacity-80">Läser chatten…</p>
+              <Typography variant="body" as="p" className="opacity-80">Läser chatten…</Typography>
             ) : (
-              <p className="text-[16px] leading-snug whitespace-pre-wrap">{summary}</p>
+              <Typography variant="body" as="p" className="whitespace-pre-wrap">{summary}</Typography>
             )}
           </div>
         )}
@@ -290,12 +293,12 @@ const ChatPage = () => {
         {/* Messages */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
           {messages.length === 0 && (
-            <p className="text-center text-sm text-muted-foreground py-12">Säg något så börjar det.</p>
+            <Typography variant="meta" as="p" className="text-center text-muted-foreground py-12">Säg något så börjar det.</Typography>
           )}
           {grouped.map((g, gi) => (
             <div key={gi} className="space-y-3">
               <div className="text-center">
-                <span className="text-[11px]" style={{ color: "#675332" }}>{g.day}</span>
+                <Typography variant="meta" as="span" style={{ color: "hsl(var(--color-text-tertiary))" }}>{g.day}</Typography>
               </div>
               {g.items.map((m) => {
                 const mine = m.user_id === user?.id;
@@ -309,7 +312,7 @@ const ChatPage = () => {
                     {avatar ? (
                       <img src={avatar} alt="" className="w-full h-full object-cover" />
                     ) : (
-                      <span className="text-[13px]" style={{ color: "#2B2B2B" }}>{initial}</span>
+                      <Typography variant="meta" as="span" style={{ color: "hsl(var(--color-text-primary))" }}>{initial}</Typography>
                     )}
                   </div>
                 );
@@ -324,31 +327,31 @@ const ChatPage = () => {
                         className="max-w-[78%] rounded-[20px] p-4"
                         style={{ backgroundColor: "#F5EFD9" }}
                       >
-                        <div className="text-eyebrow mb-1" style={{ color: "#675332", letterSpacing: "0.12em", textTransform: "uppercase", fontSize: 10 }}>
+                        <Typography variant="meta" as="div" className="mb-1 uppercase tracking-[0.12em]" style={{ color: "hsl(var(--color-text-tertiary))" }}>
                           Förslag att ses
-                        </div>
-                        <div className="text-[17px] leading-tight mb-3" style={{ color: "#2B2B2B", fontWeight: 500 }}>
+                        </Typography>
+                        <Typography variant="heading" as="div" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
                           {m.payload?.meeting_date ? `${formatMeetingDate(m.payload.meeting_date)}.` : ""} {m.payload?.title}
-                        </div>
+                        </Typography>
                         <div className="flex gap-5">
                           <button
                             onClick={() => respondMeeting(meetingId, "yes")}
-                            className="text-[15px] font-medium underline-offset-2 decoration-2"
+                            className={cn(typography.body, "underline-offset-2 decoration-2")}
                             style={{
-                              color: resp === "yes" ? "#561828" : "#2B2B2B",
+                              color: resp === "yes" ? "#561828" : "hsl(var(--color-text-primary))",
                               textDecoration: resp === "yes" ? "underline" : "none",
-                              textDecorationColor: "#C85A2E",
+                              textDecorationColor: "hsl(var(--color-accent-terra))",
                             }}
                           >
                             Jag kan
                           </button>
                           <button
                             onClick={() => respondMeeting(meetingId, "no")}
-                            className="text-[15px]"
+                            className={typography.body}
                             style={{
-                              color: resp === "no" ? "#561828" : "#675332",
+                              color: resp === "no" ? "#561828" : "hsl(var(--color-text-tertiary))",
                               textDecoration: resp === "no" ? "underline" : "none",
-                              textDecorationColor: "#C85A2E",
+                              textDecorationColor: "hsl(var(--color-accent-terra))",
                               textUnderlineOffset: 2,
                             }}
                           >
@@ -385,16 +388,18 @@ const ChatPage = () => {
                       className="max-w-[78%] px-4 py-3 rounded-[20px]"
                       style={{
                         backgroundColor: mine ? "#561828" : "#EFEAE0",
-                        color: mine ? "#F0EAE2" : "#2B2B2B",
+                        color: mine ? "#F0EAE2" : "hsl(var(--color-text-primary))",
                       }}
                     >
-                      <div className="text-[16px] leading-snug whitespace-pre-wrap">{m.body}</div>
-                      <div
-                        className={`text-[11px] mt-1 ${mine ? "text-right" : ""}`}
-                        style={{ color: mine ? "#E8A87C" : "#675332" }}
+                      <Typography variant="body" as="div" className="whitespace-pre-wrap">{m.body}</Typography>
+                      <Typography
+                        variant="meta"
+                        as="div"
+                        className={`mt-1 ${mine ? "text-right" : ""}`}
+                        style={{ color: mine ? "#E8A87C" : "hsl(var(--color-text-tertiary))" }}
                       >
                         {formatTime(m.created_at)}
-                      </div>
+                      </Typography>
                     </div>
                     {mine && Avatar}
                   </div>
@@ -409,21 +414,21 @@ const ChatPage = () => {
         <div className="px-4 pt-3 pb-safe" style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}>
           {showMeetingForm && (
             <div className="mb-3 rounded-[20px] p-3 space-y-2" style={{ backgroundColor: "#F5EFD9" }}>
-              <div className="text-eyebrow" style={{ color: "#675332", letterSpacing: "0.12em", textTransform: "uppercase", fontSize: 10 }}>Föreslå en träff</div>
+              <Typography variant="meta" as="div" className="uppercase tracking-[0.12em]" style={{ color: "hsl(var(--color-text-tertiary))" }}>Föreslå en träff</Typography>
               <input
                 autoFocus
                 value={mTitle}
                 onChange={(e) => setMTitle(e.target.value)}
                 placeholder="Vad ska ni göra?"
-                className="w-full bg-transparent border-0 outline-none text-[15px]"
-                style={{ color: "#2B2B2B" }}
+                className={cn(typography.body, "w-full bg-transparent border-0 outline-none")}
+                style={{ color: "hsl(var(--color-text-primary))" }}
               />
               <input
                 type="date"
                 value={mDate}
                 onChange={(e) => setMDate(e.target.value)}
-                className="w-full bg-transparent border-0 outline-none text-[16px]"
-                style={{ color: "#2B2B2B" }}
+                className={cn(typography.body, "w-full bg-transparent border-0 outline-none")}
+                style={{ color: "hsl(var(--color-text-primary))" }}
               />
               <div className="flex gap-5 pt-1">
                 <TextButton onClick={submitMeetingProposal}>Skicka</TextButton>
@@ -440,8 +445,8 @@ const ChatPage = () => {
               onChange={(e) => setBody(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
               placeholder="Skriv något…"
-              className="flex-1 bg-transparent border-0 outline-none text-[15px] py-2"
-              style={{ color: "#2B2B2B" }}
+              className={cn(typography.body, "flex-1 bg-transparent border-0 outline-none py-2")}
+              style={{ color: "hsl(var(--color-text-primary))" }}
             />
             <button
               onClick={send}
@@ -449,7 +454,7 @@ const ChatPage = () => {
               aria-label="Skicka"
               className="p-1 disabled:opacity-30"
             >
-              <Send className="w-5 h-5" style={{ color: "#2B2B2B" }} />
+              <Send className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
             </button>
           </div>
           <div className="flex items-center gap-4 mt-3 pl-2">
@@ -459,14 +464,14 @@ const ChatPage = () => {
               disabled={uploading}
               className="p-1 disabled:opacity-40"
             >
-              <Camera className="w-5 h-5" style={{ color: "#2B2B2B" }} />
+              <Camera className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
             </button>
             <button
               onClick={() => setShowMeetingForm((s) => !s)}
               aria-label="Föreslå datum"
               className="p-1"
             >
-              <CalendarPlus className="w-5 h-5" style={{ color: "#2B2B2B" }} />
+              <CalendarPlus className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
             </button>
             <input
               ref={photoRef}

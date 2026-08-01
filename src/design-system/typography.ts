@@ -3,31 +3,42 @@
  * ---------------------------------------
  * Single source of truth for ALL typography in the application.
  *
- * Never hardcode `text-[..]`, `font-*` or `leading-*` in components.
- * Use the <Typography /> component, or — when a native element needs the
- * styles directly (button, input, textarea, placeholder) — the exported
- * `typography` class map:
+ * There are exactly FIVE canonical variants:
+ *
+ *   display  — page titles
+ *   heading  — section / card / sheet headings
+ *   body     — all running text, inputs, buttons
+ *   meta     — metadata, hints, helper text, eyebrows
+ *   label    — field labels, nav labels, author names
+ *
+ * Never hardcode `text-[..]`, `font-*`, `leading-*`, `fontSize` or
+ * `fontWeight` in components. Use the <Typography /> component, or — when a
+ * native element needs the styles directly (input, textarea, button) — the
+ * exported `typography` class map:
  *
  *    <input className={cn(typography.body, "...")} />
  *
- * This file is the template for the rest of the design system
- * (colors.ts, spacing.ts, radius.ts, shadows.ts) — same shape:
- * semantic token -> value -> tailwind class string.
+ * If a new typographic need appears, extend THIS file. Never create a local
+ * solution.
  */
 
-export type TypographyVariant =
-  | "display"
-  | "heading"
+/** The five canonical variants. */
+export type CanonicalVariant = "display" | "heading" | "body" | "meta" | "label";
+
+/**
+ * Deprecated aliases kept so older call sites keep compiling.
+ * They resolve to one of the five canonical variants — do not use in new code.
+ */
+export type LegacyVariant =
   | "title"
-  | "body"
   | "bodyMd"
   | "bodySm"
-  | "meta"
   | "caption"
-  | "label"
   | "labelSm"
   | "eyebrow"
   | "button";
+
+export type TypographyVariant = CanonicalVariant | LegacyVariant;
 
 type TypographyToken = {
   /** Semantic purpose of the token */
@@ -42,9 +53,9 @@ type TypographyToken = {
   className: string;
 };
 
-export const typographyTokens: Record<TypographyVariant, TypographyToken> = {
+export const typographyTokens: Record<CanonicalVariant, TypographyToken> = {
   display: {
-    description: "Page titles — 28px / Medium / tight",
+    description: "Page and hero titles — 28px / Medium / tight",
     fontSize: "1.75rem",
     fontWeight: 500,
     lineHeight: "1.1",
@@ -59,64 +70,21 @@ export const typographyTokens: Record<TypographyVariant, TypographyToken> = {
     element: "h2",
     className: "text-[1.125rem] font-semibold leading-[1.25]",
   },
-  title: {
-    description: "Compact card titles — 16px / Medium",
-    fontSize: "1rem",
-    fontWeight: 500,
-    lineHeight: "1.2",
-    element: "h3",
-    className: "text-[1rem] font-medium leading-[1.2]",
-  },
   body: {
-    description: "Standard body copy, inputs and textareas — 16px / Regular",
+    description: "All running text, inputs, textareas and buttons — 16px / Regular",
     fontSize: "1rem",
     fontWeight: 400,
     lineHeight: "1.5",
     element: "p",
     className: "text-[1rem] font-normal leading-[1.5]",
   },
-  bodyMd: {
-    description:
-      "Legacy body size used in existing cards — 15px / Regular. Kept so the refactor is pixel-identical; merge into `body` in a future design pass.",
-    fontSize: "0.9375rem",
-    fontWeight: 400,
-    lineHeight: "1.4",
-    element: "p",
-    className: "text-[0.9375rem] font-normal leading-[1.4]",
-  },
-  bodySm: {
-    description: "Dense body copy inside compact cards — 14px / Regular",
-    fontSize: "0.875rem",
-    fontWeight: 400,
-    lineHeight: "1.4",
-    element: "p",
-    className: "text-[0.875rem] font-normal leading-[1.4]",
-  },
   meta: {
-    description: "Metadata, hints, helper and validation text — 12px / Regular",
+    description: "Metadata, eyebrows, hints, helper and validation text — 12px / Regular",
     fontSize: "0.75rem",
     fontWeight: 400,
     lineHeight: "1.4",
     element: "p",
     className: "text-[0.75rem] font-normal leading-[1.4]",
-  },
-  caption: {
-    description:
-      "Legacy metadata size in existing cards — 13px / Regular. Pixel-preserving alias, merge into `meta` later.",
-    fontSize: "0.8125rem",
-    fontWeight: 400,
-    lineHeight: "1.4",
-    element: "p",
-    className: "text-[0.8125rem] font-normal leading-[1.4]",
-  },
-  labelSm: {
-    description:
-      "Legacy small label — 11px / Medium. Pixel-preserving alias, merge into `label` later.",
-    fontSize: "0.6875rem",
-    fontWeight: 500,
-    lineHeight: "1.4",
-    element: "span",
-    className: "text-[0.6875rem] font-medium leading-[1.4]",
   },
   label: {
     description: "Field labels, navigation labels, author names — 12px / Medium",
@@ -126,34 +94,52 @@ export const typographyTokens: Record<TypographyVariant, TypographyToken> = {
     element: "span",
     className: "text-[0.75rem] font-medium leading-[1.4]",
   },
-  eyebrow: {
-    description: "Small overline labels above a heading — 10px / Regular",
-    fontSize: "0.625rem",
-    fontWeight: 400,
-    lineHeight: "1",
-    letterSpacing: "0.02em",
-    element: "span",
-    className: "text-[0.625rem] font-normal leading-none tracking-[0.02em]",
-  },
-  button: {
-    description: "All buttons and text buttons — 16px / Medium",
-    fontSize: "1rem",
-    fontWeight: 500,
-    lineHeight: "1",
-    element: "span",
-    className: "text-[1rem] font-medium leading-none",
-  },
 };
+
+/** Deprecated variant -> canonical variant. */
+export const legacyVariantMap: Record<LegacyVariant, CanonicalVariant> = {
+  title: "heading",
+  bodyMd: "body",
+  bodySm: "body",
+  caption: "meta",
+  labelSm: "label",
+  eyebrow: "meta",
+  button: "body",
+};
+
+export const resolveVariant = (variant: TypographyVariant): CanonicalVariant =>
+  (legacyVariantMap as Record<string, CanonicalVariant>)[variant] ??
+  (variant as CanonicalVariant);
 
 /** Class-map shortcut: `typography.body`, `typography.label`, … */
 export const typography = Object.fromEntries(
-  Object.entries(typographyTokens).map(([key, token]) => [key, token.className]),
+  ([
+    ...Object.keys(typographyTokens),
+    ...Object.keys(legacyVariantMap),
+  ] as TypographyVariant[]).map((key) => [
+    key,
+    typographyTokens[resolveVariant(key)].className,
+  ]),
 ) as Record<TypographyVariant, string>;
 
 /** Default element per variant, used by the <Typography /> component. */
 export const typographyElements = Object.fromEntries(
-  Object.entries(typographyTokens).map(([key, token]) => [key, token.element]),
+  ([
+    ...Object.keys(typographyTokens),
+    ...Object.keys(legacyVariantMap),
+  ] as TypographyVariant[]).map((key) => [
+    key,
+    typographyTokens[resolveVariant(key)].element,
+  ]),
 ) as Record<TypographyVariant, keyof JSX.IntrinsicElements>;
 
 /** The one and only font family in Minby. */
 export const fontFamily = "Outfit, sans-serif";
+
+/**
+ * Emphasis modifiers — the only sanctioned way to add weight emphasis on top
+ * of a variant (e.g. a selected list item). Never write `font-*` directly.
+ */
+export const typographyEmphasis = {
+  strong: "font-semibold",
+} as const;

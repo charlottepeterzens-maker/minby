@@ -10,6 +10,9 @@ interface Props {
 /**
  * A single poll option. Presentation only — the parent owns the state.
  */
+import Typography from "@/components/ui/typography";
+import { typographyEmphasis } from "@/design-system/typography";
+
 const PollOption = ({ label, votes, totalVotes, selected, disabled, onSelect }: Props) => {
   const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
 
@@ -30,15 +33,17 @@ const PollOption = ({ label, votes, totalVotes, selected, disabled, onSelect }: 
         }}
       />
       <span className="relative flex items-center justify-between gap-3">
-        <span
-          className="text-[15px] leading-snug"
-          style={{ color: "#2B2B2B", fontWeight: selected ? 600 : 400 }}
+        <Typography
+          variant="body"
+          as="span"
+          className={selected ? typographyEmphasis.strong : undefined}
+          style={{ color: "hsl(var(--color-text-primary))" }}
         >
           {label}
-        </span>
-        <span className="text-[13px] shrink-0 tabular-nums" style={{ color: "#675332" }}>
+        </Typography>
+        <Typography variant="meta" as="span" className="shrink-0 tabular-nums" style={{ color: "hsl(var(--color-text-tertiary))" }}>
           {votes}
-        </span>
+        </Typography>
       </span>
     </button>
   );

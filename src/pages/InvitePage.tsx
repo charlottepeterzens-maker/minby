@@ -6,6 +6,7 @@ import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
 import { Heart, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Typography } from "@/components/ui/typography";
 
 interface Member { display_name: string | null; avatar_url: string | null }
 
@@ -89,12 +90,12 @@ const InvitePage = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-6 text-center">
         <div className="max-w-sm">
-          <h1 className="font-display text-xl mb-2" style={{ color: "#2B2B2B" }}>
+          <Typography variant="heading" as="h1" className="mb-2" style={{ color: "hsl(var(--color-text-primary))" }}>
             {status === "expired" ? "Den här inbjudan har gått ut" : "Vi hittar inte den här inbjudan"}
-          </h1>
-          <p className="text-sm text-muted-foreground">
+          </Typography>
+          <Typography variant="body" as="p" className="text-muted-foreground">
             Be den som bjöd in dig att skicka en ny länk.
-          </p>
+          </Typography>
         </div>
       </div>
     );
@@ -104,10 +105,10 @@ const InvitePage = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-6 text-center">
         <div>
-          <Heart className="w-8 h-8 mx-auto mb-3" style={{ color: "#C85A2E" }} />
-          <p className="font-display text-lg" style={{ color: "#2B2B2B" }}>
+          <Heart className="w-8 h-8 mx-auto mb-3" style={{ color: "hsl(var(--color-accent-terra))" }} />
+          <Typography variant="heading" as="p" style={{ color: "hsl(var(--color-text-primary))" }}>
             Välkommen till {circleName}
-          </p>
+          </Typography>
         </div>
       </div>
     );
@@ -126,39 +127,37 @@ const InvitePage = () => {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6 py-10">
       <div className="w-full max-w-sm text-center">
-        <span
+        <Typography
+          variant="meta"
+          as="span"
           style={{
-            fontSize: 12,
-            fontWeight: 400,
             color: "#9B8BA5",
             letterSpacing: "0.16em",
-            textTransform: "uppercase",
           }}
+          className="uppercase"
         >
           du är inbjuden till
-        </span>
+        </Typography>
 
-        <h1
+        <Typography
+          variant="display"
+          as="h1"
           className="mt-3"
-          style={{
-            fontFamily: "'Outfit', sans-serif",
-            fontSize: 32,
-            fontWeight: 400,
-            color: "#1C1917",
-            lineHeight: 1.2,
-          }}
+          style={{ color: "#1C1917" }}
         >
           {circleName}
-        </h1>
+        </Typography>
 
         {/* Members */}
         {members.length > 0 && (
           <div className="mt-6 flex flex-col items-center gap-3">
             <div className="flex -space-x-2">
               {members.slice(0, 5).map((m, i) => (
-                <div
+                <Typography
                   key={i}
-                  className="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-medium ring-2 ring-background overflow-hidden"
+                  variant="label"
+                  as="div"
+                  className="w-11 h-11 rounded-full flex items-center justify-center text-white ring-2 ring-background overflow-hidden"
                   style={{ backgroundColor: "#8b6f5e" }}
                 >
                   {m.avatar_url ? (
@@ -166,24 +165,26 @@ const InvitePage = () => {
                   ) : (
                     initials(m.display_name)
                   )}
-                </div>
+                </Typography>
               ))}
             </div>
-            <p className="text-[13px] text-muted-foreground">{memberLine}</p>
+            <Typography variant="meta" as="p" className="text-muted-foreground">{memberLine}</Typography>
           </div>
         )}
 
         {/* Minby description */}
-        <p
-          className="mt-8 text-[15px] leading-[1.6]"
-          style={{ color: "#1C1917", fontWeight: 300 }}
+        <Typography
+          variant="body"
+          as="p"
+          className="mt-8"
+          style={{ color: "#1C1917" }}
         >
           Minby är ett lugnt hem för din närmsta krets. Här delar ni vardagen,
           planerar träffar och håller kontakten — utan algoritmer.
-        </p>
-        <p className="mt-2 text-[13px] text-muted-foreground">
+        </Typography>
+        <Typography variant="meta" as="p" className="mt-2 text-muted-foreground">
           Flytta din krets till Minby.
-        </p>
+        </Typography>
 
         {/* Sign-up (email only) */}
         {!sentTo ? (
@@ -202,19 +203,19 @@ const InvitePage = () => {
                 {busy ? "…" : `Gå med i ${circleName}`}
               </TextButton>
             </div>
-            <p className="text-[12px] text-muted-foreground">
+            <Typography variant="meta" as="p" className="text-muted-foreground">
               Vi skickar en länk till din e-post. Inget lösenord behövs.
-            </p>
+            </Typography>
           </form>
         ) : (
           <div className="mt-10 space-y-3">
-            <p className="text-[15px]" style={{ color: "#2B2B2B" }}>
+            <Typography variant="body" as="p" style={{ color: "hsl(var(--color-text-primary))" }}>
               Kolla din e-post
-            </p>
-            <p className="text-[13px] text-muted-foreground">
+            </Typography>
+            <Typography variant="meta" as="p" className="text-muted-foreground">
               Vi har skickat en länk till <strong>{sentTo}</strong>. Klicka på länken
               för att bli medlem i {circleName}.
-            </p>
+            </Typography>
             <div className="pt-2">
               <TextButton type="button" variant="secondary" onClick={() => setSentTo(null)}>
                 Använd en annan e-post
@@ -224,19 +225,19 @@ const InvitePage = () => {
         )}
 
         {!sentTo && (
-          <p className="mt-8 text-[13px] text-muted-foreground">
+          <Typography variant="meta" as="p" className="mt-8 text-muted-foreground">
             Har du redan ett konto?{" "}
             <button
               onClick={() => {
                 try { sessionStorage.setItem("pending_invite_token", token!); } catch {}
                 navigate("/auth");
               }}
-              className="underline"
-              style={{ color: "#1C1917", fontWeight: 500 }}
+              className="underline font-medium"
+              style={{ color: "#1C1917" }}
             >
               Logga in
             </button>
-          </p>
+          </Typography>
         )}
       </div>
     </div>
