@@ -321,9 +321,14 @@ const HomePage = () => {
           </Typography>
 
           {loading ? null : shared.length === 0 ? (
-            <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-              Det du delar med dina kretsar samlas här.
-            </Typography>
+            <div className="space-y-3">
+              <Typography as="h3" variant="heading" className="text-foreground">
+                Inget delat än
+              </Typography>
+              <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                När du delar bilder, tips eller föreslår träffar i dina kretsar samlas allt här.
+              </Typography>
+            </div>
           ) : (
             <ul className="space-y-5">
               {shared.map((s) => (
