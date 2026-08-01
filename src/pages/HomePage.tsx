@@ -1,20 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import PrimaryActionButton from "@/components/ui/primary-action-button";
-import { Camera, Menu, X } from "lucide-react";
-import TipCard from "@/components/cards/TipCard";
-import ShareTipSheet from "@/components/tips/ShareTipSheet";
-import CircleCard from "@/components/cards/CircleCard";
-import PhotoTile from "@/components/cards/PhotoTile";
+import { Menu } from "lucide-react";
+import CircleDashboardCard, { type CircleHighlight, type CircleMemberPreview } from "@/components/cards/CircleDashboardCard";
 import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
-import { ExampleTag } from "@/components/ui/example-tag";
 import { Sheet } from "@/components/ui/sheet";
-import { BottomSheetBody, BottomSheetContent, BottomSheetFooter, BottomSheetHeader } from "@/components/ui/bottom-sheet";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
 import { toast } from "sonner";
 import { Typography } from "@/components/ui/typography";
 import { typography } from "@/design-system/typography";
@@ -23,46 +17,202 @@ import { cn } from "@/lib/utils";
 interface Circle {
   id: string;
   name: string;
-  hero_image_url: string | null;
 }
 
-interface Profile {
-  display_name: string | null;
-  avatar_url: string | null;
-  bio: string | null;
+interface CircleView extends Circle {
+  highlights: CircleHighlight[];
+  members: CircleMemberPreview[];
+  lastActivity: number;
+}
+
+interface SharedItem {
+  id: string;
+  kind: "update" | "tip" | "meeting";
+  title: string;
+  created_at: string;
+  circleNames: string[];
 }
 
 /**
- * HomePage (Hem) — the app's start page for the signed-in user.
+ * HomePage (Hem) — the signed-in user's private start page.
  *
- * ARCHITECTURE: Minby has no visitable profiles. There is exactly one profile
- * page and it always belongs to the authenticated user (auth.uid()). Other
- * people are only ever experienced through a circle or a meeting.
- * Never add a :userId param or a route that renders someone else here.
+ * ARCHITECTURE: Minby has no visitable profiles and no global feed. There is
+ * exactly one home and it always belongs to the authenticated user.
+ * Circles are the hub: they dominate this page visually.
  */
 const HomePage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [circles, setCircles] = useState<Circle[]>([]);
+  const [circles, setCircles] = useState<CircleView[]>([]);
+  const [shared, setShared] = useState<SharedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState("");
-  const [profile, setProfile] = useState<Profile>({ display_name: null, avatar_url: null, bio: null });
-  const [editingProfile, setEditingProfile] = useState(false);
-  const [nameDraft, setNameDraft] = useState("");
-  const [bioDraft, setBioDraft] = useState("");
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [profile, setProfile] = useState<{ display_name: string | null; avatar_url: string | null }>({
+    display_name: null,
+    avatar_url: null,
+  });
 
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const [{ data: circleData, error }, { data: p }] = await Promise.all([
-        supabase.from("circles").select("id, name, hero_image_url").order("created_at", { ascending: false }),
-        supabase.from("profiles").select("display_name, avatar_url, bio").eq("user_id", user.id).maybeSingle(),
+      const [{ data: p }, { data: circleRows, error }] = await Promise.all([
+        supabase.from("profiles").select("display_name, avatar_url").eq("user_id", user.id).maybeSingle(),
+        supabase.from("circles").select("id, name"),
       ]);
-      if (error) toast.error(error.message);
-      else setCircles(circleData ?? []);
       if (p) setProfile(p);
+      if (error) {
+        toast.error(error.message);
+        setLoading(false);
+        return;
+      }
+
+      const list = (circleRows ?? []) as Circle[];
+      const nameById = new Map(list.map((c) => [c.id, c.name]));
+
+      const [
+        { data: memberRows },
+        { data: meetingRows },
+        { data: messageRows },
+        { data: photoVis },
+        { data: tipVis },
+      ] = await Promise.all([
+        supabase.from("circle_members").select("circle_id, user_id"),
+        supabase.from("meetings").select("id, title, meeting_date, circle_id, created_by, created_at"),
+        supabase.from("messages").select("circle_id, created_at, user_id").order("created_at", { ascending: false }).limit(300),
+        supabase.from("photo_visibility").select("circle_id, photos(id, caption, created_at, owner_id)"),
+        supabase.from("tip_visibility").select("circle_id, tips(id, title, created_at, owner_id)"),
+      ]);
+
+      // Member avatars per circle
+      const memberIds = Array.from(new Set((memberRows ?? []).map((m) => m.user_id)));
+      const { data: profs } = memberIds.length
+        ? await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", memberIds)
+        : { data: [] as CircleMemberPreview[] };
+      const profById = new Map((profs ?? []).map((pr) => [pr.user_id, pr as CircleMemberPreview]));
+
+      const today = new Date().toISOString().slice(0, 10);
+
+      const views: CircleView[] = list.map((c) => {
+        const members = (memberRows ?? [])
+          .filter((m) => m.circle_id === c.id)
+          .map((m) => profById.get(m.user_id))
+          .filter(Boolean) as CircleMemberPreview[];
+
+        const highlights: CircleHighlight[] = [];
+        let last = 0;
+        const touch = (iso?: string | null) => {
+          if (!iso) return;
+          const t = new Date(iso).getTime();
+          if (t > last) last = t;
+        };
+
+        // 1. Upcoming meeting
+        const upcoming = (meetingRows ?? [])
+          .filter((m) => m.circle_id === c.id && m.meeting_date && m.meeting_date >= today)
+          .sort((a, b) => (a.meeting_date! < b.meeting_date! ? -1 : 1))[0];
+        if (upcoming) {
+          highlights.push({ text: `${formatMeetingDate(upcoming.meeting_date)} · ${upcoming.title}` });
+          touch(upcoming.created_at);
+        }
+
+        // 2. New update (photo)
+        const photos = (photoVis ?? [])
+          .filter((pv: any) => pv.circle_id === c.id && pv.photos)
+          .map((pv: any) => pv.photos)
+          .sort((a: any, b: any) => (a.created_at < b.created_at ? 1 : -1));
+        if (photos.length) {
+          highlights.push({ text: photos.length === 1 ? "En ny uppdatering" : `${photos.length} nya uppdateringar` });
+          touch(photos[0].created_at);
+        }
+
+        // 3. New tip
+        const tips = (tipVis ?? [])
+          .filter((tv: any) => tv.circle_id === c.id && tv.tips)
+          .map((tv: any) => tv.tips)
+          .sort((a: any, b: any) => (a.created_at < b.created_at ? 1 : -1));
+        if (tips.length) {
+          highlights.push({ text: `Nytt tips: ${tips[0].title}` });
+          touch(tips[0].created_at);
+        }
+
+        // 4. Messages
+        const msgs = (messageRows ?? []).filter((m) => m.circle_id === c.id);
+        if (msgs.length) {
+          highlights.push({ text: msgs.length === 1 ? "Ett nytt meddelande" : `${msgs.length} nya meddelanden` });
+          touch(msgs[0].created_at);
+        }
+
+        return { ...c, members, highlights: highlights.slice(0, 3), lastActivity: last };
+      });
+
+      views.sort((a, b) => b.lastActivity - a.lastActivity);
+      setCircles(views);
+
+      // "Jag har delat" — one shared chronological timeline of my own objects
+      const circlesForPhoto = new Map<string, string[]>();
+      (photoVis ?? []).forEach((pv: any) => {
+        if (!pv.photos) return;
+        const arr = circlesForPhoto.get(pv.photos.id) ?? [];
+        const n = nameById.get(pv.circle_id);
+        if (n) arr.push(n);
+        circlesForPhoto.set(pv.photos.id, arr);
+      });
+      const circlesForTip = new Map<string, string[]>();
+      (tipVis ?? []).forEach((tv: any) => {
+        if (!tv.tips) return;
+        const arr = circlesForTip.get(tv.tips.id) ?? [];
+        const n = nameById.get(tv.circle_id);
+        if (n) arr.push(n);
+        circlesForTip.set(tv.tips.id, arr);
+      });
+
+      const seenPhoto = new Set<string>();
+      const myPhotos: SharedItem[] = [];
+      (photoVis ?? []).forEach((pv: any) => {
+        const ph = pv.photos;
+        if (!ph || ph.owner_id !== user.id || seenPhoto.has(ph.id)) return;
+        seenPhoto.add(ph.id);
+        myPhotos.push({
+          id: ph.id,
+          kind: "update",
+          title: ph.caption || "En bild från vardagen",
+          created_at: ph.created_at,
+          circleNames: circlesForPhoto.get(ph.id) ?? [],
+        });
+      });
+
+      const seenTip = new Set<string>();
+      const myTips: SharedItem[] = [];
+      (tipVis ?? []).forEach((tv: any) => {
+        const tp = tv.tips;
+        if (!tp || tp.owner_id !== user.id || seenTip.has(tp.id)) return;
+        seenTip.add(tp.id);
+        myTips.push({
+          id: tp.id,
+          kind: "tip",
+          title: tp.title,
+          created_at: tp.created_at,
+          circleNames: circlesForTip.get(tp.id) ?? [],
+        });
+      });
+
+      const myMeetings: SharedItem[] = (meetingRows ?? [])
+        .filter((m) => m.created_by === user.id)
+        .map((m) => ({
+          id: m.id,
+          kind: "meeting" as const,
+          title: m.meeting_date ? `${formatMeetingDate(m.meeting_date)} · ${m.title}` : m.title,
+          created_at: m.created_at,
+          circleNames: [nameById.get(m.circle_id)].filter(Boolean) as string[],
+        }));
+
+      setShared(
+        [...myPhotos, ...myTips, ...myMeetings].sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        ),
+      );
+
       setLoading(false);
     })();
   }, [user]);
@@ -74,43 +224,16 @@ const HomePage = () => {
       .insert({ name: newName.trim(), created_by: user.id })
       .select()
       .single();
-    if (error) { toast.error(error.message); return; }
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     setNewName("");
     setCreating(false);
     navigate(`/circle/${data.id}`);
   };
 
-  const openEdit = () => {
-    setNameDraft(profile.display_name ?? "");
-    setBioDraft(profile.bio ?? "");
-    setEditingProfile(true);
-  };
-
-  const saveProfile = async () => {
-    if (!user) return;
-    const payload = { user_id: user.id, display_name: nameDraft.trim() || null, bio: bioDraft.trim() || null };
-    const { error } = await supabase.from("profiles").upsert(payload, { onConflict: "user_id" });
-    if (error) { toast.error(error.message); return; }
-    setProfile((p) => ({ ...p, display_name: payload.display_name, bio: payload.bio }));
-    setEditingProfile(false);
-  };
-
-  const uploadAvatar = async (file: File) => {
-    if (!user) return;
-    const ext = file.name.split(".").pop() || "jpg";
-    const path = `${user.id}/avatar-${Date.now()}.${ext}`;
-    const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
-    if (upErr) { toast.error(upErr.message); return; }
-    const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
-    const url = pub.publicUrl;
-    const { error } = await supabase.from("profiles").upsert(
-      { user_id: user.id, avatar_url: url },
-      { onConflict: "user_id" },
-    );
-    if (error) { toast.error(error.message); return; }
-    setProfile((p) => ({ ...p, avatar_url: url }));
-  };
-
+  const firstName = (profile.display_name ?? "").trim().split(" ")[0];
   const initials = (profile.display_name ?? user?.email ?? "?")
     .split(/\s+|@/)
     .filter(Boolean)
@@ -122,136 +245,101 @@ const HomePage = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-md mx-auto px-4 pt-safe pb-safe">
         <header className="flex items-center justify-between py-6">
-          <Typography as="span" variant="label" style={{ letterSpacing: "0.2em", color: "hsl(var(--color-accent-terra))", textTransform: "lowercase" }}>minby</Typography>
-          <button
-            onClick={() => navigate("/settings")}
-            className="text-foreground p-2"
-            aria-label="Inställningar"
+          <Typography
+            as="span"
+            variant="label"
+            style={{ letterSpacing: "0.2em", color: "hsl(var(--color-accent-terra))", textTransform: "lowercase" }}
           >
+            minby
+          </Typography>
+          <button onClick={() => navigate("/settings")} className="text-foreground p-2" aria-label="Inställningar">
             <Menu className="w-5 h-5" />
           </button>
         </header>
 
-        {/* Profile header */}
-        <section className="flex items-center gap-4 mb-8">
+        {/* Profile header — avatar and greeting only */}
+        <section className="flex items-center gap-4 mb-12">
           <div
-            className="relative w-20 h-20 rounded-[32%] overflow-hidden flex items-center justify-center flex-shrink-0"
-            style={{
-              backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1",
-              color: "#561828",
-            }}
+            className="w-14 h-14 rounded-[32%] overflow-hidden flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1", color: "#561828" }}
           >
             {profile.avatar_url ? (
               <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
-            ) : initials ? (
+            ) : (
               <Typography as="span" variant="heading">{initials}</Typography>
-            ) : (
-              <Camera className="w-5 h-5" />
             )}
           </div>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])}
-          />
-          <div className="flex-1 min-w-0">
-            {profile.display_name ? (
-              <Typography as="span" variant="display" className="text-foreground truncate block">{profile.display_name}</Typography>
-            ) : (
-              <button type="button" onClick={openEdit} className="text-left">
-                <span
-                  className={cn(typography.body, "underline underline-offset-2 decoration-1")}
-                  style={{ color: "hsl(var(--color-text-primary))", textDecorationColor: "hsl(var(--color-accent-terra))" }}
-                >
-                  Lägg till ditt namn
-                </span>
-              </button>
-            )}
-            {profile.bio ? (
-              <Typography as="p" variant="meta" className="text-muted-foreground mt-1 line-clamp-2">{profile.bio}</Typography>
-            ) : (
-              <div className="mt-1">
-                <TextButton type="button" onClick={openEdit}>
-                  Skriv en kort presentation
-                </TextButton>
-              </div>
-            )}
-          </div>
+          <Typography as="h1" variant="display" className="text-foreground">
+            {greeting()}{firstName ? `, ${firstName}` : ""}.
+          </Typography>
         </section>
 
-        {editingProfile && (
-          <div className="mb-6 rounded-[26px] p-4 space-y-3" style={{ backgroundColor: "#F9F3E1" }}>
-            <input
-              autoFocus
-              value={nameDraft}
-              onChange={(e) => setNameDraft(e.target.value)}
-              placeholder="Ditt namn"
-              className="w-full bg-transparent border-0 outline-none text-foreground"
-            />
-            <textarea
-              value={bioDraft}
-              onChange={(e) => setBioDraft(e.target.value)}
-              placeholder="Kort om dig"
-              rows={2}
-              className="w-full bg-transparent border-0 outline-none text-foreground resize-none"
-            />
-            <div className="flex gap-6">
-              <TextButton onClick={saveProfile}>Spara</TextButton>
-              <TextButton variant="secondary" onClick={() => setEditingProfile(false)}>Avbryt</TextButton>
+        {/* Kretsar — the heart of the page */}
+        <section>
+          <Typography as="h2" variant="display" className="text-foreground mb-5">
+            Kretsar
+          </Typography>
+
+          {loading ? (
+            <div className="space-y-4">
+              <CircleCardSkeleton />
+              <CircleCardSkeleton />
             </div>
-          </div>
-        )}
-
-        <Typography as="h2" variant="display" className="text-foreground mb-4">Mina kretsar</Typography>
-
-        {loading ? (
-          <div className="space-y-3">
-            <CircleCardSkeleton />
-            <CircleCardSkeleton />
-          </div>
-        ) : circles.length === 0 ? (
-          <div className="space-y-3">
-            <PlaceholderCircleCard
-              name="Din första krets"
-              summary="Så här kommer det se ut. Bjud in dina närmaste vänner så börjar det hända grejer här."
-            />
-            <PlaceholderCircleCard
-              name="Familjen"
-              summary="En krets för dem du delar vardag med — tips, träffar och bilder samlade på ett ställe."
-            />
-            <div className="pt-4 flex justify-center">
-              <TextButton onClick={() => setCreating(true)}>
-                + Skapa din första krets
-              </TextButton>
+          ) : circles.length === 0 ? (
+            <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+              Här samlas dina kretsar. Skapa en och bjud in dina närmaste.
+            </Typography>
+          ) : (
+            <div className="space-y-4">
+              {circles.map((c) => (
+                <CircleDashboardCard
+                  key={c.id}
+                  name={c.name}
+                  highlights={c.highlights}
+                  members={c.members}
+                  onOpen={() => navigate(`/circle/${c.id}`)}
+                />
+              ))}
             </div>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {circles.map((c) => (
-              <CircleCard
-                key={c.id}
-                circleId={c.id}
-                name={c.name}
-                onOpen={() => navigate(`/circle/${c.id}`)}
-              />
-            ))}
-            <div className="pt-4 flex justify-center">
-              <TextButton onClick={() => setCreating(true)}>
-                + Skapa och bjud in till en krets
-              </TextButton>
-            </div>
-          </div>
-        )}
+          )}
+        </section>
 
+        {/* Jag har delat — one chronological timeline of my own objects */}
+        <section className="mt-16 pb-32">
+          <Typography as="h2" variant="heading" className="text-foreground mb-4">
+            Jag har delat
+          </Typography>
 
-        <ProfilePlaceholders
-          userId={user?.id ?? null}
-          circles={circles}
-          displayName={profile.display_name ?? ""}
-        />
+          {loading ? null : shared.length === 0 ? (
+            <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+              Det du delar med dina kretsar samlas här.
+            </Typography>
+          ) : (
+            <ul className="space-y-5">
+              {shared.map((s) => (
+                <li key={`${s.kind}-${s.id}`}>
+                  <Typography as="div" variant="meta" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                    {kindLabel(s.kind)} · {formatShortDate(s.created_at)}
+                  </Typography>
+                  <Typography as="div" variant="body" className="mt-0.5" style={{ color: "hsl(var(--color-text-primary))" }}>
+                    {s.title}
+                  </Typography>
+                  {s.circleNames.length > 0 && (
+                    <Typography as="div" variant="meta" className="mt-0.5" style={{ color: "#561828" }}>
+                      {s.circleNames.join(", ")}
+                    </Typography>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </div>
+
+      <PrimaryActionButton
+        ariaLabel="Skapa en krets"
+        options={[{ label: "Skapa en krets", onSelect: () => setCreating(true) }]}
+      />
 
       {/* Create circle sheet */}
       <Sheet
@@ -272,7 +360,9 @@ const HomePage = () => {
                 autoFocus
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                onKeyDown={(e) => { if (e.key === "Enter") createCircle(); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") createCircle();
+                }}
                 placeholder="Namn på kretsen"
                 className={cn(typography.body, "w-full bg-transparent border-0 outline-none text-foreground")}
               />
@@ -289,519 +379,28 @@ const HomePage = () => {
   );
 };
 
-const PlaceholderTag = () => <ExampleTag />;
+const greeting = () => {
+  const h = new Date().getHours();
+  if (h < 10) return "God morgon";
+  if (h < 17) return "God dag";
+  return "God kväll";
+};
 
+const kindLabel = (kind: SharedItem["kind"]) =>
+  kind === "tip" ? "Tips" : kind === "meeting" ? "Träff" : "Uppdatering";
 
+const MONTHS = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+const WEEKDAYS = ["sön", "mån", "tis", "ons", "tor", "fre", "lör"];
 
-const HorizontalStrip = ({
-  items,
-  gradient,
-  size = "lg",
-}: {
-  items: { title: string; sub: string; bg: string; showTag?: boolean; imageUrl?: string | null }[];
-  gradient: "tips" | "photos";
-  size?: "sm" | "lg";
-}) => (
-  <div className="flex overflow-x-auto -mx-4 px-4 pb-2 scrollbar-hide">
-    {items.map((t, i) => (
-      <PhotoTile
-        key={i}
-        imageUrl={t.imageUrl ?? null}
-        title={t.title}
-        ownerName={t.sub}
-        size={size}
-        gradient={gradient}
-        tag={t.showTag ? "exempel" : undefined}
-        roundedLeft={i === 0}
-        roundedRight={i === items.length - 1}
-      />
-    ))}
-  </div>
-);
-
-interface MeetingItem {
-  id: string;
-  title: string;
-  meeting_date: string | null;
-  created_by: string;
-  circle_id: string;
-
-  host_name: string;
-  response_count: number;
-  isMine: boolean;
-}
-
-interface MyTip {
-  id: string;
-  title: string;
-  image_url: string | null;
-  created_at: string;
-  comment: string | null;
-  url: string | null;
-  category: string | null;
-}
-interface MyPhoto {
-  id: string;
-  image_url: string | null;
-  created_at: string;
-  caption: string | null;
-}
-
-const formatMeetingDate = (iso: string | null) => {
+function formatMeetingDate(iso: string | null) {
   if (!iso) return "Datum ej satt";
   const d = new Date(iso);
-  const weekdays = ["sön", "mån", "tis", "ons", "tor", "fre", "lör"];
-  const months = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
-  return `${weekdays[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
-};
+  return `${WEEKDAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
 
-const formatTipDate = (iso: string) => {
+function formatShortDate(iso: string) {
   const d = new Date(iso);
-  const months = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
-  return `${d.getDate()} ${months[d.getMonth()]}`;
-};
-
-
-
-const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string | null; circles: Circle[]; displayName: string }) => {
-  const navigate = useNavigate();
-  const [meetings, setMeetings] = useState<MeetingItem[] | null>(null);
-  const [myTips, setMyTips] = useState<MyTip[] | null>(null);
-  const [myPhotos, setMyPhotos] = useState<MyPhoto[] | null>(null);
-
-  // Creation sheet state
-  const [showTipForm, setShowTipForm] = useState(false);
-  const [showAllTips, setShowAllTips] = useState(false);
-  const [selectedCircles, setSelectedCircles] = useState<string[]>([]);
-
-  const [showPhotoForm, setShowPhotoForm] = useState(false);
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [photoCaption, setPhotoCaption] = useState("");
-  const photoInputRef = useRef<HTMLInputElement>(null);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
-
-  useEffect(() => {
-    if (!userId) return;
-    (async () => {
-      const [{ data: mtgs, error }, { data: tipRows }, { data: photoRows }] = await Promise.all([
-        supabase
-          .from("meetings")
-          .select("id, title, meeting_date, created_by, circle_id")
-          .order("meeting_date", { ascending: true, nullsFirst: false }),
-        supabase
-          .from("tips")
-          .select("id, title, image_path, created_at, comment, url, category")
-          .eq("owner_id", userId)
-          .order("created_at", { ascending: false })
-          .limit(10),
-        supabase
-          .from("photos")
-          .select("id, storage_path, created_at, caption")
-          .eq("owner_id", userId)
-          .order("created_at", { ascending: false })
-          .limit(10),
-      ]);
-
-      if (error || !mtgs) setMeetings([]);
-      else {
-        const creatorIds = Array.from(new Set(mtgs.map((m) => m.created_by)));
-        const ids = mtgs.map((m) => m.id);
-        const [{ data: profs }, { data: resps }] = await Promise.all([
-          creatorIds.length
-            ? supabase.from("profiles").select("user_id, display_name").in("user_id", creatorIds)
-            : Promise.resolve({ data: [] as { user_id: string; display_name: string | null }[] }),
-          ids.length
-            ? supabase.from("meeting_responses").select("meeting_id").in("meeting_id", ids)
-            : Promise.resolve({ data: [] as { meeting_id: string }[] }),
-        ]);
-        const nameById = new Map((profs ?? []).map((p) => [p.user_id, p.display_name ?? "Någon"]));
-        const counts = new Map<string, number>();
-        (resps ?? []).forEach((r) => counts.set(r.meeting_id, (counts.get(r.meeting_id) ?? 0) + 1));
-
-        setMeetings(
-          mtgs.map((m) => ({
-            id: m.id,
-            title: m.title,
-            meeting_date: m.meeting_date,
-            created_by: m.created_by,
-            circle_id: m.circle_id,
-            host_name: nameById.get(m.created_by) ?? "Någon",
-            response_count: counts.get(m.id) ?? 0,
-            isMine: m.created_by === userId,
-          })),
-        );
-      }
-
-      // Sign tip + photo images
-      const tipPaths = (tipRows ?? []).map((t) => t.image_path).filter(Boolean) as string[];
-      const photoPaths = (photoRows ?? []).map((p) => p.storage_path).filter(Boolean) as string[];
-      const [tipSigned, photoSigned] = await Promise.all([
-        tipPaths.length
-          ? supabase.storage.from("circle-photos").createSignedUrls(tipPaths, 60 * 60)
-          : Promise.resolve({ data: [] as { path: string; signedUrl: string }[] }),
-        photoPaths.length
-          ? supabase.storage.from("circle-photos").createSignedUrls(photoPaths, 60 * 60)
-          : Promise.resolve({ data: [] as { path: string; signedUrl: string }[] }),
-      ]);
-      const tipMap = new Map((tipSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
-      const photoMap = new Map((photoSigned.data ?? []).map((d) => [d.path, d.signedUrl]));
-      setMyTips((tipRows ?? []).map((t: any) => ({ id: t.id, title: t.title, created_at: t.created_at, comment: t.comment ?? null, url: t.url ?? null, category: t.category ?? null, image_url: t.image_path ? tipMap.get(t.image_path) ?? null : null })));
-      setMyPhotos((photoRows ?? []).map((p: any) => ({ id: p.id, created_at: p.created_at, caption: p.caption ?? null, image_url: p.storage_path ? photoMap.get(p.storage_path) ?? null : null })));
-    })();
-  }, [userId]);
-
-  const hasMeetings = meetings && meetings.length > 0;
-  const hasTips = myTips && myTips.length > 0;
-  const hasPhotos = myPhotos && myPhotos.length > 0;
-
-  const openTipForm = () => {
-    if (!circles.length) { toast.error("Skapa en krets först"); return; }
-    setSelectedCircles(circles.length === 1 ? [circles[0].id] : []);
-    setShowTipForm(true);
-  };
-
-  const openPhotoForm = () => {
-    if (!circles.length) { toast.error("Skapa en krets först"); return; }
-    setSelectedCircles(circles.length === 1 ? [circles[0].id] : []);
-    photoInputRef.current?.click();
-  };
-
-  const toggleCircle = (id: string) => {
-    setSelectedCircles((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]);
-  };
-
-  const addTipToList = (t: { id: string; title: string; image_url: string | null; created_at: string; comment: string | null; url: string | null; category: string | null }) => {
-    setMyTips((prev) => [t, ...(prev ?? [])]);
-  };
-
-
-
-  const uploadPhoto = async () => {
-    if (!userId || !photoFile || !selectedCircles.length) return;
-    setUploadingPhoto(true);
-    try {
-      const ext = photoFile.name.split(".").pop() || "jpg";
-      const path = `${userId}/${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("circle-photos").upload(path, photoFile, { contentType: photoFile.type });
-      if (upErr) throw upErr;
-      const { data: photoRow, error: insErr } = await supabase.from("photos")
-        .insert({ owner_id: userId, storage_path: path, caption: photoCaption.trim() || null })
-        .select("id, storage_path, created_at, caption").single();
-      if (insErr || !photoRow) throw insErr ?? new Error("Kunde inte spara foto");
-      const { error: visErr } = await supabase.from("photo_visibility")
-        .insert(selectedCircles.map((c) => ({ photo_id: photoRow.id, circle_id: c })));
-      if (visErr) throw visErr;
-      const { data: signed } = await supabase.storage.from("circle-photos").createSignedUrl(path, 60 * 60);
-      setMyPhotos((prev) => [{ id: photoRow.id, created_at: photoRow.created_at, caption: (photoRow as any).caption ?? null, image_url: signed?.signedUrl ?? null }, ...(prev ?? [])]);
-      toast.success("Fotot är delat");
-      setPhotoFile(null);
-      setPhotoCaption("");
-      if (photoPreview) { URL.revokeObjectURL(photoPreview); setPhotoPreview(null); }
-      setShowPhotoForm(false);
-    } catch (e: any) {
-      toast.error(e?.message ?? "Kunde inte ladda upp");
-    } finally {
-      setUploadingPhoto(false);
-    }
-  };
-
-  const CirclePicker = () => (
-    <div className="space-y-2">
-      <Typography as="div" variant="meta" style={{ color: "#561828" }}>Dela med</Typography>
-      <div className="flex flex-wrap gap-2">
-        {circles.map((c) => {
-          const active = selectedCircles.includes(c.id);
-          return (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => toggleCircle(c.id)}
-              className={cn(typography.meta, "px-3 py-1.5 rounded-full")}
-              style={{
-                backgroundColor: active ? "hsl(var(--color-accent-terra))" : "#F9F3E1",
-                color: active ? "white" : "hsl(var(--color-text-primary))",
-              }}
-            >
-              {c.name}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-
-  return (
-  <>
-    {/* Kommande träffar */}
-    <div className="flex items-baseline justify-between mb-3 mt-10">
-      <Typography as="h2" variant="display" className="text-foreground">Mina träffar</Typography>
-    </div>
-    {hasMeetings ? (
-      <div className="flex gap-3 overflow-x-auto -mx-4 px-4 pb-2">
-        {meetings!.map((m) => (
-          <button
-            key={m.id}
-            onClick={() => navigate(`/circle/${m.circle_id}`)}
-            className="w-[176px] flex-shrink-0 h-[184px] rounded-[26px] p-4 flex flex-col justify-between relative text-left"
-            style={{ backgroundColor: "#F2ECE3" }}
-          >
-            <div>
-              <Typography as="div" variant="meta" className="mb-2" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-                {m.isMine ? "Du" : m.host_name}
-              </Typography>
-              <Typography as="div" variant="body" className="leading-tight" style={{ color: "hsl(var(--color-text-primary))" }}>
-                {formatMeetingDate(m.meeting_date)}<br />{m.title}
-              </Typography>
-            </div>
-            <div>
-              <Typography as="div" variant="meta" className="mb-1" style={{ color: "#561828" }}>
-                {m.response_count === 0 ? "Ingen har svarat" : `${m.response_count} har svarat`}
-              </Typography>
-              <span
-                className={cn(typography.label, "underline underline-offset-2 decoration-2")}
-                style={{ color: "hsl(var(--color-text-primary))", textDecorationColor: "hsl(var(--color-accent-terra))" }}
-              >
-                {m.isMine ? "Öppna" : "Häng med!"}
-              </span>
-            </div>
-          </button>
-        ))}
-      </div>
-    ) : (
-      <div className="flex gap-3 overflow-x-auto -mx-4 px-4 pb-2">
-        {[
-          { host: "Sara", date: "Fre 21 nov", title: "Fika på Café Pascal", count: 2 },
-          { host: "Mia", date: "Lör 29 nov", title: "Promenad i Hagaparken", count: 0 },
-        ].map((m, i) => (
-          <div
-            key={i}
-            className="w-[176px] flex-shrink-0 h-[184px] rounded-[26px] p-4 flex flex-col justify-between relative"
-            style={{ backgroundColor: "#F2ECE3" }}
-          >
-            <div className="absolute top-3 right-3"><PlaceholderTag /></div>
-            <div>
-              <Typography as="div" variant="meta" className="mb-2" style={{ color: "hsl(var(--color-text-tertiary))" }}>{m.host}</Typography>
-              <Typography as="div" variant="body" className="leading-tight" style={{ color: "hsl(var(--color-text-primary))" }}>
-                {m.date}<br />{m.title}
-              </Typography>
-            </div>
-            <div>
-              <Typography as="div" variant="meta" className="mb-1" style={{ color: "#561828" }}>
-                {m.count === 0 ? "Ingen har svarat" : `${m.count} har svarat`}
-              </Typography>
-              <span
-                className={cn(typography.label, "underline underline-offset-2 decoration-2")}
-                style={{ color: "hsl(var(--color-text-primary))", textDecorationColor: "hsl(var(--color-accent-terra))" }}
-              >
-                Häng med!
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    )}
-    <Typography as="p" variant="meta" className="mt-2" style={{ color: "#561828" }}>
-      Föreslå en träff i någon av dina kretsar så syns den här.
-    </Typography>
-
-
-    {/* Mina tips — overview preview */}
-    <div className="mt-10 mb-3">
-      <Typography as="h2" variant="display" className="text-foreground">Mina tips</Typography>
-    </div>
-    {hasTips ? (
-      <>
-        <div className="relative">
-          <div className="space-y-3 max-h-[280px] overflow-hidden">
-            {myTips!.slice(0, 3).map((t) => (
-              <TipCard
-                key={t.id}
-                imageUrl={t.image_url}
-                ownerName={displayName || "Du"}
-                ownerAvatar={null}
-                dateLabel={formatTipDate(t.created_at)}
-                title={t.title}
-                description={t.comment}
-                url={t.url}
-                category={t.category}
-                onOpen={() => setShowAllTips(true)}
-              />
-            ))}
-          </div>
-          <div
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-24"
-            style={{ background: "linear-gradient(to bottom, hsla(42,20%,95%,0), hsl(var(--background)) 85%)" }}
-          />
-        </div>
-        <div className="mt-4 flex justify-center">
-          <TextButton onClick={() => setShowAllTips(true)}>Visa alla tips</TextButton>
-        </div>
-      </>
-    ) : (
-      <>
-        <HorizontalStrip
-          gradient="tips"
-          items={[
-            { title: "Bagarstugan", sub: "Du", bg: "#E8DDC6", showTag: true },
-            { title: "podd: Filosofiska rummet", sub: "Du", bg: "#DCEAF8" },
-            { title: "bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
-          ]}
-        />
-        <Typography as="p" variant="meta" className="mt-2" style={{ color: "#561828" }}>
-          {circles.length ? "Dela en plats, bok, podd eller länk du gillar med en krets." : "Skapa en krets så kan du dela tips."}
-        </Typography>
-      </>
-    )}
-
-
-    {/* Foton */}
-    <div className="flex items-baseline justify-between mb-3 mt-10">
-      <Typography as="h2" variant="display" className="text-foreground">Mina foton</Typography>
-    </div>
-    <input
-      ref={photoInputRef}
-      type="file"
-      accept="image/*"
-      className="hidden"
-      onChange={(e) => {
-        const f = e.target.files?.[0];
-        if (f) {
-          setPhotoFile(f);
-          if (photoPreview) URL.revokeObjectURL(photoPreview);
-          setPhotoPreview(URL.createObjectURL(f));
-          setShowPhotoForm(true);
-        }
-        e.target.value = "";
-      }}
-    />
-    {hasPhotos ? (
-      <HorizontalStrip
-        gradient="photos"
-        items={myPhotos!.map((p) => ({ title: p.caption || "", sub: new Date(p.created_at).toLocaleDateString("sv-SE", { day: "numeric", month: "short" }), bg: "#E8DDC6", imageUrl: p.image_url }))}
-      />
-    ) : (
-      <HorizontalStrip
-        gradient="photos"
-        items={[
-          { title: "Barnen", sub: "Du", bg: "#E8DDC6", showTag: true },
-          { title: "Huset", sub: "Du", bg: "#DCEAF8" },
-          { title: "Sommar", sub: "Du", bg: "#F5EFD9" },
-          { title: "Resan", sub: "Du", bg: "#F2ECE3" },
-        ]}
-      />
-    )}
-    <Typography as="p" variant="meta" className="mt-2" style={{ color: "#561828" }}>
-      {circles.length ? "Bilder du delar i dina kretsar samlas här som ett gemensamt minne." : "Skapa en krets så kan du dela foton."}
-    </Typography>
-
-    <PrimaryActionButton
-      options={[
-        { label: "Dela från vardagen", onSelect: openPhotoForm, disabled: !circles.length },
-        { label: "Föreslå en träff", onSelect: () => circles[0] && navigate(`/circle/${circles[0].id}`), disabled: !circles.length },
-        { label: "Dela ett tips", onSelect: openTipForm, disabled: !circles.length },
-      ]}
-    />
-
-    {/* Våra tips — full browsing sheet */}
-    <Sheet open={showAllTips} onOpenChange={setShowAllTips}>
-      <BottomSheetContent height={92}>
-        <BottomSheetHeader title="Våra tips" />
-        <BottomSheetBody className="px-4 pt-4 pb-32 space-y-3">
-          {(myTips ?? []).map((t) => (
-            <TipCard
-              key={t.id}
-              imageUrl={t.image_url}
-              ownerName={displayName || "Du"}
-              ownerAvatar={null}
-              dateLabel={formatTipDate(t.created_at)}
-              title={t.title}
-              description={t.comment}
-              url={t.url}
-              category={t.category}
-            />
-          ))}
-        </BottomSheetBody>
-      </BottomSheetContent>
-    </Sheet>
-
-    {/* Tip create sheet */}
-    <ShareTipSheet
-      open={showTipForm}
-      onOpenChange={setShowTipForm}
-      userId={userId ?? ""}
-      circles={circles.map((c) => ({ id: c.id, name: c.name }))}
-      defaultCircleIds={selectedCircles}
-      onCreated={(t) =>
-        addTipToList({
-          id: t.id,
-          title: t.title,
-          image_url: t.image_url,
-          created_at: t.created_at,
-          comment: t.comment,
-          url: t.url,
-          category: t.category,
-        })
-      }
-    />
-
-    {/* Photo upload sheet */}
-    <Sheet open={showPhotoForm} onOpenChange={(o) => { setShowPhotoForm(o); if (!o) { setPhotoFile(null); setPhotoCaption(""); if (photoPreview) URL.revokeObjectURL(photoPreview); setPhotoPreview(null); } }}>
-      <BottomSheetContent>
-        <BottomSheetHeader title="Ladda upp foto" />
-        <BottomSheetBody className="px-4 pt-4 pb-8 space-y-3">
-          {photoPreview && (
-            <img src={photoPreview} alt="" className="w-full max-h-[240px] object-cover rounded-2xl" />
-          )}
-          <Textarea
-            placeholder="Bildtext (valfritt)"
-            value={photoCaption}
-            onChange={(e) => setPhotoCaption(e.target.value)}
-            rows={2}
-            maxLength={140}
-            className="rounded-lg resize-none"
-          />
-          <CirclePicker />
-          <div className="flex justify-end pt-2">
-            <TextButton onClick={uploadPhoto} disabled={!photoFile || !selectedCircles.length || uploadingPhoto}>
-              {uploadingPhoto ? "Laddar upp…" : "Dela foto"}
-            </TextButton>
-          </div>
-        </BottomSheetBody>
-      </BottomSheetContent>
-    </Sheet>
-
-  </>
-  );
-};
-
-
-const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: string }) => (
-  <div
-    className="w-full rounded-[26px] p-5 flex gap-4 relative"
-    style={{ backgroundColor: "#F9F3E1" }}
-  >
-    <ExampleTag className="absolute top-3 right-3" />
-    <div className="flex-1 min-w-0">
-      <Typography as="div" variant="meta" className="mb-2" style={{ color: "#561828" }}>
-        {name}
-      </Typography>
-      <Typography as="p" variant="body" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
-        {summary}
-      </Typography>
-        <span
-          className={cn(typography.label, "underline underline-offset-2 decoration-2")}
-          style={{ color: "hsl(var(--color-text-primary))", textDecorationColor: "hsl(var(--color-accent-terra))" }}
-        >
-          Skapa din egen
-        </span>
-    </div>
-    <div className="flex-shrink-0 w-[92px] h-[92px] relative">
-      <div className="absolute top-0 right-0 w-12 h-12 rounded-full" style={{ backgroundColor: "#DCEAF8" }} />
-      <div className="absolute top-8 left-0 w-11 h-11 rounded-full" style={{ backgroundColor: "#E8DDC6" }} />
-      <div className="absolute bottom-0 right-2 w-10 h-10 rounded-full" style={{ backgroundColor: "#F5EFD9" }} />
-    </div>
-  </div>
-);
+  return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
 
 export default HomePage;
