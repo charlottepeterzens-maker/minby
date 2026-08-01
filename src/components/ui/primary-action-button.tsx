@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Sheet } from "@/components/ui/sheet";
 import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
+import { cn } from "@/lib/utils";
+import { typography } from "@/design-system/typography";
 
 export interface PrimaryAction {
   label: string;
@@ -71,7 +73,7 @@ const PrimaryActionButton = ({
                     onClick={() => handleSelect(a)}
                     disabled={a.disabled}
                     className={cn(typography.body, "w-full text-left px-3 py-3 rounded-[16px] active:opacity-70 disabled:opacity-40")}
-                    style={{ color: "#2B2B2B" }}
+                    style={{ color: "hsl(var(--color-text-primary))" }}
                   >
                     {a.label}
                   </button>
