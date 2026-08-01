@@ -286,9 +286,19 @@ const HomePage = () => {
               <CircleCardSkeleton />
             </div>
           ) : circles.length === 0 ? (
-            <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-              Här samlas dina kretsar. Skapa en och bjud in dina närmaste.
-            </Typography>
+            <div className="space-y-3">
+              <Typography as="h3" variant="heading" className="text-foreground">
+                Inga kretsar än
+              </Typography>
+              <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                Dina kretsar är där relationerna lever. Skapa din första och bjud in de du vill ha närmast.
+              </Typography>
+              <div className="pt-1">
+                <TextButton onClick={() => setCreating(true)}>
+                  Skapa en krets
+                </TextButton>
+              </div>
+            </div>
           ) : (
             <div className="space-y-4">
               {circles.map((c) => (
