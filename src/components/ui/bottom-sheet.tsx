@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { SheetOverlay, SheetPortal, SheetTitle } from "@/components/ui/sheet";
+import { typography } from "@/design-system/typography";
 
 /**
  * Standardized Minby Bottom Sheet.
