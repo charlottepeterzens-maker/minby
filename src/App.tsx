@@ -43,8 +43,9 @@ const App = () => {
         <AuthProvider>
           <BrowserRouter>
             <Routes>
-              {/* Minby has no visitable profiles: the only profile route is the
-                  signed-in user's own home. Never add /profile/:userId. */}
+              {/* Minby = Hem, Krets, Inställningar. No global feed.
+                  "/" is Home: the signed-in user's own start page.
+                  Never add /profile/:userId — profiles are not visitable. */}
               <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
               <Route path="/circle/:id" element={<ProtectedRoute><CirclePage /></ProtectedRoute>} />

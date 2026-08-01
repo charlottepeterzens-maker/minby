@@ -33,7 +33,7 @@ interface Profile {
 }
 
 /**
- * HomePage — the signed-in user's own home.
+ * HomePage (Hem) — the app's start page for the signed-in user.
  *
  * ARCHITECTURE: Minby has no visitable profiles. There is exactly one profile
  * page and it always belongs to the authenticated user (auth.uid()). Other
