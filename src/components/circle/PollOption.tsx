@@ -35,7 +35,8 @@ const PollOption = ({ label, votes, totalVotes, selected, disabled, onSelect }: 
         <Typography
           variant="body"
           as="span"
-          style={{ color: "hsl(var(--color-text-primary))", fontWeight: selected ? 600 : 400 }}
+          className={selected ? typographyEmphasis.strong : undefined}
+          style={{ color: "hsl(var(--color-text-primary))" }}
         >
           {label}
         </Typography>

@@ -135,3 +135,11 @@ export const typographyElements = Object.fromEntries(
 
 /** The one and only font family in Minby. */
 export const fontFamily = "Outfit, sans-serif";
+
+/**
+ * Emphasis modifiers — the only sanctioned way to add weight emphasis on top
+ * of a variant (e.g. a selected list item). Never write `font-*` directly.
+ */
+export const typographyEmphasis = {
+  strong: "font-semibold",
+} as const;
