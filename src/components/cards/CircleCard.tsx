@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 
 interface Props {
   circleId: string;
@@ -52,19 +54,19 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
     >
       <div className="flex-1 min-w-0">
         <div
-          className="text-[13px] mb-2"
-          style={{ fontFamily: "'Outfit', sans-serif", color: "#561828" }}
+          className={cn(typography.caption, "mb-2")}
+          style={{ color: "#561828" }}
         >
           {name}
         </div>
         <p
-          className="text-[15px] leading-snug line-clamp-4 mb-3"
+          className={cn(typography.bodyMd, "line-clamp-4 mb-3")}
           style={{ color: "#2B2B2B" }}
         >
           {summary ?? "Här samlas kretsen. Öppna för att se vad som händer."}
         </p>
           <span
-            className="text-button underline underline-offset-2 decoration-1"
+            className={cn(typography.button, "underline underline-offset-2 decoration-1")}
             style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
           >
             Kika in!
@@ -84,7 +86,7 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
         )}
         {extra > 0 && (
           <div
-            className="absolute bottom-0 right-2 w-10 h-10 rounded-[32%] flex items-center justify-center text-[13px] font-medium"
+            className={cn(typography.caption, "absolute bottom-0 right-2 w-10 h-10 rounded-[32%] flex items-center justify-center font-medium")}
             style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
           >
             +{extra}
@@ -103,7 +105,7 @@ const Avatar = ({ src, name, className }: { src: string | null; name: string | n
     .join("");
   return (
     <div
-      className={`rounded-[32%] overflow-hidden flex items-center justify-center text-xs ${className ?? ""}`}
+      className={cn(typography.meta, "rounded-[32%] overflow-hidden flex items-center justify-center", className)}
       style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
     >
       {src ? (

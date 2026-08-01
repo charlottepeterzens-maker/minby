@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { SheetOverlay, SheetPortal, SheetTitle } from "@/components/ui/sheet";
+import { typography } from "@/design-system/typography";
 
 /**
  * Standardized Minby Bottom Sheet.
@@ -90,7 +91,7 @@ export const BottomSheetHeader = ({ title, className }: BottomSheetHeaderProps) 
     }}
   >
     <SheetTitle
-      className="text-heading-md text-center truncate"
+      className={cn(typography.heading, "text-center truncate leading-none")}
       style={{ color: "#2B2B2B" }}
     >
       {title}
