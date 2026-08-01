@@ -19,6 +19,9 @@ import CircleOnboarding from "@/components/CircleOnboarding";
 import PrimaryActionButton from "@/components/ui/primary-action-button";
 import WelcomeToCircleCard from "@/components/circle/WelcomeToCircleCard";
 import ProfileNudge from "@/components/profile/ProfileNudge";
+import PollCard from "@/components/circle/PollCard";
+import CreatePollSheet from "@/components/circle/CreatePollSheet";
+import usePolls from "@/hooks/usePolls";
 
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
