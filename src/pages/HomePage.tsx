@@ -328,6 +328,9 @@ const HomePage = () => {
               <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
                 När du delar bilder, tips eller föreslår träffar i dina kretsar samlas allt här.
               </Typography>
+              <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                Gå in i en krets för att dela något.
+              </Typography>
             </div>
           ) : (
             <ul className="space-y-5">
