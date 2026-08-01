@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetDescription } from "@/components/ui/sheet";
 import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
-import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, Plus, ChevronDown } from "lucide-react";
+import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import PhotoTile from "@/components/cards/PhotoTile";

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import PrimaryActionButton from "@/components/ui/primary-action-button";
-import { Camera, Menu, Plus, X } from "lucide-react";
+import { Camera, Menu, X } from "lucide-react";
 import TipCard from "@/components/cards/TipCard";
 import ShareTipSheet from "@/components/tips/ShareTipSheet";
 import CircleCard from "@/components/cards/CircleCard";
@@ -281,12 +281,6 @@ const HomePage = () => {
 const PlaceholderTag = () => <ExampleTag />;
 
 
-const SectionHeader = ({ title, cta, onCta, disabled }: { title: string; cta: string; onCta?: () => void; disabled?: boolean }) => (
-  <div className="flex items-baseline justify-between mb-3 mt-10">
-    <h2 className="font-display text-xl text-foreground">{title}</h2>
-    <TextButton onClick={onCta} disabled={disabled}>{cta}</TextButton>
-  </div>
-);
 
 const HorizontalStrip = ({
   items,
