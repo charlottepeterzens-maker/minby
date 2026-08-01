@@ -98,8 +98,17 @@ const CirclePage = () => {
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [creatingInvite, setCreatingInvite] = useState(false);
 
+  // Polls
+  const [showPollForm, setShowPollForm] = useState(false);
+  const nameFor = useCallback(
+    (uid: string) => members.find((m) => m.user_id === uid)?.display_name ?? "",
+    [members],
+  );
+  const { polls, loading: pollsLoading, creating: creatingPoll, createPoll, vote, closePoll } = usePolls(id, user?.id, nameFor);
+
   useEffect(() => {
     if (!user) return;
+
     supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle()
       .then(({ data }) => setDisplayName(data?.display_name ?? ""));
   }, [user]);
