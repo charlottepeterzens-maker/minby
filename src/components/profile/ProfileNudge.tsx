@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { Typography } from "@/components/ui/typography";
 
 type Step = "name" | "avatar" | "done";
 
@@ -87,12 +88,12 @@ const ProfileNudge = () => {
       <div className="rounded-[26px] p-5" style={{ backgroundColor: "#EDE5F0" }}>
         {step === "name" && (
           <>
-            <div className="text-[11px] mb-2 font-medium uppercase tracking-wider" style={{ color: "#5A4A66" }}>
+            <Typography variant="labelSm" as="div" className="mb-2 uppercase tracking-wider" style={{ color: "#5A4A66" }}>
               Steg 1 av 2
-            </div>
-            <p className="text-[16px] mb-3" style={{ color: "#2B2B2B" }}>
+            </Typography>
+            <Typography variant="body" className="mb-3 leading-[1.2]" style={{ color: "#2B2B2B" }}>
               Vad ska dina vänner kalla dig?
-            </p>
+            </Typography>
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -109,12 +110,12 @@ const ProfileNudge = () => {
         )}
         {step === "avatar" && (
           <>
-            <div className="text-[11px] mb-2 font-medium uppercase tracking-wider" style={{ color: "#5A4A66" }}>
+            <Typography variant="labelSm" as="div" className="mb-2 uppercase tracking-wider" style={{ color: "#5A4A66" }}>
               Steg 2 av 2
-            </div>
-            <p className="text-[16px] mb-3" style={{ color: "#2B2B2B" }}>
+            </Typography>
+            <Typography variant="body" className="mb-3 leading-[1.2]" style={{ color: "#2B2B2B" }}>
               Lägg upp en profilbild så känner de andra igen dig.
-            </p>
+            </Typography>
             <input
               ref={fileRef}
               type="file"
