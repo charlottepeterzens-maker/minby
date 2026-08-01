@@ -75,6 +75,15 @@ export const typographyTokens: Record<TypographyVariant, TypographyToken> = {
     element: "p",
     className: "text-[1rem] font-normal leading-[1.5]",
   },
+  bodyMd: {
+    description:
+      "Legacy body size used in existing cards — 15px / Regular. Kept so the refactor is pixel-identical; merge into `body` in a future design pass.",
+    fontSize: "0.9375rem",
+    fontWeight: 400,
+    lineHeight: "1.4",
+    element: "p",
+    className: "text-[0.9375rem] font-normal leading-[1.4]",
+  },
   bodySm: {
     description: "Dense body copy inside compact cards — 14px / Regular",
     fontSize: "0.875rem",
@@ -90,6 +99,24 @@ export const typographyTokens: Record<TypographyVariant, TypographyToken> = {
     lineHeight: "1.4",
     element: "p",
     className: "text-[0.75rem] font-normal leading-[1.4]",
+  },
+  caption: {
+    description:
+      "Legacy metadata size in existing cards — 13px / Regular. Pixel-preserving alias, merge into `meta` later.",
+    fontSize: "0.8125rem",
+    fontWeight: 400,
+    lineHeight: "1.4",
+    element: "p",
+    className: "text-[0.8125rem] font-normal leading-[1.4]",
+  },
+  labelSm: {
+    description:
+      "Legacy small label — 11px / Medium. Pixel-preserving alias, merge into `label` later.",
+    fontSize: "0.6875rem",
+    fontWeight: 500,
+    lineHeight: "1.4",
+    element: "span",
+    className: "text-[0.6875rem] font-medium leading-[1.4]",
   },
   label: {
     description: "Field labels, navigation labels, author names — 12px / Medium",
