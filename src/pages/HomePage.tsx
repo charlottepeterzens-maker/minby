@@ -286,9 +286,19 @@ const HomePage = () => {
               <CircleCardSkeleton />
             </div>
           ) : circles.length === 0 ? (
-            <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-              Här samlas dina kretsar. Skapa en och bjud in dina närmaste.
-            </Typography>
+            <div className="space-y-3">
+              <Typography as="h3" variant="heading" className="text-foreground">
+                Inga kretsar än
+              </Typography>
+              <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                Dina kretsar är där relationerna lever. Skapa din första och bjud in de du vill ha närmast.
+              </Typography>
+              <div className="pt-1">
+                <TextButton onClick={() => setCreating(true)}>
+                  Skapa en krets
+                </TextButton>
+              </div>
+            </div>
           ) : (
             <div className="space-y-4">
               {circles.map((c) => (
@@ -311,9 +321,17 @@ const HomePage = () => {
           </Typography>
 
           {loading ? null : shared.length === 0 ? (
-            <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-              Det du delar med dina kretsar samlas här.
-            </Typography>
+            <div className="space-y-3">
+              <Typography as="h3" variant="heading" className="text-foreground">
+                Inget delat än
+              </Typography>
+              <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                När du delar bilder, tips eller föreslår träffar i dina kretsar samlas allt här.
+              </Typography>
+              <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                Gå in i en krets för att dela något.
+              </Typography>
+            </div>
           ) : (
             <ul className="space-y-5">
               {shared.map((s) => (
