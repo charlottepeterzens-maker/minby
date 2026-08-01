@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { Typography } from "@/components/ui/typography";
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 
 interface Props {
   circleId: string;
@@ -65,12 +68,9 @@ const CircleOnboarding = ({
         style={{ backgroundColor: "#561828" }}
       >
         <div className="flex items-start justify-between mb-2">
-          <div
-            className="text-[10px] font-normal tracking-[0.02em]"
-            style={{ color: "#C85A2E" }}
-          >
+          <Typography variant="eyebrow" as="div" style={{ color: "#C85A2E" }}>
             {doneCount} av {STEPS.length} steg klara
-          </div>
+          </Typography>
 
           <button
             type="button"
@@ -94,19 +94,13 @@ const CircleOnboarding = ({
           </button>
         </div>
 
-        <h3
-          className="text-[18px] font-semibold leading-none mb-2"
-          style={{ color: "#FFFFFF" }}
-        >
+        <Typography variant="heading" as="h3" className="mb-2 leading-none" style={{ color: "#FFFFFF" }}>
           Kom igång med {circleName}
-        </h3>
+        </Typography>
 
-        <p
-          className="text-[14px] leading-[120%] mb-5"
-          style={{ color: "#F9F3E1" }}
-        >
+        <Typography variant="bodySm" className="mb-5 leading-[1.2]" style={{ color: "#F9F3E1" }}>
           Tre snabba steg så börjar det hända grejer här.
-        </p>
+        </Typography>
 
         <ul
           className="divide-y"
@@ -121,7 +115,7 @@ const CircleOnboarding = ({
               >
                 <div className="flex-1 min-w-0">
                   <div
-                    className="text-[14px] font-medium leading-[120%]"
+                    className={cn(typography.bodySm, "font-medium leading-[1.2]")}
                     style={{
                       color: "#FFFFFF",
                       textDecoration: isDone ? "line-through" : "none",
@@ -133,7 +127,7 @@ const CircleOnboarding = ({
 
                   {!isDone && (
                     <div
-                      className="mt-1 text-[10px] tracking-[0.02em]"
+                      className={cn(typography.eyebrow, "mt-1")}
                       style={{ color: "#F9F3E1" }}
                     >
                       {s.hint}
@@ -143,7 +137,7 @@ const CircleOnboarding = ({
 
                 {isDone ? (
                   <span
-                    className="text-[10px] tracking-[0.02em]"
+                    className={typography.eyebrow}
                     style={{ color: "#F9F3E1" }}
                   >
                     Klart
@@ -152,7 +146,7 @@ const CircleOnboarding = ({
                   <button
                     type="button"
                     onClick={handlers[s.key]}
-                    className="text-[14px] font-medium underline underline-offset-2 decoration-1 shrink-0"
+                    className={cn(typography.bodySm, "font-medium underline underline-offset-2 decoration-1 shrink-0")}
                     style={{
                       color: "#FFFFFF",
                       textDecorationColor: "#C85A2E",
