@@ -16,7 +16,7 @@ import ShareTipSheet from "@/components/tips/ShareTipSheet";
 import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 import { OVERLAY_GRADIENT, CARD_RADIUS_CLASS } from "@/lib/card-styles";
 import CircleOnboarding from "@/components/CircleOnboarding";
-import CreateHub from "@/components/ui/create-hub";
+import PrimaryActionButton from "@/components/ui/primary-action-button";
 import WelcomeToCircleCard from "@/components/circle/WelcomeToCircleCard";
 import ProfileNudge from "@/components/profile/ProfileNudge";
 
@@ -636,22 +636,13 @@ const CirclePage = () => {
         </section>
       </div>
 
-      <CreateHub
-        sections={[
-          {
-            title: "Dela med kretsen",
-            actions: [
-              { label: "Dela foto", onSelect: () => photoInputRef.current?.click() },
-              { label: "Dela tips", onSelect: () => setShowTipForm(true) },
-              { label: "Föreslå en träff", onSelect: () => setShowMeetingForm(true) },
-            ],
-          },
-          {
-            title: "Bjud in fler",
-            actions: [
-              { label: "Bjud in till kretsen", keepOpen: true, onSelect: openInviteSheet },
-            ],
-          },
+      <PrimaryActionButton
+        options={[
+          { label: "Dela i kretsen", onSelect: () => navigate(`/chat/${id}`) },
+          { label: "Föreslå en träff", onSelect: () => setShowMeetingForm(true) },
+          { label: "Dela ett tips", onSelect: () => setShowTipForm(true) },
+          { label: "Ladda upp foto", onSelect: () => photoInputRef.current?.click() },
+          { label: "Bjud in till kretsen", keepOpen: true, onSelect: openInviteSheet },
         ]}
       />
 
