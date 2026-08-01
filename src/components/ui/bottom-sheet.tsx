@@ -92,7 +92,7 @@ export const BottomSheetHeader = ({ title, className }: BottomSheetHeaderProps) 
   >
     <SheetTitle
       className={cn(typography.heading, "text-center truncate leading-none")}
-      style={{ color: "#2B2B2B" }}
+      style={{ color: "hsl(var(--color-text-primary))" }}
     >
       {title}
     </SheetTitle>
@@ -100,7 +100,7 @@ export const BottomSheetHeader = ({ title, className }: BottomSheetHeaderProps) 
       aria-label="Stäng"
       className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full active:opacity-70 focus:outline-none"
     >
-      <X className="w-5 h-5" style={{ color: "#2B2B2B" }} />
+      <X className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
     </SheetPrimitive.Close>
   </div>
 );

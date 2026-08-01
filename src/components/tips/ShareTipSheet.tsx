@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import TextButton from "@/components/ui/text-button";
 import CircleSelector, { type CircleOption } from "@/components/ui/circle-selector";
 import { cn } from "@/lib/utils";
+import Typography from "@/components/ui/typography";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -222,9 +223,9 @@ const ShareTipSheet = ({
         <BottomSheetBody className="px-5 pt-4 pb-6 space-y-5">
           {/* Titel */}
           <div className="space-y-2">
-            <div className="text-eyebrow uppercase" style={{ color: "#675332" }}>
+            <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Titel
-            </div>
+            </Typography>
             <Input
               value={title}
               onChange={(e) => {
@@ -238,9 +239,9 @@ const ShareTipSheet = ({
 
           {/* Länk */}
           <div className="space-y-2">
-            <div className="text-eyebrow uppercase" style={{ color: "#675332" }}>
+            <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Länk
-            </div>
+            </Typography>
             <Input
               value={url}
               onChange={(e) => setUrl(e.target.value)}
@@ -259,30 +260,30 @@ const ShareTipSheet = ({
                     backgroundColor: "#F2ECE3",
                   }}
                 />
-                <span className="text-caption" style={{ color: "hsl(20, 4%, 40%)" }}>
+                <Typography variant="meta" as="span" style={{ color: "hsl(var(--color-text-tertiary))" }}>
                   {previewLoading ? "Hämtar förhandsvisning…" : "Bild hämtad från länken"}
-                </span>
+                </Typography>
               </div>
             )}
           </div>
 
           {/* Kategori */}
           <div className="space-y-2">
-            <div className="text-eyebrow uppercase" style={{ color: "#675332" }}>
+            <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Kategori
-            </div>
+            </Typography>
             <button
               type="button"
               onClick={() => setCategoryOpen((v) => !v)}
               aria-expanded={categoryOpen}
               className="w-full flex items-center justify-between py-3 text-left"
             >
-              <span className="text-body" style={{ color: "#2B2B2B" }}>
+              <Typography variant="body" as="span" style={{ color: "hsl(var(--color-text-primary))" }}>
                 {category ?? "Välj kategori"}
-              </span>
+              </Typography>
               <ChevronDown
                 className={cn("w-4 h-4 transition-transform", categoryOpen && "rotate-180")}
-                style={{ color: "hsl(20, 4%, 40%)" }}
+                style={{ color: "hsl(var(--color-text-tertiary))" }}
               />
             </button>
             {categoryOpen && (
@@ -307,9 +308,9 @@ const ShareTipSheet = ({
                           boxShadow: active ? "inset 0 0 0 2px #fff" : "none",
                         }}
                       />
-                      <span className="text-body" style={{ color: "#2B2B2B" }}>
+                      <Typography variant="body" as="span" style={{ color: "hsl(var(--color-text-primary))" }}>
                         {c}
-                      </span>
+                      </Typography>
                     </button>
                   );
                 })}
@@ -319,9 +320,9 @@ const ShareTipSheet = ({
 
           {/* Kommentar */}
           <div className="space-y-2">
-            <div className="text-eyebrow uppercase" style={{ color: "#675332" }}>
+            <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Kommentar
-            </div>
+            </Typography>
             <Textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
@@ -332,9 +333,9 @@ const ShareTipSheet = ({
 
           {/* Foto */}
           <div className="space-y-2">
-            <div className="text-eyebrow uppercase" style={{ color: "#675332" }}>
+            <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Foto
-            </div>
+            </Typography>
             <input
               ref={fileRef}
               type="file"

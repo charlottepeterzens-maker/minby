@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Typography from "@/components/ui/typography";
 
 export interface CircleOption {
   id: string;
@@ -48,18 +49,18 @@ const CircleSelector = ({
 
   return (
     <div className="space-y-2">
-      <div className="text-eyebrow uppercase" style={{ color: "#675332" }}>
+      <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
         {label}
-      </div>
+      </Typography>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         className="w-full flex items-center justify-between py-3 text-left"
       >
-        <span className="text-body" style={{ color: "#2B2B2B" }}>
+        <Typography variant="body" as="span" style={{ color: "hsl(var(--color-text-primary))" }}>
           {summary}
-        </span>
+        </Typography>
         <ChevronDown
           className={cn("w-4 h-4 transition-transform", open && "rotate-180")}
           style={{ color: "hsl(20, 4%, 40%)" }}
@@ -68,9 +69,9 @@ const CircleSelector = ({
       {open && (
         <div className="space-y-1 pb-1">
           {circles.length === 0 ? (
-            <p className="text-body" style={{ color: "hsl(20, 4%, 40%)" }}>
+            <Typography variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               {emptyText}
-            </p>
+            </Typography>
           ) : (
             circles.map((c) => {
               const active = value.includes(c.id);
@@ -90,9 +91,9 @@ const CircleSelector = ({
                   >
                     {active && <Check className="w-3.5 h-3.5" style={{ color: "#fff" }} />}
                   </span>
-                  <span className="text-body" style={{ color: "#2B2B2B" }}>
+                  <Typography variant="body" as="span" style={{ color: "hsl(var(--color-text-primary))" }}>
                     {c.name}
-                  </span>
+                  </Typography>
                 </button>
               );
             })
