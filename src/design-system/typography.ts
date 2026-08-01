@@ -20,9 +20,12 @@ export type TypographyVariant =
   | "heading"
   | "title"
   | "body"
+  | "bodyMd"
   | "bodySm"
   | "meta"
+  | "caption"
   | "label"
+  | "labelSm"
   | "eyebrow"
   | "button";
 
