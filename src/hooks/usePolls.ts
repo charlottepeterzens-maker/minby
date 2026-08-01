@@ -70,18 +70,38 @@ export const usePolls = (
     load();
   }, [load]);
 
-  // Realtime — refresh on any poll/vote change in this circle
+  // Keep a stable reference so the realtime channel never resubscribes on re-render
+  const loadRef = useRef(load);
+  useEffect(() => {
+    loadRef.current = load;
+  }, [load]);
+
+  // Realtime — refresh counts and my own vote as soon as anyone votes
   useEffect(() => {
     if (!circleId) return;
+
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const refresh = () => {
+      if (timer) clearTimeout(timer);
+      // coalesce bursts (vote change = delete + insert)
+      timer = setTimeout(() => loadRef.current(), 120);
+    };
+
     const channel = supabase
       .channel(`polls-${circleId}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "polls", filter: `circle_id=eq.${circleId}` }, () => load())
-      .on("postgres_changes", { event: "*", schema: "public", table: "poll_votes" }, () => load())
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "polls", filter: `circle_id=eq.${circleId}` },
+        refresh,
+      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "poll_votes" }, refresh)
       .subscribe();
+
     return () => {
+      if (timer) clearTimeout(timer);
       supabase.removeChannel(channel);
     };
-  }, [circleId, load]);
+  }, [circleId]);
 
   const createPoll = async ({
     question,
