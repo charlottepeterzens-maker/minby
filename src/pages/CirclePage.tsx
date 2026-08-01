@@ -686,6 +686,17 @@ const CirclePage = () => {
         ]}
       />
 
+      {/* Poll create sheet */}
+      <CreatePollSheet
+        open={showPollForm}
+        onOpenChange={setShowPollForm}
+        saving={creatingPoll}
+        onCreate={async (data) => {
+          await createPoll(data);
+          setShowPollForm(false);
+        }}
+      />
+
       {/* Invite sheet — layered on top of the Create Hub */}
       <Sheet open={inviteOpen} onOpenChange={setInviteOpen}>
         <BottomSheetContent>
