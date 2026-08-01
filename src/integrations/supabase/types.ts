@@ -332,6 +332,7 @@ export type Database = {
         Row: {
           circle_id: string
           closed: boolean
+          closes_at: string | null
           created_at: string
           created_by: string
           id: string
@@ -341,6 +342,7 @@ export type Database = {
         Insert: {
           circle_id: string
           closed?: boolean
+          closes_at?: string | null
           created_at?: string
           created_by: string
           id?: string
@@ -350,6 +352,7 @@ export type Database = {
         Update: {
           circle_id?: string
           closed?: boolean
+          closes_at?: string | null
           created_at?: string
           created_by?: string
           id?: string
