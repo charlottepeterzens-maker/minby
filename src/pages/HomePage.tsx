@@ -511,7 +511,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
               onClick={() => toggleCircle(c.id)}
               className={cn(typography.meta, "px-3 py-1.5 rounded-full")}
               style={{
-                backgroundColor: active ? "#C85A2E" : "#F9F3E1",
+                backgroundColor: active ? "hsl(var(--color-accent-terra))" : "#F9F3E1",
                 color: active ? "white" : "hsl(var(--color-text-primary))",
               }}
             >
