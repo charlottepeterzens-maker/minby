@@ -9,16 +9,13 @@ import {
 export type { TypographyVariant };
 export { typography, typographyTokens } from "@/design-system/typography";
 
-interface TypographyProps {
+interface TypographyProps
+  extends Omit<React.HTMLAttributes<HTMLElement>, "color"> {
   variant?: TypographyVariant;
   /** Override the rendered HTML element (semantics / layout) */
   as?: ElementType;
   className?: string;
   children?: ReactNode;
-  style?: React.CSSProperties;
-  title?: string;
-  id?: string;
-  onClick?: React.MouseEventHandler;
 }
 
 /**
