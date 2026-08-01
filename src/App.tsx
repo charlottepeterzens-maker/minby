@@ -11,7 +11,7 @@ import NotFound from "./pages/NotFound";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import InvitePage from "./pages/InvitePage";
-import HomePage from "./pages/HomePage";
+import ProfilePage from "./pages/ProfilePage";
 import CirclePage from "./pages/CirclePage";
 import ChatPage from "./pages/ChatPage";
 import VerifyPage from "./pages/VerifyPage";
