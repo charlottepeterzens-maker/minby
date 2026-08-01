@@ -480,6 +480,7 @@ export type Database = {
       is_photo_owner: { Args: { _photo_id: string }; Returns: boolean }
       is_poll_open: { Args: { _poll_id: string }; Returns: boolean }
       is_tip_owner: { Args: { _tip_id: string }; Returns: boolean }
+      shares_circle_with: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
