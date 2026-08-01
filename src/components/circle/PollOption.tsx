@@ -11,6 +11,7 @@ interface Props {
  * A single poll option. Presentation only — the parent owns the state.
  */
 import Typography from "@/components/ui/typography";
+import { typographyEmphasis } from "@/design-system/typography";
 
 const PollOption = ({ label, votes, totalVotes, selected, disabled, onSelect }: Props) => {
   const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
