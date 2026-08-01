@@ -1,4 +1,5 @@
 import TextButton from "@/components/ui/text-button";
+import { Typography } from "@/components/ui/typography";
 import { MessageCircle, UserPlus } from "lucide-react";
 
 type Variant = "joined" | "created";
@@ -21,22 +22,24 @@ const WelcomeToCircleCard = ({ circleName, variant = "joined", onSayHi, onInvite
   return (
     <section className="mt-6 px-4">
       <div className="rounded-[26px] p-5" style={{ backgroundColor: "#F5EFD9" }}>
-        <div
-          className="text-[11px] mb-2 font-medium uppercase tracking-wider"
+        <Typography
+          variant="labelSm"
+          as="div"
+          className="mb-2 uppercase tracking-wider"
           style={{ color: "#675332" }}
         >
           {eyebrow}
-        </div>
-        <p className="text-[16px] leading-relaxed" style={{ color: "#2B2B2B" }}>
+        </Typography>
+        <Typography variant="body" className="leading-relaxed" style={{ color: "#2B2B2B" }}>
           {body}
-        </p>
+        </Typography>
         <div className="mt-4">
           {isCreated ? (
-            <TextButton onClick={onInvite} className="text-[16px]">
+            <TextButton onClick={onInvite}>
               <UserPlus className="w-4 h-4" /> Bjud in till kretsen
             </TextButton>
           ) : (
-            <TextButton onClick={onSayHi} className="text-[16px]">
+            <TextButton onClick={onSayHi}>
               <MessageCircle className="w-4 h-4" /> Skriv hej i chatten
             </TextButton>
           )}

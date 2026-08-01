@@ -1,3 +1,5 @@
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +13,7 @@ const VerifyPage = () => {
   }, [navigate]);
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <span className="text-[0.875rem] font-normal leading-[1.4] text-muted-foreground">Verifierar…</span>
+      <span className={cn(typography.bodySm, "text-muted-foreground")}>Verifierar…</span>
     </div>
   );
 };
