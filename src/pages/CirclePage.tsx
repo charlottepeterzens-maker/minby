@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetDescription } from "@/components/ui/sheet";
 import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
-import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, Plus, ChevronDown } from "lucide-react";
+import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import PhotoTile from "@/components/cards/PhotoTile";
@@ -16,7 +16,7 @@ import ShareTipSheet from "@/components/tips/ShareTipSheet";
 import { MeetingCardSkeleton, PhotoTileSkeleton, PhotoSmallSkeleton, TipCardSkeleton } from "@/components/cards/CardSkeletons";
 import { OVERLAY_GRADIENT, CARD_RADIUS_CLASS } from "@/lib/card-styles";
 import CircleOnboarding from "@/components/CircleOnboarding";
-import CreateHub from "@/components/ui/create-hub";
+import PrimaryActionButton from "@/components/ui/primary-action-button";
 import WelcomeToCircleCard from "@/components/circle/WelcomeToCircleCard";
 import ProfileNudge from "@/components/profile/ProfileNudge";
 
@@ -585,9 +585,8 @@ const CirclePage = () => {
 
         {/* Våra foton */}
         <section className="px-4 mb-10">
-          <div className="flex items-baseline justify-between mb-3 mt-10">
+          <div className="mb-3 mt-10">
             <h2 className="font-display text-xl text-foreground">Våra foton</h2>
-            <TextButton onClick={() => photoInputRef.current?.click()}>+ Ladda upp foto</TextButton>
           </div>
           <input
             ref={photoInputRef}
@@ -636,22 +635,13 @@ const CirclePage = () => {
         </section>
       </div>
 
-      <CreateHub
-        sections={[
-          {
-            title: "Dela med kretsen",
-            actions: [
-              { label: "Dela foto", onSelect: () => photoInputRef.current?.click() },
-              { label: "Dela tips", onSelect: () => setShowTipForm(true) },
-              { label: "Föreslå en träff", onSelect: () => setShowMeetingForm(true) },
-            ],
-          },
-          {
-            title: "Bjud in fler",
-            actions: [
-              { label: "Bjud in till kretsen", keepOpen: true, onSelect: openInviteSheet },
-            ],
-          },
+      <PrimaryActionButton
+        options={[
+          { label: "Dela i kretsen", onSelect: () => navigate(`/chat/${id}`) },
+          { label: "Föreslå en träff", onSelect: () => setShowMeetingForm(true) },
+          { label: "Dela ett tips", onSelect: () => setShowTipForm(true) },
+          { label: "Ladda upp foto", onSelect: () => photoInputRef.current?.click() },
+          { label: "Bjud in till kretsen", keepOpen: true, onSelect: openInviteSheet },
         ]}
       />
 
@@ -714,22 +704,6 @@ const CirclePage = () => {
               ))
             )}
           </BottomSheetBody>
-          <button
-            type="button"
-            onClick={() => { setShowTipsList(false); setShowTipForm(true); }}
-            aria-label="Lägg till tips"
-            className="absolute z-20 flex items-center justify-center rounded-full shadow-lg active:scale-95 transition-transform"
-            style={{
-              width: 64,
-              height: 64,
-              right: "max(16px, env(safe-area-inset-right))",
-              bottom: "calc(max(16px, env(safe-area-inset-bottom)) + 16px)",
-              backgroundColor: "#561828",
-              color: "#FFFFFF",
-            }}
-          >
-            <Plus className="w-6 h-6" strokeWidth={2} />
-          </button>
         </BottomSheetContent>
       </Sheet>
 
