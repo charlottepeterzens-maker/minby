@@ -523,6 +523,34 @@ const CirclePage = () => {
           )}
         </section>
 
+        {/* Våra omröstningar */}
+        {(pollsLoading || polls.length > 0) && (
+          <section className="mt-8 px-4">
+            <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Att bestämma</h2>
+            {pollsLoading ? (
+              <div className="rounded-[26px] h-[160px] animate-pulse" style={{ backgroundColor: CARD_YELLOW }} />
+            ) : (
+              <div className="space-y-3">
+                {polls.map((p) => (
+                  <PollCard
+                    key={p.id}
+                    question={p.question}
+                    authorName={p.author_name}
+                    options={p.options.map((label, i) => ({ label, votes: p.counts[i] ?? 0 }))}
+                    myVote={p.myVote}
+                    closed={p.closed}
+                    closesAt={p.closes_at}
+                    onVote={(i) => vote(p.id, i)}
+                    onClose={user && p.created_by === user.id ? () => closePoll(p.id) : undefined}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+
+
         {/* Chatt */}
         <section className="mt-8 px-4">
           <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Chatt</h2>
