@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -19,6 +19,9 @@ import CircleOnboarding from "@/components/CircleOnboarding";
 import PrimaryActionButton from "@/components/ui/primary-action-button";
 import WelcomeToCircleCard from "@/components/circle/WelcomeToCircleCard";
 import ProfileNudge from "@/components/profile/ProfileNudge";
+import PollCard from "@/components/circle/PollCard";
+import CreatePollSheet from "@/components/circle/CreatePollSheet";
+import usePolls from "@/hooks/usePolls";
 
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
@@ -95,8 +98,17 @@ const CirclePage = () => {
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [creatingInvite, setCreatingInvite] = useState(false);
 
+  // Polls
+  const [showPollForm, setShowPollForm] = useState(false);
+  const nameFor = useCallback(
+    (uid: string) => members.find((m) => m.user_id === uid)?.display_name ?? "",
+    [members],
+  );
+  const { polls, loading: pollsLoading, creating: creatingPoll, createPoll, vote, closePoll } = usePolls(id, user?.id, nameFor);
+
   useEffect(() => {
     if (!user) return;
+
     supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle()
       .then(({ data }) => setDisplayName(data?.display_name ?? ""));
   }, [user]);
@@ -511,6 +523,34 @@ const CirclePage = () => {
           )}
         </section>
 
+        {/* Våra omröstningar */}
+        {(pollsLoading || polls.length > 0) && (
+          <section className="mt-8 px-4">
+            <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Att bestämma</h2>
+            {pollsLoading ? (
+              <div className="rounded-[26px] h-[160px] animate-pulse" style={{ backgroundColor: CARD_YELLOW }} />
+            ) : (
+              <div className="space-y-3">
+                {polls.map((p) => (
+                  <PollCard
+                    key={p.id}
+                    question={p.question}
+                    authorName={p.author_name}
+                    options={p.options.map((label, i) => ({ label, votes: p.counts[i] ?? 0 }))}
+                    myVote={p.myVote}
+                    closed={p.closed}
+                    closesAt={p.closes_at}
+                    onVote={(i) => vote(p.id, i)}
+                    onClose={user && p.created_by === user.id ? () => closePoll(p.id) : undefined}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+
+
         {/* Chatt */}
         <section className="mt-8 px-4">
           <h2 className="text-[16px] mb-3" style={HEADING_STYLE}>Chatt</h2>
@@ -640,9 +680,21 @@ const CirclePage = () => {
           { label: "Dela i kretsen", onSelect: () => navigate(`/chat/${id}`) },
           { label: "Föreslå en träff", onSelect: () => setShowMeetingForm(true) },
           { label: "Dela ett tips", onSelect: () => setShowTipForm(true) },
+          { label: "Starta omröstning", onSelect: () => setShowPollForm(true) },
           { label: "Ladda upp foto", onSelect: () => photoInputRef.current?.click() },
           { label: "Bjud in till kretsen", keepOpen: true, onSelect: openInviteSheet },
         ]}
+      />
+
+      {/* Poll create sheet */}
+      <CreatePollSheet
+        open={showPollForm}
+        onOpenChange={setShowPollForm}
+        saving={creatingPoll}
+        onCreate={async (data) => {
+          await createPoll(data);
+          setShowPollForm(false);
+        }}
       />
 
       {/* Invite sheet — layered on top of the Create Hub */}
