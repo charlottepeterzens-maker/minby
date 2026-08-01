@@ -32,7 +32,15 @@ interface Profile {
   bio: string | null;
 }
 
-const HomePage = () => {
+/**
+ * ProfilePage — the signed-in user's own home.
+ *
+ * ARCHITECTURE: Minby has no visitable profiles. There is exactly one profile
+ * page and it always belongs to the authenticated user (auth.uid()). Other
+ * people are only ever experienced through a circle, a meeting or the feed.
+ * Never add a :userId param or a route that renders someone else here.
+ */
+const ProfilePage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [circles, setCircles] = useState<Circle[]>([]);
@@ -796,4 +804,4 @@ const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: strin
   </div>
 );
 
-export default HomePage;
+export default ProfilePage;
