@@ -4,6 +4,7 @@ import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/compon
 import { Input } from "@/components/ui/input";
 import TextButton from "@/components/ui/text-button";
 import { X } from "lucide-react";
+import Typography from "@/components/ui/typography";
 
 interface Props {
   open: boolean;
@@ -48,7 +49,7 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
         <BottomSheetHeader title="Starta omröstning" />
         <BottomSheetBody className="px-5 pt-4 pb-8 space-y-5">
           <div className="space-y-2">
-            <label className="text-[11px] font-medium" style={{ color: "#675332" }}>Vad ska ni bestämma?</label>
+            <Typography variant="label" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Vad ska ni bestämma?</Typography>
             <Input
               placeholder="T.ex. Vilken dag passar bäst?"
               value={question}
@@ -58,7 +59,7 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-[11px] font-medium" style={{ color: "#675332" }}>Alternativ</label>
+            <Typography variant="label" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Alternativ</Typography>
             {options.map((o, i) => (
               <div key={i} className="flex items-center gap-2">
                 <Input
@@ -75,7 +76,7 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
                     aria-label="Ta bort alternativ"
                     onClick={() => setOptions((prev) => prev.filter((_, idx) => idx !== i))}
                     className="p-2 shrink-0"
-                    style={{ color: "#675332" }}
+                    style={{ color: "hsl(var(--color-text-tertiary))" }}
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -90,7 +91,7 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
           </div>
 
           <div className="space-y-2">
-            <label className="text-[11px] font-medium" style={{ color: "#675332" }}>Slutdatum (valfritt)</label>
+            <Typography variant="label" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Slutdatum (valfritt)</Typography>
             <Input
               type="date"
               value={closesAt}
