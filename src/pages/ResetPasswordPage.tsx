@@ -6,6 +6,9 @@ import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { Typography } from "@/components/ui/typography";
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 
 const ResetPasswordPage = () => {
   const navigate = useNavigate();
@@ -60,8 +63,8 @@ const ResetPasswordPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <div className="w-full max-w-sm text-center">
-          <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
-          <p className="text-muted-foreground mt-4 text-sm">Ogiltig eller utgången återställningslänk.</p>
+          <Typography variant="display" as="span" className="tracking-[-0.5px] text-foreground lowercase">minby</Typography>
+          <Typography variant="body" as="p" className="text-muted-foreground mt-4">Ogiltig eller utgången återställningslänk.</Typography>
           <div className="mt-6 flex justify-center">
             <TextButton onClick={() => navigate("/auth")}>
               Tillbaka till inloggning
@@ -76,14 +79,14 @@ const ResetPasswordPage = () => {
     <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
-          <h1 className="font-display font-medium text-[20px] text-foreground mt-4">Välj nytt lösenord</h1>
-          <p className="text-muted-foreground mt-2 text-sm">Ange ditt nya lösenord nedan</p>
+          <Typography variant="display" as="span" className="tracking-[-0.5px] text-foreground lowercase">minby</Typography>
+          <Typography variant="heading" as="h1" className="text-foreground mt-4">Välj nytt lösenord</Typography>
+          <Typography variant="body" as="p" className="text-muted-foreground mt-2">Ange ditt nya lösenord nedan</Typography>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="new-password" className="text-xs text-muted-foreground">Nytt lösenord</Label>
+            <Label htmlFor="new-password" className={cn(typography.meta, "text-muted-foreground")}>Nytt lösenord</Label>
             <Input
               id="new-password"
               type="password"
@@ -97,7 +100,7 @@ const ResetPasswordPage = () => {
             />
           </div>
           <div>
-            <Label htmlFor="confirm-password" className="text-xs text-muted-foreground">Bekräfta lösenord</Label>
+            <Label htmlFor="confirm-password" className={cn(typography.meta, "text-muted-foreground")}>Bekräfta lösenord</Label>
             <Input
               id="confirm-password"
               type="password"

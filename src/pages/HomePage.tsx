@@ -16,6 +16,9 @@ import { BottomSheetBody, BottomSheetContent, BottomSheetFooter, BottomSheetHead
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Typography } from "@/components/ui/typography";
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 
 interface Circle {
   id: string;
@@ -111,7 +114,7 @@ const HomePage = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-md mx-auto px-4 pt-safe pb-safe">
         <header className="flex items-center justify-between py-6">
-          <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 15, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "lowercase" }}>minby</span>
+          <Typography as="span" variant="label" style={{ letterSpacing: "0.2em", color: "hsl(var(--color-accent-terra))", textTransform: "lowercase" }}>minby</Typography>
           <button
             onClick={() => navigate("/settings")}
             className="text-foreground p-2"
@@ -133,7 +136,7 @@ const HomePage = () => {
             {profile.avatar_url ? (
               <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
             ) : initials ? (
-              <span style={{ fontFamily: "'Outfit', sans-serif", fontSize: 20 }}>{initials}</span>
+              <Typography as="span" variant="heading">{initials}</Typography>
             ) : (
               <Camera className="w-5 h-5" />
             )}
@@ -147,19 +150,19 @@ const HomePage = () => {
           />
           <div className="flex-1 min-w-0">
             {profile.display_name ? (
-              <span className="font-display text-xl text-foreground truncate block">{profile.display_name}</span>
+              <Typography as="span" variant="display" className="text-foreground truncate block">{profile.display_name}</Typography>
             ) : (
               <button type="button" onClick={openEdit} className="text-left">
                 <span
-                  className="text-button underline underline-offset-2 decoration-1"
-                  style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+                  className={cn(typography.body, "underline underline-offset-2 decoration-1")}
+                  style={{ color: "hsl(var(--color-text-primary))", textDecorationColor: "hsl(var(--color-accent-terra))" }}
                 >
                   Lägg till ditt namn
                 </span>
               </button>
             )}
             {profile.bio ? (
-              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{profile.bio}</p>
+              <Typography as="p" variant="meta" className="text-muted-foreground mt-1 line-clamp-2">{profile.bio}</Typography>
             ) : (
               <div className="mt-1">
                 <TextButton type="button" onClick={openEdit}>
@@ -193,7 +196,7 @@ const HomePage = () => {
           </div>
         )}
 
-        <h2 className="font-display text-xl text-foreground mb-4">Mina kretsar</h2>
+        <Typography as="h2" variant="display" className="text-foreground mb-4">Mina kretsar</Typography>
 
         {loading ? (
           <div className="space-y-3">
@@ -253,9 +256,9 @@ const HomePage = () => {
         <BottomSheetContent>
           <BottomSheetHeader title="Skapa en krets" />
           <BottomSheetBody className="px-4 pt-4 pb-8 space-y-4">
-            <p className="text-body text-muted-foreground">
+            <Typography as="p" variant="body" className="text-muted-foreground">
               Ge din krets ett namn. Du kan bjuda in dina närmaste direkt efteråt.
-            </p>
+            </Typography>
             <div className="rounded-[26px] p-4" style={{ backgroundColor: "#F9F3E1" }}>
               <input
                 autoFocus
@@ -263,7 +266,7 @@ const HomePage = () => {
                 onChange={(e) => setNewName(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") createCircle(); }}
                 placeholder="Namn på kretsen"
-                className="w-full bg-transparent border-0 outline-none text-foreground text-body"
+                className={cn(typography.body, "w-full bg-transparent border-0 outline-none text-foreground")}
               />
             </div>
             <div className="pt-2 flex justify-center">
@@ -497,7 +500,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
 
   const CirclePicker = () => (
     <div className="space-y-2">
-      <div className="text-[12px]" style={{ color: "#561828" }}>Dela med</div>
+      <Typography as="div" variant="meta" style={{ color: "#561828" }}>Dela med</Typography>
       <div className="flex flex-wrap gap-2">
         {circles.map((c) => {
           const active = selectedCircles.includes(c.id);
@@ -506,10 +509,10 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
               key={c.id}
               type="button"
               onClick={() => toggleCircle(c.id)}
-              className="px-3 py-1.5 rounded-full text-[13px]"
+              className={cn(typography.meta, "px-3 py-1.5 rounded-full")}
               style={{
                 backgroundColor: active ? "#C85A2E" : "#F9F3E1",
-                color: active ? "white" : "#2B2B2B",
+                color: active ? "white" : "hsl(var(--color-text-primary))",
               }}
             >
               {c.name}
@@ -524,7 +527,7 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
   <>
     {/* Kommande träffar */}
     <div className="flex items-baseline justify-between mb-3 mt-10">
-      <h2 className="font-display text-xl text-foreground">Mina träffar</h2>
+      <Typography as="h2" variant="display" className="text-foreground">Mina träffar</Typography>
     </div>
     {hasMeetings ? (
       <div className="flex gap-3 overflow-x-auto -mx-4 px-4 pb-2">
@@ -536,20 +539,20 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
             style={{ backgroundColor: "#F2ECE3" }}
           >
             <div>
-              <div className="text-[13px] mb-2" style={{ color: "#675332" }}>
+              <Typography as="div" variant="meta" className="mb-2" style={{ color: "hsl(var(--color-text-tertiary))" }}>
                 {m.isMine ? "Du" : m.host_name}
-              </div>
-              <div className="text-[16px] leading-tight font-medium" style={{ color: "#2B2B2B" }}>
+              </Typography>
+              <Typography as="div" variant="body" className="leading-tight" style={{ color: "hsl(var(--color-text-primary))" }}>
                 {formatMeetingDate(m.meeting_date)}<br />{m.title}
-              </div>
+              </Typography>
             </div>
             <div>
-              <div className="text-[12px] mb-1" style={{ color: "#561828" }}>
+              <Typography as="div" variant="meta" className="mb-1" style={{ color: "#561828" }}>
                 {m.response_count === 0 ? "Ingen har svarat" : `${m.response_count} har svarat`}
-              </div>
+              </Typography>
               <span
-                className="text-[15px] font-medium underline underline-offset-2 decoration-2"
-                style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+                className={cn(typography.label, "underline underline-offset-2 decoration-2")}
+                style={{ color: "hsl(var(--color-text-primary))", textDecorationColor: "hsl(var(--color-accent-terra))" }}
               >
                 {m.isMine ? "Öppna" : "Häng med!"}
               </span>
@@ -570,18 +573,18 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
           >
             <div className="absolute top-3 right-3"><PlaceholderTag /></div>
             <div>
-              <div className="text-[13px] mb-2" style={{ color: "#675332" }}>{m.host}</div>
-              <div className="text-[16px] leading-tight font-medium" style={{ color: "#2B2B2B" }}>
+              <Typography as="div" variant="meta" className="mb-2" style={{ color: "hsl(var(--color-text-tertiary))" }}>{m.host}</Typography>
+              <Typography as="div" variant="body" className="leading-tight" style={{ color: "hsl(var(--color-text-primary))" }}>
                 {m.date}<br />{m.title}
-              </div>
+              </Typography>
             </div>
             <div>
-              <div className="text-[12px] mb-1" style={{ color: "#561828" }}>
+              <Typography as="div" variant="meta" className="mb-1" style={{ color: "#561828" }}>
                 {m.count === 0 ? "Ingen har svarat" : `${m.count} har svarat`}
-              </div>
+              </Typography>
               <span
-                className="text-[15px] font-medium underline underline-offset-2 decoration-2"
-                style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+                className={cn(typography.label, "underline underline-offset-2 decoration-2")}
+                style={{ color: "hsl(var(--color-text-primary))", textDecorationColor: "hsl(var(--color-accent-terra))" }}
               >
                 Häng med!
               </span>
@@ -590,14 +593,14 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
         ))}
       </div>
     )}
-    <p className="text-sm mt-2" style={{ color: "#561828" }}>
+    <Typography as="p" variant="meta" className="mt-2" style={{ color: "#561828" }}>
       Föreslå en träff i någon av dina kretsar så syns den här.
-    </p>
+    </Typography>
 
 
     {/* Mina tips — overview preview */}
     <div className="mt-10 mb-3">
-      <h2 className="font-display text-xl text-foreground">Mina tips</h2>
+      <Typography as="h2" variant="display" className="text-foreground">Mina tips</Typography>
     </div>
     {hasTips ? (
       <>
@@ -637,16 +640,16 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
             { title: "bok: Klara och solen", sub: "Du", bg: "#F5EFD9" },
           ]}
         />
-        <p className="text-sm mt-2" style={{ color: "#561828" }}>
+        <Typography as="p" variant="meta" className="mt-2" style={{ color: "#561828" }}>
           {circles.length ? "Dela en plats, bok, podd eller länk du gillar med en krets." : "Skapa en krets så kan du dela tips."}
-        </p>
+        </Typography>
       </>
     )}
 
 
     {/* Foton */}
     <div className="flex items-baseline justify-between mb-3 mt-10">
-      <h2 className="font-display text-xl text-foreground">Mina foton</h2>
+      <Typography as="h2" variant="display" className="text-foreground">Mina foton</Typography>
     </div>
     <input
       ref={photoInputRef}
@@ -680,9 +683,9 @@ const ProfilePlaceholders = ({ userId, circles, displayName }: { userId: string 
         ]}
       />
     )}
-    <p className="text-sm mt-2" style={{ color: "#561828" }}>
+    <Typography as="p" variant="meta" className="mt-2" style={{ color: "#561828" }}>
       {circles.length ? "Bilder du delar i dina kretsar samlas här som ett gemensamt minne." : "Skapa en krets så kan du dela foton."}
-    </p>
+    </Typography>
 
     <PrimaryActionButton
       options={[
@@ -772,15 +775,15 @@ const PlaceholderCircleCard = ({ name, summary }: { name: string; summary: strin
   >
     <ExampleTag className="absolute top-3 right-3" />
     <div className="flex-1 min-w-0">
-      <div className="text-[13px] mb-2" style={{ fontFamily: "'Outfit', sans-serif", color: "#561828" }}>
+      <Typography as="div" variant="meta" className="mb-2" style={{ color: "#561828" }}>
         {name}
-      </div>
-      <p className="text-[15px] leading-snug mb-3" style={{ color: "#2B2B2B" }}>
+      </Typography>
+      <Typography as="p" variant="body" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
         {summary}
-      </p>
+      </Typography>
         <span
-          className="text-[15px] font-medium underline underline-offset-2 decoration-2"
-          style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
+          className={cn(typography.label, "underline underline-offset-2 decoration-2")}
+          style={{ color: "hsl(var(--color-text-primary))", textDecorationColor: "hsl(var(--color-accent-terra))" }}
         >
           Skapa din egen
         </span>

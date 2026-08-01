@@ -27,6 +27,9 @@ import { toast } from "sonner";
 import { X } from "lucide-react";
 import { lovable } from "@/integrations/lovable/index";
 import { motion } from "framer-motion";
+import { Typography } from "@/components/ui/typography";
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 
 const WelcomeScreen = ({
   onGetStarted,
@@ -56,26 +59,24 @@ const WelcomeScreen = ({
         }}
       >
         {/* Logo */}
-        <span
+        <Typography
+          variant="label"
+          as="span"
           style={{
-            fontSize: 13,
-            fontWeight: 500,
-            color: "#C85A2E",
+            color: "hsl(var(--color-accent-terra))",
             letterSpacing: "0.18em",
-            textTransform: "lowercase",
             marginBottom: 56,
           }}
+          className="lowercase block"
         >
           minby
-        </span>
+        </Typography>
 
         {/* Heading */}
-        <h1
+        <Typography
+          variant="display"
           style={{
-            fontSize: 28,
-            fontWeight: 500,
-            lineHeight: 1.2,
-            color: "#2B2B2B",
+            color: "hsl(var(--color-text-primary))",
             margin: 0,
             marginBottom: 24,
           }}
@@ -83,22 +84,20 @@ const WelcomeScreen = ({
           Äntligen ett ställe
           <br />
           bara för <span style={{ color: "#561828" }}>er.</span>
-        </h1>
+        </Typography>
 
         {/* Body */}
-        <p
+        <Typography
+          variant="body"
           style={{
-            fontSize: 16,
-            fontWeight: 400,
-            lineHeight: 1.6,
-            color: "#675332",
+            color: "hsl(var(--color-text-tertiary))",
             margin: 0,
             maxWidth: 320,
           }}
         >
           Minby är din slutna krets. Dela vardagen och ses på riktigt med de
           som betyder mest.
-        </p>
+        </Typography>
       </div>
 
       {/* Bottom actions */}
@@ -110,6 +109,7 @@ const WelcomeScreen = ({
         <motion.button
           onClick={onGetStarted}
           whileTap={{ scale: 0.97 }}
+          className={typography.body}
           style={{
             width: "100%",
             height: 56,
@@ -117,8 +117,6 @@ const WelcomeScreen = ({
             borderRadius: 28,
             background: "#561828",
             color: "#F9F3E1",
-            fontSize: 16,
-            fontWeight: 500,
             cursor: "pointer",
             marginBottom: 20,
           }}
@@ -126,27 +124,27 @@ const WelcomeScreen = ({
           Kom igång
         </motion.button>
 
-        <p
+        <Typography
+          variant="meta"
+          as="p"
           style={{
             margin: 0,
             textAlign: "center",
-            fontSize: 14,
-            color: "#675332",
-            lineHeight: 1.5,
+            color: "hsl(var(--color-text-tertiary))",
           }}
         >
           Har du redan ett konto?{" "}
           <span
             onClick={onLogin}
+            className="font-medium"
             style={{
               color: "#561828",
-              fontWeight: 500,
               cursor: "pointer",
             }}
           >
             Logga in
           </span>
-        </p>
+        </Typography>
       </div>
     </div>
   );
@@ -246,13 +244,13 @@ const AuthPage = () => {
       <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <div className="w-full max-w-sm">
           <div className="text-center mb-10">
-            <span style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "uppercase" as const }}>minby</span>
-            <h1 className="font-display font-medium text-[20px] text-foreground mt-4">Glömt lösenord?</h1>
-            <p className="text-muted-foreground mt-2 text-sm">Ange din e-post så skickar vi en återställningslänk</p>
+            <Typography variant="label" as="span" style={{ letterSpacing: "0.2em", color: "hsl(var(--color-accent-terra))" }} className="uppercase">minby</Typography>
+            <Typography variant="heading" as="h1" className="text-foreground mt-4">Glömt lösenord?</Typography>
+            <Typography variant="body" as="p" className="text-muted-foreground mt-2">Ange din e-post så skickar vi en återställningslänk</Typography>
           </div>
           <form onSubmit={handleForgotPassword} className="space-y-4">
             <div>
-              <Label htmlFor="forgot-email" className="text-xs text-muted-foreground">{t("email")}</Label>
+              <Label htmlFor="forgot-email" className={cn(typography.meta, "text-muted-foreground")}>{t("email")}</Label>
               <Input
                 id="forgot-email"
                 type="email"
@@ -270,11 +268,11 @@ const AuthPage = () => {
               </TextButton>
             </div>
           </form>
-          <p className="text-center text-sm text-muted-foreground mt-8">
+          <Typography variant="body" as="p" className="text-center text-muted-foreground mt-8">
             <TextButton onClick={() => setView("login")}>
               Tillbaka till inloggning
             </TextButton>
-          </p>
+          </Typography>
         </div>
       </div>
     );
@@ -284,16 +282,16 @@ const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <span style={{ fontSize: 13, fontWeight: 300, letterSpacing: "0.2em", color: "#C85A2E", textTransform: "lowercase" as const }}>minby</span>
-          <h1 className="font-display font-medium text-[20px] text-foreground mt-4">
+          <Typography variant="label" as="span" style={{ letterSpacing: "0.2em", color: "hsl(var(--color-accent-terra))" }} className="lowercase">minby</Typography>
+          <Typography variant="heading" as="h1" className="text-foreground mt-4">
             {isSignUp ? t("joinMinby") : t("welcomeBack")}
-          </h1>
+          </Typography>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isSignUp && (
             <div>
-              <Label htmlFor="name" className="text-xs text-muted-foreground">{t("yourName")}</Label>
+              <Label htmlFor="name" className={cn(typography.meta, "text-muted-foreground")}>{t("yourName")}</Label>
               <Input
                 id="name"
                 value={displayName}
@@ -307,7 +305,7 @@ const AuthPage = () => {
             </div>
           )}
           <div>
-            <Label htmlFor="email" className="text-xs text-muted-foreground">{t("email")}</Label>
+            <Label htmlFor="email" className={cn(typography.meta, "text-muted-foreground")}>{t("email")}</Label>
             <Input
               id="email"
               type="email"
@@ -321,7 +319,7 @@ const AuthPage = () => {
             <style>{`#email::placeholder { color: #B0A8B5 !important; opacity: 1; }`}</style>
           </div>
           <div>
-            <Label htmlFor="password" className="text-xs text-muted-foreground">{t("password")}</Label>
+            <Label htmlFor="password" className={cn(typography.meta, "text-muted-foreground")}>{t("password")}</Label>
             <Input
               id="password"
               type="password"
@@ -345,12 +343,12 @@ const AuthPage = () => {
                 onChange={(e) => setConsent(e.target.checked)}
                 className="mt-0.5 h-4 w-4 rounded border-border accent-primary shrink-0"
               />
-              <span className="text-[12px] text-muted-foreground leading-[1.5]">
+              <Typography variant="meta" as="span" className="text-muted-foreground">
                 Jag har läst och godkänner{" "}
                 <Link to="/privacy" className="underline text-foreground hover:opacity-80">integritetspolicyn</Link>
                 {" "}och{" "}
                 <Link to="/terms" className="underline text-foreground hover:opacity-80">användarvillkoren</Link>
-              </span>
+              </Typography>
             </label>
           )}
 
@@ -371,7 +369,7 @@ const AuthPage = () => {
 
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-muted-foreground">eller</span>
+          <Typography variant="meta" as="span" className="text-muted-foreground">eller</Typography>
           <div className="flex-1 h-px bg-border" />
         </div>
 
@@ -406,12 +404,12 @@ const AuthPage = () => {
           </TextButton>
         </div>
 
-        <p className="text-center text-sm text-muted-foreground mt-8">
+        <Typography variant="body" as="p" className="text-center text-muted-foreground mt-8">
           {isSignUp ? t("alreadyHaveAccount") : t("dontHaveAccount")}{" "}
           <TextButton onClick={() => setView(isSignUp ? "login" : "signup")}>
             {isSignUp ? t("signIn") : t("signUp")}
           </TextButton>
-        </p>
+        </Typography>
       </div>
     </div>
   );
