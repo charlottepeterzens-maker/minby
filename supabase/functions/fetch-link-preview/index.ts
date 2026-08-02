@@ -163,24 +163,67 @@ function cleanTitle(
   return title || null;
 }
 
+const MAX_REDIRECTS = 5;
+
+/**
+ * Fetch that follows redirects manually, re-validating every hop against the
+ * SSRF blocklist so an external URL cannot bounce us to an internal address.
+ */
+async function safeFetch(
+  initialUrl: string,
+  headers: Record<string, string>
+): Promise<Response> {
+  let current = new URL(initialUrl);
+
+  if (!safeHost(current)) {
+    throw new Error("Forbidden URL");
+  }
+
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    const response = await fetch(current.href, {
+      redirect: "manual",
+      headers,
+    });
+
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get("location");
+
+      // Drain the body so the connection is not left open.
+      await response.body?.cancel();
+
+      if (!location) {
+        throw new Error("Redirect without location");
+      }
+
+      const next = new URL(location, current.href);
+
+      if (!safeHost(next)) {
+        throw new Error("Unsafe redirect");
+      }
+
+      current = next;
+      continue;
+    }
+
+    return response;
+  }
+
+  throw new Error("Too many redirects");
+}
+
 async function fetchHtml(url: string) {
-  const response = await fetch(url, {
-    redirect: "follow",
-    headers: {
-      "User-Agent": HTML_USER_AGENT,
-      Accept:
-        "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      "Accept-Language": "sv,en;q=0.9",
-    },
+  const response = await safeFetch(url, {
+    "User-Agent": HTML_USER_AGENT,
+    Accept:
+      "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "sv,en;q=0.9",
   });
 
   if (!response.ok) {
+    await response.body?.cancel();
     return null;
   }
 
-  if (!safeHost(new URL(response.url))) {
-    throw new Error("Unsafe redirect");
-  }
 
   const reader = response.body?.getReader();
 
