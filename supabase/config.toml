@@ -6,18 +6,5 @@ verify_jwt = false
 [functions.fetch-link-preview]
 verify_jwt = false
 
-[functions.send-push]
-verify_jwt = false
-
-[functions.send-push-notification]
-verify_jwt = false
-
-[functions.cleanup-old-hangouts]
-verify_jwt = false
-
-[functions.scheduled-nudges]
-
-[functions.seed-test-users]
-verify_jwt = false
 [functions.get-invite-preview]
 verify_jwt = false
