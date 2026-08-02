@@ -260,7 +260,7 @@ async function fetchHtml(url: string) {
 
   return {
     html: new TextDecoder().decode(merged),
-    finalUrl: response.url,
+    finalUrl: response.url || url,
   };
 }
 function getMetaContent(html: string, property: string): string | null {
