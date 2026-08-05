@@ -27,7 +27,41 @@ export default {
       },
 
       colors: {
+        /* Minby design tokens — see :root in src/index.css */
+        butter: {
+          100: "hsl(var(--butter-100))",
+          200: "hsl(var(--butter-200))",
+          300: "hsl(var(--butter-300))",
+        },
+        breeze: {
+          100: "hsl(var(--breeze-100))",
+          200: "hsl(var(--breeze-200))",
+          300: "hsl(var(--breeze-300))",
+        },
+        berry: {
+          100: "hsl(var(--berry-100))",
+          200: "hsl(var(--berry-200))",
+          300: "hsl(var(--berry-300))",
+        },
+        olive: {
+          100: "hsl(var(--olive-100))",
+          200: "hsl(var(--olive-200))",
+          300: "hsl(var(--olive-300))",
+        },
+        white: "hsl(var(--neutral-white))",
+        egg: "hsl(var(--neutral-egg))",
+        linen: "hsl(var(--neutral-linen))",
+        ink: {
+          DEFAULT: "hsl(var(--text-ink))",
+          inverse: "hsl(var(--text-inverse))",
+          secondary: "hsl(var(--color-text-secondary))",
+          muted: "hsl(var(--color-text-muted))",
+          faint: "hsl(var(--color-text-faint))",
+        },
+        activity: "hsl(var(--activity))",
+
         border: "hsl(var(--border))",
+
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
