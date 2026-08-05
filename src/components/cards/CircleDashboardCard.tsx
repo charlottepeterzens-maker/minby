@@ -1,4 +1,6 @@
+import type { CSSProperties } from "react";
 import { Typography } from "@/components/ui/typography";
+
 import { typography } from "@/design-system/typography";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +28,15 @@ interface Props {
   activeMemberIds?: string[];
   onOpen: () => void;
 }
+
+/** Scattered, never-overlapping avatar slots inside a 112x112 area. */
+const SCATTER: CSSProperties[] = [
+  { left: 0, top: 8, width: 44, height: 44 },
+  { left: 58, top: 0, width: 38, height: 38 },
+  { left: 2, top: 62, width: 36, height: 36 },
+  { left: 54, top: 52, width: 44, height: 44 },
+];
+
 
 /**
  * A circle on Hem. Answers one question: "Which circle should I open?"
@@ -80,21 +91,27 @@ const CircleDashboardCard = ({
         )}
       </div>
 
-      <div className="flex-shrink-0 flex items-center gap-100">
-        {visible.map((m) => (
-          <Avatar key={m.user_id} member={m} active={active.has(m.user_id)} className="w-10 h-10" />
+      <div className="flex-shrink-0 relative w-[112px] h-[112px]">
+
+        {(extra > 0 ? visible.slice(0, SCATTER.length - 1) : visible).map((m, i) => (
+          <div key={m.user_id} className="absolute" style={SCATTER[i]}>
+            <Avatar member={m} active={active.has(m.user_id)} className="w-full h-full" />
+          </div>
         ))}
         {extra > 0 && (
-          <div
-            className={cn(
-              typography.meta,
-              "w-10 h-10 rounded-avatar flex items-center justify-center bg-breeze-100 text-foreground",
-            )}
-          >
-            +{extra}
+          <div className="absolute" style={SCATTER[SCATTER.length - 1]}>
+            <div
+              className={cn(
+                typography.meta,
+                "w-full h-full rounded-avatar flex items-center justify-center bg-breeze-100 text-foreground",
+              )}
+            >
+              +{extra}
+            </div>
           </div>
         )}
       </div>
+
     </button>
   );
 };
