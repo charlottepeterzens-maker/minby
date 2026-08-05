@@ -101,6 +101,11 @@ const HomePage = () => {
 
       const today = new Date().toISOString().slice(0, 10);
 
+      /** Last time this user opened Hem — drives the orange activity ring. */
+      const stored = Number(window.localStorage.getItem("minby:last-seen") ?? 0);
+      const lastSeenTs = stored || Date.now() - 7 * 24 * 60 * 60 * 1000;
+      window.localStorage.setItem("minby:last-seen", String(Date.now()));
+
       const views: CircleView[] = list.map((c) => {
         const members = (memberRows ?? [])
           .filter((m) => m.circle_id === c.id)
