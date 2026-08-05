@@ -355,7 +355,9 @@ const HomePage = () => {
                 <CircleDashboardCard
                   key={c.id}
                   name={c.name}
-                  highlights={c.highlights}
+                  primary={c.primary}
+                  supporting={c.supporting}
+                  remaining={c.remaining}
                   members={c.members}
                   onOpen={() => navigate(`/circle/${c.id}`)}
                 />
