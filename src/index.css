@@ -82,7 +82,45 @@
 
     --font-display: 'Outfit', sans-serif;
     --font-body: 'Outfit', sans-serif;
+
+    /* ------------------------------------------------------------------
+     * Minby color tokens (single source of truth)
+     * Figma design system — do not hardcode hex values in components.
+     * ------------------------------------------------------------------ */
+
+    /* Butter */
+    --butter-100: 45 67% 93%;   /* #F9F3E1 */
+    --butter-200: 45 94% 87%;   /* #FDEEC0 */
+    --butter-300: 45 88% 80%;   /* #F9E29D */
+
+    /* Breeze */
+    --breeze-100: 206 61% 91%;  /* #DAEAF6 */
+    --breeze-200: 206 38% 72%;  /* #9CBBD3 */
+    --breeze-300: 205 25% 45%;  /* #55778F */
+
+    /* Berry */
+    --berry-100: 20 75% 92%;    /* #FAE6DC */
+    --berry-200: 3 47% 44%;     /* #A4413B */
+    --berry-300: 6 48% 30%;     /* #732F28 */
+
+    /* Olive */
+    --olive-100: 56 34% 84%;    /* #E4E2C8 */
+    --olive-200: 55 34% 61%;    /* #BEB87B */
+    --olive-300: 57 37% 29%;    /* #66632F */
+
+    /* Neutrals */
+    --neutral-white: 0 0% 100%; /* #FFFFFF */
+    --neutral-egg: 45 40% 98%;  /* #FCFBF8 */
+    --neutral-linen: 36 37% 92%;/* #F2ECE3 */
+
+    /* Text */
+    --text-ink: 20 4% 16%;      /* #2B2928 */
+    --text-inverse: 0 0% 100%;  /* #FFFFFF */
+
+    /* Activity */
+    --activity: 16 65% 47%;     /* #C4522A */
   }
+
 
   .dark {
     /* Warm charcoal base — matches the linen/burgundy/coral palette */
