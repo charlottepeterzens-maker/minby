@@ -1,11 +1,12 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { typography } from "@/design-system/typography";
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
     <div className="relative w-full overflow-auto">
-      <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
+      <table ref={ref} className={cn(cn(typography.body, "w-full caption-bottom"), className)} {...props} />
     </div>
   ),
 );
@@ -25,7 +26,7 @@ TableBody.displayName = "TableBody";
 
 const TableFooter = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
   ({ className, ...props }, ref) => (
-    <tfoot ref={ref} className={cn("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0", className)} {...props} />
+    <tfoot ref={ref} className={cn(cn(typography.action, "border-t bg-muted/50 [&>tr]:last:border-b-0"), className)} {...props} />
   ),
 );
 TableFooter.displayName = "TableFooter";
@@ -46,7 +47,7 @@ const TableHead = React.forwardRef<HTMLTableCellElement, React.ThHTMLAttributes<
     <th
       ref={ref}
       className={cn(
-        "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
+        cn(typography.action, "h-12 px-4 text-left align-middle text-muted-foreground [&:has([role=checkbox])]:pr-0"),
         className,
       )}
       {...props}
@@ -64,7 +65,7 @@ TableCell.displayName = "TableCell";
 
 const TableCaption = React.forwardRef<HTMLTableCaptionElement, React.HTMLAttributes<HTMLTableCaptionElement>>(
   ({ className, ...props }, ref) => (
-    <caption ref={ref} className={cn("mt-4 text-sm text-muted-foreground", className)} {...props} />
+    <caption ref={ref} className={cn(cn(typography.body, "mt-4 text-muted-foreground"), className)} {...props} />
   ),
 );
 TableCaption.displayName = "TableCaption";
