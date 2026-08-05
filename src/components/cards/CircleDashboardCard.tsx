@@ -32,44 +32,29 @@ interface Props {
  * Calm by design: no badges, no counters, no urgency.
  */
 const CircleDashboardCard = ({ name, primary, supporting = [], remaining = 0, members, onOpen }: Props) => {
-  const visible = members.slice(0, 3);
+  const visible = members.slice(0, 5);
   const extra = Math.max(0, members.length - visible.length);
 
   return (
     <button
       type="button"
       onClick={onOpen}
-      className="w-full text-left rounded-300 px-300 py-300 flex items-center gap-300 bg-butter-100"
+      className="w-full text-left rounded-300 p-300 flex items-start gap-300 bg-butter-100"
     >
-      <div className="flex-1 min-w-0">
-        <Typography
-          as="h3"
-          variant="heading"
-          className="truncate font-display"
-          style={{ color: "hsl(var(--color-text-primary))" }}
-        >
+      <div className="flex-1 min-w-0 py-100">
+        <Typography as="div" variant="body" className="truncate mb-200 text-berry-300">
           {name}
         </Typography>
 
-        <Typography
-          as="div"
-          variant="body"
-          className="mt-1 line-clamp-2"
-          style={{ color: "hsl(var(--color-text-primary))" }}
-        >
+        <Typography as="h3" variant="heading" className="line-clamp-2 text-foreground">
           {primary?.text ?? "Lugnt just nu"}
         </Typography>
 
         {supporting.length > 0 && (
-          <ul className="mt-1 space-y-0.5">
+          <ul className="mt-100 space-y-100">
             {supporting.slice(0, 2).map((h, i) => (
               <li key={i}>
-                <Typography
-                  as="span"
-                  variant="body"
-                  className="block truncate"
-                  style={{ color: "hsl(var(--color-text-secondary))" }}
-                >
+                <Typography as="span" variant="section" className="block truncate text-foreground">
                   {h.text}
                 </Typography>
               </li>
@@ -78,24 +63,28 @@ const CircleDashboardCard = ({ name, primary, supporting = [], remaining = 0, me
         )}
 
         {remaining > 0 && (
-          <Typography as="div" variant="meta" className="mt-2" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-            +{remaining} {remaining === 1 ? "notis till" : "fler notiser"}
+          <Typography as="div" variant="body" className="mt-200 text-activity">
+            +{remaining} {remaining === 1 ? "händelse till" : "fler händelser"}
           </Typography>
         )}
       </div>
 
-      <div className="flex-shrink-0 w-[72px] relative h-[72px]">
-        {visible[0] && <Avatar member={visible[0]} className="absolute top-0 right-0 w-10 h-10" />}
-        {visible[1] && <Avatar member={visible[1]} className="absolute top-6 left-0 w-9 h-9" />}
-        {visible[2] && !extra && <Avatar member={visible[2]} className="absolute bottom-0 right-1 w-8 h-8" />}
+      <div className="flex-shrink-0 w-[104px] relative h-[112px]">
+        {visible[0] && <Avatar member={visible[0]} className="absolute top-0 left-0 w-12 h-12" />}
+        {visible[1] && <Avatar member={visible[1]} className="absolute top-8 left-8 w-9 h-9" />}
+        {visible[2] && !extra && <Avatar member={visible[2]} className="absolute top-100 right-0 w-14 h-14" />}
         {extra > 0 && (
           <div
-            className={cn(typography.meta, "absolute bottom-0 right-1 w-8 h-8 rounded-avatar flex items-center justify-center bg-breeze-100")}
-            style={{ color: "hsl(var(--color-text-primary))" }}
+            className={cn(
+              typography.body,
+              "absolute top-100 right-0 w-14 h-14 rounded-avatar flex items-center justify-center bg-breeze-100 ring-2 ring-activity text-foreground",
+            )}
           >
             +{extra}
           </div>
         )}
+        {visible[3] && <Avatar member={visible[3]} className="absolute bottom-0 left-0 w-12 h-12" />}
+        {visible[4] && <Avatar member={visible[4]} className="absolute bottom-0 right-0 w-10 h-10" />}
       </div>
     </button>
   );
@@ -109,8 +98,11 @@ const Avatar = ({ member, className }: { member: CircleMemberPreview; className?
     .join("");
   return (
     <div
-      className={cn(typography.label, "rounded-avatar overflow-hidden flex items-center justify-center bg-breeze-100", className)}
-      style={{ color: "hsl(var(--color-text-primary))" }}
+      className={cn(
+        typography.meta,
+        "rounded-avatar overflow-hidden flex items-center justify-center bg-breeze-100 ring-2 ring-activity text-foreground",
+        className,
+      )}
     >
       {member.avatar_url ? (
         <img src={member.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -120,5 +112,6 @@ const Avatar = ({ member, className }: { member: CircleMemberPreview; className?
     </div>
   );
 };
+
 
 export default CircleDashboardCard;
