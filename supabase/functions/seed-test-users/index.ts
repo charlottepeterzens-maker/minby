@@ -52,7 +52,13 @@ Deno.serve(async (req) => {
     const stamp = Date.now();
     const ids: string[] = [];
     for (const name of NAMES) {
-      const slug = name.toLowerCase().replace(/[^a-zà-ö]+/g, ".").replace(/[àáâä]/g, "a");
+      const slug = name
+        .toLowerCase()
+        .replace(/[åä]/g, "a")
+        .replace(/ö/g, "o")
+        .replace(/[éè]/g, "e")
+        .replace(/[^a-z0-9]+/g, ".")
+        .replace(/^\.|\.$/g, "");
       const email = `${slug}.${stamp}@minby.test`;
       const { data, error } = await admin.auth.admin.createUser({
         email,
