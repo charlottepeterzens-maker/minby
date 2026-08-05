@@ -459,6 +459,10 @@ const greeting = () => {
 const kindLabel = (kind: SharedItem["kind"]) =>
   kind === "tip" ? "Tips" : kind === "meeting" ? "Träff" : "Uppdatering";
 
+/** Small numbers read better as words: "Se fyra nya foton". */
+const NUMBER_WORDS = ["noll", "ett", "två", "tre", "fyra", "fem", "sex", "sju", "åtta", "nio", "tio", "elva", "tolv"];
+const countWord = (n: number) => NUMBER_WORDS[n] ?? String(n);
+
 const MONTHS = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
 const WEEKDAYS = ["sön", "mån", "tis", "ons", "tor", "fre", "lör"];
 
