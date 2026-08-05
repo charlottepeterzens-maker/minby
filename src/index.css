@@ -119,6 +119,31 @@
 
     /* Activity */
     --activity: 16 65% 47%;     /* #C4522A */
+
+    /* ------------------------------------------------------------------
+     * Foundations — spacing, radius & motion tokens
+     * Mirrors src/design-system/tokens.ts. Never hardcode px in components.
+     * ------------------------------------------------------------------ */
+    --space-100: 4px;
+    --space-200: 8px;
+    --space-300: 16px;
+    --space-400: 24px;
+    --space-500: 32px;
+
+    --page-max-width: 448px;
+    --page-padding: var(--space-300);
+
+    --radius-100: 8px;   /* inputs, badges */
+    --radius-200: 16px;  /* små kort, bilder */
+    --radius-300: 28px;  /* CircleCard, BottomSheet, TipCard */
+    --radius-full: 9999px;
+    --radius-avatar: 38%;
+
+    --duration-fast: 120ms;
+    --duration-default: 220ms;
+    --duration-slow: 320ms;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-emphasized: cubic-bezier(0.2, 0, 0, 1.2);
   }
 
 
