@@ -36,11 +36,11 @@ export const colors = {
   },
 
   text: {
-    ink: "#2B2928",
+    primary: "#2B2928",
     inverse: "#FFFFFF",
   },
 
   activity: "#C4522A",
 } as const;
 
-export type ColorPalette = typeof colors;
+export type ColorToken = typeof colors;
