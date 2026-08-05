@@ -31,14 +31,14 @@ const ProfileFilterPill = ({ value, onChange, profile, onOpenMenu }: Props) => {
 
   return (
     <>
-      <div className="flex items-stretch shrink-0 rounded-avatar overflow-hidden">
+      <div className="flex items-stretch shrink-0 rounded-full overflow-hidden">
         <button
           type="button"
           aria-label="Filtrera kretsar"
           aria-haspopup="dialog"
           aria-expanded={open}
           onClick={() => setOpen(true)}
-          className="w-12 h-12 flex items-center justify-center bg-breeze-300"
+          className="w-12 h-12 rounded-l-full flex items-center justify-center bg-breeze-300"
           style={{ color: "hsl(var(--text-inverse))" }}
         >
           <SlidersHorizontal size={20} />
@@ -49,7 +49,7 @@ const ProfileFilterPill = ({ value, onChange, profile, onOpenMenu }: Props) => {
           onClick={onOpenMenu}
           aria-label="Öppna min meny"
           aria-haspopup="dialog"
-          className="w-12 h-12 overflow-hidden flex items-center justify-center bg-butter-100"
+          className="w-12 h-12 rounded-r-full overflow-hidden flex items-center justify-center bg-butter-100"
         >
           {profile.avatar_url ? (
             <img

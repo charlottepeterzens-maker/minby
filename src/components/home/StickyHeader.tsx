@@ -10,7 +10,7 @@ interface Props {
  * It composes actions; it never implements them.
  */
 const StickyHeader = ({ actions }: Props) => (
-  <div className="sticky top-0 z-30 bg-background py-100 flex items-center justify-end">
+  <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm py-100 flex items-center justify-end">
     {actions}
   </div>
 );
