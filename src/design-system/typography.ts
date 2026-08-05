@@ -116,13 +116,13 @@ export const typographyTokens: Record<CanonicalVariant, TypographyToken> = {
     className: "text-[10px] font-normal leading-[1] tracking-[0.02em]",
   },
   action: {
-    description: "Text links, CTAs and TextButtons — 14 / Semibold / 100%",
+    description: "Text links, CTAs and TextButtons — 14 / Medium / 100%",
     fontSize: "14px",
-    fontWeight: 600,
+    fontWeight: 500,
     lineHeight: "100%",
     letterSpacing: "0",
     element: "span",
-    className: "text-[14px] font-semibold leading-[1] tracking-[0]",
+    className: "text-[14px] font-medium leading-[1] tracking-[0]",
   },
   wordmark: {
     description: "Brand wordmark 'minby' — logo lockup only",
