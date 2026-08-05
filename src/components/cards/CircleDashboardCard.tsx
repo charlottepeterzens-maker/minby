@@ -81,6 +81,7 @@ const CircleDashboardCard = ({
       </div>
 
       <div className="flex-shrink-0 relative w-[112px] h-[112px]">
+
         {(extra > 0 ? visible.slice(0, SCATTER.length - 1) : visible).map((m, i) => (
           <div key={m.user_id} className="absolute" style={SCATTER[i]}>
             <Avatar member={m} active={active.has(m.user_id)} className="w-full h-full" />
