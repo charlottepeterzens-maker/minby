@@ -20,13 +20,38 @@ export default {
       },
       /* Typography tokens — mirrors src/design-system/typography.ts */
       fontSize: {
-        display: ["24px", { lineHeight: "1", letterSpacing: "0", fontWeight: "400" }],
+        display: ["24px", { lineHeight: "1", letterSpacing: "0", fontWeight: "500" }],
         heading: ["18px", { lineHeight: "1.1", letterSpacing: "0", fontWeight: "600" }],
         section: ["18px", { lineHeight: "1", letterSpacing: "0", fontWeight: "400" }],
         body: ["14px", { lineHeight: "1.2", letterSpacing: "0", fontWeight: "400" }],
         meta: ["10px", { lineHeight: "1", letterSpacing: "0.02em", fontWeight: "400" }],
-        action: ["14px", { lineHeight: "1", letterSpacing: "0", fontWeight: "600" }],
+        action: ["14px", { lineHeight: "1", letterSpacing: "0", fontWeight: "500" }],
       },
+
+      /* Spacing tokens — mirrors src/design-system/tokens.ts */
+      spacing: {
+        100: "4px",
+        200: "8px",
+        300: "16px",
+        400: "24px",
+        500: "32px",
+      },
+
+      maxWidth: {
+        page: "448px",
+      },
+
+      /* Motion tokens */
+      transitionDuration: {
+        fast: "120ms",
+        DEFAULT: "220ms",
+        slow: "320ms",
+      },
+      transitionTimingFunction: {
+        standard: "cubic-bezier(0.2, 0, 0, 1)",
+        emphasized: "cubic-bezier(0.2, 0, 0, 1.2)",
+      },
+
 
       colors: {
         /* Minby design tokens — see :root in src/index.css */
