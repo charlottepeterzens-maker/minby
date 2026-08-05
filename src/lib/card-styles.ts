@@ -26,12 +26,12 @@ export const RADIUS = {
 } as const;
 
 export const RADIUS_CLASS = {
-  card: "rounded-[28px]",
-  photo: "rounded-[16px]",
-  bubble: "rounded-[16px]",
-  thumb: "rounded-[8px]",
-  avatar: "rounded-[38%]",
-  sheet: "rounded-t-[28px]",
+  card: "rounded-300",
+  photo: "rounded-200",
+  bubble: "rounded-200",
+  thumb: "rounded-100",
+  avatar: "rounded-avatar",
+  sheet: "rounded-t-300",
 } as const;
 
 
