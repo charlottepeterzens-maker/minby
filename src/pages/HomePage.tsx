@@ -430,11 +430,7 @@ const HomePage = () => {
 };
 
 const greeting = () => {
-  const h = new Date().getHours();
-  if (h < 10) return "God morgon";
-  if (h < 17) return "God dag";
-  return "God kväll";
-};
+
 
 const kindLabel = (kind: SharedItem["kind"]) =>
   kind === "tip" ? "Tips" : kind === "meeting" ? "Träff" : "Uppdatering";
