@@ -20,7 +20,9 @@ interface Circle {
 }
 
 interface CircleView extends Circle {
-  highlights: CircleHighlight[];
+  primary: CircleHighlight | null;
+  supporting: CircleHighlight[];
+  remaining: number;
   members: CircleMemberPreview[];
   lastActivity: number;
 }
