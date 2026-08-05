@@ -61,6 +61,11 @@ const HomePage = () => {
     display_name: null,
     avatar_url: null,
   });
+  const [filter, setFilter] = useState<CircleFilterId>("all");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const scrolled = useScrollHide();
+
+
 
   useEffect(() => {
     if (!user) return;
