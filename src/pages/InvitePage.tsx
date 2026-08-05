@@ -133,7 +133,7 @@ const InvitePage = () => {
           style={{
             color: "#9B8BA5",
           }}
-          className="uppercase"
+          
         >
           du är inbjuden till
         </Typography>
@@ -154,7 +154,7 @@ const InvitePage = () => {
               {members.slice(0, 5).map((m, i) => (
                 <Typography
                   key={i}
-                  variant="label"
+                  variant="meta"
                   as="div"
                   className="w-11 h-11 rounded-full flex items-center justify-center text-white ring-2 ring-background overflow-hidden"
                   style={{ backgroundColor: "#8b6f5e" }}

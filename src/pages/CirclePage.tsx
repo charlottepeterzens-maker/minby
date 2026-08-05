@@ -483,7 +483,7 @@ const CirclePage = () => {
               </button>
               {sinceLastOpen && (
                 <div className="px-300 pb-300">
-                  <Typography as="div" variant="label" className="mb-2" style={{ color: "hsl(20, 4%, 40%)" }}>
+                  <Typography as="div" variant="meta" className="mb-2" style={{ color: "hsl(20, 4%, 40%)" }}>
                     {sinceLast.label}
                   </Typography>
                   <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-primary))" }}>
@@ -559,7 +559,7 @@ const CirclePage = () => {
           <div className="rounded-300 p-300" style={{ backgroundColor: CARD_BLUE }}>
             {aiSummary ? (
               <>
-                <Typography as="div" variant="label" className="mb-2" style={{ color: "hsl(210, 20%, 35%)" }}>
+                <Typography as="div" variant="meta" className="mb-2" style={{ color: "hsl(210, 20%, 35%)" }}>
                   Senast uppdaterad: {formatTimestamp(aiSummary.generated_at)}
                   {aiSummary.author ? ` av ${aiSummary.author}` : ""}
                 </Typography>
@@ -821,7 +821,7 @@ const CirclePage = () => {
                   </Typography>
                 )}
                 <div className="mt-6">
-                  <Typography as="div" variant="meta" className="uppercase mb-2" style={{ color: "hsl(20, 4%, 54%)" }}>
+                  <Typography as="div" variant="meta" className="mb-2" style={{ color: "hsl(20, 4%, 54%)" }}>
                     Med på träffen
                   </Typography>
                   {meetingAttendees.length === 0 ? (

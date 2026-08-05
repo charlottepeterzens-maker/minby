@@ -280,7 +280,7 @@ const ChatPage = () => {
             </button>
             <div className="flex items-center gap-200 mb-2">
               <Sparkles className="w-4 h-4" />
-              <Typography variant="meta" as="span" className="uppercase">AI-sammanfattning</Typography>
+              <Typography variant="meta" as="span" >AI-sammanfattning</Typography>
             </div>
             {summarizing ? (
               <Typography variant="body" as="p" className="opacity-80">Läser chatten…</Typography>
@@ -327,7 +327,7 @@ const ChatPage = () => {
                         className="max-w-[78%] rounded-200 p-300"
                         style={{ backgroundColor: "#F5EFD9" }}
                       >
-                        <Typography variant="meta" as="div" className="mb-1 uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                        <Typography variant="meta" as="div" className="mb-1" style={{ color: "hsl(var(--color-text-tertiary))" }}>
                           Förslag att ses
                         </Typography>
                         <Typography variant="heading" as="div" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
@@ -414,7 +414,7 @@ const ChatPage = () => {
         <div className="px-300 pt-3 pb-safe" style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}>
           {showMeetingForm && (
             <div className="mb-3 rounded-200 p-3 space-y-200" style={{ backgroundColor: "#F5EFD9" }}>
-              <Typography variant="meta" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>Föreslå en träff</Typography>
+              <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>Föreslå en träff</Typography>
               <input
                 autoFocus
                 value={mTitle}

@@ -88,7 +88,7 @@ const ProfileNudge = () => {
       <div className="rounded-300 p-5" style={{ backgroundColor: "#EDE5F0" }}>
         {step === "name" && (
           <>
-            <Typography variant="meta" as="div" className="mb-2 uppercase" style={{ color: "#5A4A66" }}>
+            <Typography variant="meta" as="div" className="mb-2" style={{ color: "#5A4A66" }}>
               Steg 1 av 2
             </Typography>
             <Typography variant="body" className="mb-3" style={{ color: "#2B2B2B" }}>
@@ -110,7 +110,7 @@ const ProfileNudge = () => {
         )}
         {step === "avatar" && (
           <>
-            <Typography variant="meta" as="div" className="mb-2 uppercase" style={{ color: "#5A4A66" }}>
+            <Typography variant="meta" as="div" className="mb-2" style={{ color: "#5A4A66" }}>
               Steg 2 av 2
             </Typography>
             <Typography variant="body" className="mb-3" style={{ color: "#2B2B2B" }}>

@@ -20,21 +20,21 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onO
 
       <div>
         <Typography
-          variant="eyebrow"
+          variant="meta"
           as="div"
           className="mb-2 truncate"
           style={{ color: "#675332" }}
         >
           {hostName}
         </Typography>
-        <Typography variant="title" as="div" style={{ color: "#2B2B2B" }}>
+        <Typography variant="heading" as="div" style={{ color: "#2B2B2B" }}>
           {dateLabel}
           {dateLabel && <br />}
           {title}
         </Typography>
       </div>
       <div>
-        <Typography variant="eyebrow" as="div" className="mb-1" style={{ color: "#561828" }}>
+        <Typography variant="meta" as="div" className="mb-1" style={{ color: "#561828" }}>
           {responseCount === 0 ? "Ingen har svarat" : `${responseCount} har svarat`}
         </Typography>
         <TextButton

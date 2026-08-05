@@ -30,8 +30,8 @@ const PhotoTile = ({
   const dims = size === "lg" ? "w-[150px] h-[210px]" : "w-[110px] h-[130px]";
   // Typography comes from the design system: large tiles use caption/labelSm,
   // small tiles step down one notch to labelSm/eyebrow.
-  const titleType = size === "lg" ? typography.caption : typography.labelSm;
-  const nameType = size === "lg" ? typography.labelSm : typography.eyebrow;
+  const titleType = size === "lg" ? typography.body : typography.meta;
+  const nameType = size === "lg" ? typography.meta : typography.meta;
   const pad = size === "lg" ? "p-3 pt-10" : "p-200 pt-400";
 
   return (
