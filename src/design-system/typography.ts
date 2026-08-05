@@ -3,37 +3,53 @@
  * ---------------------------------------
  * Single source of truth for ALL typography in the application.
  *
- * There are exactly FIVE canonical variants:
+ * Font family: Outfit — the ONLY font family in Minby.
  *
- *   display  — page titles
- *   heading  — section / card / sheet headings
- *   body     — all running text, inputs, buttons
- *   meta     — metadata, hints, helper text, eyebrows
- *   label    — field labels, nav labels, author names
+ * There are exactly SIX canonical text styles:
  *
- * Never hardcode `text-[..]`, `font-*`, `leading-*`, `fontSize` or
- * `fontWeight` in components. Use the <Typography /> component, or — when a
- * native element needs the styles directly (input, textarea, button) — the
- * exported `typography` class map:
+ *   display  — 24 / 400 / 100%      page titles, profile names, large headings
+ *   heading  — 18 / 600 / 110%      section headings, card titles, dialog titles
+ *   section  — 18 / 400 / 100%      CircleCard/HangoutCard text, in-card headings,
+ *                                   text that leads the user onwards
+ *   body     — 14 / 400 / 120%      running text, chat messages, descriptions,
+ *                                   summaries, captions, tips
+ *   meta     — 10 / 400 / 100% / 2% dates, timestamps, senders, labels
+ *   action   — 14 / 600 / 100%      text links, CTAs, TextButtons
+ *
+ * Underline and color are owned by the component, never by the typography.
+ *
+ * Never hardcode `text-[..]`, `text-sm`, `font-*`, `leading-*`, `tracking-*`,
+ * `fontSize`, `fontWeight`, `lineHeight` or `letterSpacing` in components. Use
+ * the <Typography /> component, or — when a native element needs the styles
+ * directly (input, textarea, button) — the exported `typography` class map:
  *
  *    <input className={cn(typography.body, "...")} />
  *
- * If a new typographic need appears, extend THIS file. Never create a local
- * solution.
+ * If a new typographic need appears, add it to THIS file first. Never create a
+ * local solution.
  */
 
-/** The five canonical variants. */
-export type CanonicalVariant = "display" | "heading" | "body" | "meta" | "label";
+/** The six canonical text styles. */
+export type CanonicalVariant =
+  | "display"
+  | "heading"
+  | "section"
+  | "body"
+  | "meta"
+  | "action"
+  /** Brand wordmark ("minby") — logo lockup only. */
+  | "wordmark";
 
 /**
  * Deprecated aliases kept so older call sites keep compiling.
- * They resolve to one of the five canonical variants — do not use in new code.
+ * They resolve to one of the canonical styles — do not use in new code.
  */
 export type LegacyVariant =
   | "title"
   | "bodyMd"
   | "bodySm"
   | "caption"
+  | "label"
   | "labelSm"
   | "eyebrow"
   | "button";
@@ -46,7 +62,7 @@ type TypographyToken = {
   fontSize: string;
   fontWeight: number;
   lineHeight: string;
-  letterSpacing?: string;
+  letterSpacing: string;
   /** Default HTML element when no `as` prop is given */
   element: keyof JSX.IntrinsicElements;
   /** Tailwind class string generated from the values above */
@@ -55,63 +71,87 @@ type TypographyToken = {
 
 export const typographyTokens: Record<CanonicalVariant, TypographyToken> = {
   display: {
-    description: "Page and hero titles — 28px / Medium / tight",
-    fontSize: "1.75rem",
-    fontWeight: 500,
-    lineHeight: "1.1",
+    description: "Page titles, profile names, large headings — 24 / Regular / 100%",
+    fontSize: "24px",
+    fontWeight: 400,
+    lineHeight: "100%",
+    letterSpacing: "0",
     element: "h1",
-    className: "text-[1.75rem] font-medium leading-[1.1]",
+    className: "text-[24px] font-normal leading-[1] tracking-[0]",
   },
   heading: {
-    description: "Section, card and sheet headings — 18px / SemiBold",
-    fontSize: "1.125rem",
+    description: "Section headings, card titles, dialog titles — 18 / Semibold / 110%",
+    fontSize: "18px",
     fontWeight: 600,
-    lineHeight: "1.25",
+    lineHeight: "110%",
+    letterSpacing: "0",
     element: "h2",
-    className: "text-[1.125rem] font-semibold leading-[1.25]",
+    className: "text-[18px] font-semibold leading-[1.1] tracking-[0]",
+  },
+  section: {
+    description: "CircleCard/HangoutCard text, in-card headings, leading text — 18 / Regular / 100%",
+    fontSize: "18px",
+    fontWeight: 400,
+    lineHeight: "100%",
+    letterSpacing: "0",
+    element: "p",
+    className: "text-[18px] font-normal leading-[1] tracking-[0]",
   },
   body: {
-    description: "All running text, inputs, textareas and buttons — 16px / Regular",
-    fontSize: "1rem",
+    description: "All running text, chat, descriptions, tips, inputs — 14 / Regular / 120%",
+    fontSize: "14px",
     fontWeight: 400,
-    lineHeight: "1.5",
+    lineHeight: "120%",
+    letterSpacing: "0",
     element: "p",
-    className: "text-[1rem] font-normal leading-[1.5]",
+    className: "text-[14px] font-normal leading-[1.2] tracking-[0]",
   },
   meta: {
-    description: "Metadata, eyebrows, hints, helper and validation text — 12px / Regular",
-    fontSize: "0.75rem",
+    description: "Dates, timestamps, senders, labels, small info rows — 10 / Regular / 100% / 2%",
+    fontSize: "10px",
     fontWeight: 400,
-    lineHeight: "1.4",
+    lineHeight: "100%",
+    letterSpacing: "0.02em",
     element: "p",
-    className: "text-[0.75rem] font-normal leading-[1.4]",
+    className: "text-[10px] font-normal leading-[1] tracking-[0.02em]",
   },
-  label: {
-    description: "Field labels, navigation labels, author names — 12px / Medium",
-    fontSize: "0.75rem",
-    fontWeight: 500,
-    lineHeight: "1.4",
+  action: {
+    description: "Text links, CTAs and TextButtons — 14 / Semibold / 100%",
+    fontSize: "14px",
+    fontWeight: 600,
+    lineHeight: "100%",
+    letterSpacing: "0",
     element: "span",
-    className: "text-[0.75rem] font-medium leading-[1.4]",
+    className: "text-[14px] font-semibold leading-[1] tracking-[0]",
+  },
+  wordmark: {
+    description: "Brand wordmark 'minby' — logo lockup only",
+    fontSize: "26px",
+    fontWeight: 300,
+    lineHeight: "100%",
+    letterSpacing: "-0.02em",
+    element: "span",
+    className: "text-[26px] font-light leading-[1] tracking-[-0.02em] lowercase",
   },
 };
 
-/** Deprecated variant -> canonical variant. */
+/** Deprecated variant -> canonical style. */
 export const legacyVariantMap: Record<LegacyVariant, CanonicalVariant> = {
   title: "heading",
   bodyMd: "body",
   bodySm: "body",
   caption: "meta",
-  labelSm: "label",
+  label: "meta",
+  labelSm: "meta",
   eyebrow: "meta",
-  button: "body",
+  button: "action",
 };
 
 export const resolveVariant = (variant: TypographyVariant): CanonicalVariant =>
   (legacyVariantMap as Record<string, CanonicalVariant>)[variant] ??
   (variant as CanonicalVariant);
 
-/** Class-map shortcut: `typography.body`, `typography.label`, … */
+/** Class-map shortcut: `typography.body`, `typography.action`, … */
 export const typography = Object.fromEntries(
   ([
     ...Object.keys(typographyTokens),
@@ -135,11 +175,3 @@ export const typographyElements = Object.fromEntries(
 
 /** The one and only font family in Minby. */
 export const fontFamily = "Outfit, sans-serif";
-
-/**
- * Emphasis modifiers — the only sanctioned way to add weight emphasis on top
- * of a variant (e.g. a selected list item). Never write `font-*` directly.
- */
-export const typographyEmphasis = {
-  strong: "font-semibold",
-} as const;
