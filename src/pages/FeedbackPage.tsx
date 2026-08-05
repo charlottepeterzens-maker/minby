@@ -31,10 +31,9 @@ const FeedbackPage = () => {
     }
 
     setSending(true);
-    const { error } = await supabase.from("feedback").insert({
-      user_id: user.id,
-      content: trimmed,
-    });
+    const { error } = await (supabase as any)
+      .from("feedback")
+      .insert({ user_id: user.id, content: trimmed });
     setSending(false);
 
     if (error) {
@@ -83,7 +82,7 @@ const FeedbackPage = () => {
               disabled={sending}
             />
 
-            <div className="border-t border-border-subtle" />
+            <div className="border-t border-line-subtle" />
 
             <Button
               onClick={handleSubmit}
