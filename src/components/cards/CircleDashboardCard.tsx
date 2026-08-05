@@ -33,9 +33,9 @@ const CircleDashboardCard = ({ name, highlights, members, onOpen }: Props) => {
     <button
       type="button"
       onClick={onOpen}
-      className="w-full text-left rounded-[26px] p-5 flex gap-4"
-      style={{ backgroundColor: "#F9F3E1" }}
+      className="w-full text-left rounded-[26px] p-5 flex gap-4 bg-butter-100"
     >
+
       <div className="flex-1 min-w-0">
         <Typography as="h3" variant="heading" style={{ color: "hsl(var(--color-text-primary))" }}>
           {name}
