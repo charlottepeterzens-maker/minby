@@ -71,13 +71,13 @@ type TypographyToken = {
 
 export const typographyTokens: Record<CanonicalVariant, TypographyToken> = {
   display: {
-    description: "Page titles, profile names, large headings — 24 / Regular / 100%",
+    description: "Page titles, profile names, large headings — 24 / Medium / 100%",
     fontSize: "24px",
-    fontWeight: 400,
+    fontWeight: 500,
     lineHeight: "100%",
     letterSpacing: "0",
     element: "h1",
-    className: "text-[24px] font-normal leading-[1] tracking-[0]",
+    className: "text-[24px] font-medium leading-[1] tracking-[0]",
   },
   heading: {
     description: "Section headings, card titles, dialog titles — 18 / Semibold / 110%",
