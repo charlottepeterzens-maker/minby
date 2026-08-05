@@ -36,7 +36,7 @@ const FilterButton = ({ value, onChange }: Props) => {
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen(true)}
-        className="w-11 h-11 rounded-avatar flex items-center justify-center bg-butter-100 text-foreground"
+        className="w-10 h-10 shrink-0 rounded-avatar flex items-center justify-center bg-butter-100 text-foreground"
       >
         <SlidersHorizontal size={20} />
       </button>
