@@ -4,22 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import PrimaryActionButton from "@/components/ui/primary-action-button";
-import { type CircleHighlight, type CircleMemberPreview } from "@/components/cards/CircleDashboardCard";
-import TopBar from "@/components/home/TopBar";
-import StickyHeader from "@/components/home/StickyHeader";
-import FilterButton from "@/components/home/FilterButton";
-import ProfileButton from "@/components/home/ProfileButton";
-import MyMenu from "@/components/home/MyMenu";
-import CircleList from "@/components/home/CircleList";
-import type { CircleFilterId } from "@/components/home/types";
-import { useScrollHide } from "@/hooks/useScrollHide";
+import { Menu } from "lucide-react";
+import CircleDashboardCard, { type CircleHighlight, type CircleMemberPreview } from "@/components/cards/CircleDashboardCard";
+import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
 import { Sheet } from "@/components/ui/sheet";
 import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
 import { toast } from "sonner";
 import { Typography } from "@/components/ui/typography";
 import { typography } from "@/design-system/typography";
 import { cn } from "@/lib/utils";
-
 
 interface Circle {
   id: string;
@@ -61,11 +54,6 @@ const HomePage = () => {
     display_name: null,
     avatar_url: null,
   });
-  const [filter, setFilter] = useState<CircleFilterId>("all");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const scrolled = useScrollHide();
-
-
 
   useEffect(() => {
     if (!user) return;
@@ -295,45 +283,87 @@ const HomePage = () => {
     navigate(`/circle/${data.id}`);
   };
 
-
-
+  const firstName = (profile.display_name ?? "").trim().split(" ")[0];
+  const initials = (profile.display_name ?? user?.email ?? "?")
+    .split(/\s+|@/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]?.toUpperCase())
+    .join("");
 
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-md mx-auto px-300 pt-safe pb-safe">
-        <TopBar question="Var vill du hänga med ikväll?" hidden={scrolled} />
+        <header className="flex items-center justify-between py-400">
+          <Typography
+            as="span"
+            variant="wordmark"
+            style={{ color: "hsl(var(--color-accent-terra))" }}
+          >
+            minby
+          </Typography>
+          <button onClick={() => navigate("/settings")} className="text-foreground p-200" aria-label="Inställningar">
+            <Menu className="w-5 h-5" />
+          </button>
+        </header>
 
-        <StickyHeader
-          start={<FilterButton value={filter} onChange={setFilter} />}
-          end={
-            <ProfileButton
-              profile={profile}
-              expanded={menuOpen}
-              onOpen={() => setMenuOpen(true)}
-            />
-          }
-        />
+        {/* Profile header — avatar and greeting only */}
+        <section className="flex items-center gap-300 mb-12">
+          <div
+            className="w-14 h-14 rounded-avatar overflow-hidden flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1", color: "#561828" }}
+          >
+            {profile.avatar_url ? (
+              <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <Typography as="span" variant="heading">{initials}</Typography>
+            )}
+          </div>
+          <Typography as="h1" variant="display" className="text-foreground">
+            {greeting()}{firstName ? `, ${firstName}` : ""}.
+          </Typography>
+        </section>
 
         {/* Kretsar — the heart of the page */}
-        <section className="pt-300">
-          <CircleList
-            circles={circles}
-            loading={loading}
-            onOpen={(id) => navigate(`/circle/${id}`)}
-            emptyState={
-              <div className="space-y-3">
-                <Typography as="h3" variant="heading" className="text-foreground">
-                  Inga kretsar än
-                </Typography>
-                <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-                  Dina kretsar är där relationerna lever. Skapa din första och bjud in de du vill ha närmast.
-                </Typography>
-                <div className="pt-100">
-                  <TextButton onClick={() => setCreating(true)}>Skapa en krets</TextButton>
-                </div>
+        <section>
+          <Typography as="h2" variant="display" className="text-foreground mb-5">
+            Kretsar
+          </Typography>
+
+          {loading ? (
+            <div className="space-y-300">
+              <CircleCardSkeleton />
+              <CircleCardSkeleton />
+            </div>
+          ) : circles.length === 0 ? (
+            <div className="space-y-3">
+              <Typography as="h3" variant="heading" className="text-foreground">
+                Inga kretsar än
+              </Typography>
+              <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                Dina kretsar är där relationerna lever. Skapa din första och bjud in de du vill ha närmast.
+              </Typography>
+              <div className="pt-100">
+                <TextButton onClick={() => setCreating(true)}>
+                  Skapa en krets
+                </TextButton>
               </div>
-            }
-          />
+            </div>
+          ) : (
+            <div className="space-y-300">
+              {circles.map((c) => (
+                <CircleDashboardCard
+                  key={c.id}
+                  name={c.name}
+                  primary={c.primary}
+                  supporting={c.supporting}
+                  remaining={c.remaining}
+                  members={c.members}
+                  onOpen={() => navigate(`/circle/${c.id}`)}
+                />
+              ))}
+            </div>
+          )}
         </section>
 
         {/* Jag har delat — one chronological timeline of my own objects */}
@@ -376,20 +406,10 @@ const HomePage = () => {
         </section>
       </div>
 
-      <MyMenu
-        open={menuOpen}
-        onOpenChange={setMenuOpen}
-        items={[
-          { id: "settings", label: "Inställningar", onSelect: () => navigate("/settings") },
-          { id: "circle", label: "Skapa en krets", onSelect: () => setCreating(true) },
-        ]}
-      />
-
       <PrimaryActionButton
         ariaLabel="Skapa en krets"
         options={[{ label: "Skapa en krets", onSelect: () => setCreating(true) }]}
       />
-
 
       {/* Create circle sheet */}
       <Sheet
@@ -429,9 +449,12 @@ const HomePage = () => {
   );
 };
 
-
-
-
+const greeting = () => {
+  const h = new Date().getHours();
+  if (h < 10) return "God morgon";
+  if (h < 17) return "God dag";
+  return "God kväll";
+};
 
 const kindLabel = (kind: SharedItem["kind"]) =>
   kind === "tip" ? "Tips" : kind === "meeting" ? "Träff" : "Uppdatering";
