@@ -15,17 +15,23 @@ export interface CircleMemberPreview {
 
 interface Props {
   name: string;
-  highlights: CircleHighlight[];
+  /** The single most important thing that happened. */
+  primary?: CircleHighlight | null;
+  /** At most two supporting lines. */
+  supporting?: CircleHighlight[];
+  /** Number of further events, summarised as "+N fler händelser". */
+  remaining?: number;
   members: CircleMemberPreview[];
   onOpen: () => void;
 }
 
 /**
- * A circle on Hem: a small dashboard that tells the user why this circle
- * matters right now. Shows at most three current happenings — never the
- * content itself.
+ * A circle on Hem. Answers one question: "Which circle should I open?"
+ * Priority: circle name → most important event → up to two supporting
+ * events → remaining activity → participants (supporting only).
+ * Calm by design: no badges, no counters, no urgency.
  */
-const CircleDashboardCard = ({ name, highlights, members, onOpen }: Props) => {
+const CircleDashboardCard = ({ name, primary, supporting = [], remaining = 0, members, onOpen }: Props) => {
   const visible = members.slice(0, 3);
   const extra = Math.max(0, members.length - visible.length);
 
@@ -35,29 +41,42 @@ const CircleDashboardCard = ({ name, highlights, members, onOpen }: Props) => {
       onClick={onOpen}
       className="w-full text-left rounded-300 p-5 flex gap-300 bg-butter-100"
     >
-
       <div className="flex-1 min-w-0">
-        <Typography as="h3" variant="heading" style={{ color: "hsl(var(--color-text-primary))" }}>
+        <Typography as="div" variant="meta" style={{ color: "hsl(var(--color-text-tertiary))" }}>
           {name}
         </Typography>
 
-        <ul className="mt-3 space-y-100.5">
-          {highlights.length ? (
-            highlights.slice(0, 3).map((h, i) => (
+        <Typography
+          as="h3"
+          variant="heading"
+          className="mt-1 line-clamp-2"
+          style={{ color: "hsl(var(--color-text-primary))" }}
+        >
+          {primary?.text ?? "Lugnt just nu"}
+        </Typography>
+
+        {supporting.length > 0 && (
+          <ul className="mt-2 space-y-0.5">
+            {supporting.slice(0, 2).map((h, i) => (
               <li key={i}>
-                <Typography as="span" variant="body" className="block truncate" style={{ color: "hsl(var(--color-text-primary))" }}>
+                <Typography
+                  as="span"
+                  variant="body"
+                  className="block truncate"
+                  style={{ color: "hsl(var(--color-text-secondary))" }}
+                >
                   {h.text}
                 </Typography>
               </li>
-            ))
-          ) : (
-            <li>
-              <Typography as="span" variant="body" className="block" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-                Lugnt just nu.
-              </Typography>
-            </li>
-          )}
-        </ul>
+            ))}
+          </ul>
+        )}
+
+        {remaining > 0 && (
+          <Typography as="div" variant="meta" className="mt-2" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            +{remaining} fler händelser
+          </Typography>
+        )}
       </div>
 
       <div className="flex-shrink-0 w-[92px] relative h-[92px]">
