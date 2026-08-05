@@ -19,7 +19,7 @@ interface Props {
   primary?: CircleHighlight | null;
   /** At most two supporting lines. */
   supporting?: CircleHighlight[];
-  /** Number of further events, summarised as "+N fler händelser". */
+  /** Number of further notifications, summarised as "+N fler notiser". */
   remaining?: number;
   members: CircleMemberPreview[];
   onOpen: () => void;
@@ -42,13 +42,18 @@ const CircleDashboardCard = ({ name, primary, supporting = [], remaining = 0, me
       className="w-full text-left rounded-300 px-300 py-300 flex items-center gap-300 bg-butter-100"
     >
       <div className="flex-1 min-w-0">
-        <Typography as="div" variant="meta" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+        <Typography
+          as="h3"
+          variant="heading"
+          className="truncate font-display"
+          style={{ color: "hsl(var(--color-text-primary))" }}
+        >
           {name}
         </Typography>
 
         <Typography
-          as="h3"
-          variant="heading"
+          as="div"
+          variant="body"
           className="mt-1 line-clamp-2"
           style={{ color: "hsl(var(--color-text-primary))" }}
         >
@@ -56,7 +61,7 @@ const CircleDashboardCard = ({ name, primary, supporting = [], remaining = 0, me
         </Typography>
 
         {supporting.length > 0 && (
-          <ul className="mt-2 space-y-0.5">
+          <ul className="mt-1 space-y-0.5">
             {supporting.slice(0, 2).map((h, i) => (
               <li key={i}>
                 <Typography
@@ -74,7 +79,7 @@ const CircleDashboardCard = ({ name, primary, supporting = [], remaining = 0, me
 
         {remaining > 0 && (
           <Typography as="div" variant="meta" className="mt-2" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-            +{remaining} fler händelser
+            +{remaining} {remaining === 1 ? "notis till" : "fler notiser"}
           </Typography>
         )}
       </div>
