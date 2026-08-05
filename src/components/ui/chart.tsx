@@ -135,14 +135,14 @@ const ChartTooltipContent = React.forwardRef<
           : itemConfig?.label;
 
       if (labelFormatter) {
-        return <div className={cn(cn(typography.action, ""), labelClassName)}>{labelFormatter(value, payload)}</div>;
+        return <div className={cn(typography.action, labelClassName)}>{labelFormatter(value, payload)}</div>;
       }
 
       if (!value) {
         return null;
       }
 
-      return <div className={cn(cn(typography.action, ""), labelClassName)}>{value}</div>;
+      return <div className={cn(typography.action, labelClassName)}>{value}</div>;
     }, [label, labelFormatter, payload, hideLabel, labelClassName, config, labelKey]);
 
     if (!active || !payload?.length) {
