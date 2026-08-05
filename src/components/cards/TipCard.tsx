@@ -56,7 +56,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
           <div
             className={cn(
               typography.eyebrow,
-              "w-6 h-6 rounded-[32%] overflow-hidden flex items-center justify-center",
+              "w-6 h-6 rounded-[38%] overflow-hidden flex items-center justify-center",
             )}
             style={{ backgroundColor: "#DCEAF8", color: "#561828" }}
           >

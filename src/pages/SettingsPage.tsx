@@ -141,7 +141,7 @@ const SettingsPage = () => {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="relative w-24 h-24 rounded-[32%] overflow-hidden flex items-center justify-center"
+                className="relative w-24 h-24 rounded-[38%] overflow-hidden flex items-center justify-center"
                 style={{
                   backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1",
                   border: profile.avatar_url ? "none" : "1px dashed hsl(var(--color-accent-terra))",

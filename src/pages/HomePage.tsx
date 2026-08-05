@@ -260,7 +260,7 @@ const HomePage = () => {
         {/* Profile header — avatar and greeting only */}
         <section className="flex items-center gap-4 mb-12">
           <div
-            className="w-14 h-14 rounded-[32%] overflow-hidden flex items-center justify-center flex-shrink-0"
+            className="w-14 h-14 rounded-[38%] overflow-hidden flex items-center justify-center flex-shrink-0"
             style={{ backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1", color: "#561828" }}
           >
             {profile.avatar_url ? (

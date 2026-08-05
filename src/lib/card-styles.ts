@@ -1,38 +1,39 @@
 /**
  * Central design tokens for Minby.
  *
- * Keep all corner radii and overlay gradients here to ensure a
- * consistent visual language throughout the app.
+ * Radius mirrors the Foundations spec (src/design-system/tokens.ts):
+ *   100 = 8px, 200 = 16px, 300 = 28px (standard), full, avatar 38%.
  */
 
 export const RADIUS = {
-  /** Content cards, forms and larger surfaces */
+  /** Content cards, forms and larger surfaces — radius 300 */
   card: 28,
 
-  /** Images and photo tiles */
-  photo: 24,
+  /** Images and photo tiles — radius 200 */
+  photo: 16,
 
-  /** Chat bubbles and smaller surfaces */
-  bubble: 20,
+  /** Chat bubbles and smaller surfaces — radius 200 */
+  bubble: 16,
 
-  /** Small thumbnails */
-  thumb: 16,
+  /** Small thumbnails / inputs / badges — radius 100 */
+  thumb: 8,
 
   /** Rounded avatar squircle */
-  avatar: "32%",
+  avatar: "38%",
 
-  /** Bottom sheets */
+  /** Bottom sheets — radius 300 */
   sheet: 28,
 } as const;
 
 export const RADIUS_CLASS = {
   card: "rounded-[28px]",
-  photo: "rounded-[24px]",
-  bubble: "rounded-[20px]",
-  thumb: "rounded-[16px]",
-  avatar: "rounded-[32%]",
+  photo: "rounded-[16px]",
+  bubble: "rounded-[16px]",
+  thumb: "rounded-[8px]",
+  avatar: "rounded-[38%]",
   sheet: "rounded-t-[28px]",
 } as const;
+
 
 /**
  * Overlay gradients used on images and hero sections.
