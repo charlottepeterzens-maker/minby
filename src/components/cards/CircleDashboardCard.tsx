@@ -39,7 +39,7 @@ const CircleDashboardCard = ({ name, primary, supporting = [], remaining = 0, me
     <button
       type="button"
       onClick={onOpen}
-      className="w-full text-left rounded-300 p-5 flex gap-300 bg-butter-100"
+      className="w-full text-left rounded-300 px-300 py-300 flex items-center gap-300 bg-butter-100"
     >
       <div className="flex-1 min-w-0">
         <Typography as="div" variant="meta" style={{ color: "hsl(var(--color-text-tertiary))" }}>
@@ -79,13 +79,13 @@ const CircleDashboardCard = ({ name, primary, supporting = [], remaining = 0, me
         )}
       </div>
 
-      <div className="flex-shrink-0 w-[92px] relative h-[92px]">
-        {visible[0] && <Avatar member={visible[0]} className="absolute top-0 right-0 w-12 h-12" />}
-        {visible[1] && <Avatar member={visible[1]} className="absolute top-8 left-0 w-11 h-11" />}
-        {visible[2] && !extra && <Avatar member={visible[2]} className="absolute bottom-0 right-2 w-10 h-10" />}
+      <div className="flex-shrink-0 w-[72px] relative h-[72px]">
+        {visible[0] && <Avatar member={visible[0]} className="absolute top-0 right-0 w-10 h-10" />}
+        {visible[1] && <Avatar member={visible[1]} className="absolute top-6 left-0 w-9 h-9" />}
+        {visible[2] && !extra && <Avatar member={visible[2]} className="absolute bottom-0 right-1 w-8 h-8" />}
         {extra > 0 && (
           <div
-            className={cn(typography.label, "absolute bottom-0 right-2 w-10 h-10 rounded-avatar flex items-center justify-center")}
+            className={cn(typography.meta, "absolute bottom-0 right-1 w-8 h-8 rounded-avatar flex items-center justify-center")}
             style={{ backgroundColor: "#DCEAF8", color: "hsl(var(--color-text-primary))" }}
           >
             +{extra}

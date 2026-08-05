@@ -25,7 +25,7 @@ interface Props {
 const CircleList = ({ circles, loading = false, emptyState, onOpen }: Props) => {
   if (loading) {
     return (
-      <div className="space-y-300">
+      <div className="space-y-200">
         <CircleCardSkeleton />
         <CircleCardSkeleton />
       </div>
@@ -35,7 +35,7 @@ const CircleList = ({ circles, loading = false, emptyState, onOpen }: Props) => 
   if (circles.length === 0) return <>{emptyState}</>;
 
   return (
-    <ul className="space-y-300">
+    <ul className="space-y-200">
       {circles.map((c) => (
         <li key={c.id}>
           <CircleDashboardCard

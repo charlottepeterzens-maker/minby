@@ -254,7 +254,7 @@ const HomePage = () => {
           profile={<ProfileButton profile={profile} onOpen={() => setMenuOpen(true)} />}
         />
 
-        <main className="pt-300 pb-32">
+        <main className="pt-200 pb-32">
           <h2 className="sr-only">Mina kretsar</h2>
           <CircleList
             circles={visibleCircles}

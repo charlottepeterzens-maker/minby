@@ -53,7 +53,7 @@ const PrimaryActionButton = ({
           width: 58,
           height: 58,
           right: "calc(max(16px, env(safe-area-inset-right)) + 8px)",
-          bottom: "calc(max(16px, env(safe-area-inset-bottom)) + 32px)",
+          bottom: "calc(env(safe-area-inset-bottom) + 16px)",
           backgroundColor: "#561828",
           color: "#FFFFFF",
         }}

@@ -12,7 +12,7 @@ interface Props {
  * It composes actions; it never implements them.
  */
 const StickyHeader = ({ filter, profile }: Props) => (
-  <div className="sticky top-0 z-30 bg-background py-200 flex items-center justify-end gap-200">
+  <div className="sticky top-0 z-30 bg-background py-100 flex items-center justify-end gap-200">
     {filter}
     {profile}
   </div>

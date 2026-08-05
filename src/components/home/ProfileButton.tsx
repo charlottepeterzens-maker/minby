@@ -25,7 +25,7 @@ const ProfileButton = ({ profile, onOpen }: Props) => (
     onClick={onOpen}
     aria-label="Öppna min meny"
     aria-haspopup="dialog"
-    className="w-11 h-11 rounded-avatar overflow-hidden flex items-center justify-center bg-butter-100"
+    className="w-10 h-10 shrink-0 rounded-avatar overflow-hidden flex items-center justify-center bg-butter-100"
   >
     {profile.avatar_url ? (
       <img src={profile.avatar_url} alt={profile.display_name ?? "Min profilbild"} className="w-full h-full object-cover" />
