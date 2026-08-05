@@ -1,26 +1,7 @@
 /**
- * ============================================================================
  * Minby Design System — Colors
- * ============================================================================
  *
- * Single source of truth for all brand colours in Minby.
- *
- * Naming convention
- * -----------------
- * Butter   = Circle / warm surfaces
- * Breeze   = Posts / cool surfaces
- * Berry    = Brand colour family
- * Olive    = Tips / recommendation surfaces
- * Neutrals = App background & UI surfaces
- * Text     = Typography
- * Activity = Notifications & new activity
- *
- * Rules
- * -----
- * • Never hardcode HEX values inside components.
- * • Always reference colours from this file.
- * • Component usage belongs in component tokens, not here.
- * ============================================================================
+ * Single source of truth for all color tokens.
  */
 
 export const colors = {
