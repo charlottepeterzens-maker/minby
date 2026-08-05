@@ -63,7 +63,7 @@ const ResetPasswordPage = () => {
     return (
       <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <div className="w-full max-w-sm text-center">
-          <Typography variant="display" as="span" className="tracking-[-0.5px] text-foreground lowercase">minby</Typography>
+          <Typography variant="wordmark" as="span" className="text-foreground">minby</Typography>
           <Typography variant="body" as="p" className="text-muted-foreground mt-4">Ogiltig eller utgången återställningslänk.</Typography>
           <div className="mt-6 flex justify-center">
             <TextButton onClick={() => navigate("/auth")}>
@@ -79,7 +79,7 @@ const ResetPasswordPage = () => {
     <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <Typography variant="display" as="span" className="tracking-[-0.5px] text-foreground lowercase">minby</Typography>
+          <Typography variant="wordmark" as="span" className="text-foreground">minby</Typography>
           <Typography variant="heading" as="h1" className="text-foreground mt-4">Välj nytt lösenord</Typography>
           <Typography variant="body" as="p" className="text-muted-foreground mt-2">Ange ditt nya lösenord nedan</Typography>
         </div>

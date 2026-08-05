@@ -88,10 +88,10 @@ const ProfileNudge = () => {
       <div className="rounded-[26px] p-5" style={{ backgroundColor: "#EDE5F0" }}>
         {step === "name" && (
           <>
-            <Typography variant="labelSm" as="div" className="mb-2 uppercase tracking-wider" style={{ color: "#5A4A66" }}>
+            <Typography variant="meta" as="div" className="mb-2 uppercase" style={{ color: "#5A4A66" }}>
               Steg 1 av 2
             </Typography>
-            <Typography variant="body" className="mb-3 leading-[1.2]" style={{ color: "#2B2B2B" }}>
+            <Typography variant="body" className="mb-3" style={{ color: "#2B2B2B" }}>
               Vad ska dina vänner kalla dig?
             </Typography>
             <Input
@@ -110,10 +110,10 @@ const ProfileNudge = () => {
         )}
         {step === "avatar" && (
           <>
-            <Typography variant="labelSm" as="div" className="mb-2 uppercase tracking-wider" style={{ color: "#5A4A66" }}>
+            <Typography variant="meta" as="div" className="mb-2 uppercase" style={{ color: "#5A4A66" }}>
               Steg 2 av 2
             </Typography>
-            <Typography variant="body" className="mb-3 leading-[1.2]" style={{ color: "#2B2B2B" }}>
+            <Typography variant="body" className="mb-3" style={{ color: "#2B2B2B" }}>
               Lägg upp en profilbild så känner de andra igen dig.
             </Typography>
             <input

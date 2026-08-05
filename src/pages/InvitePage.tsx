@@ -132,7 +132,6 @@ const InvitePage = () => {
           as="span"
           style={{
             color: "#9B8BA5",
-            letterSpacing: "0.16em",
           }}
           className="uppercase"
         >
@@ -232,7 +231,7 @@ const InvitePage = () => {
                 try { sessionStorage.setItem("pending_invite_token", token!); } catch {}
                 navigate("/auth");
               }}
-              className="underline font-medium"
+              className="underline"
               style={{ color: "#1C1917" }}
             >
               Logga in

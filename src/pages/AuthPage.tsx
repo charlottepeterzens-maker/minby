@@ -60,11 +60,10 @@ const WelcomeScreen = ({
       >
         {/* Logo */}
         <Typography
-          variant="label"
+          variant="wordmark"
           as="span"
           style={{
             color: "hsl(var(--color-accent-terra))",
-            letterSpacing: "0.18em",
             marginBottom: 56,
           }}
           className="lowercase block"
@@ -136,7 +135,7 @@ const WelcomeScreen = ({
           Har du redan ett konto?{" "}
           <span
             onClick={onLogin}
-            className="font-medium"
+            className={typography.action}
             style={{
               color: "#561828",
               cursor: "pointer",
@@ -244,7 +243,7 @@ const AuthPage = () => {
       <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
         <div className="w-full max-w-sm">
           <div className="text-center mb-10">
-            <Typography variant="label" as="span" style={{ letterSpacing: "0.2em", color: "hsl(var(--color-accent-terra))" }} className="uppercase">minby</Typography>
+            <Typography variant="wordmark" as="span" style={{ color: "hsl(var(--color-accent-terra))" }} className="uppercase">minby</Typography>
             <Typography variant="heading" as="h1" className="text-foreground mt-4">Glömt lösenord?</Typography>
             <Typography variant="body" as="p" className="text-muted-foreground mt-2">Ange din e-post så skickar vi en återställningslänk</Typography>
           </div>
@@ -282,7 +281,7 @@ const AuthPage = () => {
     <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <Typography variant="label" as="span" style={{ letterSpacing: "0.2em", color: "hsl(var(--color-accent-terra))" }} className="lowercase">minby</Typography>
+          <Typography variant="wordmark" as="span" style={{ color: "hsl(var(--color-accent-terra))" }} className="lowercase">minby</Typography>
           <Typography variant="heading" as="h1" className="text-foreground mt-4">
             {isSignUp ? t("joinMinby") : t("welcomeBack")}
           </Typography>

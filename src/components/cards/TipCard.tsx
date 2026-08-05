@@ -43,8 +43,8 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
       >
         {category && (
           <span
-            className={cn(typography.labelSm, "absolute top-2 left-2 px-2.5 py-1 rounded-full font-normal")}
-            style={{ backgroundColor: "#C85A2E", color: "#fff", letterSpacing: "0.06em" }}
+            className={cn(typography.meta, "absolute top-2 left-2 px-2.5 py-1 rounded-full")}
+            style={{ backgroundColor: "hsl(var(--activity))", color: "hsl(var(--text-inverse))" }}
           >
             {category}
           </span>
@@ -70,7 +70,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
           {title}
         </Typography>
         {description && (
-          <Typography variant="body" className="mt-1 line-clamp-2 leading-[1.2]" style={{ color: "#2B2B2B" }}>
+          <Typography variant="body" className="mt-1 line-clamp-2" style={{ color: "#2B2B2B" }}>
             {description}
           </Typography>
         )}

@@ -247,8 +247,8 @@ const HomePage = () => {
         <header className="flex items-center justify-between py-6">
           <Typography
             as="span"
-            variant="label"
-            style={{ letterSpacing: "0.2em", color: "hsl(var(--color-accent-terra))", textTransform: "lowercase" }}
+            variant="wordmark"
+            style={{ color: "hsl(var(--color-accent-terra))" }}
           >
             minby
           </Typography>

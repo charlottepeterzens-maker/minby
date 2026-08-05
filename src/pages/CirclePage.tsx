@@ -821,7 +821,7 @@ const CirclePage = () => {
                   </Typography>
                 )}
                 <div className="mt-6">
-                  <Typography as="div" variant="meta" className="uppercase tracking-wide mb-2" style={{ color: "hsl(20, 4%, 54%)" }}>
+                  <Typography as="div" variant="meta" className="uppercase mb-2" style={{ color: "hsl(20, 4%, 54%)" }}>
                     Med på träffen
                   </Typography>
                   {meetingAttendees.length === 0 ? (

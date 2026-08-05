@@ -86,7 +86,7 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
         )}
         {extra > 0 && (
           <div
-            className={cn(typography.caption, "absolute bottom-0 right-2 w-10 h-10 rounded-[32%] flex items-center justify-center font-medium")}
+            className={cn(typography.meta, "absolute bottom-0 right-2 w-10 h-10 rounded-[32%] flex items-center justify-center")}
             style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
           >
             +{extra}
