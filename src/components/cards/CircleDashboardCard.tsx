@@ -30,7 +30,7 @@ interface Props {
 }
 
 /** Scattered, never-overlapping avatar slots inside a 112x112 area. */
-const SCATTER: React.CSSProperties[] = [
+const SCATTER: CSSProperties[] = [
   { left: 0, top: 8, width: 44, height: 44 },
   { left: 58, top: 0, width: 38, height: 38 },
   { left: 2, top: 62, width: 36, height: 36 },
