@@ -196,11 +196,10 @@ const HomePage = () => {
           members,
           primary: head ? { text: head.primaryText } : null,
           supporting: rest.slice(0, 2).map((e) => ({ text: e.shortText })),
+          // Everything not already spelled out on the card, as a notice count.
           remaining: Math.max(
             0,
-            events.reduce((sum, e) => sum + e.count, 0) -
-              ordered.slice(0, 3).reduce((sum, e) => sum + e.count, 0) +
-              ordered.slice(0, 3).reduce((sum, e) => sum + (e.count - 1), 0)
+            events.reduce((sum, e) => sum + e.count, 0) - ordered.slice(0, 3).length
           ),
           lastActivity: last,
         };
