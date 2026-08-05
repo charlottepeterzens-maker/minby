@@ -21,7 +21,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
       variant="meta"
       as="h2"
       className="mb-2 px-100"
-      style={{ color: "hsl(var(--color-text-tertiary))", textTransform: "lowercase" }}
+      style={{ color: "hsl(var(--color-text-tertiary))" }}
     >
       {title}
     </Typography>
