@@ -275,7 +275,7 @@ const HomePage = () => {
       id: "app",
       items: [
         { id: "settings", label: "Inställningar", icon: SlidersHorizontal, onSelect: () => navigate("/settings") },
-        { id: "feedback", label: "Feedback", icon: MessageSquareHeart, onSelect: () => navigate("/settings") },
+        { id: "feedback", label: "Feedback", icon: MessageSquareHeart, onSelect: () => navigate("/feedback") },
       ],
     },
     {

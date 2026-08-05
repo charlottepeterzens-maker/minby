@@ -16,6 +16,7 @@ import CirclePage from "./pages/CirclePage";
 import ChatPage from "./pages/ChatPage";
 import VerifyPage from "./pages/VerifyPage";
 import SettingsPage from "./pages/SettingsPage";
+import FeedbackPage from "./pages/FeedbackPage";
 import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 import Typography from "@/components/ui/typography";
 
@@ -49,6 +50,7 @@ const App = () => {
                   Never add /profile/:userId — profiles are not visitable. */}
               <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+              <Route path="/feedback" element={<ProtectedRoute><FeedbackPage /></ProtectedRoute>} />
               <Route path="/circle/:id" element={<ProtectedRoute><CirclePage /></ProtectedRoute>} />
               <Route path="/chat/:id" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
               <Route path="/invite/:token" element={<InvitePage />} />
