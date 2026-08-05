@@ -295,13 +295,8 @@ const HomePage = () => {
     navigate(`/circle/${data.id}`);
   };
 
-  const firstName = (profile.display_name ?? "").trim().split(" ")[0];
-  const initials = (profile.display_name ?? user?.email ?? "?")
-    .split(/\s+|@/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
+
+
 
   return (
     <div className="min-h-screen bg-background">
