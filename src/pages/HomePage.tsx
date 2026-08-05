@@ -115,6 +115,13 @@ const HomePage = () => {
         const events: Event[] = [];
         const at = (iso?: string | null) => (iso ? new Date(iso).getTime() : 0);
 
+        /** Who has created something in this circle since the user was last here. */
+        const sinceTs = lastSeenTs;
+        const activeIds = new Set<string>();
+        const markActive = (id: string | null | undefined, iso?: string | null) => {
+          if (id && id !== user.id && at(iso) > sinceTs) activeIds.add(id);
+        };
+
         // Upcoming meeting — the strongest reason to open a circle
         const upcoming = (meetingRows ?? [])
           .filter((m) => m.circle_id === c.id && m.meeting_date && m.meeting_date >= today)
