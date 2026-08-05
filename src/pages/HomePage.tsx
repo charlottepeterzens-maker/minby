@@ -429,7 +429,8 @@ const HomePage = () => {
   );
 };
 
-const greeting = () => {
+
+
 
 
 const kindLabel = (kind: SharedItem["kind"]) =>
