@@ -9,11 +9,9 @@ import { MeetingCardSkeleton, CircleCardSkeleton, TipTileSkeleton } from "../Car
  * råkar bryta designsystemet.
  */
 
-const MEETING_BG = "rgb(242, 236, 227)"; // #F2ECE3
 const EYEBROW = "rgb(103, 83, 50)";      // #675332
 const RESPONSE = "rgb(86, 24, 40)";      // #561828
 const CORAL_UNDERLINE = "#C85A2E";
-const CIRCLE_BG = "rgb(249, 243, 225)";  // #F9F3E1
 const SKELETON_BLOCK = "rgb(232, 221, 198)"; // #E8DDC6
 
 describe("MeetingCard färger", () => {
@@ -29,7 +27,7 @@ describe("MeetingCard färger", () => {
     );
 
     const card = container.querySelector("button")!;
-    expect(card.style.backgroundColor).toBe(MEETING_BG);
+    expect(card.className).toContain("bg-linen");
 
     expect((getByText("Sara") as HTMLElement).style.color).toBe(EYEBROW);
     expect((getByText("Ingen har svarat") as HTMLElement).style.color).toBe(RESPONSE);
@@ -43,13 +41,13 @@ describe("Skeleton färger", () => {
   it("MeetingCardSkeleton har rätt bakgrund", () => {
     const { container } = render(<MeetingCardSkeleton />);
     const root = container.firstChild as HTMLElement;
-    expect(root.style.backgroundColor).toBe(MEETING_BG);
+    expect(root.className).toContain("bg-linen");
   });
 
   it("CircleCardSkeleton har rätt bakgrund", () => {
     const { container } = render(<CircleCardSkeleton />);
     const root = container.firstChild as HTMLElement;
-    expect(root.style.backgroundColor).toBe(CIRCLE_BG);
+    expect(root.className).toContain("bg-butter-100");
   });
 
   it("TipTileSkeleton använder sandfärg", () => {
