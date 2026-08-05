@@ -9,24 +9,12 @@
  */
 
 export type TypographyVariant =
-  /* Canonical */
   | "display"
   | "heading"
   | "section"
   | "body"
   | "meta"
-  | "action"
-  /* Brand */
-  | "wordmark"
-  /* Legacy aliases — resolve to a canonical style */
-  | "title"
-  | "caption"
-  | "label"
-  | "labelSm"
-  | "eyebrow"
-  | "bodyMd"
-  | "bodySm"
-  | "button";
+  | "action";
 
 export type TypographyStyle = {
   fontSize: string;
@@ -73,10 +61,7 @@ export const typographyTokens = {
     lineHeight: "100%",
     letterSpacing: "0",
   },
-} satisfies Record<
-  "display" | "heading" | "section" | "body" | "meta" | "action",
-  TypographyStyle
->;
+} satisfies Record<TypographyVariant, TypographyStyle>;
 
 /** Class map — the only way typography should be applied in components. */
 export const typography: Record<TypographyVariant, string> = {
@@ -86,18 +71,6 @@ export const typography: Record<TypographyVariant, string> = {
   body: "font-body text-body",
   meta: "font-body text-meta",
   action: "font-body text-action",
-
-  wordmark: "font-display text-display",
-
-  /* Legacy aliases */
-  title: "font-display text-heading",
-  caption: "font-body text-body",
-  label: "font-body text-action",
-  labelSm: "font-body text-meta",
-  eyebrow: "font-body text-meta",
-  bodyMd: "font-body text-body",
-  bodySm: "font-body text-meta",
-  button: "font-body text-action",
 };
 
 /** Default HTML element per variant */
@@ -108,13 +81,4 @@ export const typographyElements: Record<TypographyVariant, string> = {
   body: "p",
   meta: "span",
   action: "span",
-  wordmark: "span",
-  title: "h3",
-  caption: "p",
-  label: "span",
-  labelSm: "span",
-  eyebrow: "span",
-  bodyMd: "p",
-  bodySm: "p",
-  button: "span",
 };
