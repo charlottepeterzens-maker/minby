@@ -159,6 +159,11 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        /* Radius tokens — mirrors src/design-system/tokens.ts */
+        100: "8px",
+        200: "16px",
+        300: "28px",
+        avatar: "38%",
       },
       keyframes: {
         "accordion-down": {
