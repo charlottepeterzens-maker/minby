@@ -4,14 +4,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import PageHeader from "@/components/ui/page-header";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import TextButton from "@/components/ui/text-button";
 import { Typography } from "@/components/ui/typography";
 import { toast } from "sonner";
 
 /**
- * FeedbackPage — a lightweight, personal place to share thoughts.
+ * FeedbackPage — a calm, personal place to leave a thought.
  *
- * No cards, no illustrations, just a clear question and a place to answer.
+ * No cards, no illustrations, no heavy forms. Just a question and a place to answer.
  */
 const FeedbackPage = () => {
   const { user } = useAuth();
@@ -50,48 +50,43 @@ const FeedbackPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-md mx-auto px-300 pt-safe pb-safe">
-        <PageHeader title="Feedback" />
+        <PageHeader title="Hjälp oss bygga Minby" />
 
-        <main className="pt-200 pb-500 space-y-400">
+        <main className="pt-400 pb-500 space-y-500">
           <div className="space-y-300">
-            <Typography as="p" variant="body" className="text-foreground">
+            <Typography as="p" variant="body">
               Minby är fortfarande under utveckling.
             </Typography>
-            <Typography as="p" variant="body" className="text-foreground">
-              Det betyder att du kan påverka hur appen blir.
+            <Typography as="p" variant="body">
+              Därför kan du fortfarande påverka hur appen blir.
             </Typography>
-            <Typography as="p" variant="body" className="text-foreground">
-              Har du hittat något som inte fungerar?
+            <Typography as="p" variant="body">
+              Har du hittat något som inte fungerar, har du en idé eller saknar du något?
             </Typography>
-            <Typography as="p" variant="body" className="text-foreground">
-              Har du en idé?
-            </Typography>
-            <Typography as="p" variant="body" className="text-foreground">
-              Eller saknar du något?
-            </Typography>
-            <Typography as="p" variant="body" className="text-foreground">
+            <Typography as="p" variant="body">
               Berätta gärna.
             </Typography>
           </div>
 
+          <Textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Skriv din feedback…"
+            className="min-h-[130px]"
+            disabled={sending}
+          />
+
           <div className="space-y-300">
-            <Textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Vad vill du berätta?"
-              className="min-h-[160px] rounded-200 bg-butter-100 border-0 placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
-              disabled={sending}
-            />
-
-            <div className="border-t border-line-subtle" />
-
-            <Button
+            <TextButton
               onClick={handleSubmit}
               disabled={sending || !text.trim()}
-              className="w-full min-h-11 rounded-300 text-primary-foreground"
             >
               {sending ? "Skickar..." : "Skicka feedback"}
-            </Button>
+            </TextButton>
+
+            <Typography as="p" variant="meta">
+              Tack för att du hjälper oss bygga Minby.
+            </Typography>
           </div>
         </main>
       </div>
