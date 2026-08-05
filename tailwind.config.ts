@@ -18,12 +18,14 @@ export default {
         body: ["Outfit", "sans-serif"],
         sans: ["Outfit", "sans-serif"],
       },
+      /* Typography tokens — mirrors src/design-system/typography.ts */
       fontSize: {
-        "heading-lg": ["24px", { lineHeight: "1", letterSpacing: "0" }],
-        "heading-md": ["18px", { lineHeight: "1", letterSpacing: "0", fontWeight: "600" }],
-        "eyebrow": ["10px", { lineHeight: "1", letterSpacing: "0.02em" }],
-        "body": ["16px", { lineHeight: "1.2", letterSpacing: "0" }],
-        "button": ["16px", { lineHeight: "1", letterSpacing: "0" }],
+        display: ["24px", { lineHeight: "1", letterSpacing: "0", fontWeight: "400" }],
+        heading: ["18px", { lineHeight: "1.1", letterSpacing: "0", fontWeight: "600" }],
+        section: ["18px", { lineHeight: "1", letterSpacing: "0", fontWeight: "400" }],
+        body: ["14px", { lineHeight: "1.2", letterSpacing: "0", fontWeight: "400" }],
+        meta: ["10px", { lineHeight: "1", letterSpacing: "0.02em", fontWeight: "400" }],
+        action: ["14px", { lineHeight: "1", letterSpacing: "0", fontWeight: "600" }],
       },
 
       colors: {

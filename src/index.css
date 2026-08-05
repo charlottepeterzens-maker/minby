@@ -212,7 +212,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
-    font-size: 16px;
+    /* Base = Body token (see src/design-system/typography.ts) */
+    font-size: 14px;
     line-height: 1.2;
     -webkit-font-smoothing: antialiased;
     /* Faster taps, no double-tap zoom on the app shell */
