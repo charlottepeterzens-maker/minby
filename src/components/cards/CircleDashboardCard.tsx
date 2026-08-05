@@ -80,21 +80,26 @@ const CircleDashboardCard = ({
         )}
       </div>
 
-      <div className="flex-shrink-0 flex items-center gap-100">
-        {visible.map((m) => (
-          <Avatar key={m.user_id} member={m} active={active.has(m.user_id)} className="w-10 h-10" />
+      <div className="flex-shrink-0 relative w-[112px] h-[112px]">
+        {(extra > 0 ? visible.slice(0, SCATTER.length - 1) : visible).map((m, i) => (
+          <div key={m.user_id} className="absolute" style={SCATTER[i]}>
+            <Avatar member={m} active={active.has(m.user_id)} className="w-full h-full" />
+          </div>
         ))}
         {extra > 0 && (
-          <div
-            className={cn(
-              typography.meta,
-              "w-10 h-10 rounded-avatar flex items-center justify-center bg-breeze-100 text-foreground",
-            )}
-          >
-            +{extra}
+          <div className="absolute" style={SCATTER[SCATTER.length - 1]}>
+            <div
+              className={cn(
+                typography.meta,
+                "w-full h-full rounded-avatar flex items-center justify-center bg-breeze-100 text-foreground",
+              )}
+            >
+              +{extra}
+            </div>
           </div>
         )}
       </div>
+
     </button>
   );
 };
