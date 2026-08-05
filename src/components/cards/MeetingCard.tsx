@@ -15,9 +15,9 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onO
   return (
     <button
       onClick={onOpen}
-      className="w-[176px] flex-shrink-0 h-[184px] text-left rounded-[26px] p-4 flex flex-col justify-between"
-      style={{ backgroundColor: "#F2ECE3" }}
+      className="w-[176px] flex-shrink-0 h-[184px] text-left rounded-[26px] p-4 flex flex-col justify-between bg-linen"
     >
+
       <div>
         <Typography
           variant="eyebrow"
