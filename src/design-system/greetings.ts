@@ -4,6 +4,10 @@
  * The line at the top of Hem. It should feel like a friend asking, never like
  * an app talking. Warm, curious, a little quiet. Never urgent, never salesy.
  *
+ * Every greeting must point at at least one of these:
+ *  – a person, a relation, seeing each other, or a circle.
+ * A greeting never nudges the user to create content, post or "be active".
+ *
  * Each greeting may use `{name}` — the user's first name. Variants without a
  * name are used when we don't know it yet.
  */
@@ -23,36 +27,40 @@ const GREETINGS: Record<PartOfDay, string[]> = {
   night: [
     "Fortfarande vaken, {name}?",
     "Tyst timme. Vem tänker du på?",
-    "Sent, men ingen brådska.",
-    "Godnatt {name} – något att lämna åt morgondagen?",
+    "Sent. Vem hade du velat prata med nu?",
+    "Godnatt {name}. Vem ses du med härnäst?",
+    "Vem vill du höra av dig till i morgon?",
   ],
   morning: [
     "God morgon {name}. Vem vill du höra av dig till?",
     "Ny dag. Vem saknar du lite?",
-    "Morgon, {name}. Något litet att dela?",
-    "Vad vill du att den här dagen ska innehålla?",
-    "God morgon. Vem hade blivit glad av ett livstecken?",
+    "Morgon, {name}. Vem vill du ses med snart?",
+    "Vem hade blivit glad av ett livstecken i dag?",
+    "God morgon. Hur mår dina kretsar?",
   ],
   midday: [
-    "Hej {name}. Hur ser dagen ut?",
+    "Hej {name}. Vem har du inte setts med på länge?",
     "Mitt i dagen – vem vill du ses med?",
-    "Något på gång i dina kretsar?",
+    "Vem i dina kretsar tänker du på i dag?",
     "Hej {name}. Vem vill du hänga med snart?",
+    "Vem hade du velat äta lunch med?",
   ],
   afternoon: [
     "Eftermiddag, {name}. Vem vill du träffa i veckan?",
-    "Vad sägs om något i helgen?",
-    "Hej {name}. Vem vill du bjuda in?",
-    "Dags att göra en plan av en tanke?",
+    "Vem vill du ses med i helgen?",
+    "Hej {name}. Vem vill du bjuda in i din krets?",
+    "Vem står på tur att ses?",
+    "Vilken krets vill du ses med snart?",
   ],
   evening: [
     "Var vill du hänga med i kväll?",
     "God kväll {name}. Vem vill du ses med?",
     "Kvällen är din – vem vill du dela den med?",
-    "Hej {name}. Något du vill berätta för din krets?",
+    "Hej {name}. Vem har du inte hörts med på ett tag?",
     "Vem vill du höra av dig till innan dagen är slut?",
   ],
 };
+
 
 /** Stable per hour, so the greeting doesn't shuffle on every re-render. */
 const pick = (list: string[], date: Date) => {
