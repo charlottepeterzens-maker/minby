@@ -6,7 +6,7 @@ import { typography } from "@/design-system/typography";
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
     <div className="relative w-full overflow-auto">
-      <table ref={ref} className={cn(cn(typography.body, "w-full caption-bottom"), className)} {...props} />
+      <table ref={ref} className={cn(typography.body, "w-full caption-bottom", className)} {...props} />
     </div>
   ),
 );
@@ -26,7 +26,7 @@ TableBody.displayName = "TableBody";
 
 const TableFooter = React.forwardRef<HTMLTableSectionElement, React.HTMLAttributes<HTMLTableSectionElement>>(
   ({ className, ...props }, ref) => (
-    <tfoot ref={ref} className={cn(cn(typography.action, "border-t bg-muted/50 [&>tr]:last:border-b-0"), className)} {...props} />
+    <tfoot ref={ref} className={cn(typography.action, "border-t bg-muted/50 [&>tr]:last:border-b-0", className)} {...props} />
   ),
 );
 TableFooter.displayName = "TableFooter";
@@ -65,7 +65,7 @@ TableCell.displayName = "TableCell";
 
 const TableCaption = React.forwardRef<HTMLTableCaptionElement, React.HTMLAttributes<HTMLTableCaptionElement>>(
   ({ className, ...props }, ref) => (
-    <caption ref={ref} className={cn(cn(typography.body, "mt-4 text-muted-foreground"), className)} {...props} />
+    <caption ref={ref} className={cn(typography.body, "mt-4 text-muted-foreground", className)} {...props} />
   ),
 );
 TableCaption.displayName = "TableCaption";

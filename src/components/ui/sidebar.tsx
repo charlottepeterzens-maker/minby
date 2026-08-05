@@ -397,7 +397,7 @@ SidebarGroupAction.displayName = "SidebarGroupAction";
 
 const SidebarGroupContent = React.forwardRef<HTMLDivElement, React.ComponentProps<"div">>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} data-sidebar="group-content" className={cn(cn(typography.body, "w-full"), className)} {...props} />
+    <div ref={ref} data-sidebar="group-content" className={cn(typography.body, "w-full", className)} {...props} />
   ),
 );
 SidebarGroupContent.displayName = "SidebarGroupContent";
