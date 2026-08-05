@@ -6,6 +6,7 @@ import TextButton from "@/components/ui/text-button";
 import PrimaryActionButton from "@/components/ui/primary-action-button";
 import { type CircleHighlight, type CircleMemberPreview } from "@/components/cards/CircleDashboardCard";
 import TopBar from "@/components/home/TopBar";
+import { getGreeting } from "@/design-system/greetings";
 import StickyHeader from "@/components/home/StickyHeader";
 import { type CircleFilter } from "@/components/home/FilterButton";
 import { type ProfileSummary } from "@/components/home/ProfileButton";
@@ -48,6 +49,7 @@ const HomePage = () => {
   const [filter, setFilter] = useState<CircleFilter>("all");
   const [newName, setNewName] = useState("");
   const [memberCount, setMemberCount] = useState(0);
+  const [now, setNow] = useState(() => new Date());
   const scrolled = useScrolled();
   const [profile, setProfile] = useState<ProfileSummary>({
     display_name: null,
@@ -257,7 +259,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-md mx-auto px-300 pt-safe pb-safe">
-        <TopBar question="Var vill du hänga med i kväll?" hidden={scrolled} />
+        <TopBar question={greeting} hidden={scrolled} />
 
         <StickyHeader
           actions={
