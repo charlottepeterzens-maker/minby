@@ -7,8 +7,9 @@ import PrimaryActionButton from "@/components/ui/primary-action-button";
 import { type CircleHighlight, type CircleMemberPreview } from "@/components/cards/CircleDashboardCard";
 import TopBar from "@/components/home/TopBar";
 import StickyHeader from "@/components/home/StickyHeader";
-import FilterButton, { type CircleFilter } from "@/components/home/FilterButton";
-import ProfileButton, { type ProfileSummary } from "@/components/home/ProfileButton";
+import { type CircleFilter } from "@/components/home/FilterButton";
+import { type ProfileSummary } from "@/components/home/ProfileButton";
+import ProfileFilterPill from "@/components/home/ProfileFilterPill";
 import MyMenu, { type MyMenuGroup } from "@/components/home/MyMenu";
 import CircleList, { type CircleListItem } from "@/components/home/CircleList";
 import { useScrolled } from "@/hooks/useScrolled";
@@ -250,9 +251,16 @@ const HomePage = () => {
         <TopBar question="Var vill du hänga med i kväll?" hidden={scrolled} />
 
         <StickyHeader
-          filter={<FilterButton value={filter} onChange={setFilter} />}
-          profile={<ProfileButton profile={profile} onOpen={() => setMenuOpen(true)} />}
+          actions={
+            <ProfileFilterPill
+              value={filter}
+              onChange={setFilter}
+              profile={profile}
+              onOpenMenu={() => setMenuOpen(true)}
+            />
+          }
         />
+
 
         <main className="pt-200 pb-32">
           <h2 className="sr-only">Mina kretsar</h2>
