@@ -250,9 +250,16 @@ const HomePage = () => {
         <TopBar question="Var vill du hänga med i kväll?" hidden={scrolled} />
 
         <StickyHeader
-          filter={<FilterButton value={filter} onChange={setFilter} />}
-          profile={<ProfileButton profile={profile} onOpen={() => setMenuOpen(true)} />}
+          actions={
+            <ProfileFilterPill
+              value={filter}
+              onChange={setFilter}
+              profile={profile}
+              onOpenMenu={() => setMenuOpen(true)}
+            />
+          }
         />
+
 
         <main className="pt-200 pb-32">
           <h2 className="sr-only">Mina kretsar</h2>
