@@ -64,15 +64,15 @@ const PrimaryActionButton = ({
       <Sheet open={open} onOpenChange={setOpen}>
         <BottomSheetContent>
           <BottomSheetHeader title={title} />
-          <BottomSheetBody className="px-2 pt-4 pb-8">
-            <ul className="space-y-1">
+          <BottomSheetBody className="px-200 pt-300 pb-500">
+            <ul className="space-y-100">
               {options.map((a, i) => (
                 <li key={i}>
                   <button
                     type="button"
                     onClick={() => handleSelect(a)}
                     disabled={a.disabled}
-                    className={cn(typography.body, "w-full text-left px-3 py-3 rounded-[16px] active:opacity-70 disabled:opacity-40")}
+                    className={cn(typography.body, "w-full text-left px-3 py-3 rounded-200 active:opacity-70 disabled:opacity-40")}
                     style={{ color: "hsl(var(--color-text-primary))" }}
                   >
                     {a.label}

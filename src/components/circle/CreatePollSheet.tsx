@@ -47,8 +47,8 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
     >
       <BottomSheetContent>
         <BottomSheetHeader title="Starta omröstning" />
-        <BottomSheetBody className="px-5 pt-4 pb-8 space-y-5">
-          <div className="space-y-2">
+        <BottomSheetBody className="px-5 pt-300 pb-500 space-y-5">
+          <div className="space-y-200">
             <Typography variant="label" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Vad ska ni bestämma?</Typography>
             <Input
               placeholder="T.ex. Vilken dag passar bäst?"
@@ -58,10 +58,10 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-200">
             <Typography variant="label" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Alternativ</Typography>
             {options.map((o, i) => (
-              <div key={i} className="flex items-center gap-2">
+              <div key={i} className="flex items-center gap-200">
                 <Input
                   placeholder={`Alternativ ${i + 1}`}
                   value={o}
@@ -75,7 +75,7 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
                     type="button"
                     aria-label="Ta bort alternativ"
                     onClick={() => setOptions((prev) => prev.filter((_, idx) => idx !== i))}
-                    className="p-2 shrink-0"
+                    className="p-200 shrink-0"
                     style={{ color: "hsl(var(--color-text-tertiary))" }}
                   >
                     <X className="w-4 h-4" />
@@ -90,7 +90,7 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-200">
             <Typography variant="label" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Slutdatum (valfritt)</Typography>
             <Input
               type="date"
@@ -100,7 +100,7 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
             />
           </div>
 
-          <div className="flex justify-end pt-1">
+          <div className="flex justify-end pt-100">
             <TextButton onClick={submit} disabled={!canCreate}>
               {saving ? "Skapar…" : "Skapa omröstning"}
             </TextButton>

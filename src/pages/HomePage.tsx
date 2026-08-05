@@ -243,8 +243,8 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-md mx-auto px-4 pt-safe pb-safe">
-        <header className="flex items-center justify-between py-6">
+      <div className="max-w-md mx-auto px-300 pt-safe pb-safe">
+        <header className="flex items-center justify-between py-400">
           <Typography
             as="span"
             variant="wordmark"
@@ -252,15 +252,15 @@ const HomePage = () => {
           >
             minby
           </Typography>
-          <button onClick={() => navigate("/settings")} className="text-foreground p-2" aria-label="Inställningar">
+          <button onClick={() => navigate("/settings")} className="text-foreground p-200" aria-label="Inställningar">
             <Menu className="w-5 h-5" />
           </button>
         </header>
 
         {/* Profile header — avatar and greeting only */}
-        <section className="flex items-center gap-4 mb-12">
+        <section className="flex items-center gap-300 mb-12">
           <div
-            className="w-14 h-14 rounded-[38%] overflow-hidden flex items-center justify-center flex-shrink-0"
+            className="w-14 h-14 rounded-avatar overflow-hidden flex items-center justify-center flex-shrink-0"
             style={{ backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1", color: "#561828" }}
           >
             {profile.avatar_url ? (
@@ -281,7 +281,7 @@ const HomePage = () => {
           </Typography>
 
           {loading ? (
-            <div className="space-y-4">
+            <div className="space-y-300">
               <CircleCardSkeleton />
               <CircleCardSkeleton />
             </div>
@@ -293,14 +293,14 @@ const HomePage = () => {
               <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
                 Dina kretsar är där relationerna lever. Skapa din första och bjud in de du vill ha närmast.
               </Typography>
-              <div className="pt-1">
+              <div className="pt-100">
                 <TextButton onClick={() => setCreating(true)}>
                   Skapa en krets
                 </TextButton>
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-300">
               {circles.map((c) => (
                 <CircleDashboardCard
                   key={c.id}
@@ -369,11 +369,11 @@ const HomePage = () => {
       >
         <BottomSheetContent>
           <BottomSheetHeader title="Skapa en krets" />
-          <BottomSheetBody className="px-4 pt-4 pb-8 space-y-4">
+          <BottomSheetBody className="px-300 pt-300 pb-500 space-y-300">
             <Typography as="p" variant="body" className="text-muted-foreground">
               Ge din krets ett namn. Du kan bjuda in dina närmaste direkt efteråt.
             </Typography>
-            <div className="rounded-[26px] p-4" style={{ backgroundColor: "#F9F3E1" }}>
+            <div className="rounded-300 p-300" style={{ backgroundColor: "#F9F3E1" }}>
               <input
                 autoFocus
                 value={newName}
@@ -385,7 +385,7 @@ const HomePage = () => {
                 className={cn(typography.body, "w-full bg-transparent border-0 outline-none text-foreground")}
               />
             </div>
-            <div className="pt-2 flex justify-center">
+            <div className="pt-200 flex justify-center">
               <TextButton onClick={createCircle} disabled={!newName.trim()}>
                 Skapa krets
               </TextButton>

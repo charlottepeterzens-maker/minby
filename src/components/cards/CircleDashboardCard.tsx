@@ -33,7 +33,7 @@ const CircleDashboardCard = ({ name, highlights, members, onOpen }: Props) => {
     <button
       type="button"
       onClick={onOpen}
-      className="w-full text-left rounded-[26px] p-5 flex gap-4 bg-butter-100"
+      className="w-full text-left rounded-300 p-5 flex gap-300 bg-butter-100"
     >
 
       <div className="flex-1 min-w-0">
@@ -41,7 +41,7 @@ const CircleDashboardCard = ({ name, highlights, members, onOpen }: Props) => {
           {name}
         </Typography>
 
-        <ul className="mt-3 space-y-1.5">
+        <ul className="mt-3 space-y-100.5">
           {highlights.length ? (
             highlights.slice(0, 3).map((h, i) => (
               <li key={i}>
@@ -66,7 +66,7 @@ const CircleDashboardCard = ({ name, highlights, members, onOpen }: Props) => {
         {visible[2] && !extra && <Avatar member={visible[2]} className="absolute bottom-0 right-2 w-10 h-10" />}
         {extra > 0 && (
           <div
-            className={cn(typography.label, "absolute bottom-0 right-2 w-10 h-10 rounded-[38%] flex items-center justify-center")}
+            className={cn(typography.label, "absolute bottom-0 right-2 w-10 h-10 rounded-avatar flex items-center justify-center")}
             style={{ backgroundColor: "#DCEAF8", color: "hsl(var(--color-text-primary))" }}
           >
             +{extra}
@@ -85,7 +85,7 @@ const Avatar = ({ member, className }: { member: CircleMemberPreview; className?
     .join("");
   return (
     <div
-      className={cn(typography.label, "rounded-[38%] overflow-hidden flex items-center justify-center", className)}
+      className={cn(typography.label, "rounded-avatar overflow-hidden flex items-center justify-center", className)}
       style={{ backgroundColor: "#DCEAF8", color: "hsl(var(--color-text-primary))" }}
     >
       {member.avatar_url ? (

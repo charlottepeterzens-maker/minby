@@ -20,12 +20,12 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
     <Typography
       variant="meta"
       as="h2"
-      className="mb-2 px-1"
+      className="mb-2 px-100"
       style={{ color: "hsl(var(--color-text-tertiary))", textTransform: "lowercase" }}
     >
       {title}
     </Typography>
-    <div className="rounded-[26px] overflow-hidden" style={{ backgroundColor: "#F9F3E1" }}>
+    <div className="rounded-300 overflow-hidden" style={{ backgroundColor: "#F9F3E1" }}>
       {children}
     </div>
   </section>
@@ -45,7 +45,7 @@ const Row = ({
   <button
     type="button"
     onClick={onClick}
-    className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-black/[0.03] transition-colors"
+    className="w-full flex items-center justify-between px-5 py-300 text-left hover:bg-black/[0.03] transition-colors"
   >
     <Typography variant="body" as="span" style={{ color: danger ? "#561828" : "hsl(var(--color-text-primary))" }}>{label}</Typography>
     {value !== undefined && (
@@ -119,10 +119,10 @@ const SettingsPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-lg mx-auto px-5 pt-safe pb-safe">
-        <header className="flex items-center justify-between py-4">
+        <header className="flex items-center justify-between py-300">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-1 p-2 -ml-2 text-foreground"
+            className="flex items-center gap-100 p-200 -ml-2 text-foreground"
             aria-label="Tillbaka"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -133,7 +133,7 @@ const SettingsPage = () => {
         </header>
 
         {loading ? (
-          <div className="h-40 rounded-[26px] animate-pulse" style={{ backgroundColor: "#F2ECE3" }} />
+          <div className="h-40 rounded-300 animate-pulse" style={{ backgroundColor: "#F2ECE3" }} />
         ) : (
           <>
             {/* Avatar */}
@@ -141,7 +141,7 @@ const SettingsPage = () => {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="relative w-24 h-24 rounded-[38%] overflow-hidden flex items-center justify-center"
+                className="relative w-24 h-24 rounded-avatar overflow-hidden flex items-center justify-center"
                 style={{
                   backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1",
                   border: profile.avatar_url ? "none" : "1px dashed hsl(var(--color-accent-terra))",
@@ -185,7 +185,7 @@ const SettingsPage = () => {
                     placeholder="Ditt namn"
                     className={cn(typography.body, "w-full bg-transparent border-0 outline-none text-foreground")}
                   />
-                  <div className="flex gap-6">
+                  <div className="flex gap-400">
                     <TextButton onClick={() => saveField("display_name", nameDraft)}>Spara</TextButton>
                     <TextButton variant="secondary" onClick={() => setEditing(null)}>Avbryt</TextButton>
                   </div>
@@ -208,7 +208,7 @@ const SettingsPage = () => {
                     rows={3}
                     className={cn(typography.body, "w-full bg-transparent border-0 outline-none text-foreground resize-none")}
                   />
-                  <div className="flex gap-6">
+                  <div className="flex gap-400">
                     <TextButton onClick={() => saveField("bio", bioDraft)}>Spara</TextButton>
                     <TextButton variant="secondary" onClick={() => setEditing(null)}>Avbryt</TextButton>
                   </div>
@@ -237,7 +237,7 @@ const SettingsPage = () => {
             <button
               type="button"
               onClick={signOut}
-              className="w-full flex items-center justify-center gap-2 py-4 mt-4 mb-8"
+              className="w-full flex items-center justify-center gap-200 py-300 mt-4 mb-8"
               style={{ color: "#561828" }}
             >
               <LogOut className="w-4 h-4" />

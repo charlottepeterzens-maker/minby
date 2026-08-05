@@ -20,8 +20,8 @@ const WelcomeToCircleCard = ({ circleName, variant = "joined", onSayHi, onInvite
     : "Det här är er egen lilla plats på Minby — ett lugnt hem för er närmsta krets, utan algoritmer. Börja med att säga hej.";
 
   return (
-    <section className="mt-6 px-4">
-      <div className="rounded-[26px] p-5" style={{ backgroundColor: "#F5EFD9" }}>
+    <section className="mt-6 px-300">
+      <div className="rounded-300 p-5" style={{ backgroundColor: "#F5EFD9" }}>
         <Typography
           variant="labelSm"
           as="div"

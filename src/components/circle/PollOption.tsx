@@ -21,11 +21,11 @@ const PollOption = ({ label, votes, totalVotes, selected, disabled, onSelect }: 
       disabled={disabled}
       onClick={onSelect}
       aria-pressed={selected}
-      className="relative w-full text-left rounded-[18px] overflow-hidden px-4 py-3 disabled:cursor-default active:opacity-80 transition-opacity"
+      className="relative w-full text-left rounded-200 overflow-hidden px-300 py-3 disabled:cursor-default active:opacity-80 transition-opacity"
       style={{ backgroundColor: "rgba(255,255,255,0.6)" }}
     >
       <span
-        className="absolute inset-y-0 left-0 transition-[width] duration-500 ease-out"
+        className="absolute inset-y-0 left-0 transition-[width] duration-slow ease-out"
         style={{
           width: `${pct}%`,
           backgroundColor: selected ? "rgba(86,24,40,0.16)" : "rgba(86,24,40,0.07)",

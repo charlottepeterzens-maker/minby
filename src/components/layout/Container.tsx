@@ -9,7 +9,7 @@ const Container = React.forwardRef<HTMLDivElement, ContainerProps>(
   ({ className, children, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("max-w-md mx-auto px-4", className)}
+      className={cn("max-w-md mx-auto px-300", className)}
       {...props}
     >
       {children}
