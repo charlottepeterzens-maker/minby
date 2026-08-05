@@ -1,4 +1,6 @@
+import type { CSSProperties } from "react";
 import { Typography } from "@/components/ui/typography";
+
 import { typography } from "@/design-system/typography";
 import { cn } from "@/lib/utils";
 
