@@ -17,6 +17,7 @@ import ChatPage from "./pages/ChatPage";
 import VerifyPage from "./pages/VerifyPage";
 import SettingsPage from "./pages/SettingsPage";
 import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import Typography from "@/components/ui/typography";
 
 const queryClient = new QueryClient();
 
