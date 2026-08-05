@@ -215,6 +215,16 @@ const HomePage = () => {
     })();
   }, [user]);
 
+  /** Keep the greeting in step with the time of day. */
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(new Date()), 60_000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const greeting = useMemo(() => getGreeting(profile.display_name, now), [profile.display_name, now]);
+
+
+
   const createCircle = async () => {
     if (!user || !newName.trim()) return;
     const { data, error } = await supabase
