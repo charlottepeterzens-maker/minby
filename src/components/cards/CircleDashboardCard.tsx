@@ -27,6 +27,15 @@ interface Props {
   onOpen: () => void;
 }
 
+/** Scattered, never-overlapping avatar slots inside a 112x112 area. */
+const SCATTER: React.CSSProperties[] = [
+  { left: 0, top: 8, width: 44, height: 44 },
+  { left: 58, top: 0, width: 38, height: 38 },
+  { left: 2, top: 62, width: 36, height: 36 },
+  { left: 54, top: 52, width: 44, height: 44 },
+];
+
+
 /**
  * A circle on Hem. Answers one question: "Which circle should I open?"
  * Priority: circle name → most important event → up to two supporting
