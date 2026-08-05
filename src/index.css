@@ -292,30 +292,6 @@
     font-weight: 600;
   }
 
-  .text-heading-md {
-    font-size: 18px;
-    line-height: 1;
-    letter-spacing: 0;
-    font-weight: 600;
-  }
-  .text-eyebrow {
-    font-size: 10px;
-    line-height: 1;
-    letter-spacing: 0.02em;
-    font-weight: 400;
-  }
-  .text-body {
-    font-size: 16px;
-    line-height: 1.2;
-    letter-spacing: 0;
-    font-weight: 400;
-  }
-  .text-button {
-    font-size: 16px;
-    line-height: 1;
-    letter-spacing: 0;
-    font-weight: 500;
-  }
 
   .pt-safe {
     padding-top: env(safe-area-inset-top, 0px);
