@@ -109,7 +109,7 @@ const HomePage = () => {
          * Events are concrete and human. `weight` decides what becomes the
          * primary line — the thing most likely to make someone open the circle.
          */
-        type Event = { primaryText: string; shortText: string; ts: number; weight: number };
+        type Event = { primaryText: string; shortText: string; ts: number; weight: number; count: number };
         const events: Event[] = [];
         const at = (iso?: string | null) => (iso ? new Date(iso).getTime() : 0);
 
@@ -123,6 +123,7 @@ const HomePage = () => {
             shortText: `${formatMeetingDate(upcoming.meeting_date)} · ${upcoming.title}`,
             ts: at(upcoming.created_at),
             weight: 4,
+            count: 1,
           });
         }
 
@@ -136,6 +137,7 @@ const HomePage = () => {
             shortText: "Svara på en omröstning",
             ts: at(poll.created_at),
             weight: 3,
+            count: 1,
           });
         }
 
@@ -150,6 +152,7 @@ const HomePage = () => {
             shortText: tips.length === 1 ? "Läs ett nytt tips" : `Läs ${countWord(tips.length)} nya tips`,
             ts: at(tips[0].created_at),
             weight: 2,
+            count: tips.length,
           });
         }
 
@@ -167,6 +170,7 @@ const HomePage = () => {
             shortText: photos.length === 1 ? "Se ett nytt foto" : `Se ${countWord(photos.length)} nya foton`,
             ts: at(photos[0].created_at),
             weight: 2,
+            count: photos.length,
           });
         }
 
@@ -178,6 +182,7 @@ const HomePage = () => {
             shortText: msgs.length === 1 ? "Läs ett nytt meddelande" : "Läs vad som sagts i chatten",
             ts: at(msgs[0].created_at),
             weight: 1,
+            count: msgs.length,
           });
         }
 
@@ -191,7 +196,12 @@ const HomePage = () => {
           members,
           primary: head ? { text: head.primaryText } : null,
           supporting: rest.slice(0, 2).map((e) => ({ text: e.shortText })),
-          remaining: Math.max(0, rest.length - 2),
+          remaining: Math.max(
+            0,
+            events.reduce((sum, e) => sum + e.count, 0) -
+              ordered.slice(0, 3).reduce((sum, e) => sum + e.count, 0) +
+              ordered.slice(0, 3).reduce((sum, e) => sum + (e.count - 1), 0)
+          ),
           lastActivity: last,
         };
       });
