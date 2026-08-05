@@ -113,12 +113,6 @@ export default {
           rose: "hsl(var(--color-surface-rose))",
           sage: "hsl(var(--color-surface-sage))",
         },
-        ink: {
-          DEFAULT: "hsl(var(--color-text-primary))",
-          secondary: "hsl(var(--color-text-secondary))",
-          muted: "hsl(var(--color-text-muted))",
-          faint: "hsl(var(--color-text-faint))",
-        },
         line: {
           subtle: "hsl(var(--color-border-subtle))",
           lavender: "hsl(var(--color-border-lavender))",
