@@ -66,7 +66,7 @@ const CircleDashboardCard = ({ name, highlights, members, onOpen }: Props) => {
         {visible[2] && !extra && <Avatar member={visible[2]} className="absolute bottom-0 right-2 w-10 h-10" />}
         {extra > 0 && (
           <div
-            className={cn(typography.label, "absolute bottom-0 right-2 w-10 h-10 rounded-[32%] flex items-center justify-center")}
+            className={cn(typography.label, "absolute bottom-0 right-2 w-10 h-10 rounded-[38%] flex items-center justify-center")}
             style={{ backgroundColor: "#DCEAF8", color: "hsl(var(--color-text-primary))" }}
           >
             +{extra}
@@ -85,7 +85,7 @@ const Avatar = ({ member, className }: { member: CircleMemberPreview; className?
     .join("");
   return (
     <div
-      className={cn(typography.label, "rounded-[32%] overflow-hidden flex items-center justify-center", className)}
+      className={cn(typography.label, "rounded-[38%] overflow-hidden flex items-center justify-center", className)}
       style={{ backgroundColor: "#DCEAF8", color: "hsl(var(--color-text-primary))" }}
     >
       {member.avatar_url ? (
