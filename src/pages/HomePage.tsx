@@ -1,12 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import PrimaryActionButton from "@/components/ui/primary-action-button";
-import { Menu } from "lucide-react";
-import CircleDashboardCard, { type CircleHighlight, type CircleMemberPreview } from "@/components/cards/CircleDashboardCard";
-import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
+import { type CircleHighlight, type CircleMemberPreview } from "@/components/cards/CircleDashboardCard";
+import TopBar from "@/components/home/TopBar";
+import StickyHeader from "@/components/home/StickyHeader";
+import FilterButton, { type CircleFilter } from "@/components/home/FilterButton";
+import ProfileButton, { type ProfileSummary } from "@/components/home/ProfileButton";
+import MyMenu, { type MyMenuGroup } from "@/components/home/MyMenu";
+import CircleList, { type CircleListItem } from "@/components/home/CircleList";
+import { useScrolled } from "@/hooks/useScrolled";
+import { Bell, CalendarCheck, Archive, SlidersHorizontal, MessageSquareHeart, HandHeart } from "lucide-react";
 import { Sheet } from "@/components/ui/sheet";
 import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
 import { toast } from "sonner";
@@ -19,20 +25,8 @@ interface Circle {
   name: string;
 }
 
-interface CircleView extends Circle {
-  primary: CircleHighlight | null;
-  supporting: CircleHighlight[];
-  remaining: number;
-  members: CircleMemberPreview[];
+interface CircleView extends CircleListItem {
   lastActivity: number;
-}
-
-interface SharedItem {
-  id: string;
-  kind: "update" | "tip" | "meeting";
-  title: string;
-  created_at: string;
-  circleNames: string[];
 }
 
 /**
@@ -40,20 +34,25 @@ interface SharedItem {
  *
  * ARCHITECTURE: Minby has no visitable profiles and no global feed. There is
  * exactly one home and it always belongs to the authenticated user.
- * Circles are the hub: they dominate this page visually.
+ * This page only composes reusable components: TopBar, StickyHeader,
+ * CircleList and the PrimaryActionButton.
  */
 const HomePage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [circles, setCircles] = useState<CircleView[]>([]);
-  const [shared, setShared] = useState<SharedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [filter, setFilter] = useState<CircleFilter>("all");
   const [newName, setNewName] = useState("");
-  const [profile, setProfile] = useState<{ display_name: string | null; avatar_url: string | null }>({
+  const [memberCount, setMemberCount] = useState(0);
+  const scrolled = useScrolled();
+  const [profile, setProfile] = useState<ProfileSummary>({
     display_name: null,
     avatar_url: null,
   });
+
 
   useEffect(() => {
     if (!user) return;
