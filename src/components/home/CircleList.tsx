@@ -9,6 +9,7 @@ export interface CircleListItem {
   supporting: CircleHighlight[];
   remaining: number;
   members: CircleMemberPreview[];
+  activeMemberIds?: string[];
 }
 
 interface Props {
