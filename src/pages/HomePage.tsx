@@ -294,76 +294,39 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-md mx-auto px-300 pt-safe pb-safe">
-        <header className="flex items-center justify-between py-400">
-          <Typography
-            as="span"
-            variant="wordmark"
-            style={{ color: "hsl(var(--color-accent-terra))" }}
-          >
-            minby
-          </Typography>
-          <button onClick={() => navigate("/settings")} className="text-foreground p-200" aria-label="Inställningar">
-            <Menu className="w-5 h-5" />
-          </button>
-        </header>
+        <TopBar question="Var vill du hänga med ikväll?" hidden={scrolled} />
 
-        {/* Profile header — avatar and greeting only */}
-        <section className="flex items-center gap-300 mb-12">
-          <div
-            className="w-14 h-14 rounded-avatar overflow-hidden flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1", color: "#561828" }}
-          >
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <Typography as="span" variant="heading">{initials}</Typography>
-            )}
-          </div>
-          <Typography as="h1" variant="display" className="text-foreground">
-            {greeting()}{firstName ? `, ${firstName}` : ""}.
-          </Typography>
-        </section>
+        <StickyHeader
+          start={<FilterButton value={filter} onChange={setFilter} />}
+          end={
+            <ProfileButton
+              profile={profile}
+              expanded={menuOpen}
+              onOpen={() => setMenuOpen(true)}
+            />
+          }
+        />
 
         {/* Kretsar — the heart of the page */}
-        <section>
-          <Typography as="h2" variant="display" className="text-foreground mb-5">
-            Kretsar
-          </Typography>
-
-          {loading ? (
-            <div className="space-y-300">
-              <CircleCardSkeleton />
-              <CircleCardSkeleton />
-            </div>
-          ) : circles.length === 0 ? (
-            <div className="space-y-3">
-              <Typography as="h3" variant="heading" className="text-foreground">
-                Inga kretsar än
-              </Typography>
-              <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-                Dina kretsar är där relationerna lever. Skapa din första och bjud in de du vill ha närmast.
-              </Typography>
-              <div className="pt-100">
-                <TextButton onClick={() => setCreating(true)}>
-                  Skapa en krets
-                </TextButton>
+        <section className="pt-300">
+          <CircleList
+            circles={circles}
+            loading={loading}
+            onOpen={(id) => navigate(`/circle/${id}`)}
+            emptyState={
+              <div className="space-y-3">
+                <Typography as="h3" variant="heading" className="text-foreground">
+                  Inga kretsar än
+                </Typography>
+                <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                  Dina kretsar är där relationerna lever. Skapa din första och bjud in de du vill ha närmast.
+                </Typography>
+                <div className="pt-100">
+                  <TextButton onClick={() => setCreating(true)}>Skapa en krets</TextButton>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="space-y-300">
-              {circles.map((c) => (
-                <CircleDashboardCard
-                  key={c.id}
-                  name={c.name}
-                  primary={c.primary}
-                  supporting={c.supporting}
-                  remaining={c.remaining}
-                  members={c.members}
-                  onOpen={() => navigate(`/circle/${c.id}`)}
-                />
-              ))}
-            </div>
-          )}
+            }
+          />
         </section>
 
         {/* Jag har delat — one chronological timeline of my own objects */}
@@ -406,10 +369,20 @@ const HomePage = () => {
         </section>
       </div>
 
+      <MyMenu
+        open={menuOpen}
+        onOpenChange={setMenuOpen}
+        items={[
+          { id: "settings", label: "Inställningar", onSelect: () => navigate("/settings") },
+          { id: "circle", label: "Skapa en krets", onSelect: () => setCreating(true) },
+        ]}
+      />
+
       <PrimaryActionButton
         ariaLabel="Skapa en krets"
         options={[{ label: "Skapa en krets", onSelect: () => setCreating(true) }]}
       />
+
 
       {/* Create circle sheet */}
       <Sheet
