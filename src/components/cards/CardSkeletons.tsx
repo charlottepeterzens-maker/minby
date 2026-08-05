@@ -1,10 +1,7 @@
 const shimmer = "animate-pulse";
 
 export const CircleCardSkeleton = () => (
-  <div
-    className={`w-full rounded-[26px] p-5 flex gap-4 ${shimmer}`}
-    style={{ backgroundColor: "#F9F3E1" }}
-  >
+  <div className={`w-full rounded-[26px] p-5 flex gap-4 bg-butter-100 ${shimmer}`}>
     <div className="flex-1 space-y-2">
       <div className="h-3 w-24 rounded" style={{ backgroundColor: "#E8DDC6" }} />
       <div className="h-3 w-full rounded" style={{ backgroundColor: "#E8DDC6" }} />
@@ -21,9 +18,9 @@ export const CircleCardSkeleton = () => (
 
 export const MeetingCardSkeleton = () => (
   <div
-    className={`w-[176px] flex-shrink-0 h-[184px] rounded-[26px] p-4 flex flex-col justify-between ${shimmer}`}
-    style={{ backgroundColor: "#F2ECE3" }}
+    className={`w-[176px] flex-shrink-0 h-[184px] rounded-[26px] p-4 flex flex-col justify-between bg-linen ${shimmer}`}
   >
+
     <div className="space-y-2">
       <div className="h-2.5 w-16 rounded" style={{ backgroundColor: "#E8DDC6" }} />
       <div className="h-3 w-24 rounded" style={{ backgroundColor: "#E8DDC6" }} />
