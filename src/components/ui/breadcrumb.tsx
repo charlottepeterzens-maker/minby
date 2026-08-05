@@ -3,6 +3,7 @@ import { Slot } from "@radix-ui/react-slot";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { typography } from "@/design-system/typography";
 
 const Breadcrumb = React.forwardRef<
   HTMLElement,
@@ -17,7 +18,7 @@ const BreadcrumbList = React.forwardRef<HTMLOListElement, React.ComponentPropsWi
     <ol
       ref={ref}
       className={cn(
-        "flex flex-wrap items-center gap-1.5 break-words text-sm text-muted-foreground sm:gap-2.5",
+        cn(typography.body, "flex flex-wrap items-center gap-1.5 break-words text-muted-foreground sm:gap-2.5"),
         className,
       )}
       {...props}
@@ -52,7 +53,7 @@ const BreadcrumbPage = React.forwardRef<HTMLSpanElement, React.ComponentPropsWit
       role="link"
       aria-disabled="true"
       aria-current="page"
-      className={cn("font-normal text-foreground", className)}
+      className={cn(typography.body, "text-foreground", className)}
       {...props}
     />
   ),

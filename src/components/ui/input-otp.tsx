@@ -3,6 +3,7 @@ import { OTPInput, OTPInputContext } from "input-otp";
 import { Dot } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { typography } from "@/design-system/typography";
 
 const InputOTP = React.forwardRef<React.ElementRef<typeof OTPInput>, React.ComponentPropsWithoutRef<typeof OTPInput>>(
   ({ className, containerClassName, ...props }, ref) => (
@@ -32,7 +33,7 @@ const InputOTPSlot = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "relative flex h-10 w-10 items-center justify-center border-y border-r border-input text-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
+        cn(typography.body, "relative flex h-10 w-10 items-center justify-center border-y border-r border-input transition-all first:rounded-l-md first:border-l last:rounded-r-md"),
         isActive && "z-10 ring-2 ring-ring ring-offset-background",
         className,
       )}
