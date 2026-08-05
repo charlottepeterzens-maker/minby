@@ -16,7 +16,7 @@ import { typography } from "@/design-system/typography";
  *   <Sheet open={...} onOpenChange={...}>
  *     <BottomSheetContent>
  *       <BottomSheetHeader title="Titel" />
- *       <BottomSheetBody className="px-5 py-4">…</BottomSheetBody>
+ *       <BottomSheetBody className="px-5 py-300">…</BottomSheetBody>
  *       <BottomSheetFooter>…</BottomSheetFooter>  // optional
  *     </BottomSheetContent>
  *   </Sheet>
@@ -45,7 +45,7 @@ export const BottomSheetContent = React.forwardRef<
         "rounded-t-[28px] overflow-hidden",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
-        "data-[state=closed]:duration-300 data-[state=open]:duration-500",
+        "data-[state=closed]:duration-slow data-[state=open]:duration-slow",
         className,
       )}
       style={{
@@ -57,7 +57,7 @@ export const BottomSheetContent = React.forwardRef<
       {...props}
     >
       {/* Drag handle */}
-      <div className="shrink-0 flex justify-center pt-2 pb-1">
+      <div className="shrink-0 flex justify-center pt-200 pb-100">
         <div
           className="rounded-full"
           style={{
@@ -98,7 +98,7 @@ export const BottomSheetHeader = ({ title, className }: BottomSheetHeaderProps) 
     </SheetTitle>
     <SheetPrimitive.Close
       aria-label="Stäng"
-      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full active:opacity-70 focus:outline-none"
+      className="absolute right-2 top-1/2 -translate-y-1/2 p-200 rounded-full active:opacity-70 focus:outline-none"
     >
       <X className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
     </SheetPrimitive.Close>

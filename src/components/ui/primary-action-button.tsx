@@ -64,8 +64,8 @@ const PrimaryActionButton = ({
       <Sheet open={open} onOpenChange={setOpen}>
         <BottomSheetContent>
           <BottomSheetHeader title={title} />
-          <BottomSheetBody className="px-2 pt-4 pb-8">
-            <ul className="space-y-1">
+          <BottomSheetBody className="px-200 pt-300 pb-500">
+            <ul className="space-y-100">
               {options.map((a, i) => (
                 <li key={i}>
                   <button

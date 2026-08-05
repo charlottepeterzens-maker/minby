@@ -1,8 +1,8 @@
 const shimmer = "animate-pulse";
 
 export const CircleCardSkeleton = () => (
-  <div className={`w-full rounded-300 p-5 flex gap-4 bg-butter-100 ${shimmer}`}>
-    <div className="flex-1 space-y-2">
+  <div className={`w-full rounded-300 p-5 flex gap-300 bg-butter-100 ${shimmer}`}>
+    <div className="flex-1 space-y-200">
       <div className="h-3 w-24 rounded" style={{ backgroundColor: "#E8DDC6" }} />
       <div className="h-3 w-full rounded" style={{ backgroundColor: "#E8DDC6" }} />
       <div className="h-3 w-5/6 rounded" style={{ backgroundColor: "#E8DDC6" }} />
@@ -18,15 +18,15 @@ export const CircleCardSkeleton = () => (
 
 export const MeetingCardSkeleton = () => (
   <div
-    className={`w-[176px] flex-shrink-0 h-[184px] rounded-300 p-4 flex flex-col justify-between bg-linen ${shimmer}`}
+    className={`w-[176px] flex-shrink-0 h-[184px] rounded-300 p-300 flex flex-col justify-between bg-linen ${shimmer}`}
   >
 
-    <div className="space-y-2">
+    <div className="space-y-200">
       <div className="h-2.5 w-16 rounded" style={{ backgroundColor: "#E8DDC6" }} />
       <div className="h-3 w-24 rounded" style={{ backgroundColor: "#E8DDC6" }} />
       <div className="h-3 w-20 rounded" style={{ backgroundColor: "#E8DDC6" }} />
     </div>
-    <div className="space-y-2">
+    <div className="space-y-200">
       <div className="h-2 w-14 rounded" style={{ backgroundColor: "#E8DDC6" }} />
       <div className="h-3 w-16 rounded" style={{ backgroundColor: "#E8DDC6" }} />
     </div>

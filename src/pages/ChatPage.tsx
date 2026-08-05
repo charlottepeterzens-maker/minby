@@ -257,15 +257,15 @@ const ChatPage = () => {
           boxShadow: "0 -2px 12px rgba(0,0,0,0.04)",
         }}
       >
-        <header className="relative flex items-center justify-center px-5 pt-4 pb-3 border-b" style={{ borderColor: "rgba(0,0,0,0.06)" }}>
-          <button onClick={() => navigate(`/circle/${id}`)} aria-label="Stäng" className="absolute left-4 p-1">
+        <header className="relative flex items-center justify-center px-5 pt-300 pb-3 border-b" style={{ borderColor: "rgba(0,0,0,0.06)" }}>
+          <button onClick={() => navigate(`/circle/${id}`)} aria-label="Stäng" className="absolute left-4 p-100">
             <X className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
           </button>
           <Typography variant="heading" as="h2" style={{ color: "hsl(var(--color-text-primary))" }}>Chatt</Typography>
           <button
             onClick={runSummarize}
             aria-label="Sammanfatta chatten"
-            className="absolute right-4 p-1 flex items-center gap-1"
+            className="absolute right-4 p-100 flex items-center gap-100"
             style={{ color: "#561828" }}
             disabled={summarizing}
           >
@@ -274,11 +274,11 @@ const ChatPage = () => {
         </header>
 
         {summaryOpen && (
-          <div className="mx-4 mt-3 rounded-200 p-4 relative" style={{ backgroundColor: "#561828", color: "#F0EAE2" }}>
-            <button onClick={() => setSummaryOpen(false)} className="absolute top-2 right-2 p-1 opacity-80" aria-label="Stäng">
+          <div className="mx-4 mt-3 rounded-200 p-300 relative" style={{ backgroundColor: "#561828", color: "#F0EAE2" }}>
+            <button onClick={() => setSummaryOpen(false)} className="absolute top-2 right-2 p-100 opacity-80" aria-label="Stäng">
               <X className="w-4 h-4" />
             </button>
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-200 mb-2">
               <Sparkles className="w-4 h-4" />
               <Typography variant="meta" as="span" className="uppercase">AI-sammanfattning</Typography>
             </div>
@@ -291,7 +291,7 @@ const ChatPage = () => {
         )}
 
         {/* Messages */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-300 py-300 space-y-300">
           {messages.length === 0 && (
             <Typography variant="meta" as="p" className="text-center text-muted-foreground py-12">Säg något så börjar det.</Typography>
           )}
@@ -321,10 +321,10 @@ const ChatPage = () => {
                   const meetingId = m.payload?.meeting_id as string;
                   const resp = meetingResponses[meetingId];
                   return (
-                    <div key={m.id} className="flex items-end gap-2">
+                    <div key={m.id} className="flex items-end gap-200">
                       {!mine && Avatar}
                       <div
-                        className="max-w-[78%] rounded-200 p-4"
+                        className="max-w-[78%] rounded-200 p-300"
                         style={{ backgroundColor: "#F5EFD9" }}
                       >
                         <Typography variant="meta" as="div" className="mb-1 uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
@@ -366,7 +366,7 @@ const ChatPage = () => {
 
                 if (m.kind === "photo") {
                   return (
-                    <div key={m.id} className={`flex items-end gap-2 ${mine ? "justify-end" : ""}`}>
+                    <div key={m.id} className={`flex items-end gap-200 ${mine ? "justify-end" : ""}`}>
                       {!mine && Avatar}
                       <div className="max-w-[70%] rounded-200 overflow-hidden" style={{ backgroundColor: "#EDE4D3" }}>
                         {m.image_url ? (
@@ -382,10 +382,10 @@ const ChatPage = () => {
 
                 // text
                 return (
-                  <div key={m.id} className={`flex items-end gap-2 ${mine ? "justify-end" : ""}`}>
+                  <div key={m.id} className={`flex items-end gap-200 ${mine ? "justify-end" : ""}`}>
                     {!mine && Avatar}
                     <div
-                      className="max-w-[78%] px-4 py-3 rounded-200"
+                      className="max-w-[78%] px-300 py-3 rounded-200"
                       style={{
                         backgroundColor: mine ? "#561828" : "#EFEAE0",
                         color: mine ? "#F0EAE2" : "hsl(var(--color-text-primary))",
@@ -411,9 +411,9 @@ const ChatPage = () => {
         </div>
 
         {/* Composer */}
-        <div className="px-4 pt-3 pb-safe" style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}>
+        <div className="px-300 pt-3 pb-safe" style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}>
           {showMeetingForm && (
-            <div className="mb-3 rounded-200 p-3 space-y-2" style={{ backgroundColor: "#F5EFD9" }}>
+            <div className="mb-3 rounded-200 p-3 space-y-200" style={{ backgroundColor: "#F5EFD9" }}>
               <Typography variant="meta" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>Föreslå en träff</Typography>
               <input
                 autoFocus
@@ -430,14 +430,14 @@ const ChatPage = () => {
                 className={cn(typography.body, "w-full bg-transparent border-0 outline-none")}
                 style={{ color: "hsl(var(--color-text-primary))" }}
               />
-              <div className="flex gap-5 pt-1">
+              <div className="flex gap-5 pt-100">
                 <TextButton onClick={submitMeetingProposal}>Skicka</TextButton>
                 <TextButton variant="secondary" onClick={() => { setShowMeetingForm(false); setMTitle(""); setMDate(""); }}>Avbryt</TextButton>
               </div>
             </div>
           )}
           <div
-            className="flex items-center gap-2 rounded-200 px-4 py-2"
+            className="flex items-center gap-200 rounded-200 px-300 py-200"
             style={{ backgroundColor: "#FAF6EE", border: "1px solid rgba(0,0,0,0.12)" }}
           >
             <input
@@ -445,31 +445,31 @@ const ChatPage = () => {
               onChange={(e) => setBody(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
               placeholder="Skriv något…"
-              className={cn(typography.body, "flex-1 bg-transparent border-0 outline-none py-2")}
+              className={cn(typography.body, "flex-1 bg-transparent border-0 outline-none py-200")}
               style={{ color: "hsl(var(--color-text-primary))" }}
             />
             <button
               onClick={send}
               disabled={!body.trim()}
               aria-label="Skicka"
-              className="p-1 disabled:opacity-30"
+              className="p-100 disabled:opacity-30"
             >
               <Send className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
             </button>
           </div>
-          <div className="flex items-center gap-4 mt-3 pl-2">
+          <div className="flex items-center gap-300 mt-3 pl-200">
             <button
               onClick={() => photoRef.current?.click()}
               aria-label="Skicka bild"
               disabled={uploading}
-              className="p-1 disabled:opacity-40"
+              className="p-100 disabled:opacity-40"
             >
               <Camera className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
             </button>
             <button
               onClick={() => setShowMeetingForm((s) => !s)}
               aria-label="Föreslå datum"
-              className="p-1"
+              className="p-100"
             >
               <CalendarPlus className="w-5 h-5" style={{ color: "hsl(var(--color-text-primary))" }} />
             </button>

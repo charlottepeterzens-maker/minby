@@ -115,7 +115,7 @@ const PWAInstallBanner = () => {
                   className="flex h-8 w-8 items-center justify-center rounded-full hover:opacity-70 transition-opacity"
                 >
                   <X
-                    size={18}
+                    size={20}
                     className="text-white"
                   />
                 </button>

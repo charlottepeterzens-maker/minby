@@ -84,7 +84,7 @@ const ProfileNudge = () => {
   };
 
   return (
-    <section className="mt-4 px-4">
+    <section className="mt-4 px-300">
       <div className="rounded-300 p-5" style={{ backgroundColor: "#EDE5F0" }}>
         {step === "name" && (
           <>
@@ -100,7 +100,7 @@ const ProfileNudge = () => {
               placeholder="Ditt namn"
               className="rounded-lg bg-white border-0 mb-3"
             />
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-300">
               <TextButton onClick={saveName} disabled={saving || !name.trim()}>
                 {saving ? "…" : "Spara"}
               </TextButton>
@@ -127,7 +127,7 @@ const ProfileNudge = () => {
                 e.target.value = "";
               }}
             />
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-300">
               <TextButton onClick={() => fileRef.current?.click()} disabled={saving}>
                 {saving ? "…" : "Välj bild"}
               </TextButton>

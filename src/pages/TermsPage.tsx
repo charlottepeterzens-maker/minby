@@ -7,12 +7,12 @@ const TermsPage = () => {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "hsl(var(--color-surface))" }}>
-      <div className="max-w-[600px] mx-auto px-6 py-6 pt-safe">
+      <div className="max-w-[600px] mx-auto px-400 py-400 pt-safe">
         <Typography
           as="button"
           variant="label"
           onClick={() => navigate(-1)}
-          className="mb-6 flex items-center gap-1"
+          className="mb-6 flex items-center gap-100"
           style={{ color: "hsl(var(--color-text-primary))" }}
         >
           <ChevronLeft className="w-4 h-4" strokeWidth={1.5} /> Tillbaka
@@ -20,7 +20,7 @@ const TermsPage = () => {
 
         <Typography variant="display" as="h1" className="mb-8" style={{ color: "hsl(var(--color-text-primary))" }}>Användarvillkor</Typography>
 
-        <div className="space-y-6" style={{ color: "#5A4A65" }}>
+        <div className="space-y-400" style={{ color: "#5A4A65" }}>
           <section>
             <Typography variant="heading" as="h2" className="mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Tjänsten</Typography>
             <Typography variant="body" as="p">Minby är en social app i testfas driven av Charlotte Peterzéns.</Typography>
@@ -51,7 +51,7 @@ const TermsPage = () => {
             <Typography variant="body" as="p"><a href="mailto:hi@minby.online" className="underline" style={{ color: "hsl(var(--color-text-primary))" }}>hi@minby.online</a></Typography>
           </section>
 
-          <Typography variant="meta" as="p" className="pt-2" style={{ color: "hsl(var(--color-text-muted))" }}>Senast uppdaterad: mars 2026</Typography>
+          <Typography variant="meta" as="p" className="pt-200" style={{ color: "hsl(var(--color-text-muted))" }}>Senast uppdaterad: mars 2026</Typography>
         </div>
       </div>
     </div>

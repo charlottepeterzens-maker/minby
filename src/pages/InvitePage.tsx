@@ -88,7 +88,7 @@ const InvitePage = () => {
 
   if (status === "invalid" || status === "expired") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6 text-center">
+      <div className="min-h-screen bg-background flex items-center justify-center px-400 text-center">
         <div className="max-w-sm">
           <Typography variant="heading" as="h1" className="mb-2" style={{ color: "hsl(var(--color-text-primary))" }}>
             {status === "expired" ? "Den här inbjudan har gått ut" : "Vi hittar inte den här inbjudan"}
@@ -103,7 +103,7 @@ const InvitePage = () => {
 
   if (status === "accepted") {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6 text-center">
+      <div className="min-h-screen bg-background flex items-center justify-center px-400 text-center">
         <div>
           <Heart className="w-8 h-8 mx-auto mb-3" style={{ color: "hsl(var(--color-accent-terra))" }} />
           <Typography variant="heading" as="p" style={{ color: "hsl(var(--color-text-primary))" }}>
@@ -125,7 +125,7 @@ const InvitePage = () => {
     : "Din krets väntar på dig";
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6 py-10">
+    <div className="min-h-screen bg-background flex items-center justify-center px-400 py-10">
       <div className="w-full max-w-sm text-center">
         <Typography
           variant="meta"
@@ -150,7 +150,7 @@ const InvitePage = () => {
         {/* Members */}
         {members.length > 0 && (
           <div className="mt-6 flex flex-col items-center gap-3">
-            <div className="flex -space-x-2">
+            <div className="flex -space-x-200">
               {members.slice(0, 5).map((m, i) => (
                 <Typography
                   key={i}
@@ -187,7 +187,7 @@ const InvitePage = () => {
 
         {/* Sign-up (email only) */}
         {!sentTo ? (
-          <form onSubmit={sendMagicLink} className="mt-10 space-y-4">
+          <form onSubmit={sendMagicLink} className="mt-10 space-y-300">
             <Input
               type="email"
               value={email}
@@ -215,7 +215,7 @@ const InvitePage = () => {
               Vi har skickat en länk till <strong>{sentTo}</strong>. Klicka på länken
               för att bli medlem i {circleName}.
             </Typography>
-            <div className="pt-2">
+            <div className="pt-200">
               <TextButton type="button" variant="secondary" onClick={() => setSentTo(null)}>
                 Använd en annan e-post
               </TextButton>

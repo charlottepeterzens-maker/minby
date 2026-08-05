@@ -17,7 +17,7 @@ const TextButton = forwardRef<HTMLButtonElement, Props>(
   ({ variant = "primary", className, children, style, ...rest }, ref) => {
     const base = cn(
       typography.action,
-      "inline-flex items-center justify-center gap-2 underline underline-offset-2 decoration-1 disabled:opacity-40 disabled:cursor-not-allowed",
+      "inline-flex items-center justify-center gap-200 underline underline-offset-2 decoration-1 disabled:opacity-40 disabled:cursor-not-allowed",
     );
 
     if (variant === "primaryOnPhoto") {
@@ -27,7 +27,7 @@ const TextButton = forwardRef<HTMLButtonElement, Props>(
           {...rest}
           className={cn(
             base,
-            "px-4 py-2 rounded-lg backdrop-blur-md",
+            "px-300 py-200 rounded-lg backdrop-blur-md",
             className,
           )}
           style={{

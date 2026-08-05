@@ -404,7 +404,7 @@ const CirclePage = () => {
           <button
             onClick={() => navigate("/")}
             aria-label="Tillbaka"
-            className="absolute top-3 left-3 p-2 rounded-2xl backdrop-blur-md pt-safe"
+            className="absolute top-3 left-3 p-200 rounded-2xl backdrop-blur-md pt-safe"
             style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "hsl(var(--color-text-primary))" }}
           >
             <ChevronLeft className="w-5 h-5" />
@@ -412,13 +412,13 @@ const CirclePage = () => {
           <button
             onClick={invite}
             aria-label="Bjud in"
-            className="absolute top-3 right-3 p-2 rounded-2xl backdrop-blur-md pt-safe"
+            className="absolute top-3 right-3 p-200 rounded-2xl backdrop-blur-md pt-safe"
             style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "hsl(var(--color-text-primary))" }}
           >
             <Share2 className="w-5 h-5" />
           </button>
           <div
-            className="absolute inset-x-0 bottom-0 px-4 pt-10 pb-4"
+            className="absolute inset-x-0 bottom-0 px-300 pt-10 pb-300"
             style={{ background: OVERLAY_GRADIENT.hero }}
           >
             <Typography as="h1" variant="display" className="text-white">
@@ -467,22 +467,22 @@ const CirclePage = () => {
 
         {/* Sedan sist — collapsible */}
         {sinceLast && (
-          <section className="mt-6 px-4">
+          <section className="mt-6 px-300">
             <div className="rounded-300" style={{ backgroundColor: CARD_YELLOW }}>
               <button
                 type="button"
                 onClick={() => setSinceLastOpen((v) => !v)}
                 aria-expanded={sinceLastOpen}
-                className="w-full flex items-center justify-between px-4 py-3 text-left"
+                className="w-full flex items-center justify-between px-300 py-3 text-left"
               >
                 <Typography as="h2" variant="heading" style={{ color: "hsl(var(--color-text-primary))" }}>Sedan sist</Typography>
                 <ChevronDown
-                  className={`w-5 h-5 transition-transform duration-200 ${sinceLastOpen ? "rotate-180" : ""}`}
+                  className={`w-5 h-5 transition-transform duration ${sinceLastOpen ? "rotate-180" : ""}`}
                   style={{ color: "hsl(20, 4%, 40%)" }}
                 />
               </button>
               {sinceLastOpen && (
-                <div className="px-4 pb-4">
+                <div className="px-300 pb-300">
                   <Typography as="div" variant="label" className="mb-2" style={{ color: "hsl(20, 4%, 40%)" }}>
                     {sinceLast.label}
                   </Typography>
@@ -497,19 +497,19 @@ const CirclePage = () => {
 
         {/* Våra förslag att ses */}
         <section className="mt-8">
-          <div className="px-4 mb-3">
+          <div className="px-300 mb-3">
             <Typography as="h2" variant="heading" style={{ color: "hsl(var(--color-text-primary))" }}>Våra förslag att ses</Typography>
           </div>
           {loadingContent ? (
-            <div className="flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex gap-3 overflow-x-auto px-300 pb-200 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <MeetingCardSkeleton />
               <MeetingCardSkeleton />
               <MeetingCardSkeleton />
             </div>
           ) : meetings.length === 0 ? (
-            <Typography as="p" variant="meta" className="px-4 text-muted-foreground">Ingen träff planerad ännu.</Typography>
+            <Typography as="p" variant="meta" className="px-300 text-muted-foreground">Ingen träff planerad ännu.</Typography>
           ) : (
-            <div className="flex gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex gap-3 overflow-x-auto px-300 pb-200 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {meetings.map((m) => (
                 <MeetingCard
                   key={m.id}
@@ -527,7 +527,7 @@ const CirclePage = () => {
 
         {/* Våra omröstningar */}
         {(pollsLoading || polls.length > 0) && (
-          <section className="mt-8 px-4">
+          <section className="mt-8 px-300">
             <Typography as="h2" variant="heading" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>Att bestämma</Typography>
             {pollsLoading ? (
               <div className="rounded-300 h-[160px] animate-pulse" style={{ backgroundColor: CARD_YELLOW }} />
@@ -554,9 +554,9 @@ const CirclePage = () => {
 
 
         {/* Chatt */}
-        <section className="mt-8 px-4">
+        <section className="mt-8 px-300">
           <Typography as="h2" variant="heading" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>Chatt</Typography>
-          <div className="rounded-300 p-4" style={{ backgroundColor: CARD_BLUE }}>
+          <div className="rounded-300 p-300" style={{ backgroundColor: CARD_BLUE }}>
             {aiSummary ? (
               <>
                 <Typography as="div" variant="label" className="mb-2" style={{ color: "hsl(210, 20%, 35%)" }}>
@@ -582,7 +582,7 @@ const CirclePage = () => {
         </section>
 
         {/* Våra tips — overview preview */}
-        <section className="px-4">
+        <section className="px-300">
           <div className="mt-10 mb-3">
             <Typography as="h2" variant="display" className="text-foreground">Våra tips</Typography>
           </div>
@@ -626,7 +626,7 @@ const CirclePage = () => {
         </section>
 
         {/* Våra foton */}
-        <section className="px-4 mb-10">
+        <section className="px-300 mb-10">
           <div className="mb-3 mt-10">
             <Typography as="h2" variant="display" className="text-foreground">Våra foton</Typography>
           </div>
@@ -648,7 +648,7 @@ const CirclePage = () => {
             }}
           />
           {loadingContent ? (
-            <div className="flex overflow-x-auto -mx-4 px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex overflow-x-auto -mx-4 px-300 pb-200 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <PhotoSmallSkeleton />
               <PhotoSmallSkeleton />
               <PhotoSmallSkeleton />
@@ -658,7 +658,7 @@ const CirclePage = () => {
               Inga foton delade ännu. Bilder ni delar samlas här som ett gemensamt minne.
             </Typography>
           ) : (
-            <div className="flex overflow-x-auto -mx-4 px-4 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex overflow-x-auto -mx-4 px-300 pb-200 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               {photos.map((p, i) => (
                 <PhotoTile
                   key={p.id}
@@ -703,7 +703,7 @@ const CirclePage = () => {
       <Sheet open={inviteOpen} onOpenChange={setInviteOpen}>
         <BottomSheetContent>
           <BottomSheetHeader title="Bjud in till kretsen" />
-          <BottomSheetBody className="px-5 pt-4 pb-8 space-y-5">
+          <BottomSheetBody className="px-5 pt-300 pb-500 space-y-5">
             <Typography as="p" variant="body" style={{ color: "#5B5B5B" }}>
               Bjud in familj och vänner så att ni kan dela foton, tips och planera träffar tillsammans.
             </Typography>
@@ -711,13 +711,13 @@ const CirclePage = () => {
             <Typography
               as="div"
               variant="body"
-              className="rounded-200 px-4 py-3 break-all"
+              className="rounded-200 px-300 py-3 break-all"
               style={{ backgroundColor: "#F5EFD9", color: "hsl(var(--color-text-primary))" }}
             >
               {creatingInvite ? "Skapar länk…" : inviteUrl ?? ""}
             </Typography>
 
-            <div className="flex flex-col gap-3 pt-1">
+            <div className="flex flex-col gap-3 pt-100">
               <TextButton onClick={shareInviteNative} disabled={!inviteUrl}>
                 Dela länk
               </TextButton>
@@ -736,14 +736,14 @@ const CirclePage = () => {
       <Sheet open={showTipsList} onOpenChange={setShowTipsList}>
         <BottomSheetContent height={92}>
           <BottomSheetHeader title="Våra tips" />
-          <BottomSheetBody className="px-4 pt-4 pb-32 space-y-3">
+          <BottomSheetBody className="px-300 pt-300 pb-32 space-y-3">
             {loadingContent ? (
               <>
                 <TipCardSkeleton />
                 <TipCardSkeleton />
               </>
             ) : tips.length === 0 ? (
-              <Typography as="p" variant="meta" className="text-muted-foreground text-center py-8">Inga tips delade ännu.</Typography>
+              <Typography as="p" variant="meta" className="text-muted-foreground text-center py-500">Inga tips delade ännu.</Typography>
             ) : (
               tips.map((t) => (
                 <TipCard
@@ -767,11 +767,11 @@ const CirclePage = () => {
       <Sheet open={showMeetingForm} onOpenChange={setShowMeetingForm}>
         <BottomSheetContent>
           <BottomSheetHeader title="Föreslå en träff" />
-          <BottomSheetBody className="px-5 pt-4 pb-8 space-y-2">
+          <BottomSheetBody className="px-5 pt-300 pb-500 space-y-200">
             <Input placeholder="Vad ska ni göra?" value={meetingTitle} onChange={(e) => setMeetingTitle(e.target.value)} className="rounded-lg" />
             <Input type="date" value={meetingDate} onChange={(e) => setMeetingDate(e.target.value)} className="rounded-lg" />
             <Textarea placeholder="Beskrivning (valfritt)" value={meetingDesc} onChange={(e) => setMeetingDesc(e.target.value)} rows={3} className="rounded-lg resize-none" />
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end pt-200">
               <TextButton onClick={createMeeting} disabled={!meetingTitle.trim() || savingMeeting}>
                 {savingMeeting ? "Sparar…" : "Skapa träff"}
               </TextButton>
@@ -810,7 +810,7 @@ const CirclePage = () => {
           {selectedMeeting && (
             <>
               <BottomSheetHeader title={selectedMeeting.title} />
-              <BottomSheetBody className="px-5 pt-4 pb-8">
+              <BottomSheetBody className="px-5 pt-300 pb-500">
                 <Typography as="p" variant="meta" style={{ color: "hsl(20, 4%, 40%)" }}>
                   {selectedMeeting.host_name}
                   {selectedMeeting.meeting_date ? ` · ${formatDateYear(selectedMeeting.meeting_date)}` : ""}
@@ -827,7 +827,7 @@ const CirclePage = () => {
                   {meetingAttendees.length === 0 ? (
                     <Typography as="p" variant="meta" className="text-muted-foreground">Ingen har svarat ännu.</Typography>
                   ) : (
-                    <ul className="space-y-1">
+                    <ul className="space-y-100">
                       {meetingAttendees.map((a) => (
                         <Typography as="li" key={a.user_id} variant="body" style={{ color: "hsl(var(--color-text-primary))" }}>
                           {a.display_name ?? "Anonym"}
@@ -836,7 +836,7 @@ const CirclePage = () => {
                     </ul>
                   )}
                 </div>
-                <div className="mt-6 flex gap-6">
+                <div className="mt-6 flex gap-400">
                   <TextButton onClick={() => { respondYes(selectedMeeting.id); setSelectedMeeting(null); }}>
                     Häng med!
                   </TextButton>
@@ -856,7 +856,7 @@ const CirclePage = () => {
           {selectedTip && (
             <>
               <BottomSheetHeader title={selectedTip.title} />
-              <BottomSheetBody className="px-5 pt-4 pb-8">
+              <BottomSheetBody className="px-5 pt-300 pb-500">
                 <Typography as="p" variant="meta" style={{ color: "hsl(20, 4%, 40%)" }}>
                   {selectedTip.owner_name} · {formatDateYear(selectedTip.created_at)}
                 </Typography>
@@ -869,7 +869,7 @@ const CirclePage = () => {
                   </Typography>
                 )}
                 {selectedTip.url && (
-                  <a href={selectedTip.url} target="_blank" rel="noopener noreferrer" className={cn(typography.body, "mt-6 inline-flex items-center gap-2 underline underline-offset-2")} style={LINK_STYLE}>
+                  <a href={selectedTip.url} target="_blank" rel="noopener noreferrer" className={cn(typography.body, "mt-6 inline-flex items-center gap-200 underline underline-offset-2")} style={LINK_STYLE}>
                     <ExternalLink className="w-4 h-4" /> Öppna länken
                   </a>
                 )}
@@ -885,7 +885,7 @@ const CirclePage = () => {
           {selectedPhoto && (
             <>
               <BottomSheetHeader title={selectedPhoto.owner_name} />
-              <BottomSheetBody className="px-5 pt-4 pb-8">
+              <BottomSheetBody className="px-5 pt-300 pb-500">
                 <Typography as="p" variant="meta" style={{ color: "hsl(20, 4%, 40%)" }}>
                   {formatDateYear(selectedPhoto.created_at)}
                 </Typography>
@@ -913,7 +913,7 @@ const CirclePage = () => {
       >
         <BottomSheetContent>
           <BottomSheetHeader title="Ladda upp foto" />
-          <BottomSheetBody className="px-5 pt-4 pb-8 space-y-3">
+          <BottomSheetBody className="px-5 pt-300 pb-500 space-y-3">
             {photoPreview && (
               <img src={photoPreview} alt="" className="w-full max-h-[240px] object-cover rounded-2xl" />
             )}
@@ -925,7 +925,7 @@ const CirclePage = () => {
               maxLength={140}
               className="rounded-lg resize-none"
             />
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-end pt-200">
               <TextButton onClick={uploadPhoto} disabled={!photoFile || uploadingPhoto}>
                 {uploadingPhoto ? "Laddar upp…" : "Dela foto"}
               </TextButton>

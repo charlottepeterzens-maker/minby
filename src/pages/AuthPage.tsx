@@ -247,7 +247,7 @@ const AuthPage = () => {
             <Typography variant="heading" as="h1" className="text-foreground mt-4">Glömt lösenord?</Typography>
             <Typography variant="body" as="p" className="text-muted-foreground mt-2">Ange din e-post så skickar vi en återställningslänk</Typography>
           </div>
-          <form onSubmit={handleForgotPassword} className="space-y-4">
+          <form onSubmit={handleForgotPassword} className="space-y-300">
             <div>
               <Label htmlFor="forgot-email" className={cn(typography.meta, "text-muted-foreground")}>{t("email")}</Label>
               <Input
@@ -261,7 +261,7 @@ const AuthPage = () => {
                 required
               />
             </div>
-            <div className="pt-2 flex justify-center">
+            <div className="pt-200 flex justify-center">
               <TextButton type="submit" disabled={loading}>
                 {loading ? "..." : "Skicka återställningslänk"}
               </TextButton>
@@ -287,7 +287,7 @@ const AuthPage = () => {
           </Typography>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-300">
           {isSignUp && (
             <div>
               <Label htmlFor="name" className={cn(typography.meta, "text-muted-foreground")}>{t("yourName")}</Label>
@@ -335,7 +335,7 @@ const AuthPage = () => {
           </div>
 
           {isSignUp && (
-            <label className="flex items-start gap-2.5 cursor-pointer">
+            <label className="flex items-start gap-200.5 cursor-pointer">
               <input
                 type="checkbox"
                 checked={consent}
@@ -351,7 +351,7 @@ const AuthPage = () => {
             </label>
           )}
 
-          <div className="pt-2 flex justify-center">
+          <div className="pt-200 flex justify-center">
             <TextButton type="submit" disabled={loading || (isSignUp && !consent)}>
               {loading ? "..." : isSignUp ? t("createAccount") : t("signIn")}
             </TextButton>

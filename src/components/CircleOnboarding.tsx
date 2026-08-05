@@ -62,7 +62,7 @@ const CircleOnboarding = ({
   };
 
   return (
-    <section className="mt-6 px-4">
+    <section className="mt-6 px-300">
       <div
         className="rounded-300 p-5"
         style={{ backgroundColor: "#561828" }}
@@ -111,7 +111,7 @@ const CircleOnboarding = ({
             return (
               <li
                 key={s.key}
-                className="py-4 flex items-start justify-between gap-4"
+                className="py-300 flex items-start justify-between gap-300"
               >
                 <div className="flex-1 min-w-0">
                   <div

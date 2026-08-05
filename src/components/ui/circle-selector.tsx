@@ -48,7 +48,7 @@ const CircleSelector = ({
         : `${selectedNames[0]} +${selectedNames.length - 1} kretsar`;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-200">
       <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
         {label}
       </Typography>
@@ -67,7 +67,7 @@ const CircleSelector = ({
         />
       </button>
       {open && (
-        <div className="space-y-1 pb-1">
+        <div className="space-y-100 pb-100">
           {circles.length === 0 ? (
             <Typography variant="body" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               {emptyText}
@@ -80,7 +80,7 @@ const CircleSelector = ({
                   key={c.id}
                   type="button"
                   onClick={() => toggle(c.id)}
-                  className="w-full flex items-center gap-3 py-2.5 text-left"
+                  className="w-full flex items-center gap-3 py-200.5 text-left"
                 >
                   <span
                     className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"

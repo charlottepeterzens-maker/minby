@@ -33,7 +33,7 @@ const CircleDashboardCard = ({ name, highlights, members, onOpen }: Props) => {
     <button
       type="button"
       onClick={onOpen}
-      className="w-full text-left rounded-300 p-5 flex gap-4 bg-butter-100"
+      className="w-full text-left rounded-300 p-5 flex gap-300 bg-butter-100"
     >
 
       <div className="flex-1 min-w-0">
@@ -41,7 +41,7 @@ const CircleDashboardCard = ({ name, highlights, members, onOpen }: Props) => {
           {name}
         </Typography>
 
-        <ul className="mt-3 space-y-1.5">
+        <ul className="mt-3 space-y-100.5">
           {highlights.length ? (
             highlights.slice(0, 3).map((h, i) => (
               <li key={i}>

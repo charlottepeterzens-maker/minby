@@ -17,8 +17,8 @@ export const ExampleTag = ({
     tabIndex={0}
     aria-label={`${label} – platshållarinnehåll`}
     className={
-      "inline-flex items-center px-3 py-1 rounded-full select-none " +
-      "transition-[opacity,box-shadow,transform] duration-150 " +
+      "inline-flex items-center px-3 py-100 rounded-full select-none " +
+      "transition-[opacity,box-shadow,transform] duration-fast " +
       "hover:opacity-90 active:scale-[0.98] " +
       "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 " +
       "focus-visible:ring-[hsl(var(--color-accent-terra))] focus-visible:ring-offset-[#F9F3E1] " +

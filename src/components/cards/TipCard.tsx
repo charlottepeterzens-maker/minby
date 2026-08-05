@@ -31,7 +31,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
     <button
       type="button"
       onClick={onOpen}
-      className="w-full text-left rounded-300 overflow-hidden flex gap-4 h-[134px] bg-olive-100"
+      className="w-full text-left rounded-300 overflow-hidden flex gap-300 h-[134px] bg-olive-100"
     >
 
       <div
@@ -43,7 +43,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
       >
         {category && (
           <span
-            className={cn(typography.meta, "absolute top-2 left-2 px-2.5 py-1 rounded-full")}
+            className={cn(typography.meta, "absolute top-2 left-2 px-200.5 py-100 rounded-full")}
             style={{ backgroundColor: "hsl(var(--activity))", color: "hsl(var(--text-inverse))" }}
           >
             {category}
@@ -51,8 +51,8 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
         )}
       </div>
 
-      <div className="flex-1 min-w-0 flex flex-col py-3 pr-4">
-        <div className="flex items-center gap-2 mb-1">
+      <div className="flex-1 min-w-0 flex flex-col py-3 pr-300">
+        <div className="flex items-center gap-200 mb-1">
           <div
             className={cn(
               typography.eyebrow,

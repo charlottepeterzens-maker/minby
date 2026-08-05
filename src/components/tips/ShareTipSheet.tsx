@@ -220,9 +220,9 @@ const ShareTipSheet = ({
         <BottomSheetHeader title="Dela ett tips" />
 
         {/* Scrollable body */}
-        <BottomSheetBody className="px-5 pt-4 pb-6 space-y-5">
+        <BottomSheetBody className="px-5 pt-300 pb-400 space-y-5">
           {/* Titel */}
-          <div className="space-y-2">
+          <div className="space-y-200">
             <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Titel
             </Typography>
@@ -238,7 +238,7 @@ const ShareTipSheet = ({
           </div>
 
           {/* Länk */}
-          <div className="space-y-2">
+          <div className="space-y-200">
             <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Länk
             </Typography>
@@ -252,7 +252,7 @@ const ShareTipSheet = ({
               className="h-11 rounded-lg"
             />
             {(previewLoading || linkPreview?.image) && !imagePreview && (
-              <div className="flex items-center gap-3 pt-1">
+              <div className="flex items-center gap-3 pt-100">
                 <div
                   className="w-12 h-12 rounded-200 bg-cover bg-center flex-shrink-0"
                   style={{
@@ -268,7 +268,7 @@ const ShareTipSheet = ({
           </div>
 
           {/* Kategori */}
-          <div className="space-y-2">
+          <div className="space-y-200">
             <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Kategori
             </Typography>
@@ -287,7 +287,7 @@ const ShareTipSheet = ({
               />
             </button>
             {categoryOpen && (
-              <div className="space-y-1 pb-1">
+              <div className="space-y-100 pb-100">
                 {TIP_CATEGORIES.map((c) => {
                   const active = category === c;
                   return (
@@ -298,7 +298,7 @@ const ShareTipSheet = ({
                         setCategory(c);
                         setCategoryOpen(false);
                       }}
-                      className="w-full flex items-center gap-3 py-2.5 text-left"
+                      className="w-full flex items-center gap-3 py-200.5 text-left"
                     >
                       <span
                         className="w-5 h-5 rounded-full flex-shrink-0"
@@ -319,7 +319,7 @@ const ShareTipSheet = ({
           </div>
 
           {/* Kommentar */}
-          <div className="space-y-2">
+          <div className="space-y-200">
             <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Kommentar
             </Typography>
@@ -332,7 +332,7 @@ const ShareTipSheet = ({
           </div>
 
           {/* Foto */}
-          <div className="space-y-2">
+          <div className="space-y-200">
             <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Foto
             </Typography>
@@ -353,7 +353,7 @@ const ShareTipSheet = ({
                   className="w-16 h-16 rounded-200 bg-cover bg-center flex-shrink-0"
                   style={{ backgroundImage: `url(${imagePreview})` }}
                 />
-                <div className="flex flex-col items-start gap-1">
+                <div className="flex flex-col items-start gap-100">
                   <TextButton onClick={() => fileRef.current?.click()}>Byt foto</TextButton>
                   <TextButton
                     variant="secondary"

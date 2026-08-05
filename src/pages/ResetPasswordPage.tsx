@@ -84,7 +84,7 @@ const ResetPasswordPage = () => {
           <Typography variant="body" as="p" className="text-muted-foreground mt-2">Ange ditt nya lösenord nedan</Typography>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-300">
           <div>
             <Label htmlFor="new-password" className={cn(typography.meta, "text-muted-foreground")}>Nytt lösenord</Label>
             <Input
@@ -113,7 +113,7 @@ const ResetPasswordPage = () => {
               required
             />
           </div>
-          <div className="pt-2 flex justify-center">
+          <div className="pt-200 flex justify-center">
             <TextButton type="submit" disabled={loading}>
               {loading ? "..." : "Uppdatera lösenord"}
             </TextButton>

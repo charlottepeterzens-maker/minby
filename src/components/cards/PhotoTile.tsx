@@ -32,7 +32,7 @@ const PhotoTile = ({
   // small tiles step down one notch to labelSm/eyebrow.
   const titleType = size === "lg" ? typography.caption : typography.labelSm;
   const nameType = size === "lg" ? typography.labelSm : typography.eyebrow;
-  const pad = size === "lg" ? "p-3 pt-10" : "p-2 pt-6";
+  const pad = size === "lg" ? "p-3 pt-10" : "p-200 pt-400";
 
   return (
     <button

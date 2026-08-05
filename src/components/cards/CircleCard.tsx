@@ -49,7 +49,7 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
   return (
     <button
       onClick={onOpen}
-      className="w-full text-left rounded-300 p-5 flex gap-4 bg-butter-100"
+      className="w-full text-left rounded-300 p-5 flex gap-300 bg-butter-100"
     >
 
       <div className="flex-1 min-w-0">
