@@ -1,4 +1,4 @@
-import { createElement, type ElementType, type ReactNode } from "react";
+import { createElement, forwardRef, type ElementType, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import {
   typography,
@@ -25,20 +25,17 @@ interface TypographyProps
  *   <Typography variant="heading" as="h3">Kretsen</Typography>
  *   <Typography variant="meta">2 timmar sedan</Typography>
  */
-export const Typography = ({
-  variant = "body",
-  as,
-  className,
-  children,
-  ...rest
-}: TypographyProps) => {
-  const Element = (as ?? typographyElements[variant]) as ElementType;
-  return createElement(
-    Element,
-    { className: cn(typography[variant], className), ...rest },
-    children,
-  );
-};
+export const Typography = forwardRef<HTMLElement, TypographyProps>(
+  ({ variant = "body", as, className, children, ...rest }, ref) => {
+    const Element = (as ?? typographyElements[variant]) as ElementType;
+    return createElement(
+      Element,
+      { ref, className: cn(typography[variant], className), ...rest },
+      children,
+    );
+  },
+);
+Typography.displayName = "Typography";
 
 /* ------------------------------------------------------------------ */
 /* Convenience wrappers — thin aliases over the same tokens            */
@@ -48,8 +45,9 @@ type AliasProps = Omit<TypographyProps, "variant">;
 
 export const Display = (p: AliasProps) => <Typography variant="display" {...p} />;
 export const Heading = (p: AliasProps) => <Typography variant="heading" {...p} />;
+export const Section = (p: AliasProps) => <Typography variant="section" {...p} />;
 export const Body = (p: AliasProps) => <Typography variant="body" {...p} />;
 export const Meta = (p: AliasProps) => <Typography variant="meta" {...p} />;
-export const Label = (p: AliasProps) => <Typography variant="label" {...p} />;
+export const Action = (p: AliasProps) => <Typography variant="action" {...p} />;
 
 export default Typography;

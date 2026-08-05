@@ -94,11 +94,11 @@ const CircleOnboarding = ({
           </button>
         </div>
 
-        <Typography variant="heading" as="h3" className="mb-2 leading-none" style={{ color: "#FFFFFF" }}>
+        <Typography variant="heading" as="h3" className="mb-2" style={{ color: "#FFFFFF" }}>
           Kom igång med {circleName}
         </Typography>
 
-        <Typography variant="bodySm" className="mb-5 leading-[1.2]" style={{ color: "#F9F3E1" }}>
+        <Typography variant="body" className="mb-5" style={{ color: "#F9F3E1" }}>
           Tre snabba steg så börjar det hända grejer här.
         </Typography>
 
@@ -115,7 +115,7 @@ const CircleOnboarding = ({
               >
                 <div className="flex-1 min-w-0">
                   <div
-                    className={cn(typography.bodySm, "font-medium leading-[1.2]")}
+                    className={typography.body}
                     style={{
                       color: "#FFFFFF",
                       textDecoration: isDone ? "line-through" : "none",
@@ -146,7 +146,7 @@ const CircleOnboarding = ({
                   <button
                     type="button"
                     onClick={handlers[s.key]}
-                    className={cn(typography.bodySm, "font-medium underline underline-offset-2 decoration-1 shrink-0")}
+                    className={cn(typography.action, "underline underline-offset-2 decoration-1 shrink-0")}
                     style={{
                       color: "#FFFFFF",
                       textDecorationColor: "#C85A2E",

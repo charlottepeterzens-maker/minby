@@ -56,11 +56,11 @@ const PhotoTile = ({
         style={{ background: OVERLAY_GRADIENT[gradient] }}
       >
         {title && (
-          <div className={cn(titleType, "font-medium text-white truncate")}>
+          <div className={cn(titleType, "text-white truncate")}>
             {title}
           </div>
         )}
-        <div className={cn(nameType, "font-normal text-white/80 truncate mt-0.5")}>
+        <div className={cn(nameType, "text-white/80 truncate mt-0.5")}>
           {ownerName}
         </div>
       </div>

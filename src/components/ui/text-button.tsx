@@ -10,13 +10,13 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 /**
  * Minby button — text-only with a coloured underline.
- * Typography comes from the design system (`button` variant) — buttons must
+ * Typography comes from the design system (`action` variant) — buttons must
  * never define their own font-size or font-weight.
  */
 const TextButton = forwardRef<HTMLButtonElement, Props>(
   ({ variant = "primary", className, children, style, ...rest }, ref) => {
     const base = cn(
-      typography.button,
+      typography.action,
       "inline-flex items-center justify-center gap-2 underline underline-offset-2 decoration-1 disabled:opacity-40 disabled:cursor-not-allowed",
     );
 

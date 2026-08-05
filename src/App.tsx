@@ -17,6 +17,7 @@ import ChatPage from "./pages/ChatPage";
 import VerifyPage from "./pages/VerifyPage";
 import SettingsPage from "./pages/SettingsPage";
 import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import Typography from "@/components/ui/typography";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +26,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <span className="text-[26px] font-display font-light tracking-[-0.5px] text-foreground lowercase">minby</span>
+        <Typography variant="wordmark" as="span" className="text-foreground">minby</Typography>
       </div>
     );
   }

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import TextButton from "@/components/ui/text-button";
+import { typography } from "@/design-system/typography";
+import { cn } from "@/lib/utils";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -103,7 +105,7 @@ const PWAInstallBanner = () => {
 
               <div className="flex items-start justify-between mb-2">
 
-                <span className="text-eyebrow text-accent-primary">
+                <span className={cn(typography.meta, "text-accent-primary")}>
                   Tips
                 </span>
 

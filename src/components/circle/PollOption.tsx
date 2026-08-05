@@ -11,7 +11,6 @@ interface Props {
  * A single poll option. Presentation only — the parent owns the state.
  */
 import Typography from "@/components/ui/typography";
-import { typographyEmphasis } from "@/design-system/typography";
 
 const PollOption = ({ label, votes, totalVotes, selected, disabled, onSelect }: Props) => {
   const pct = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
@@ -34,9 +33,8 @@ const PollOption = ({ label, votes, totalVotes, selected, disabled, onSelect }: 
       />
       <span className="relative flex items-center justify-between gap-3">
         <Typography
-          variant="body"
+          variant={selected ? "action" : "body"}
           as="span"
-          className={selected ? typographyEmphasis.strong : undefined}
           style={{ color: "hsl(var(--color-text-primary))" }}
         >
           {label}

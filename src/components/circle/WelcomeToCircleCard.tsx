@@ -25,12 +25,12 @@ const WelcomeToCircleCard = ({ circleName, variant = "joined", onSayHi, onInvite
         <Typography
           variant="labelSm"
           as="div"
-          className="mb-2 uppercase tracking-wider"
+          className="mb-2 uppercase"
           style={{ color: "#675332" }}
         >
           {eyebrow}
         </Typography>
-        <Typography variant="body" className="leading-relaxed" style={{ color: "#2B2B2B" }}>
+        <Typography variant="body" style={{ color: "#2B2B2B" }}>
           {body}
         </Typography>
         <div className="mt-4">
