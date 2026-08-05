@@ -132,6 +132,7 @@ const HomePage = () => {
           .filter((m) => m.circle_id === c.id && m.meeting_date && m.meeting_date >= today)
           .sort((a, b) => (a.meeting_date! < b.meeting_date! ? -1 : 1))[0];
         if (upcoming) {
+          markActive(upcoming.created_by, upcoming.created_at);
           events.push({
             primaryText: upcoming.title,
             shortText: `${formatMeetingDate(upcoming.meeting_date)} · ${upcoming.title}`,
@@ -146,6 +147,7 @@ const HomePage = () => {
           .filter((p: any) => p.circle_id === c.id && !p.closed)
           .sort((a: any, b: any) => (a.created_at < b.created_at ? 1 : -1))[0];
         if (poll) {
+          markActive(poll.created_by, poll.created_at);
           events.push({
             primaryText: `${firstNameOf(poll.created_by)} skapade en omröstning`,
             shortText: "Svara på en omröstning",
@@ -161,6 +163,7 @@ const HomePage = () => {
           .map((tv: any) => tv.tips)
           .sort((a: any, b: any) => (a.created_at < b.created_at ? 1 : -1));
         if (tips.length) {
+          tips.forEach((t: any) => markActive(t.owner_id, t.created_at));
           events.push({
             primaryText: `${firstNameOf(tips[0].owner_id)} delade ett tips`,
             shortText: tips.length === 1 ? "Läs ett nytt tips" : `Läs ${countWord(tips.length)} nya tips`,
@@ -176,6 +179,7 @@ const HomePage = () => {
           .map((pv: any) => pv.photos)
           .sort((a: any, b: any) => (a.created_at < b.created_at ? 1 : -1));
         if (photos.length) {
+          photos.forEach((ph: any) => markActive(ph.owner_id, ph.created_at));
           events.push({
             primaryText:
               photos.length === 1
@@ -191,6 +195,7 @@ const HomePage = () => {
         // Chat
         const msgs = (messageRows ?? []).filter((m) => m.circle_id === c.id);
         if (msgs.length) {
+          msgs.forEach((m) => markActive(m.user_id, m.created_at));
           events.push({
             primaryText: `${firstNameOf(msgs[0].user_id)} skrev i chatten`,
             shortText: msgs.length === 1 ? "Läs ett nytt meddelande" : "Läs vad som sagts i chatten",
@@ -208,6 +213,7 @@ const HomePage = () => {
         return {
           ...c,
           members,
+          activeMemberIds: Array.from(activeIds),
           primary: head ? { text: head.primaryText } : null,
           supporting: rest.slice(0, 2).map((e) => ({ text: e.shortText })),
           // Everything not already spelled out on the card, as a notice count.
