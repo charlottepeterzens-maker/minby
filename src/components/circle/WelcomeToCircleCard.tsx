@@ -23,9 +23,9 @@ const WelcomeToCircleCard = ({ circleName, variant = "joined", onSayHi, onInvite
     <section className="mt-6 px-300">
       <div className="rounded-300 p-5" style={{ backgroundColor: "#F5EFD9" }}>
         <Typography
-          variant="labelSm"
+          variant="meta"
           as="div"
-          className="mb-2 uppercase"
+          className="mb-2"
           style={{ color: "#675332" }}
         >
           {eyebrow}

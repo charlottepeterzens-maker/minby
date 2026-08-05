@@ -49,7 +49,7 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
         <BottomSheetHeader title="Starta omröstning" />
         <BottomSheetBody className="px-5 pt-300 pb-500 space-y-5">
           <div className="space-y-200">
-            <Typography variant="label" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Vad ska ni bestämma?</Typography>
+            <Typography variant="meta" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Vad ska ni bestämma?</Typography>
             <Input
               placeholder="T.ex. Vilken dag passar bäst?"
               value={question}
@@ -59,7 +59,7 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
           </div>
 
           <div className="space-y-200">
-            <Typography variant="label" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Alternativ</Typography>
+            <Typography variant="meta" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Alternativ</Typography>
             {options.map((o, i) => (
               <div key={i} className="flex items-center gap-200">
                 <Input
@@ -91,7 +91,7 @@ const CreatePollSheet = ({ open, onOpenChange, saving, onCreate }: Props) => {
           </div>
 
           <div className="space-y-200">
-            <Typography variant="label" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Slutdatum (valfritt)</Typography>
+            <Typography variant="meta" as="label" style={{ color: "hsl(var(--color-text-tertiary))" }}>Slutdatum (valfritt)</Typography>
             <Input
               type="date"
               value={closesAt}

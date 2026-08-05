@@ -55,18 +55,18 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
         <div className="flex items-center gap-200 mb-1">
           <div
             className={cn(
-              typography.eyebrow,
+              typography.meta,
               "w-6 h-6 rounded-avatar overflow-hidden flex items-center justify-center",
             )}
             style={{ backgroundColor: "#DCEAF8", color: "#561828" }}
           >
             {ownerAvatar ? <img src={ownerAvatar} alt="" className="w-full h-full object-cover" /> : initials}
           </div>
-          <Typography variant="eyebrow" style={{ color: "#561828" }}>
+          <Typography variant="meta" style={{ color: "#561828" }}>
             {dateLabel}
           </Typography>
         </div>
-        <Typography variant="title" as="div" className="truncate" style={{ color: "#2B2B2B" }}>
+        <Typography variant="heading" as="div" className="truncate" style={{ color: "#2B2B2B" }}>
           {title}
         </Typography>
         {description && (

@@ -68,7 +68,7 @@ const CircleOnboarding = ({
         style={{ backgroundColor: "#561828" }}
       >
         <div className="flex items-start justify-between mb-2">
-          <Typography variant="eyebrow" as="div" style={{ color: "#C85A2E" }}>
+          <Typography variant="meta" as="div" style={{ color: "#C85A2E" }}>
             {doneCount} av {STEPS.length} steg klara
           </Typography>
 
@@ -127,7 +127,7 @@ const CircleOnboarding = ({
 
                   {!isDone && (
                     <div
-                      className={cn(typography.eyebrow, "mt-1")}
+                      className={cn(typography.meta, "mt-1")}
                       style={{ color: "#F9F3E1" }}
                     >
                       {s.hint}
@@ -137,7 +137,7 @@ const CircleOnboarding = ({
 
                 {isDone ? (
                   <span
-                    className={typography.eyebrow}
+                    className={typography.meta}
                     style={{ color: "#F9F3E1" }}
                   >
                     Klart

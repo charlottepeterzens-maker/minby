@@ -13,7 +13,7 @@ const VerifyPage = () => {
   }, [navigate]);
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <span className={cn(typography.bodySm, "text-muted-foreground")}>Verifierar…</span>
+      <span className={cn(typography.meta, "text-muted-foreground")}>Verifierar…</span>
     </div>
   );
 };

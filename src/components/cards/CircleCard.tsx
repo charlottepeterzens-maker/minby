@@ -54,19 +54,19 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
 
       <div className="flex-1 min-w-0">
         <div
-          className={cn(typography.caption, "mb-2")}
+          className={cn(typography.body, "mb-2")}
           style={{ color: "#561828" }}
         >
           {name}
         </div>
         <p
-          className={cn(typography.bodyMd, "line-clamp-4 mb-3")}
+          className={cn(typography.body, "line-clamp-4 mb-3")}
           style={{ color: "#2B2B2B" }}
         >
           {summary ?? "Här samlas kretsen. Öppna för att se vad som händer."}
         </p>
           <span
-            className={cn(typography.button, "underline underline-offset-2 decoration-1")}
+            className={cn(typography.action, "underline underline-offset-2 decoration-1")}
             style={{ color: "#2B2B2B", textDecorationColor: "#C85A2E" }}
           >
             Kika in!

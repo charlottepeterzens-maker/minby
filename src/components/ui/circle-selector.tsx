@@ -49,7 +49,7 @@ const CircleSelector = ({
 
   return (
     <div className="space-y-200">
-      <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+      <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
         {label}
       </Typography>
       <button

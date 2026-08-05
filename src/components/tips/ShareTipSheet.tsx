@@ -223,7 +223,7 @@ const ShareTipSheet = ({
         <BottomSheetBody className="px-5 pt-300 pb-400 space-y-5">
           {/* Titel */}
           <div className="space-y-200">
-            <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Titel
             </Typography>
             <Input
@@ -239,7 +239,7 @@ const ShareTipSheet = ({
 
           {/* Länk */}
           <div className="space-y-200">
-            <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Länk
             </Typography>
             <Input
@@ -269,7 +269,7 @@ const ShareTipSheet = ({
 
           {/* Kategori */}
           <div className="space-y-200">
-            <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Kategori
             </Typography>
             <button
@@ -320,7 +320,7 @@ const ShareTipSheet = ({
 
           {/* Kommentar */}
           <div className="space-y-200">
-            <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Kommentar
             </Typography>
             <Textarea
@@ -333,7 +333,7 @@ const ShareTipSheet = ({
 
           {/* Foto */}
           <div className="space-y-200">
-            <Typography variant="label" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Foto
             </Typography>
             <input

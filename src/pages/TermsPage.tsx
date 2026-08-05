@@ -10,7 +10,7 @@ const TermsPage = () => {
       <div className="max-w-[600px] mx-auto px-400 py-400 pt-safe">
         <Typography
           as="button"
-          variant="label"
+          variant="meta"
           onClick={() => navigate(-1)}
           className="mb-6 flex items-center gap-100"
           style={{ color: "hsl(var(--color-text-primary))" }}
