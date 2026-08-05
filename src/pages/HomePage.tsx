@@ -4,15 +4,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import TextButton from "@/components/ui/text-button";
 import PrimaryActionButton from "@/components/ui/primary-action-button";
-import { Menu } from "lucide-react";
-import CircleDashboardCard, { type CircleHighlight, type CircleMemberPreview } from "@/components/cards/CircleDashboardCard";
-import { CircleCardSkeleton } from "@/components/cards/CardSkeletons";
+import { type CircleHighlight, type CircleMemberPreview } from "@/components/cards/CircleDashboardCard";
+import TopBar from "@/components/home/TopBar";
+import StickyHeader from "@/components/home/StickyHeader";
+import FilterButton from "@/components/home/FilterButton";
+import ProfileButton from "@/components/home/ProfileButton";
+import MyMenu from "@/components/home/MyMenu";
+import CircleList from "@/components/home/CircleList";
+import type { CircleFilterId } from "@/components/home/types";
+import { useScrollHide } from "@/hooks/useScrollHide";
 import { Sheet } from "@/components/ui/sheet";
 import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
 import { toast } from "sonner";
 import { Typography } from "@/components/ui/typography";
 import { typography } from "@/design-system/typography";
 import { cn } from "@/lib/utils";
+
 
 interface Circle {
   id: string;
