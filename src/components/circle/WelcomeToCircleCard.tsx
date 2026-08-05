@@ -21,7 +21,7 @@ const WelcomeToCircleCard = ({ circleName, variant = "joined", onSayHi, onInvite
 
   return (
     <section className="mt-6 px-4">
-      <div className="rounded-[26px] p-5" style={{ backgroundColor: "#F5EFD9" }}>
+      <div className="rounded-300 p-5" style={{ backgroundColor: "#F5EFD9" }}>
         <Typography
           variant="labelSm"
           as="div"

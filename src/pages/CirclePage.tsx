@@ -468,7 +468,7 @@ const CirclePage = () => {
         {/* Sedan sist — collapsible */}
         {sinceLast && (
           <section className="mt-6 px-4">
-            <div className="rounded-[26px]" style={{ backgroundColor: CARD_YELLOW }}>
+            <div className="rounded-300" style={{ backgroundColor: CARD_YELLOW }}>
               <button
                 type="button"
                 onClick={() => setSinceLastOpen((v) => !v)}
@@ -530,7 +530,7 @@ const CirclePage = () => {
           <section className="mt-8 px-4">
             <Typography as="h2" variant="heading" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>Att bestämma</Typography>
             {pollsLoading ? (
-              <div className="rounded-[26px] h-[160px] animate-pulse" style={{ backgroundColor: CARD_YELLOW }} />
+              <div className="rounded-300 h-[160px] animate-pulse" style={{ backgroundColor: CARD_YELLOW }} />
             ) : (
               <div className="space-y-3">
                 {polls.map((p) => (
@@ -556,7 +556,7 @@ const CirclePage = () => {
         {/* Chatt */}
         <section className="mt-8 px-4">
           <Typography as="h2" variant="heading" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>Chatt</Typography>
-          <div className="rounded-[26px] p-4" style={{ backgroundColor: CARD_BLUE }}>
+          <div className="rounded-300 p-4" style={{ backgroundColor: CARD_BLUE }}>
             {aiSummary ? (
               <>
                 <Typography as="div" variant="label" className="mb-2" style={{ color: "hsl(210, 20%, 35%)" }}>
@@ -711,7 +711,7 @@ const CirclePage = () => {
             <Typography
               as="div"
               variant="body"
-              className="rounded-[16px] px-4 py-3 break-all"
+              className="rounded-200 px-4 py-3 break-all"
               style={{ backgroundColor: "#F5EFD9", color: "hsl(var(--color-text-primary))" }}
             >
               {creatingInvite ? "Skapar länk…" : inviteUrl ?? ""}

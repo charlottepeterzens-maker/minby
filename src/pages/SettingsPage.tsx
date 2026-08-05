@@ -25,7 +25,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
     >
       {title}
     </Typography>
-    <div className="rounded-[26px] overflow-hidden" style={{ backgroundColor: "#F9F3E1" }}>
+    <div className="rounded-300 overflow-hidden" style={{ backgroundColor: "#F9F3E1" }}>
       {children}
     </div>
   </section>
@@ -133,7 +133,7 @@ const SettingsPage = () => {
         </header>
 
         {loading ? (
-          <div className="h-40 rounded-[26px] animate-pulse" style={{ backgroundColor: "#F2ECE3" }} />
+          <div className="h-40 rounded-300 animate-pulse" style={{ backgroundColor: "#F2ECE3" }} />
         ) : (
           <>
             {/* Avatar */}
@@ -141,7 +141,7 @@ const SettingsPage = () => {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="relative w-24 h-24 rounded-[38%] overflow-hidden flex items-center justify-center"
+                className="relative w-24 h-24 rounded-avatar overflow-hidden flex items-center justify-center"
                 style={{
                   backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1",
                   border: profile.avatar_url ? "none" : "1px dashed hsl(var(--color-accent-terra))",

@@ -1,7 +1,7 @@
 const shimmer = "animate-pulse";
 
 export const CircleCardSkeleton = () => (
-  <div className={`w-full rounded-[26px] p-5 flex gap-4 bg-butter-100 ${shimmer}`}>
+  <div className={`w-full rounded-300 p-5 flex gap-4 bg-butter-100 ${shimmer}`}>
     <div className="flex-1 space-y-2">
       <div className="h-3 w-24 rounded" style={{ backgroundColor: "#E8DDC6" }} />
       <div className="h-3 w-full rounded" style={{ backgroundColor: "#E8DDC6" }} />
@@ -18,7 +18,7 @@ export const CircleCardSkeleton = () => (
 
 export const MeetingCardSkeleton = () => (
   <div
-    className={`w-[176px] flex-shrink-0 h-[184px] rounded-[26px] p-4 flex flex-col justify-between bg-linen ${shimmer}`}
+    className={`w-[176px] flex-shrink-0 h-[184px] rounded-300 p-4 flex flex-col justify-between bg-linen ${shimmer}`}
   >
 
     <div className="space-y-2">
@@ -35,7 +35,7 @@ export const MeetingCardSkeleton = () => (
 
 export const TipTileSkeleton = ({ size = "lg" }: { size?: "sm" | "lg" }) => (
   <div
-    className={`${size === "lg" ? "w-[150px] h-[210px]" : "w-[110px] h-[130px]"} flex-shrink-0 rounded-[26px] ${shimmer}`}
+    className={`${size === "lg" ? "w-[150px] h-[210px]" : "w-[110px] h-[130px]"} flex-shrink-0 rounded-300 ${shimmer}`}
     style={{ backgroundColor: "#E8DDC6" }}
   />
 );

@@ -85,7 +85,7 @@ const ProfileNudge = () => {
 
   return (
     <section className="mt-4 px-4">
-      <div className="rounded-[26px] p-5" style={{ backgroundColor: "#EDE5F0" }}>
+      <div className="rounded-300 p-5" style={{ backgroundColor: "#EDE5F0" }}>
         {step === "name" && (
           <>
             <Typography variant="meta" as="div" className="mb-2 uppercase" style={{ color: "#5A4A66" }}>

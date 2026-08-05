@@ -274,7 +274,7 @@ const ChatPage = () => {
         </header>
 
         {summaryOpen && (
-          <div className="mx-4 mt-3 rounded-[20px] p-4 relative" style={{ backgroundColor: "#561828", color: "#F0EAE2" }}>
+          <div className="mx-4 mt-3 rounded-200 p-4 relative" style={{ backgroundColor: "#561828", color: "#F0EAE2" }}>
             <button onClick={() => setSummaryOpen(false)} className="absolute top-2 right-2 p-1 opacity-80" aria-label="Stäng">
               <X className="w-4 h-4" />
             </button>
@@ -324,7 +324,7 @@ const ChatPage = () => {
                     <div key={m.id} className="flex items-end gap-2">
                       {!mine && Avatar}
                       <div
-                        className="max-w-[78%] rounded-[20px] p-4"
+                        className="max-w-[78%] rounded-200 p-4"
                         style={{ backgroundColor: "#F5EFD9" }}
                       >
                         <Typography variant="meta" as="div" className="mb-1 uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>
@@ -368,7 +368,7 @@ const ChatPage = () => {
                   return (
                     <div key={m.id} className={`flex items-end gap-2 ${mine ? "justify-end" : ""}`}>
                       {!mine && Avatar}
-                      <div className="max-w-[70%] rounded-[20px] overflow-hidden" style={{ backgroundColor: "#EDE4D3" }}>
+                      <div className="max-w-[70%] rounded-200 overflow-hidden" style={{ backgroundColor: "#EDE4D3" }}>
                         {m.image_url ? (
                           <img src={m.image_url} alt="" className="block w-full h-auto" />
                         ) : (
@@ -385,7 +385,7 @@ const ChatPage = () => {
                   <div key={m.id} className={`flex items-end gap-2 ${mine ? "justify-end" : ""}`}>
                     {!mine && Avatar}
                     <div
-                      className="max-w-[78%] px-4 py-3 rounded-[20px]"
+                      className="max-w-[78%] px-4 py-3 rounded-200"
                       style={{
                         backgroundColor: mine ? "#561828" : "#EFEAE0",
                         color: mine ? "#F0EAE2" : "hsl(var(--color-text-primary))",
@@ -413,7 +413,7 @@ const ChatPage = () => {
         {/* Composer */}
         <div className="px-4 pt-3 pb-safe" style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}>
           {showMeetingForm && (
-            <div className="mb-3 rounded-[20px] p-3 space-y-2" style={{ backgroundColor: "#F5EFD9" }}>
+            <div className="mb-3 rounded-200 p-3 space-y-2" style={{ backgroundColor: "#F5EFD9" }}>
               <Typography variant="meta" as="div" className="uppercase" style={{ color: "hsl(var(--color-text-tertiary))" }}>Föreslå en träff</Typography>
               <input
                 autoFocus
@@ -437,7 +437,7 @@ const ChatPage = () => {
             </div>
           )}
           <div
-            className="flex items-center gap-2 rounded-[20px] px-4 py-2"
+            className="flex items-center gap-2 rounded-200 px-4 py-2"
             style={{ backgroundColor: "#FAF6EE", border: "1px solid rgba(0,0,0,0.12)" }}
           >
             <input

@@ -15,7 +15,7 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onO
   return (
     <button
       onClick={onOpen}
-      className="w-[176px] flex-shrink-0 h-[184px] text-left rounded-[26px] p-4 flex flex-col justify-between bg-linen"
+      className="w-[176px] flex-shrink-0 h-[184px] text-left rounded-300 p-4 flex flex-col justify-between bg-linen"
     >
 
       <div>

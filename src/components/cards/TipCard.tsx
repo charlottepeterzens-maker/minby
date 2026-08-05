@@ -31,7 +31,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
     <button
       type="button"
       onClick={onOpen}
-      className="w-full text-left rounded-[26px] overflow-hidden flex gap-4 h-[134px] bg-olive-100"
+      className="w-full text-left rounded-300 overflow-hidden flex gap-4 h-[134px] bg-olive-100"
     >
 
       <div
@@ -56,7 +56,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
           <div
             className={cn(
               typography.eyebrow,
-              "w-6 h-6 rounded-[38%] overflow-hidden flex items-center justify-center",
+              "w-6 h-6 rounded-avatar overflow-hidden flex items-center justify-center",
             )}
             style={{ backgroundColor: "#DCEAF8", color: "#561828" }}
           >

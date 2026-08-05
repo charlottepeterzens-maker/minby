@@ -260,7 +260,7 @@ const HomePage = () => {
         {/* Profile header — avatar and greeting only */}
         <section className="flex items-center gap-4 mb-12">
           <div
-            className="w-14 h-14 rounded-[38%] overflow-hidden flex items-center justify-center flex-shrink-0"
+            className="w-14 h-14 rounded-avatar overflow-hidden flex items-center justify-center flex-shrink-0"
             style={{ backgroundColor: profile.avatar_url ? "transparent" : "#F9F3E1", color: "#561828" }}
           >
             {profile.avatar_url ? (
@@ -373,7 +373,7 @@ const HomePage = () => {
             <Typography as="p" variant="body" className="text-muted-foreground">
               Ge din krets ett namn. Du kan bjuda in dina närmaste direkt efteråt.
             </Typography>
-            <div className="rounded-[26px] p-4" style={{ backgroundColor: "#F9F3E1" }}>
+            <div className="rounded-300 p-4" style={{ backgroundColor: "#F9F3E1" }}>
               <input
                 autoFocus
                 value={newName}

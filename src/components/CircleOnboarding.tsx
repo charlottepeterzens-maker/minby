@@ -64,7 +64,7 @@ const CircleOnboarding = ({
   return (
     <section className="mt-6 px-4">
       <div
-        className="rounded-[28px] p-5"
+        className="rounded-300 p-5"
         style={{ backgroundColor: "#561828" }}
       >
         <div className="flex items-start justify-between mb-2">

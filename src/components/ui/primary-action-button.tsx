@@ -72,7 +72,7 @@ const PrimaryActionButton = ({
                     type="button"
                     onClick={() => handleSelect(a)}
                     disabled={a.disabled}
-                    className={cn(typography.body, "w-full text-left px-3 py-3 rounded-[16px] active:opacity-70 disabled:opacity-40")}
+                    className={cn(typography.body, "w-full text-left px-3 py-3 rounded-200 active:opacity-70 disabled:opacity-40")}
                     style={{ color: "hsl(var(--color-text-primary))" }}
                   >
                     {a.label}

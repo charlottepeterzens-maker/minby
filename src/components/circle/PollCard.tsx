@@ -40,7 +40,7 @@ const PollCard = ({ question, authorName, options, myVote, closed, closesAt, onV
       : "Omröstning";
 
   return (
-    <div className="rounded-[26px] p-4" style={{ backgroundColor: CARD_YELLOW }}>
+    <div className="rounded-300 p-4" style={{ backgroundColor: CARD_YELLOW }}>
       <Typography variant="label" as="div" className="mb-1" style={{ color: "hsl(var(--color-text-tertiary))" }}>
         {meta}
         {authorName ? ` · ${authorName}` : ""}

@@ -254,7 +254,7 @@ const ShareTipSheet = ({
             {(previewLoading || linkPreview?.image) && !imagePreview && (
               <div className="flex items-center gap-3 pt-1">
                 <div
-                  className="w-12 h-12 rounded-[12px] bg-cover bg-center flex-shrink-0"
+                  className="w-12 h-12 rounded-200 bg-cover bg-center flex-shrink-0"
                   style={{
                     backgroundImage: linkPreview?.image ? `url(${linkPreview.image})` : undefined,
                     backgroundColor: "#F2ECE3",
@@ -350,7 +350,7 @@ const ShareTipSheet = ({
             {imagePreview ? (
               <div className="flex items-center gap-3">
                 <div
-                  className="w-16 h-16 rounded-[16px] bg-cover bg-center flex-shrink-0"
+                  className="w-16 h-16 rounded-200 bg-cover bg-center flex-shrink-0"
                   style={{ backgroundImage: `url(${imagePreview})` }}
                 />
                 <div className="flex flex-col items-start gap-1">

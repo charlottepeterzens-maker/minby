@@ -49,7 +49,7 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
   return (
     <button
       onClick={onOpen}
-      className="w-full text-left rounded-[26px] p-5 flex gap-4 bg-butter-100"
+      className="w-full text-left rounded-300 p-5 flex gap-4 bg-butter-100"
     >
 
       <div className="flex-1 min-w-0">
@@ -86,7 +86,7 @@ const CircleCard = ({ circleId, name, onOpen }: Props) => {
         )}
         {extra > 0 && (
           <div
-            className={cn(typography.meta, "absolute bottom-0 right-2 w-10 h-10 rounded-[38%] flex items-center justify-center")}
+            className={cn(typography.meta, "absolute bottom-0 right-2 w-10 h-10 rounded-avatar flex items-center justify-center")}
             style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
           >
             +{extra}
@@ -105,7 +105,7 @@ const Avatar = ({ src, name, className }: { src: string | null; name: string | n
     .join("");
   return (
     <div
-      className={cn(typography.meta, "rounded-[38%] overflow-hidden flex items-center justify-center", className)}
+      className={cn(typography.meta, "rounded-avatar overflow-hidden flex items-center justify-center", className)}
       style={{ backgroundColor: "#DCEAF8", color: "#2B2B2B" }}
     >
       {src ? (
