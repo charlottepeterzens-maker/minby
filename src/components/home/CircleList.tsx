@@ -9,6 +9,7 @@ export interface CircleListItem {
   supporting: CircleHighlight[];
   remaining: number;
   members: CircleMemberPreview[];
+  activeMemberIds?: string[];
 }
 
 interface Props {
@@ -44,6 +45,7 @@ const CircleList = ({ circles, loading = false, emptyState, onOpen }: Props) => 
             supporting={c.supporting}
             remaining={c.remaining}
             members={c.members}
+            activeMemberIds={c.activeMemberIds}
             onOpen={() => onOpen(c.id)}
           />
         </li>
