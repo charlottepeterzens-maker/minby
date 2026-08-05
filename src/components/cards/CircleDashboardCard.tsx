@@ -99,7 +99,11 @@ const CircleDashboardCard = ({
   );
 };
 
-const Avatar = ({ member, className }: { member: CircleMemberPreview; className?: string }) => {
+const Avatar = ({
+  member,
+  active = false,
+  className,
+}: { member: CircleMemberPreview; active?: boolean; className?: string }) => {
   const initials = (member.display_name ?? "?")
     .split(" ")
     .slice(0, 2)
@@ -109,7 +113,8 @@ const Avatar = ({ member, className }: { member: CircleMemberPreview; className?
     <div
       className={cn(
         typography.meta,
-        "rounded-avatar overflow-hidden flex items-center justify-center bg-breeze-100 ring-2 ring-activity text-foreground",
+        "rounded-avatar overflow-hidden flex items-center justify-center bg-breeze-100 text-foreground",
+        active && "ring-2 ring-activity",
         className,
       )}
     >
