@@ -32,7 +32,7 @@ interface Props {
  * Calm by design: no badges, no counters, no urgency.
  */
 const CircleDashboardCard = ({ name, primary, supporting = [], remaining = 0, members, onOpen }: Props) => {
-  const visible = members.slice(0, 3);
+  const visible = members.slice(0, 5);
   const extra = Math.max(0, members.length - visible.length);
 
   return (
@@ -71,7 +71,7 @@ const CircleDashboardCard = ({ name, primary, supporting = [], remaining = 0, me
 
       <div className="flex-shrink-0 w-[104px] relative h-[112px]">
         {visible[0] && <Avatar member={visible[0]} className="absolute top-0 left-0 w-12 h-12" />}
-        {visible[1] && <Avatar member={visible[1]} className="absolute top-500 left-8 w-9 h-9" />}
+        {visible[1] && <Avatar member={visible[1]} className="absolute top-8 left-8 w-9 h-9" />}
         {visible[2] && !extra && <Avatar member={visible[2]} className="absolute top-100 right-0 w-14 h-14" />}
         {extra > 0 && (
           <div
