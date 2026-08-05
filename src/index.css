@@ -252,13 +252,46 @@
     font-family: var(--font-body);
   }
 
-  /* Minby typography scale — https://fonts.google.com/specimen/Outfit */
-  .text-heading-lg {
+  /* Minby typography scale — mirrors src/design-system/typography.ts.
+     Do not hardcode sizes/weights in components; use <Typography /> or the
+     `typography` class map. */
+  .text-display {
     font-size: 24px;
     line-height: 1;
     letter-spacing: 0;
-    font-weight: 500;
+    font-weight: 400;
   }
+  .text-heading {
+    font-size: 18px;
+    line-height: 1.1;
+    letter-spacing: 0;
+    font-weight: 600;
+  }
+  .text-section {
+    font-size: 18px;
+    line-height: 1;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+  .text-body {
+    font-size: 14px;
+    line-height: 1.2;
+    letter-spacing: 0;
+    font-weight: 400;
+  }
+  .text-meta {
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+  }
+  .text-action {
+    font-size: 14px;
+    line-height: 1;
+    letter-spacing: 0;
+    font-weight: 600;
+  }
+
   .text-heading-md {
     font-size: 18px;
     line-height: 1;
