@@ -78,12 +78,14 @@ const HomePage = () => {
         { data: messageRows },
         { data: photoVis },
         { data: tipVis },
+        { data: pollRows },
       ] = await Promise.all([
         supabase.from("circle_members").select("circle_id, user_id"),
         supabase.from("meetings").select("id, title, meeting_date, circle_id, created_by, created_at"),
         supabase.from("messages").select("circle_id, created_at, user_id").order("created_at", { ascending: false }).limit(300),
         supabase.from("photo_visibility").select("circle_id, photos(id, caption, created_at, owner_id)"),
         supabase.from("tip_visibility").select("circle_id, tips(id, title, created_at, owner_id)"),
+        supabase.from("polls").select("id, question, circle_id, created_by, created_at, closed"),
       ]);
 
       // Member avatars per circle
@@ -92,6 +94,8 @@ const HomePage = () => {
         ? await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", memberIds)
         : { data: [] as CircleMemberPreview[] };
       const profById = new Map((profs ?? []).map((pr) => [pr.user_id, pr as CircleMemberPreview]));
+      const firstNameOf = (id: string | null | undefined) =>
+        (profById.get(id ?? "")?.display_name ?? "").trim().split(" ")[0] || "Någon";
 
       const today = new Date().toISOString().slice(0, 10);
 
@@ -101,51 +105,95 @@ const HomePage = () => {
           .map((m) => profById.get(m.user_id))
           .filter(Boolean) as CircleMemberPreview[];
 
-        const highlights: CircleHighlight[] = [];
-        let last = 0;
-        const touch = (iso?: string | null) => {
-          if (!iso) return;
-          const t = new Date(iso).getTime();
-          if (t > last) last = t;
-        };
+        /**
+         * Events are concrete and human. `weight` decides what becomes the
+         * primary line — the thing most likely to make someone open the circle.
+         */
+        type Event = { primaryText: string; shortText: string; ts: number; weight: number };
+        const events: Event[] = [];
+        const at = (iso?: string | null) => (iso ? new Date(iso).getTime() : 0);
 
-        // 1. Upcoming meeting
+        // Upcoming meeting — the strongest reason to open a circle
         const upcoming = (meetingRows ?? [])
           .filter((m) => m.circle_id === c.id && m.meeting_date && m.meeting_date >= today)
           .sort((a, b) => (a.meeting_date! < b.meeting_date! ? -1 : 1))[0];
         if (upcoming) {
-          highlights.push({ text: `${formatMeetingDate(upcoming.meeting_date)} · ${upcoming.title}` });
-          touch(upcoming.created_at);
+          events.push({
+            primaryText: upcoming.title,
+            shortText: `${formatMeetingDate(upcoming.meeting_date)} · ${upcoming.title}`,
+            ts: at(upcoming.created_at),
+            weight: 4,
+          });
         }
 
-        // 2. New update (photo)
-        const photos = (photoVis ?? [])
-          .filter((pv: any) => pv.circle_id === c.id && pv.photos)
-          .map((pv: any) => pv.photos)
-          .sort((a: any, b: any) => (a.created_at < b.created_at ? 1 : -1));
-        if (photos.length) {
-          highlights.push({ text: photos.length === 1 ? "En ny uppdatering" : `${photos.length} nya uppdateringar` });
-          touch(photos[0].created_at);
+        // Open poll
+        const poll = (pollRows ?? [])
+          .filter((p: any) => p.circle_id === c.id && !p.closed)
+          .sort((a: any, b: any) => (a.created_at < b.created_at ? 1 : -1))[0];
+        if (poll) {
+          events.push({
+            primaryText: `${firstNameOf(poll.created_by)} skapade en omröstning`,
+            shortText: "Svara på en omröstning",
+            ts: at(poll.created_at),
+            weight: 3,
+          });
         }
 
-        // 3. New tip
+        // Tips
         const tips = (tipVis ?? [])
           .filter((tv: any) => tv.circle_id === c.id && tv.tips)
           .map((tv: any) => tv.tips)
           .sort((a: any, b: any) => (a.created_at < b.created_at ? 1 : -1));
         if (tips.length) {
-          highlights.push({ text: `Nytt tips: ${tips[0].title}` });
-          touch(tips[0].created_at);
+          events.push({
+            primaryText: `${firstNameOf(tips[0].owner_id)} delade ett tips`,
+            shortText: tips.length === 1 ? "Läs ett nytt tips" : `Läs ${countWord(tips.length)} nya tips`,
+            ts: at(tips[0].created_at),
+            weight: 2,
+          });
         }
 
-        // 4. Messages
+        // Photos
+        const photos = (photoVis ?? [])
+          .filter((pv: any) => pv.circle_id === c.id && pv.photos)
+          .map((pv: any) => pv.photos)
+          .sort((a: any, b: any) => (a.created_at < b.created_at ? 1 : -1));
+        if (photos.length) {
+          events.push({
+            primaryText:
+              photos.length === 1
+                ? `${firstNameOf(photos[0].owner_id)} delade ett foto`
+                : `${firstNameOf(photos[0].owner_id)} delade ${countWord(photos.length)} foton`,
+            shortText: photos.length === 1 ? "Se ett nytt foto" : `Se ${countWord(photos.length)} nya foton`,
+            ts: at(photos[0].created_at),
+            weight: 2,
+          });
+        }
+
+        // Chat
         const msgs = (messageRows ?? []).filter((m) => m.circle_id === c.id);
         if (msgs.length) {
-          highlights.push({ text: msgs.length === 1 ? "Ett nytt meddelande" : `${msgs.length} nya meddelanden` });
-          touch(msgs[0].created_at);
+          events.push({
+            primaryText: `${firstNameOf(msgs[0].user_id)} skrev i chatten`,
+            shortText: msgs.length === 1 ? "Läs ett nytt meddelande" : "Läs vad som sagts i chatten",
+            ts: at(msgs[0].created_at),
+            weight: 1,
+          });
         }
 
-        return { ...c, members, highlights: highlights.slice(0, 3), lastActivity: last };
+        const last = events.reduce((m, e) => Math.max(m, e.ts), 0);
+        const ordered = [...events].sort((a, b) => b.weight - a.weight || b.ts - a.ts);
+        const head = ordered[0];
+        const rest = ordered.slice(1);
+
+        return {
+          ...c,
+          members,
+          primary: head ? { text: head.primaryText } : null,
+          supporting: rest.slice(0, 2).map((e) => ({ text: e.shortText })),
+          remaining: Math.max(0, rest.length - 2),
+          lastActivity: last,
+        };
       });
 
       views.sort((a, b) => b.lastActivity - a.lastActivity);
