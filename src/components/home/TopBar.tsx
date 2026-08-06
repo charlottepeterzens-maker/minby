@@ -19,7 +19,7 @@ const TopBar = ({ question, hidden = false }: Props) => (
       hidden ? "max-h-0 opacity-0" : "max-h-40 opacity-100",
     )}
   >
-    <Typography as="h1" variant="display" className="pt-300 pb-100 pr-500 text-foreground">
+    <Typography as="h1" variant="heading" className="pt-300 pb-100 pr-500 text-foreground">
       {question}
     </Typography>
   </div>
