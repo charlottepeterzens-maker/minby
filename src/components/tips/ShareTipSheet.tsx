@@ -1,13 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
+
 import { Sheet } from "@/components/ui/sheet";
-import { BottomSheetBody, BottomSheetContent, BottomSheetFooter, BottomSheetHeader } from "@/components/ui/bottom-sheet";
+import {
+  BottomSheetBody,
+  BottomSheetContent,
+  BottomSheetFooter,
+  BottomSheetHeader,
+} from "@/components/ui/bottom-sheet";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import TextButton from "@/components/ui/text-button";
-import CircleSelector, { type CircleOption } from "@/components/ui/circle-selector";
-import { cn } from "@/lib/utils";
 import Typography from "@/components/ui/typography";
+import CircleSelector, {
+  type CircleOption,
+} from "@/components/ui/circle-selector";
+
+import { colors, radius, spacing } from "@/design-system";
+import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -20,6 +30,7 @@ export const TIP_CATEGORIES = [
   "Njuta",
   "Shoppa",
 ] as const;
+
 export type TipCategory = (typeof TIP_CATEGORIES)[number];
 
 export interface CreatedTip {
@@ -27,7 +38,7 @@ export interface CreatedTip {
   title: string;
   url: string | null;
   comment: string | null;
-  category: string | null;
+  category: TipCategory | null;
   image_path: string | null;
   image_url: string | null;
   created_at: string;
@@ -40,15 +51,10 @@ interface Props {
   userId: string;
   circles: CircleOption[];
   defaultCircleIds?: string[];
-  /** Storage prefix for uploaded images. Falls back to first selected circle. */
   storagePrefix?: string;
   onCreated: (tip: CreatedTip) => void;
 }
 
-/**
- * Share Tip — layered bottom sheet. Opened from the Tips list.
- * Fixed height (~85dvh), sticky header + footer, only the body scrolls.
- */
 const ShareTipSheet = ({
   open,
   onOpenChange,
@@ -63,13 +69,18 @@ const ShareTipSheet = ({
   const [category, setCategory] = useState<TipCategory | null>(null);
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [comment, setComment] = useState("");
-  const [selectedCircles, setSelectedCircles] = useState<string[]>(defaultCircleIds);
+  const [selectedCircles, setSelectedCircles] =
+    useState<string[]>(defaultCircleIds);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [titleTouched, setTitleTouched] = useState(false);
-  const [linkPreview, setLinkPreview] = useState<{ url: string; image: string | null } | null>(null);
+  const [linkPreview, setLinkPreview] = useState<{
+    url: string;
+    image: string | null;
+  } | null>(null);
   const [previewLoading, setPreviewLoading] = useState(false);
+
   const fileRef = useRef<HTMLInputElement>(null);
   const previewSeq = useRef(0);
 
@@ -82,81 +93,142 @@ const ShareTipSheet = ({
     setComment("");
     setSelectedCircles(defaultCircleIds);
     setImageFile(null);
-    if (imagePreview) URL.revokeObjectURL(imagePreview);
+
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
     setImagePreview(null);
     setLinkPreview(null);
     setPreviewLoading(false);
   };
 
   useEffect(() => {
-    if (open) setSelectedCircles(defaultCircleIds);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open]);
+    if (open) {
+      setSelectedCircles(defaultCircleIds);
+    }
+  }, [open, defaultCircleIds]);
 
-  // Debounced link preview: autofill title, cache image for later upload
   useEffect(() => {
     const trimmed = url.trim();
-    if (!open || !trimmed || !/^https?:\/\/|^www\.|^[a-z0-9-]+\.[a-z]{2,}/i.test(trimmed)) {
+
+    if (
+      !open ||
+      !trimmed ||
+      !/^https?:\/\/|^www\.|^[a-z0-9-]+\.[a-z]{2,}/i.test(trimmed)
+    ) {
       setLinkPreview(null);
       return;
     }
-    if (linkPreview && linkPreview.url === trimmed) return;
+
+    if (linkPreview?.url === trimmed) {
+      return;
+    }
+
     const seq = ++previewSeq.current;
     setPreviewLoading(true);
-    const t = setTimeout(async () => {
+
+    const timer = setTimeout(async () => {
       try {
-        const { data } = await supabase.functions.invoke("fetch-link-preview", {
-          body: { url: trimmed },
-        });
+        const { data } = await supabase.functions.invoke(
+          "fetch-link-preview",
+          {
+            body: { url: trimmed },
+          },
+        );
+
         if (seq !== previewSeq.current) return;
+
         const previewTitle: string | null = data?.title ?? null;
         const previewImage: string | null = data?.image ?? null;
-        setLinkPreview({ url: trimmed, image: previewImage });
+
+        setLinkPreview({
+          url: trimmed,
+          image: previewImage,
+        });
+
         if (previewTitle && !titleTouched && !title.trim()) {
           setTitle(previewTitle);
         }
       } catch {
-        if (seq === previewSeq.current) setLinkPreview({ url: trimmed, image: null });
+        if (seq === previewSeq.current) {
+          setLinkPreview({
+            url: trimmed,
+            image: null,
+          });
+        }
       } finally {
-        if (seq === previewSeq.current) setPreviewLoading(false);
+        if (seq === previewSeq.current) {
+          setPreviewLoading(false);
+        }
       }
     }, 500);
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url, open]);
 
-  const canSubmit = title.trim().length > 0 && selectedCircles.length > 0 && !saving;
+    return () => clearTimeout(timer);
+  }, [url, open, linkPreview, titleTouched, title]);
 
-  const handleFile = (f: File) => {
-    setImageFile(f);
-    if (imagePreview) URL.revokeObjectURL(imagePreview);
-    setImagePreview(URL.createObjectURL(f));
+  const canSubmit =
+    title.trim().length > 0 &&
+    selectedCircles.length > 0 &&
+    !saving;
+
+  const handleFile = (file: File) => {
+    setImageFile(file);
+
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    setImagePreview(URL.createObjectURL(file));
   };
 
   const submit = async () => {
     if (!canSubmit) return;
+
     setSaving(true);
-    const bucketPrefix = storagePrefix ?? selectedCircles[0];
+
+    const bucketPrefix =
+      storagePrefix ?? selectedCircles[0];
+
     let imagePath: string | null = null;
     const trimmedUrl = url.trim();
 
     try {
       if (imageFile) {
-        const ext = imageFile.name.split(".").pop() || "jpg";
-        const path = `${bucketPrefix}/tips/${userId}/${crypto.randomUUID()}.${ext}`;
+        const ext =
+          imageFile.name.split(".").pop() || "jpg";
+
+        const path =
+          `${bucketPrefix}/tips/${userId}/${crypto.randomUUID()}.${ext}`;
+
         const { error } = await supabase.storage
           .from("circle-photos")
-          .upload(path, imageFile, { contentType: imageFile.type });
+          .upload(path, imageFile, {
+            contentType: imageFile.type,
+          });
+
         if (error) throw error;
+
         imagePath = path;
       } else if (trimmedUrl) {
         try {
-          const { data: preview } = await supabase.functions.invoke("fetch-link-preview", {
-            body: { url: trimmedUrl, uploadBucket: "circle-photos", uploadPrefix: `${bucketPrefix}/tips` },
-          });
-          if (preview?.storagePath) imagePath = preview.storagePath as string;
+          const { data: preview } =
+            await supabase.functions.invoke(
+              "fetch-link-preview",
+              {
+                body: {
+                  url: trimmedUrl,
+                  uploadBucket: "circle-photos",
+                  uploadPrefix: `${bucketPrefix}/tips`,
+                },
+              },
+            );
+
+          if (preview?.storagePath) {
+            imagePath = preview.storagePath;
+          }
         } catch {
-          /* preview is best-effort */
+          // Link preview is best-effort.
         }
       }
 
@@ -170,21 +242,40 @@ const ShareTipSheet = ({
           category: category ?? null,
           image_path: imagePath,
         })
-        .select("id, title, url, comment, category, image_path, created_at")
+        .select(
+          "id, title, url, comment, category, image_path, created_at",
+        )
         .single();
-      if (error || !data) throw error ?? new Error("Kunde inte spara");
 
-      const { error: visErr } = await supabase
+      if (error || !data) {
+        throw error ?? new Error("Kunde inte spara");
+      }
+
+      const { error: visibilityError } = await supabase
         .from("tip_visibility")
-        .insert(selectedCircles.map((c) => ({ tip_id: data.id, circle_id: c })));
-      if (visErr) throw visErr;
+        .insert(
+          selectedCircles.map((circleId) => ({
+            tip_id: data.id,
+            circle_id: circleId,
+          })),
+        );
+
+      if (visibilityError) {
+        throw visibilityError;
+      }
 
       let signedUrl: string | null = null;
+
       if (data.image_path) {
-        const { data: s } = await supabase.storage
-          .from("circle-photos")
-          .createSignedUrl(data.image_path, 60 * 60);
-        signedUrl = s?.signedUrl ?? null;
+        const { data: signed } =
+          await supabase.storage
+            .from("circle-photos")
+            .createSignedUrl(
+              data.image_path,
+              60 * 60,
+            );
+
+        signedUrl = signed?.signedUrl ?? null;
       }
 
       onCreated({
@@ -192,17 +283,23 @@ const ShareTipSheet = ({
         title: data.title,
         url: data.url,
         comment: data.comment,
-        category: (data as any).category ?? null,
+        category: data.category as TipCategory | null,
         image_path: data.image_path,
         image_url: signedUrl,
         created_at: data.created_at,
         circle_ids: selectedCircles,
       });
+
       toast.success("Tipset är delat");
+
       reset();
       onOpenChange(false);
-    } catch (e: any) {
-      toast.error(e?.message ?? "Kunde inte dela tipset");
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Kunde inte dela tipset",
+      );
     } finally {
       setSaving(false);
     }
@@ -211,105 +308,144 @@ const ShareTipSheet = ({
   return (
     <Sheet
       open={open}
-      onOpenChange={(o) => {
-        onOpenChange(o);
-        if (!o) reset();
+      onOpenChange={(nextOpen) => {
+        onOpenChange(nextOpen);
+
+        if (!nextOpen) {
+          reset();
+        }
       }}
     >
       <BottomSheetContent>
         <BottomSheetHeader title="Dela ett tips" />
 
-        {/* Scrollable body */}
-        <BottomSheetBody className="px-5 pt-300 pb-400 space-y-5">
-          {/* Titel */}
+        <BottomSheetBody
+          className={cn(
+            "px-300 pt-300 pb-400",
+            "space-y-400",
+          )}
+        >
           <div className="space-y-200">
-            <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            <Typography
+              variant="meta"
+              as="div"
+              style={{
+                color: colors.text.secondary,
+              }}
+            >
               Titel
             </Typography>
+
             <Input
               value={title}
-              onChange={(e) => {
-                setTitle(e.target.value);
+              onChange={(event) => {
+                setTitle(event.target.value);
                 setTitleTouched(true);
               }}
               placeholder="Namnge ditt tips"
-              className="h-11 rounded-lg"
+              style={{
+                borderRadius: radius[100],
+                height: "44px",
+              }}
             />
           </div>
 
-          {/* Länk */}
           <div className="space-y-200">
-            <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            <Typography
+              variant="meta"
+              as="div"
+              style={{
+                color: colors.text.secondary,
+              }}
+            >
               Länk
             </Typography>
+
             <Input
               value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://…"
-              inputMode="url"
-              autoCapitalize="none"
-              autoCorrect="off"
-              className="h-11 rounded-lg"
+              onChange={(event) => setUrl(event.target.value)}
+              placeholder="https://..."
+              type="url"
             />
-            {(previewLoading || linkPreview?.image) && !imagePreview && (
-              <div className="flex items-center gap-3 pt-100">
-                <div
-                  className="w-12 h-12 rounded-200 bg-cover bg-center flex-shrink-0"
-                  style={{
-                    backgroundImage: linkPreview?.image ? `url(${linkPreview.image})` : undefined,
-                    backgroundColor: "#F2ECE3",
-                  }}
-                />
-                <Typography variant="meta" as="span" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-                  {previewLoading ? "Hämtar förhandsvisning…" : "Bild hämtad från länken"}
-                </Typography>
-              </div>
-            )}
           </div>
 
-          {/* Kategori */}
           <div className="space-y-200">
-            <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            <Typography
+              variant="meta"
+              as="div"
+              style={{
+                color: colors.text.secondary,
+              }}
+            >
               Kategori
             </Typography>
+
             <button
               type="button"
-              onClick={() => setCategoryOpen((v) => !v)}
-              aria-expanded={categoryOpen}
-              className="w-full flex items-center justify-between py-3 text-left"
+              onClick={() =>
+                setCategoryOpen((current) => !current)
+              }
+              className="flex w-full items-center justify-between text-left"
+              style={{
+                minHeight: spacing[400],
+              }}
             >
-              <Typography variant="body" as="span" style={{ color: "hsl(var(--color-text-primary))" }}>
+              <Typography variant="body" as="span">
                 {category ?? "Välj kategori"}
               </Typography>
+
               <ChevronDown
-                className={cn("w-4 h-4 transition-transform", categoryOpen && "rotate-180")}
-                style={{ color: "hsl(var(--color-text-tertiary))" }}
+                size={16}
+                className={cn(
+                  "transition-transform",
+                  categoryOpen && "rotate-180",
+                )}
+                style={{
+                  color: colors.text.secondary,
+                }}
+                aria-hidden="true"
               />
             </button>
+
             {categoryOpen && (
               <div className="space-y-100 pb-100">
-                {TIP_CATEGORIES.map((c) => {
-                  const active = category === c;
+                {TIP_CATEGORIES.map((item) => {
+                  const active = category === item;
+
                   return (
                     <button
-                      key={c}
+                      key={item}
                       type="button"
                       onClick={() => {
-                        setCategory(c);
+                        setCategory(item);
                         setCategoryOpen(false);
                       }}
-                      className="w-full flex items-center gap-3 py-200.5 text-left"
+                      className="flex w-full items-center gap-200 py-200 text-left"
                     >
                       <span
-                        className="w-5 h-5 rounded-full flex-shrink-0"
+                        aria-hidden="true"
                         style={{
-                          backgroundColor: active ? "#561828" : "transparent",
-                          border: active ? "5px solid #561828" : "1.5px solid #DDD2BF",
-                          boxShadow: active ? "inset 0 0 0 2px #fff" : "none",
+                          width: "20px",
+                          height: "20px",
+                          flexShrink: 0,
+                          borderRadius: radius.full,
+                          backgroundColor: active
+                            ? colors.berry[300]
+                            : "transparent",
+                          border: active
+                            ? `5px solid ${colors.berry[300]}`
+                            : `1px solid ${colors.neutral.linen}`,
+                          boxShadow: active
+                            ? `inset 0 0 0 2px ${colors.neutral.white}`
+                            : "none",
                         }}
                       />
-                      <Typography variant="body" as="span" style={{ color: "hsl(var(--color-text-primary))" }}>
-                        {c}
+
+                      <Typography
+                        variant="body"
+                        as="span"
+                      >
+                        {item}
                       </Typography>
                     </button>
                   );
@@ -318,48 +454,90 @@ const ShareTipSheet = ({
             )}
           </div>
 
-          {/* Kommentar */}
           <div className="space-y-200">
-            <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            <Typography
+              variant="meta"
+              as="div"
+              style={{
+                color: colors.text.secondary,
+              }}
+            >
               Kommentar
             </Typography>
+
             <Textarea
               value={comment}
-              onChange={(e) => setComment(e.target.value)}
+              onChange={(event) =>
+                setComment(event.target.value)
+              }
               placeholder="Berätta varför du gillar det"
-              className="rounded-lg resize-none min-h-[120px]"
+              style={{
+                borderRadius: radius[100],
+                minHeight: "120px",
+                resize: "none",
+              }}
             />
           </div>
 
-          {/* Foto */}
           <div className="space-y-200">
-            <Typography variant="meta" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>
+            <Typography
+              variant="meta"
+              as="div"
+              style={{
+                color: colors.text.secondary,
+              }}
+            >
               Foto
             </Typography>
+
             <input
               ref={fileRef}
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) handleFile(f);
-                e.target.value = "";
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+
+                if (file) {
+                  handleFile(file);
+                }
+
+                event.target.value = "";
               }}
             />
+
             {imagePreview ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-300">
                 <div
-                  className="w-16 h-16 rounded-200 bg-cover bg-center flex-shrink-0"
-                  style={{ backgroundImage: `url(${imagePreview})` }}
+                  style={{
+                    width: "64px",
+                    height: "64px",
+                    flexShrink: 0,
+                    borderRadius: radius[200],
+                    backgroundImage: `url(${imagePreview})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
                 />
+
                 <div className="flex flex-col items-start gap-100">
-                  <TextButton onClick={() => fileRef.current?.click()}>Byt foto</TextButton>
+                  <TextButton
+                    onClick={() =>
+                      fileRef.current?.click()
+                    }
+                  >
+                    Byt foto
+                  </TextButton>
+
                   <TextButton
                     variant="secondary"
                     onClick={() => {
                       setImageFile(null);
-                      if (imagePreview) URL.revokeObjectURL(imagePreview);
+
+                      if (imagePreview) {
+                        URL.revokeObjectURL(imagePreview);
+                      }
+
                       setImagePreview(null);
                     }}
                   >
@@ -368,11 +546,16 @@ const ShareTipSheet = ({
                 </div>
               </div>
             ) : (
-              <TextButton onClick={() => fileRef.current?.click()}>Lägg till foto</TextButton>
+              <TextButton
+                onClick={() =>
+                  fileRef.current?.click()
+                }
+              >
+                Lägg till foto
+              </TextButton>
             )}
           </div>
 
-          {/* Dela med */}
           <CircleSelector
             circles={circles}
             value={selectedCircles}
@@ -381,7 +564,10 @@ const ShareTipSheet = ({
         </BottomSheetBody>
 
         <BottomSheetFooter className="flex justify-end">
-          <TextButton onClick={submit} disabled={!canSubmit}>
+          <TextButton
+            onClick={submit}
+            disabled={!canSubmit}
+          >
             {saving ? "Delar…" : "Dela tips"}
           </TextButton>
         </BottomSheetFooter>
