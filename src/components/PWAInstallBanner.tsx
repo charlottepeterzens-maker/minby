@@ -1,14 +1,20 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+
 import TextButton from "@/components/ui/text-button";
-import { typography } from "@/design-system/typography";
-import { cn } from "@/lib/utils";
+import { colors, radius, spacing, typography } from "@/design-system";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+  userChoice: Promise<{
+    outcome: "accepted" | "dismissed";
+  }>;
 }
+
+type NavigatorWithStandalone = Navigator & {
+  standalone?: boolean;
+};
 
 const DISMISS_KEY = "pwa-install-dismissed";
 const SHOW_COUNT_KEY = "pwa-install-show-count";
@@ -26,7 +32,9 @@ const PWAInstallBanner = () => {
   useEffect(() => {
     if (localStorage.getItem(DISMISS_KEY)) return;
 
-    const shownCount = Number(localStorage.getItem(SHOW_COUNT_KEY) ?? 0);
+    const shownCount = Number(
+      localStorage.getItem(SHOW_COUNT_KEY) ?? 0
+    );
 
     if (shownCount >= MAX_SHOWS) {
       localStorage.setItem(DISMISS_KEY, "true");
@@ -35,20 +43,24 @@ const PWAInstallBanner = () => {
 
     const standalone =
       window.matchMedia("(display-mode: standalone)").matches ||
-      (navigator as any).standalone;
+      Boolean(
+        (navigator as NavigatorWithStandalone).standalone
+      );
 
     if (standalone) return;
 
-    const beforeInstall = (event: Event) => {
+    const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
       setDeferredPrompt(event as BeforeInstallPromptEvent);
     };
 
-    window.addEventListener("beforeinstallprompt", beforeInstall);
+    window.addEventListener(
+      "beforeinstallprompt",
+      handleBeforeInstallPrompt
+    );
 
-    const timer = setTimeout(() => {
+    const timer = window.setTimeout(() => {
       setIsIOS(/iphone|ipad|ipod/i.test(navigator.userAgent));
-
       setShow(true);
 
       localStorage.setItem(
@@ -58,10 +70,11 @@ const PWAInstallBanner = () => {
     }, DELAY_MS);
 
     return () => {
-      clearTimeout(timer);
+      window.clearTimeout(timer);
+
       window.removeEventListener(
         "beforeinstallprompt",
-        beforeInstall
+        handleBeforeInstallPrompt
       );
     };
   }, []);
@@ -69,6 +82,7 @@ const PWAInstallBanner = () => {
   const dismiss = () => {
     localStorage.setItem(DISMISS_KEY, "true");
     setShow(false);
+    setShowGuide(false);
   };
 
   const handleInstall = async () => {
@@ -91,58 +105,119 @@ const PWAInstallBanner = () => {
   };
 
   return (
-    <>
-      <AnimatePresence>
-        {show && (
-          <motion.section
-            initial={{ y: 40, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 40, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed bottom-32 inset-x-4 z-50"
+    <AnimatePresence>
+      {show && (
+        <motion.section
+          initial={{ y: spacing[400], opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: spacing[400], opacity: 0 }}
+          transition={{ duration: 0.25 }}
+          style={{
+            position: "fixed",
+            left: spacing[300],
+            right: spacing[300],
+            bottom: spacing[500],
+            zIndex: 50,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: colors.berry[300],
+              borderRadius: radius[300],
+              padding: spacing[300],
+            }}
           >
-            <div className="rounded-card bg-burgundy p-5 shadow-soft">
-
-              <div className="flex items-start justify-between mb-2">
-
-                <span className={cn(typography.meta, "text-accent-primary")}>
-                  Tips
-                </span>
-
-                <button
-                  onClick={dismiss}
-                  aria-label="Stäng"
-                  className="flex h-8 w-8 items-center justify-center rounded-full hover:opacity-70 transition-opacity"
-                >
-                  <X
-                    size={20}
-                    className="text-white"
-                  />
-                </button>
-
-              </div>
-
-              <h3 className="text-heading-md text-white mb-2">
-                Ha Minby nära till hands
-              </h3>
-
-              <p className="text-body text-surface-card-primary mb-5">
-                Lägg Minby på hemskärmen så öppnas appen direkt,
-                precis som vilken annan app som helst.
-              </p>
-
-              <TextButton
-                onClick={handleInstall}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                gap: spacing[200],
+                marginBottom: spacing[200],
+              }}
+            >
+              <span
+                className={typography.meta.className}
+                style={{
+                  color: colors.berry[100],
+                }}
               >
-                Lägg till på hemskärmen
-              </TextButton>
+                Tips
+              </span>
 
+              <button
+                type="button"
+                onClick={dismiss}
+                aria-label="Stäng"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: spacing[400],
+                  height: spacing[400],
+                  padding: 0,
+                  border: 0,
+                  background: "transparent",
+                  color: colors.text.inverse,
+                  cursor: "pointer",
+                }}
+              >
+                <X size={20} aria-hidden="true" />
+              </button>
             </div>
-          </motion.section>
-        )}
-      </AnimatePresence>
 
-    </>
+            <h3
+              className={typography.heading.className}
+              style={{
+                color: colors.text.inverse,
+                margin: 0,
+                marginBottom: spacing[200],
+              }}
+            >
+              Ha Minby nära till hands
+            </h3>
+
+            {!showGuide ? (
+              <>
+                <p
+                  className={typography.body.className}
+                  style={{
+                    color: colors.text.inverse,
+                    margin: 0,
+                    marginBottom: spacing[300],
+                  }}
+                >
+                  Lägg Minby på hemskärmen så öppnas appen
+                  direkt, precis som vilken annan app som helst.
+                </p>
+
+                <TextButton onClick={handleInstall}>
+                  Lägg till på hemskärmen
+                </TextButton>
+              </>
+            ) : (
+              <>
+                <p
+                  className={typography.body.className}
+                  style={{
+                    color: colors.text.inverse,
+                    margin: 0,
+                    marginBottom: spacing[300],
+                  }}
+                >
+                  Tryck på dela-knappen i Safari och välj
+                  ”Lägg till på hemskärmen”.
+                </p>
+
+                <TextButton onClick={dismiss}>
+                  Jag förstår
+                </TextButton>
+              </>
+            )}
+          </div>
+        </motion.section>
+      )}
+    </AnimatePresence>
   );
 };
 
