@@ -1,6 +1,9 @@
-import { Bell, CalendarCheck, Archive, SlidersHorizontal, MessageSquareHeart, HandHeart, type LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
 import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { Typography } from "@/components/ui/typography";
+import Typography from "@/components/ui/typography";
+import { colors, radius, spacing } from "@/design-system";
+
 import type { ProfileSummary } from "./ProfileButton";
 
 export interface MyMenuItem {
@@ -21,35 +24,75 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   profile: ProfileSummary;
-  /** e.g. "Du umgås i 12 kretsar, med 51 personer" */
   subtitle?: string;
   groups: MyMenuGroup[];
 }
 
-/** A single, reusable menu row. */
-const MenuRow = ({ item, onDone }: { item: MyMenuItem; onDone: () => void }) => {
+const MenuRow = ({
+  item,
+  onDone,
+}: {
+  item: MyMenuItem;
+  onDone: () => void;
+}) => {
   const Icon = item.icon;
-  const color = item.accent ? "hsl(var(--color-accent-terra))" : "hsl(var(--color-text-tertiary))";
+  const color = item.accent
+    ? colors.berry[300]
+    : colors.text.ink;
+
+  const handleSelect = () => {
+    onDone();
+    item.onSelect();
+  };
+
   return (
     <li>
       <button
         type="button"
-        onClick={() => {
-          onDone();
-          item.onSelect();
+        onClick={handleSelect}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          width: "100%",
+          minHeight: spacing[400],
+          gap: spacing[200],
+          padding: 0,
+          border: 0,
+          background: "transparent",
+          color,
+          textAlign: "left",
+          cursor: "pointer",
         }}
-        className="w-full min-h-11 flex items-center gap-300 text-left"
       >
-        <Icon size={20} style={{ color }} className="flex-shrink-0" />
-        <Typography as="span" variant="section" className="flex-1" style={{ color }}>
+        <Icon
+          size={20}
+          aria-hidden="true"
+          style={{
+            flexShrink: 0,
+          }}
+        />
+
+        <Typography
+          as="span"
+          variant="section"
+          style={{
+            flex: 1,
+            color,
+          }}
+        >
           {item.label}
         </Typography>
+
         {item.badge && (
           <Typography
             as="span"
             variant="meta"
-            className="px-200 py-100 rounded-avatar"
-            style={{ backgroundColor: "hsl(var(--color-accent-terra))", color: "hsl(var(--background))" }}
+            style={{
+              padding: `${spacing[100]} ${spacing[200]}`,
+              borderRadius: radius.full,
+              backgroundColor: colors.activity,
+              color: colors.neutral.white,
+            }}
           >
             {item.badge}
           </Typography>
@@ -59,53 +102,142 @@ const MenuRow = ({ item, onDone }: { item: MyMenuItem; onDone: () => void }) => 
   );
 };
 
-/**
- * MyMenu — the user's own space. Slides in from the profile button.
- * Contains no business logic; every action is supplied by the caller.
- */
-const MyMenu = ({ open, onOpenChange, profile, subtitle, groups }: Props) => {
+const MyMenu = ({
+  open,
+  onOpenChange,
+  profile,
+  subtitle,
+  groups,
+}: Props) => {
   const close = () => onOpenChange(false);
+
   const initials = (profile.display_name ?? "?")
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
+    .map((word) => word[0]?.toUpperCase())
     .join("");
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-[86%] max-w-sm bg-background border-0 p-0">
-        <nav aria-label="Min meny" className="h-full overflow-y-auto px-400 pt-safe pb-safe flex flex-col justify-center gap-400">
-          <div className="flex items-center gap-300">
-            <div className="w-14 h-14 rounded-avatar overflow-hidden flex items-center justify-center bg-butter-100 flex-shrink-0">
+      <SheetContent
+        side="right"
+        style={{
+          padding: spacing[400],
+          backgroundColor: colors.neutral.egg,
+        }}
+      >
+        <nav
+          aria-label="Min meny"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: spacing[400],
+          }}
+        >
+          <header
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: spacing[200],
+            }}
+          >
+            <div
+              style={{
+                width: spacing[500],
+                height: spacing[500],
+                overflow: "hidden",
+                borderRadius: radius.avatar,
+                backgroundColor: colors.neutral.linen,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt={profile.display_name ?? "Min profilbild"} className="w-full h-full object-cover" />
+                <img
+                  src={profile.avatar_url}
+                  alt=""
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
               ) : (
-                <Typography as="span" variant="heading" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                <Typography
+                  as="span"
+                  variant="heading"
+                  style={{
+                    color: colors.text.ink,
+                  }}
+                >
                   {initials}
                 </Typography>
               )}
             </div>
-            <div className="min-w-0">
-              <Typography as="h2" variant="display" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: spacing[100],
+              }}
+            >
+              <Typography
+                as="h2"
+                variant="display"
+                style={{
+                  color: colors.text.ink,
+                  margin: 0,
+                }}
+              >
                 {profile.display_name ?? "Du"}
               </Typography>
+
               {subtitle && (
-                <Typography as="p" variant="body" className="mt-100" style={{ color: "hsl(var(--color-text-secondary))" }}>
+                <Typography
+                  as="p"
+                  variant="body"
+                  style={{
+                    color: colors.text.ink,
+                    margin: 0,
+                  }}
+                >
                   {subtitle}
                 </Typography>
               )}
             </div>
-          </div>
+          </header>
 
-          {groups.map((g) => (
-            <div key={g.id} className="pt-400 border-t border-border">
-              <ul className="space-y-200">
-                {g.items.map((item) => (
-                  <MenuRow key={item.id} item={item} onDone={close} />
+          {groups.map((group) => (
+            <section
+              key={group.id}
+              style={{
+                paddingTop: spacing[400],
+                borderTop: `1px solid ${colors.neutral.linen}`,
+              }}
+            >
+              <ul
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: spacing[200],
+                  margin: 0,
+                  padding: 0,
+                  listStyle: "none",
+                }}
+              >
+                {group.items.map((item) => (
+                  <MenuRow
+                    key={item.id}
+                    item={item}
+                    onDone={close}
+                  />
                 ))}
               </ul>
-            </div>
+            </section>
           ))}
         </nav>
       </SheetContent>
