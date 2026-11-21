@@ -2,7 +2,7 @@ import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 import { typography } from "@/design-system/typography";
 
-type Variant = "primary" | "secondary" | "primaryOnPhoto";
+type Variant = "primary" | "secondary" | "primaryOnPhoto" | "inverse";
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
@@ -19,6 +19,19 @@ const TextButton = forwardRef<HTMLButtonElement, Props>(
       typography.action,
       "inline-flex items-center justify-center gap-200 underline underline-offset-2 decoration-1 disabled:opacity-40 disabled:cursor-not-allowed",
     );
+
+    if (variant === "inverse") {
+      return (
+        <button
+          ref={ref}
+          {...rest}
+          className={cn(base, "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-inverse", className)}
+          style={{ color: "hsl(var(--text-inverse))", textDecorationColor: "currentColor", ...style }}
+        >
+          {children}
+        </button>
+      );
+    }
 
     if (variant === "primaryOnPhoto") {
       return (

@@ -149,6 +149,7 @@ const PWAInstallBanner = () => {
                 type="button"
                 onClick={dismiss}
                 aria-label="Stäng"
+                className="min-h-11 min-w-11 rounded-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-inverse"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -191,7 +192,7 @@ const PWAInstallBanner = () => {
                   direkt, precis som vilken annan app som helst.
                 </p>
 
-                <TextButton onClick={handleInstall}>
+                <TextButton variant="inverse" className="min-h-11" onClick={handleInstall}>
                   Lägg till på hemskärmen
                 </TextButton>
               </>
@@ -209,7 +210,7 @@ const PWAInstallBanner = () => {
                   ”Lägg till på hemskärmen”.
                 </p>
 
-                <TextButton onClick={dismiss}>
+                <TextButton variant="inverse" className="min-h-11" onClick={dismiss}>
                   Jag förstår
                 </TextButton>
               </>
