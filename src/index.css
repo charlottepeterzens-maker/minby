@@ -56,12 +56,13 @@
     --color-surface-sage: 44 65% 93%;      /* #F8F0D8 warm yellow */
     --color-text-primary: 20 10% 12%;      /* dark warm charcoal */
     --color-text-secondary: 20 6% 40%;     /* muted warm gray */
-    --color-text-muted: 20 5% 46%;
-    --color-text-faint: 20 4% 54%;
+    --color-text-muted: 20 6% 40%;       /* WCAG: 5.6:1 on background */
+    --color-text-faint: 20 5% 44%;       /* WCAG: 4.8:1 on background */
     --color-border-subtle: 39 25% 80%;     /* #DDD2BF — dividers only */
     --color-border-lavender: 206 45% 80%;  /* soft blue border */
     --color-accent-red: 0 55% 49%;         /* #A32D2D */
-    --color-accent-terra: 17 63% 48%;      /* #C85A2E */
+    --color-accent-terra: 17 63% 48%;      /* #C85A2E — graphics/underlines only (3:1) */
+    --color-accent-terra-text: 17 70% 38%; /* text-safe coral — WCAG 5.9:1 on background */
     --color-accent-secondary: 208 63% 91%; /* #DAEAF6 — secondary CTA */
     --color-text-tertiary: 39 34% 30%;     /* #675332 */
     --color-text-photo: 41 66% 28%;        /* #765D19 */
@@ -96,7 +97,7 @@
     /* Breeze */
     --breeze-100: 206 61% 91%;  /* #DAEAF6 */
     --breeze-200: 206 38% 72%;  /* #9CBBD3 */
-    --breeze-300: 205 25% 45%;  /* #55778F */
+    --breeze-300: 205 28% 36%;  /* WCAG: 5.4:1 on breeze-100 */
 
     /* Berry */
     --berry-100: 20 75% 92%;    /* #FAE6DC */
@@ -195,11 +196,12 @@
     --color-text-primary: 30 25% 92%;
     --color-text-secondary: 30 12% 72%;
     --color-text-muted: 30 10% 60%;
-    --color-text-faint: 30 8% 50%;
+    --color-text-faint: 30 10% 62%;      /* WCAG: 6.8:1 on dark background */
     --color-border-subtle: 24 8% 20%;
     --color-border-lavender: 206 25% 35%;
     --color-accent-red: 0 60% 60%;
     --color-accent-terra: 16 70% 58%;
+    --color-accent-terra-text: 16 70% 62%;
     --color-accent-sage-text: 44 60% 70%;
     --color-badge: 347 45% 55%;
 

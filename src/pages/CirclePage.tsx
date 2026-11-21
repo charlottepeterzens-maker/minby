@@ -51,7 +51,7 @@ const formatTimestamp = (iso: string) => {
   return `${d.getDate()} ${monthNames[d.getMonth()].slice(0, 3)}, ${d.getHours().toString().padStart(2, "0")}.${d.getMinutes().toString().padStart(2, "0")}`;
 };
 
-const LINK_STYLE = { color: "hsl(var(--color-accent-terra))" } as const;
+const LINK_STYLE = { color: "hsl(var(--color-accent-terra-text))" } as const;
 const CARD_YELLOW = "#F5EFD9";
 const CARD_BLUE = "#DCEAF8";
 

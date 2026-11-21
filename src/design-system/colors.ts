@@ -14,7 +14,7 @@ export const colors = {
   breeze: {
     100: "#DAEAF6",
     200: "#9CBBD3",
-    300: "#55778F",
+    300: "#426076",
   },
 
   berry: {
@@ -37,6 +37,8 @@ export const colors = {
 
   text: {
     primary: "#2B2928",
+    secondary: "#6C6460",
+    ink: "#292624",
     inverse: "#FFFFFF",
   },
 

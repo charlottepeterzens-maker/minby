@@ -300,7 +300,7 @@ const AuthPage = () => {
                 style={{ color: "hsl(var(--color-text-primary))" }}
                 required
               />
-              <style>{`#name::placeholder { color: #B0A8B5 !important; opacity: 1; }`}</style>
+              <style>{`#name::placeholder { color: hsl(270 6% 46%) !important; opacity: 1; }`}</style>
             </div>
           )}
           <div>
@@ -315,7 +315,7 @@ const AuthPage = () => {
               style={{ color: "hsl(var(--color-text-primary))" }}
               required
             />
-            <style>{`#email::placeholder { color: #B0A8B5 !important; opacity: 1; }`}</style>
+            <style>{`#email::placeholder { color: hsl(270 6% 46%) !important; opacity: 1; }`}</style>
           </div>
           <div>
             <Label htmlFor="password" className={cn(typography.meta, "text-muted-foreground")}>{t("password")}</Label>
@@ -331,7 +331,7 @@ const AuthPage = () => {
               minLength={6}
               required
             />
-            <style>{`#password::placeholder { color: #B0A8B5 !important; opacity: 1; }`}</style>
+            <style>{`#password::placeholder { color: hsl(270 6% 46%) !important; opacity: 1; }`}</style>
           </div>
 
           {isSignUp && (

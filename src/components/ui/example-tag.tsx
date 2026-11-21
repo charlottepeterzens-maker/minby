@@ -24,7 +24,7 @@ export const ExampleTag = ({
       "focus-visible:ring-[hsl(var(--color-accent-terra))] focus-visible:ring-offset-[#F9F3E1] " +
       className
     }
-    style={{ backgroundColor: "hsl(var(--color-accent-terra))", color: "hsl(var(--text-inverse))" }}
+    style={{ backgroundColor: "hsl(var(--color-accent-terra-text))", color: "hsl(var(--text-inverse))" }}
   >
     {label}
   </Typography>

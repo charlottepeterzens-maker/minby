@@ -137,7 +137,7 @@ const PWAInstallBanner = () => {
               }}
             >
               <span
-                className={typography.meta.className}
+                className={typography.meta}
                 style={{
                   color: colors.berry[100],
                 }}
@@ -167,7 +167,7 @@ const PWAInstallBanner = () => {
             </div>
 
             <h3
-              className={typography.heading.className}
+              className={typography.heading}
               style={{
                 color: colors.text.inverse,
                 margin: 0,
@@ -180,7 +180,7 @@ const PWAInstallBanner = () => {
             {!showGuide ? (
               <>
                 <p
-                  className={typography.body.className}
+                  className={typography.body}
                   style={{
                     color: colors.text.inverse,
                     margin: 0,
@@ -198,7 +198,7 @@ const PWAInstallBanner = () => {
             ) : (
               <>
                 <p
-                  className={typography.body.className}
+                  className={typography.body}
                   style={{
                     color: colors.text.inverse,
                     margin: 0,
