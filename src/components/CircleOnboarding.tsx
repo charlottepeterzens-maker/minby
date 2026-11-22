@@ -16,10 +16,10 @@ interface Props {
 
 type StepKey = "invite" | "photo" | "tip";
 
-const STEPS: { key: StepKey; label: string; hint: string; cta: string }[] = [
-  { key: "invite", label: "Bjud in fler till kretsen", hint: "Flytta din krets till Minby", cta: "Bjud in" },
-  { key: "photo", label: "Lägg upp ett foto", hint: "Dela en stund från er krets", cta: "Ladda upp" },
-  { key: "tip", label: "Dela ett tips", hint: "Något ni borde göra tillsammans", cta: "Dela" },
+const STEPS: { key: StepKey; label: string; cta: string }[] = [
+  { key: "invite", label: "Bjud in fler till kretsen", cta: "Bjud in" },
+  { key: "photo", label: "Lägg upp ett foto", cta: "Ladda upp" },
+  { key: "tip", label: "Dela ett tips", cta: "Dela" },
 ];
 
 const CircleOnboarding = ({
@@ -67,16 +67,16 @@ const CircleOnboarding = ({
         className="rounded-300 p-5"
         style={{ backgroundColor: "hsl(var(--primary))" }}
       >
-        <div className="flex items-start justify-between mb-2">
-          <Typography variant="eyebrow" as="div" style={{ color: "hsl(var(--primary-foreground))" }}>
-            {doneCount} av {STEPS.length} steg klara
+        <div className="flex items-start justify-between mb-3">
+          <Typography variant="heading" as="h3" style={{ color: "hsl(var(--text-inverse))" }}>
+            Kom igång med {circleName} · {doneCount}/{STEPS.length}
           </Typography>
 
           <button
             type="button"
             onClick={dismiss}
             aria-label="Stäng onboarding"
-            className="flex h-8 w-8 items-center justify-center rounded-full transition-opacity hover:opacity-70"
+            className="flex h-8 w-8 items-center justify-center rounded-full transition-opacity hover:opacity-70 -mt-1 -mr-1 shrink-0"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -94,14 +94,6 @@ const CircleOnboarding = ({
           </button>
         </div>
 
-        <Typography variant="heading" as="h3" className="mb-2" style={{ color: "hsl(var(--text-inverse))" }}>
-          Kom igång med {circleName}
-        </Typography>
-
-        <Typography variant="body" className="mb-5" style={{ color: "hsl(var(--butter-100))" }}>
-          Tre snabba steg så börjar det hända grejer här.
-        </Typography>
-
         <ul
           className="divide-y"
           style={{ borderColor: "rgba(255,255,255,0.10)" }}
@@ -111,34 +103,24 @@ const CircleOnboarding = ({
             return (
               <li
                 key={s.key}
-                className="py-300 flex items-start justify-between gap-300"
+                className="py-200 flex items-center justify-between gap-300"
               >
-                <div className="flex-1 min-w-0">
-                  <div
-                    className={typography.body}
-                    style={{
-                      color: "hsl(var(--text-inverse))",
-                      textDecoration: isDone ? "line-through" : "none",
-                      opacity: isDone ? 0.55 : 1,
-                    }}
-                  >
-                    {s.label}
-                  </div>
-
-                  {!isDone && (
-                    <div
-                      className={cn(typography.meta, "mt-1")}
-                      style={{ color: "hsl(var(--butter-100))" }}
-                    >
-                      {s.hint}
-                    </div>
-                  )}
-                </div>
+                <Typography
+                  variant="body"
+                  className="min-w-0 truncate"
+                  style={{
+                    color: "hsl(var(--text-inverse))",
+                    textDecoration: isDone ? "line-through" : "none",
+                    opacity: isDone ? 0.55 : 1,
+                  }}
+                >
+                  {s.label}
+                </Typography>
 
                 {isDone ? (
                   <span
-                    className={typography.meta}
-                    style={{ color: "hsl(var(--butter-100))" }}
+                    className={cn(typography.action, "shrink-0")}
+                    style={{ color: "hsl(var(--butter-100))", opacity: 0.7 }}
                   >
                     Klart
                   </span>
