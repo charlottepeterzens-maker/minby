@@ -320,7 +320,7 @@ const ChatPage = () => {
             onClick={runSummarize}
             aria-label="Sammanfatta chatten"
             className="absolute right-4 p-100 flex items-center gap-100"
-            style={{ color: "#561828" }}
+            style={{ color: "hsl(var(--primary))" }}
             disabled={summarizing}
           >
             <Sparkles className="w-5 h-5" />
@@ -328,7 +328,7 @@ const ChatPage = () => {
         </header>
 
         {summaryOpen && (
-          <div className="mx-4 mt-3 rounded-200 p-300 relative" style={{ backgroundColor: "#561828", color: "#F0EAE2" }}>
+          <div className="mx-4 mt-3 rounded-200 p-300 relative" style={{ backgroundColor: "hsl(var(--primary))", color: "#F0EAE2" }}>
             <button onClick={() => setSummaryOpen(false)} className="absolute top-2 right-2 p-100 opacity-80" aria-label="Stäng">
               <X className="w-4 h-4" />
             </button>
@@ -391,7 +391,7 @@ const ChatPage = () => {
                         {!mine && Avatar}
                         <div
                           className="max-w-[78%] rounded-200 p-300"
-                          style={{ backgroundColor: "#F5EFD9" }}
+                          style={{ backgroundColor: "hsl(var(--butter-150))" }}
                         >
                           <Typography variant="meta" as="div" className="mb-1" style={{ color: "hsl(var(--color-text-tertiary))" }}>
                             Förslag att ses
@@ -404,7 +404,7 @@ const ChatPage = () => {
                               onClick={() => respondMeeting(meetingId, "yes")}
                               className={cn(typography.body, "underline-offset-2 decoration-2")}
                               style={{
-                                color: resp === "yes" ? "#561828" : "hsl(var(--color-text-primary))",
+                                color: resp === "yes" ? "hsl(var(--primary))" : "hsl(var(--color-text-primary))",
                                 textDecoration: resp === "yes" ? "underline" : "none",
                                 textDecorationColor: "hsl(var(--color-accent-terra))",
                               }}
@@ -415,7 +415,7 @@ const ChatPage = () => {
                               onClick={() => respondMeeting(meetingId, "no")}
                               className={typography.body}
                               style={{
-                                color: resp === "no" ? "#561828" : "hsl(var(--color-text-tertiary))",
+                                color: resp === "no" ? "hsl(var(--primary))" : "hsl(var(--color-text-tertiary))",
                                 textDecoration: resp === "no" ? "underline" : "none",
                                 textDecorationColor: "hsl(var(--color-accent-terra))",
                                 textUnderlineOffset: 2,
@@ -459,7 +459,7 @@ const ChatPage = () => {
                       <div
                         className="max-w-[78%] px-300 py-3 rounded-200"
                         style={{
-                          backgroundColor: mine ? "#561828" : "#EFEAE0",
+                          backgroundColor: mine ? "hsl(var(--primary))" : "#EFEAE0",
                           color: mine ? "#F0EAE2" : "hsl(var(--color-text-primary))",
                         }}
                       >
@@ -486,7 +486,7 @@ const ChatPage = () => {
         {/* Composer */}
         <div className="px-300 pt-3 pb-safe" style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}>
           {showMeetingForm && (
-            <div className="mb-3 rounded-200 p-3 space-y-200" style={{ backgroundColor: "#F5EFD9" }}>
+            <div className="mb-3 rounded-200 p-3 space-y-200" style={{ backgroundColor: "hsl(var(--butter-150))" }}>
               <Typography variant="eyebrow" as="div"  style={{ color: "hsl(var(--color-text-tertiary))" }}>Föreslå en träff</Typography>
               <input
                 autoFocus

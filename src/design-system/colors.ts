@@ -7,6 +7,7 @@
 export const colors = {
   butter: {
     100: "#F9F3E1",
+    150: "#F5EFD9",
     200: "#FDEEC0",
     300: "#F9E29D",
   },

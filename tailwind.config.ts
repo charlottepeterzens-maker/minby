@@ -58,6 +58,7 @@ export default {
         /* Minby design tokens — see :root in src/index.css */
         butter: {
           100: "hsl(var(--butter-100))",
+          150: "hsl(var(--butter-150))",
           200: "hsl(var(--butter-200))",
           300: "hsl(var(--butter-300))",
         },

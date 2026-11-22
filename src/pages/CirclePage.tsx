@@ -55,7 +55,7 @@ const formatTimestamp = (iso: string) => {
 };
 
 const LINK_STYLE = { color: "hsl(var(--color-accent-terra-text))" } as const;
-const CARD_YELLOW = "#F5EFD9";
+const CARD_YELLOW = "hsl(var(--butter-150))";
 const CARD_BLUE = "#DCEAF8";
 
 /** Short label for a chat message preview, based on its kind. */
@@ -663,7 +663,7 @@ const CirclePage = () => {
               <TipCardSkeleton />
             </div>
           ) : tips.length === 0 ? (
-            <Typography as="p" variant="meta" className="mt-2" style={{ color: "#561828" }}>
+            <Typography as="p" variant="meta" className="mt-2" style={{ color: "hsl(var(--primary))" }}>
               Inga tips delade ännu. Dela en plats, bok, podd eller länk du gillar.
             </Typography>
           ) : (
@@ -725,7 +725,7 @@ const CirclePage = () => {
               <PhotoSmallSkeleton />
             </div>
           ) : photos.length === 0 ? (
-            <Typography as="p" variant="meta" className="mt-2" style={{ color: "#561828" }}>
+            <Typography as="p" variant="meta" className="mt-2" style={{ color: "hsl(var(--primary))" }}>
               Inga foton delade ännu. Bilder ni delar samlas här som ett gemensamt minne.
             </Typography>
           ) : (
@@ -815,7 +815,7 @@ const CirclePage = () => {
               as="div"
               variant="body"
               className="rounded-200 px-300 py-3 break-all"
-              style={{ backgroundColor: "#F5EFD9", color: "hsl(var(--color-text-primary))" }}
+              style={{ backgroundColor: "hsl(var(--butter-150))", color: "hsl(var(--color-text-primary))" }}
             >
               {creatingInvite ? "Skapar länk…" : inviteUrl ?? ""}
             </Typography>

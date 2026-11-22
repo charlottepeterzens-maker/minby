@@ -49,7 +49,7 @@ const Row = ({
     onClick={onClick}
     className="w-full flex items-center justify-between px-5 py-300 text-left hover:bg-black/[0.03] transition-colors"
   >
-    <Typography variant="body" as="span" style={{ color: danger ? "#561828" : "hsl(var(--color-text-primary))" }}>{label}</Typography>
+    <Typography variant="body" as="span" style={{ color: danger ? "hsl(var(--primary))" : "hsl(var(--color-text-primary))" }}>{label}</Typography>
     {value !== undefined && (
       <Typography variant="body" as="span" className="truncate ml-4" style={{ color: "hsl(var(--color-text-tertiary))" }}>{value}</Typography>
     )}
@@ -179,7 +179,7 @@ const SettingsPage = () => {
                 style={{
                   backgroundColor: profile.avatar_url ? "transparent" : "hsl(var(--butter-100))",
                   border: profile.avatar_url ? "none" : "1px dashed hsl(var(--color-accent-terra))",
-                  color: "#561828",
+                  color: "hsl(var(--primary))",
                 }}
                 aria-label={profile.avatar_url ? "Byt profilbild" : "Lägg till profilbild"}
               >
@@ -314,7 +314,7 @@ const SettingsPage = () => {
               type="button"
               onClick={signOut}
               className="w-full flex items-center justify-center gap-200 py-300 mt-4 mb-8"
-              style={{ color: "#561828" }}
+              style={{ color: "hsl(var(--primary))" }}
             >
               <LogOut className="w-4 h-4" />
               <Typography variant="body" as="span">Logga ut</Typography>
@@ -336,7 +336,7 @@ const SettingsPage = () => {
               onClick={deleteAccount}
               disabled={deletingAccount}
               className="w-full rounded-lg py-3.5 disabled:opacity-50"
-              style={{ backgroundColor: "#561828", color: "#F0EAE2" }}
+              style={{ backgroundColor: "hsl(var(--primary))", color: "#F0EAE2" }}
             >
               <Typography variant="action" as="span">
                 {deletingAccount ? "Raderar…" : "Radera konto permanent"}
