@@ -58,7 +58,7 @@ const PrimaryActionButton = ({
           right: "calc(max(16px, env(safe-area-inset-right)) + 8px)",
           bottom: `calc(env(safe-area-inset-bottom) + 16px + ${fabBottomOffset}px)`,
           backgroundColor: "#561828",
-          color: "#FFFFFF",
+          color: "hsl(var(--text-inverse))",
         }}
       >
         <Plus className="w-6 h-6" strokeWidth={2} />

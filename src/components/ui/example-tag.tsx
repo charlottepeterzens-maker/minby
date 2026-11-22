@@ -21,7 +21,7 @@ export const ExampleTag = ({
       "transition-[opacity,box-shadow,transform] duration-fast " +
       "hover:opacity-90 active:scale-[0.98] " +
       "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 " +
-      "focus-visible:ring-[hsl(var(--color-accent-terra))] focus-visible:ring-offset-[#F9F3E1] " +
+      "focus-visible:ring-[hsl(var(--color-accent-terra))] focus-visible:ring-offset-[hsl(var(--butter-100))] " +
       className
     }
     style={{ backgroundColor: "hsl(var(--color-accent-terra-text))", color: "hsl(var(--text-inverse))" }}

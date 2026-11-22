@@ -760,7 +760,7 @@ const CirclePage = () => {
             onClick={() => navigate(`/chat/${circle.id}?focus=1`)}
             className={cn(typography.body, "w-full text-left rounded-200 px-300 py-3")}
             style={{
-              backgroundColor: "#FFFFFF",
+              backgroundColor: "hsl(var(--neutral-white))",
               border: "1px solid rgba(0,0,0,0.08)",
               color: "hsl(var(--color-text-tertiary))",
               boxShadow: "0 2px 10px rgba(0,0,0,0.06)",

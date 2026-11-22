@@ -189,7 +189,7 @@ const InvitePage = () => {
 
         {/* Recent messages */}
         {recentMessages.length > 0 && (
-          <div className="mt-6 rounded-200 p-300 text-left space-y-1" style={{ backgroundColor: "#F9F3E1" }}>
+          <div className="mt-6 rounded-200 p-300 text-left space-y-1" style={{ backgroundColor: "hsl(var(--butter-100))" }}>
             {recentMessages.map((m) => (
               <Typography key={m.id} variant="body" as="p" className="line-clamp-1" style={{ color: "hsl(var(--color-text-primary))" }}>
                 <span style={{ fontWeight: 500 }}>{m.sender_name}:</span> {messageText(m)}

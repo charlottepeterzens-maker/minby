@@ -86,10 +86,10 @@ const CircleSelector = ({
                     className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
                     style={{
                       backgroundColor: active ? "#561828" : "transparent",
-                      border: active ? "none" : "1.5px solid #DDD2BF",
+                      border: active ? "none" : "1.5px solid hsl(var(--color-border-subtle))",
                     }}
                   >
-                    {active && <Check className="w-3.5 h-3.5" style={{ color: "#fff" }} />}
+                    {active && <Check className="w-3.5 h-3.5" style={{ color: "hsl(var(--text-inverse))" }} />}
                   </span>
                   <Typography variant="body" as="span" style={{ color: "hsl(var(--color-text-primary))" }}>
                     {c.name}

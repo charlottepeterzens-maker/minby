@@ -82,7 +82,7 @@ const CircleOnboarding = ({
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#FFFFFF"
+              stroke="hsl(var(--text-inverse))"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -94,11 +94,11 @@ const CircleOnboarding = ({
           </button>
         </div>
 
-        <Typography variant="heading" as="h3" className="mb-2" style={{ color: "#FFFFFF" }}>
+        <Typography variant="heading" as="h3" className="mb-2" style={{ color: "hsl(var(--text-inverse))" }}>
           Kom igång med {circleName}
         </Typography>
 
-        <Typography variant="body" className="mb-5" style={{ color: "#F9F3E1" }}>
+        <Typography variant="body" className="mb-5" style={{ color: "hsl(var(--butter-100))" }}>
           Tre snabba steg så börjar det hända grejer här.
         </Typography>
 
@@ -117,7 +117,7 @@ const CircleOnboarding = ({
                   <div
                     className={typography.body}
                     style={{
-                      color: "#FFFFFF",
+                      color: "hsl(var(--text-inverse))",
                       textDecoration: isDone ? "line-through" : "none",
                       opacity: isDone ? 0.55 : 1,
                     }}
@@ -128,7 +128,7 @@ const CircleOnboarding = ({
                   {!isDone && (
                     <div
                       className={cn(typography.meta, "mt-1")}
-                      style={{ color: "#F9F3E1" }}
+                      style={{ color: "hsl(var(--butter-100))" }}
                     >
                       {s.hint}
                     </div>
@@ -138,7 +138,7 @@ const CircleOnboarding = ({
                 {isDone ? (
                   <span
                     className={typography.meta}
-                    style={{ color: "#F9F3E1" }}
+                    style={{ color: "hsl(var(--butter-100))" }}
                   >
                     Klart
                   </span>
@@ -148,8 +148,8 @@ const CircleOnboarding = ({
                     onClick={handlers[s.key]}
                     className={cn(typography.action, "underline underline-offset-2 decoration-1 shrink-0")}
                     style={{
-                      color: "#FFFFFF",
-                      textDecorationColor: "#C85A2E",
+                      color: "hsl(var(--text-inverse))",
+                      textDecorationColor: "hsl(var(--color-accent-terra))",
                     }}
                   >
                     {s.cta}
