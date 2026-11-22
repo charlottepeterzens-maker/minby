@@ -122,6 +122,9 @@
     /* Activity */
     --activity: 16 65% 47%;     /* #C4522A */
 
+    /* Skeleton (loading placeholders) */
+    --skeleton: 41 42% 84%;     /* #E8DDC6 */
+
     /* ------------------------------------------------------------------
      * Foundations — spacing, radius & motion tokens
      * Mirrors src/design-system/tokens.ts. Never hardcode px in components.

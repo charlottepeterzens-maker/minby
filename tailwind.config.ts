@@ -88,6 +88,7 @@ export default {
           faint: "hsl(var(--color-text-faint))",
         },
         activity: "hsl(var(--activity))",
+        skeleton: "hsl(var(--skeleton))",
 
         border: "hsl(var(--border))",
 

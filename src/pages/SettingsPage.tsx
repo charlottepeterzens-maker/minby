@@ -56,7 +56,7 @@ const Row = ({
   </button>
 );
 
-const Divider = () => <div className="h-px mx-5" style={{ backgroundColor: "#E8DDC6" }} />;
+const Divider = () => <div className="h-px mx-5" style={{ backgroundColor: "hsl(var(--skeleton))" }} />;
 
 const SettingsPage = () => {
   const { user, signOut } = useAuth();
