@@ -327,7 +327,7 @@ const ShareTipSheet = ({
         >
           <div className="space-y-200">
             <Typography
-              variant="meta"
+              variant="eyebrow"
               as="div"
               style={{
                 color: colors.text.secondary,
@@ -352,7 +352,7 @@ const ShareTipSheet = ({
 
           <div className="space-y-200">
             <Typography
-              variant="meta"
+              variant="eyebrow"
               as="div"
               style={{
                 color: colors.text.secondary,
@@ -371,7 +371,7 @@ const ShareTipSheet = ({
 
           <div className="space-y-200">
             <Typography
-              variant="meta"
+              variant="eyebrow"
               as="div"
               style={{
                 color: colors.text.secondary,
@@ -456,7 +456,7 @@ const ShareTipSheet = ({
 
           <div className="space-y-200">
             <Typography
-              variant="meta"
+              variant="eyebrow"
               as="div"
               style={{
                 color: colors.text.secondary,
@@ -481,7 +481,7 @@ const ShareTipSheet = ({
 
           <div className="space-y-200">
             <Typography
-              variant="meta"
+              variant="eyebrow"
               as="div"
               style={{
                 color: colors.text.secondary,

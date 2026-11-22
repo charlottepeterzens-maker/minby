@@ -86,7 +86,7 @@ const ResetPasswordPage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-300">
           <div>
-            <Label htmlFor="new-password" className={cn(typography.meta, "text-muted-foreground")}>Nytt lösenord</Label>
+            <Label htmlFor="new-password" className={cn(typography.eyebrow, "text-muted-foreground")}>Nytt lösenord</Label>
             <Input
               id="new-password"
               type="password"
@@ -100,7 +100,7 @@ const ResetPasswordPage = () => {
             />
           </div>
           <div>
-            <Label htmlFor="confirm-password" className={cn(typography.meta, "text-muted-foreground")}>Bekräfta lösenord</Label>
+            <Label htmlFor="confirm-password" className={cn(typography.eyebrow, "text-muted-foreground")}>Bekräfta lösenord</Label>
             <Input
               id="confirm-password"
               type="password"

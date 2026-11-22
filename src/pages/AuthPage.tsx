@@ -249,7 +249,7 @@ const AuthPage = () => {
           </div>
           <form onSubmit={handleForgotPassword} className="space-y-300">
             <div>
-              <Label htmlFor="forgot-email" className={cn(typography.meta, "text-muted-foreground")}>{t("email")}</Label>
+              <Label htmlFor="forgot-email" className={cn(typography.eyebrow, "text-muted-foreground")}>{t("email")}</Label>
               <Input
                 id="forgot-email"
                 type="email"
@@ -290,7 +290,7 @@ const AuthPage = () => {
         <form onSubmit={handleSubmit} className="space-y-300">
           {isSignUp && (
             <div>
-              <Label htmlFor="name" className={cn(typography.meta, "text-muted-foreground")}>{t("yourName")}</Label>
+              <Label htmlFor="name" className={cn(typography.eyebrow, "text-muted-foreground")}>{t("yourName")}</Label>
               <Input
                 id="name"
                 value={displayName}
@@ -304,7 +304,7 @@ const AuthPage = () => {
             </div>
           )}
           <div>
-            <Label htmlFor="email" className={cn(typography.meta, "text-muted-foreground")}>{t("email")}</Label>
+            <Label htmlFor="email" className={cn(typography.eyebrow, "text-muted-foreground")}>{t("email")}</Label>
             <Input
               id="email"
               type="email"
@@ -318,7 +318,7 @@ const AuthPage = () => {
             <style>{`#email::placeholder { color: hsl(270 6% 46%) !important; opacity: 1; }`}</style>
           </div>
           <div>
-            <Label htmlFor="password" className={cn(typography.meta, "text-muted-foreground")}>{t("password")}</Label>
+            <Label htmlFor="password" className={cn(typography.eyebrow, "text-muted-foreground")}>{t("password")}</Label>
             <Input
               id="password"
               type="password"

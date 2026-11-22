@@ -43,7 +43,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
       >
         {category && (
           <span
-            className={cn(typography.meta, "absolute top-2 left-2 px-200.5 py-100 rounded-full")}
+            className={cn(typography.eyebrow, "absolute top-2 left-2 px-200.5 py-100 rounded-full")}
             style={{ backgroundColor: "hsl(var(--color-accent-terra-text))", color: "hsl(var(--text-inverse))" }}
           >
             {category}
