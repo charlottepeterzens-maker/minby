@@ -44,6 +44,8 @@ export const colors = {
   },
 
   activity: "#C4522A",
+
+  skeleton: "#E8DDC6",
 } as const;
 
 export type ColorToken = typeof colors;

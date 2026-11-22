@@ -49,7 +49,7 @@ const PhotoTile = ({
       onClick={onOpen}
       className={`relative ${dims} flex-shrink-0 overflow-hidden text-left`}
       style={{
-        backgroundColor: "#E8DDC6",
+        backgroundColor: "hsl(var(--skeleton))",
         backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
         backgroundSize: "cover",
         backgroundPosition: "center",

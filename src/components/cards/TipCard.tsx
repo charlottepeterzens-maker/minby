@@ -37,7 +37,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
       <div
         className="relative w-[134px] h-[134px] flex-shrink-0 bg-center bg-cover"
         style={{
-          backgroundColor: "#E8DDC6",
+          backgroundColor: "hsl(var(--skeleton))",
           backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
         }}
       >
