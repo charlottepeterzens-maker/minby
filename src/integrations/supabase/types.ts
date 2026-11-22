@@ -80,18 +80,24 @@ export type Database = {
           circle_id: string
           id: string
           joined_at: string
+          last_read_at: string | null
+          notify_level: string
           user_id: string
         }
         Insert: {
           circle_id: string
           id?: string
           joined_at?: string
+          last_read_at?: string | null
+          notify_level?: string
           user_id: string
         }
         Update: {
           circle_id?: string
           id?: string
           joined_at?: string
+          last_read_at?: string | null
+          notify_level?: string
           user_id?: string
         }
         Relationships: [
@@ -422,6 +428,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tip_visibility: {
         Row: {
