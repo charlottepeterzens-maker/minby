@@ -80,7 +80,7 @@ export type Database = {
           circle_id: string
           id: string
           joined_at: string
-          last_read_at: string
+          last_read_at: string | null
           notify_level: string
           user_id: string
         }
@@ -88,7 +88,7 @@ export type Database = {
           circle_id: string
           id?: string
           joined_at?: string
-          last_read_at?: string
+          last_read_at?: string | null
           notify_level?: string
           user_id: string
         }
@@ -96,7 +96,7 @@ export type Database = {
           circle_id?: string
           id?: string
           joined_at?: string
-          last_read_at?: string
+          last_read_at?: string | null
           notify_level?: string
           user_id?: string
         }
@@ -454,7 +454,15 @@ export type Database = {
           p256dh?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tip_visibility: {
         Row: {
