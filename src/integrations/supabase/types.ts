@@ -80,24 +80,18 @@ export type Database = {
           circle_id: string
           id: string
           joined_at: string
-          last_read_at: string
-          notify_level: string
           user_id: string
         }
         Insert: {
           circle_id: string
           id?: string
           joined_at?: string
-          last_read_at?: string
-          notify_level?: string
           user_id: string
         }
         Update: {
           circle_id?: string
           id?: string
           joined_at?: string
-          last_read_at?: string
-          notify_level?: string
           user_id?: string
         }
         Relationships: [
@@ -425,33 +419,6 @@ export type Database = {
           id?: string
           onboarded_at?: string | null
           updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      push_subscriptions: {
-        Row: {
-          auth: string
-          created_at: string
-          endpoint: string
-          id: string
-          p256dh: string
-          user_id: string
-        }
-        Insert: {
-          auth: string
-          created_at?: string
-          endpoint: string
-          id?: string
-          p256dh: string
-          user_id: string
-        }
-        Update: {
-          auth?: string
-          created_at?: string
-          endpoint?: string
-          id?: string
-          p256dh?: string
           user_id?: string
         }
         Relationships: []
