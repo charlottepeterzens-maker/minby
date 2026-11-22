@@ -41,7 +41,7 @@ const WelcomeScreen = ({
   return (
     <div
       style={{
-        backgroundColor: "#F9F3E1",
+        backgroundColor: "hsl(var(--butter-100))",
         padding: "32px 24px",
         display: "flex",
         flexDirection: "column",
@@ -115,7 +115,7 @@ const WelcomeScreen = ({
             border: "none",
             borderRadius: 28,
             background: "#561828",
-            color: "#F9F3E1",
+            color: "hsl(var(--butter-100))",
             cursor: "pointer",
             marginBottom: 20,
           }}

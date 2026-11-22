@@ -45,7 +45,7 @@ const TextButton = forwardRef<HTMLButtonElement, Props>(
           )}
           style={{
             color: "#2B2B2B",
-            textDecorationColor: "#C85A2E",
+            textDecorationColor: "hsl(var(--color-accent-terra))",
             backgroundColor: "rgba(255,255,255,0.55)",
             ...style,
           }}

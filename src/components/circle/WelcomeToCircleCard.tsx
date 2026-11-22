@@ -26,7 +26,7 @@ const WelcomeToCircleCard = ({ circleName, variant = "joined", onSayHi, onInvite
           variant="eyebrow"
           as="div"
           className="mb-2"
-          style={{ color: "#675332" }}
+          style={{ color: "hsl(var(--color-text-tertiary))" }}
         >
           {eyebrow}
         </Typography>
