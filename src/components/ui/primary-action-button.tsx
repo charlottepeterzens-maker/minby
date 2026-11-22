@@ -18,6 +18,8 @@ interface Props {
   options: PrimaryAction[];
   title?: string;
   ariaLabel?: string;
+  /** Extra px to lift the button above its default bottom offset (e.g. to clear a fixed composer bar). */
+  fabBottomOffset?: number;
 }
 
 /**
@@ -31,6 +33,7 @@ const PrimaryActionButton = ({
   options,
   title = "Vad vill du göra?",
   ariaLabel = "Öppna åtgärder",
+  fabBottomOffset = 0,
 }: Props) => {
   const [open, setOpen] = useState(false);
 
@@ -53,7 +56,7 @@ const PrimaryActionButton = ({
           width: 58,
           height: 58,
           right: "calc(max(16px, env(safe-area-inset-right)) + 8px)",
-          bottom: "calc(env(safe-area-inset-bottom) + 16px)",
+          bottom: `calc(env(safe-area-inset-bottom) + 16px + ${fabBottomOffset}px)`,
           backgroundColor: "#561828",
           color: "#FFFFFF",
         }}

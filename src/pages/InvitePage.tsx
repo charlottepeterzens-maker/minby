@@ -2,18 +2,25 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import TextButton from "@/components/ui/text-button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Heart, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Typography } from "@/components/ui/typography";
 
 interface Member { display_name: string | null; avatar_url: string | null }
+interface RecentMessage { id: string; sender_name: string; kind: string; body: string | null; meeting_title: string | null }
 
 const initials = (name: string | null) => {
   if (!name) return "·";
   const parts = name.trim().split(/\s+/).slice(0, 2);
   return parts.map((p) => p[0]?.toUpperCase() ?? "").join("");
+};
+
+const messageText = (m: RecentMessage) => {
+  if (m.kind === "meeting_proposal") return `föreslår att ses: ${m.meeting_title ?? ""}`;
+  if (m.kind === "photo") return "skickade en bild";
+  return m.body ?? "";
 };
 
 const InvitePage = () => {
@@ -23,12 +30,15 @@ const InvitePage = () => {
   const [status, setStatus] = useState<"loading" | "ok" | "invalid" | "expired" | "accepted">("loading");
   const [circleName, setCircleName] = useState("");
   const [circleId, setCircleId] = useState("");
+  const [inviterName, setInviterName] = useState("");
   const [members, setMembers] = useState<Member[]>([]);
   const [memberCount, setMemberCount] = useState(0);
-  const [busy, setBusy] = useState(false);
-  const [email, setEmail] = useState("");
-  const [sentTo, setSentTo] = useState<string | null>(null);
+  const [recentMessages, setRecentMessages] = useState<RecentMessage[]>([]);
+  const [guestName, setGuestName] = useState("");
+  const [guestReply, setGuestReply] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const acceptedRef = useRef(false);
+  const pendingReplyRef = useRef<string | null>(null);
 
   // Preview
   useEffect(() => {
@@ -38,13 +48,16 @@ const InvitePage = () => {
       if (error || !data?.ok) { setStatus(data?.status === "expired" ? "expired" : "invalid"); return; }
       setCircleName(data.circle_name);
       setCircleId(data.circle_id);
+      setInviterName(data.inviter_name ?? "Någon");
       setMembers(data.members ?? []);
       setMemberCount(data.member_count ?? 0);
+      setRecentMessages(data.recent_messages ?? []);
       setStatus("ok");
     })();
   }, [token]);
 
-  // Auto-accept when a session appears
+  // Join once a session exists — either a guest's fresh anonymous sign-in
+  // (submitGuest below) or someone who logged into an existing account.
   useEffect(() => {
     if (acceptedRef.current) return;
     if (status !== "ok" || authLoading || !user || !circleId) return;
@@ -56,26 +69,45 @@ const InvitePage = () => {
       if (error && !error.message.includes("duplicate")) {
         toast.error(error.message);
         acceptedRef.current = false;
+        setSubmitting(false);
         return;
       }
-      // Mark as freshly joined so the circle can show a welcome card
-      try { sessionStorage.setItem(`minby_joined_${circleId}`, "1"); } catch {}
-      setStatus("accepted");
-      setTimeout(() => navigate(`/circle/${circleId}`, { replace: true }), 900);
-    })();
-  }, [status, authLoading, user, circleId, navigate]);
+      try { sessionStorage.setItem(`minby_joined_${circleId}`, "1"); } catch { /* ignore */ }
 
-  const sendMagicLink = async (e: React.FormEvent) => {
+      const reply = pendingReplyRef.current;
+      if (reply) {
+        const { error: msgErr } = await supabase
+          .from("messages")
+          .insert({ circle_id: circleId, user_id: user.id, body: reply, kind: "text" });
+        if (msgErr) toast.error(msgErr.message);
+        const lastSender = recentMessages[recentMessages.length - 1]?.sender_name ?? "";
+        try {
+          sessionStorage.setItem(`minby_show_add_home_${circleId}`, lastSender);
+          // Avoid also nagging with the generic install banner right after this.
+          localStorage.setItem("pwa-install-dismissed", "true");
+        } catch { /* ignore */ }
+        navigate(`/chat/${circleId}`, { replace: true });
+      } else {
+        setStatus("accepted");
+        setTimeout(() => navigate(`/circle/${circleId}`, { replace: true }), 900);
+      }
+    })();
+  }, [status, authLoading, user, circleId, navigate, recentMessages]);
+
+  const submitGuest = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !token) return;
-    setBusy(true);
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/invite/${token}` },
+    if (!guestName.trim() || !guestReply.trim() || submitting) return;
+    setSubmitting(true);
+    pendingReplyRef.current = guestReply.trim();
+    const { error } = await supabase.auth.signInAnonymously({
+      options: { data: { display_name: guestName.trim() } },
     });
-    setBusy(false);
-    if (error) { toast.error(error.message); return; }
-    setSentTo(email);
+    if (error) {
+      toast.error(error.message);
+      pendingReplyRef.current = null;
+      setSubmitting(false);
+    }
+    // The join effect above takes over once `user` updates.
   };
 
   if (status === "loading" || authLoading) {
@@ -115,129 +147,103 @@ const InvitePage = () => {
   }
 
   // status === "ok" and not yet signed in
-  const nameList = members
-    .map((m) => m.display_name)
-    .filter(Boolean)
-    .slice(0, 3) as string[];
-  const rest = Math.max(0, memberCount - nameList.length);
-  const memberLine = nameList.length
-    ? `${nameList.join(", ")}${rest > 0 ? ` och ${rest} till` : ""} är redan här`
-    : "Din krets väntar på dig";
-
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-400 py-10">
       <div className="w-full max-w-sm text-center">
-        <Typography
-          variant="eyebrow"
-          as="span"
-          style={{
-            color: "#9B8BA5",
-          }}
-          
-        >
-          du är inbjuden till
+        <Typography variant="eyebrow" as="span" style={{ color: "#9B8BA5" }}>
+          {inviterName} har bjudit in dig till
         </Typography>
 
-        <Typography
-          variant="display"
-          as="h1"
-          className="mt-3"
-          style={{ color: "#1C1917" }}
-        >
+        <Typography variant="display" as="h1" className="mt-3" style={{ color: "#1C1917" }}>
           {circleName}
         </Typography>
 
-        {/* Members */}
+        {/* Members — initials only */}
         {members.length > 0 && (
           <div className="mt-6 flex flex-col items-center gap-3">
             <div className="flex -space-x-200">
-              {members.slice(0, 5).map((m, i) => (
+              {members.slice(0, 6).map((m, i) => (
                 <Typography
                   key={i}
                   variant="meta"
                   as="div"
-                  className="w-11 h-11 rounded-full flex items-center justify-center text-white ring-2 ring-background overflow-hidden"
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-white ring-2 ring-background"
                   style={{ backgroundColor: "#8b6f5e" }}
                 >
-                  {m.avatar_url ? (
-                    <img src={m.avatar_url} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    initials(m.display_name)
-                  )}
+                  {initials(m.display_name)}
                 </Typography>
               ))}
-            </div>
-            <Typography variant="meta" as="p" className="text-muted-foreground">{memberLine}</Typography>
-          </div>
-        )}
-
-        {/* Minby description */}
-        <Typography
-          variant="body"
-          as="p"
-          className="mt-8"
-          style={{ color: "#1C1917" }}
-        >
-          Minby är ett lugnt hem för din närmsta krets. Här delar ni vardagen,
-          planerar träffar och håller kontakten — utan algoritmer.
-        </Typography>
-        <Typography variant="meta" as="p" className="mt-2 text-muted-foreground">
-          Flytta din krets till Minby.
-        </Typography>
-
-        {/* Sign-up (email only) */}
-        {!sentTo ? (
-          <form onSubmit={sendMagicLink} className="mt-10 space-y-300">
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="din@epost.se"
-              className="rounded-lg bg-card border-0 text-center"
-              required
-              autoComplete="email"
-            />
-            <div className="flex justify-center">
-              <TextButton type="submit" disabled={busy || !email}>
-                {busy ? "…" : `Gå med i ${circleName}`}
-              </TextButton>
-            </div>
-            <Typography variant="meta" as="p" className="text-muted-foreground">
-              Vi skickar en länk till din e-post. Inget lösenord behövs.
-            </Typography>
-          </form>
-        ) : (
-          <div className="mt-10 space-y-3">
-            <Typography variant="body" as="p" style={{ color: "hsl(var(--color-text-primary))" }}>
-              Kolla din e-post
-            </Typography>
-            <Typography variant="meta" as="p" className="text-muted-foreground">
-              Vi har skickat en länk till <strong>{sentTo}</strong>. Klicka på länken
-              för att bli medlem i {circleName}.
-            </Typography>
-            <div className="pt-200">
-              <TextButton type="button" variant="secondary" onClick={() => setSentTo(null)}>
-                Använd en annan e-post
-              </TextButton>
+              {memberCount > 6 && (
+                <Typography
+                  variant="meta"
+                  as="div"
+                  className="w-10 h-10 rounded-full flex items-center justify-center ring-2 ring-background"
+                  style={{ backgroundColor: "#F5EFD9", color: "#2B2B2B" }}
+                >
+                  +{memberCount - 6}
+                </Typography>
+              )}
             </div>
           </div>
         )}
 
-        {!sentTo && (
-          <Typography variant="meta" as="p" className="mt-8 text-muted-foreground">
-            Har du redan ett konto?{" "}
-            <button
-              onClick={() => {
-                try { sessionStorage.setItem("pending_invite_token", token!); } catch {}
-                navigate("/auth");
-              }}
-              className="underline"
-              style={{ color: "#1C1917" }}
-            >
-              Logga in
-            </button>
+        {/* Recent messages */}
+        {recentMessages.length > 0 && (
+          <div className="mt-6 rounded-200 p-300 text-left space-y-1" style={{ backgroundColor: "#F9F3E1" }}>
+            {recentMessages.map((m) => (
+              <Typography key={m.id} variant="body" as="p" className="line-clamp-1" style={{ color: "hsl(var(--color-text-primary))" }}>
+                <span style={{ fontWeight: 500 }}>{m.sender_name}:</span> {messageText(m)}
+              </Typography>
+            ))}
+          </div>
+        )}
+
+        {/* Guest join form */}
+        <form onSubmit={submitGuest} className="mt-8 space-y-3 text-left">
+          <Input
+            value={guestName}
+            onChange={(e) => setGuestName(e.target.value)}
+            placeholder="Ditt namn"
+            className="rounded-lg bg-card border-0"
+            required
+            autoComplete="name"
+          />
+          <Textarea
+            value={guestReply}
+            onChange={(e) => setGuestReply(e.target.value)}
+            placeholder="Ditt svar"
+            rows={2}
+            className="rounded-lg resize-none"
+            required
+          />
+          <button
+            type="submit"
+            disabled={submitting || !guestName.trim() || !guestReply.trim()}
+            className="w-full rounded-lg py-3.5 disabled:opacity-50"
+            style={{ backgroundColor: "#561828", color: "#F0EAE2" }}
+          >
+            <Typography variant="action" as="span">
+              {submitting ? "…" : "Skicka och gå med"}
+            </Typography>
+          </button>
+          <Typography variant="meta" as="p" className="text-center text-muted-foreground pt-1">
+            Ingen app behövs. Du kan lägga till Minby senare.
           </Typography>
-        )}
+        </form>
+
+        <Typography variant="meta" as="p" className="mt-6 text-muted-foreground">
+          Har du redan ett konto?{" "}
+          <button
+            onClick={() => {
+              try { sessionStorage.setItem("pending_invite_token", token!); } catch { /* ignore */ }
+              navigate("/auth");
+            }}
+            className="underline"
+            style={{ color: "#1C1917" }}
+          >
+            Logga in
+          </button>
+        </Typography>
       </div>
     </div>
   );

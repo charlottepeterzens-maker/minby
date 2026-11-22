@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Sheet, SheetDescription } from "@/components/ui/sheet";
 import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
-import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, ChevronDown } from "lucide-react";
+import { ChevronLeft, MessageCircle, Share2, ExternalLink, X, ChevronDown, Bell } from "lucide-react";
 import { toast } from "sonner";
 import MeetingCard from "@/components/cards/MeetingCard";
 import PhotoTile from "@/components/cards/PhotoTile";
@@ -25,12 +25,15 @@ import usePolls from "@/hooks/usePolls";
 import { Typography } from "@/components/ui/typography";
 import { typography } from "@/design-system/typography";
 import { cn } from "@/lib/utils";
+import NotificationSettingsSheet from "@/components/circle/NotificationSettingsSheet";
+import { enablePushNotifications } from "@/lib/push";
 
 
 interface Circle { id: string; name: string; hero_image_url: string | null; created_by: string; }
 interface Meeting { id: string; title: string; meeting_date: string | null; description?: string | null; created_by: string; response_count: number; host_name: string; }
 interface Tip { id: string; title: string; url: string | null; comment: string | null; category: string | null; created_at: string; owner_id: string; owner_name: string; image_path: string | null; image_url?: string | null; }
 interface Photo { id: string; storage_path: string; owner_id: string; owner_name: string; created_at: string; caption: string | null; image_url?: string | null; }
+interface ChatMessage { id: string; user_id: string | null; body: string | null; kind: string; payload: { title?: string } | null; created_at: string; }
 
 const monthNames = ["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
 const formatDate = (iso: string | null) => {
@@ -55,6 +58,13 @@ const LINK_STYLE = { color: "hsl(var(--color-accent-terra-text))" } as const;
 const CARD_YELLOW = "#F5EFD9";
 const CARD_BLUE = "#DCEAF8";
 
+/** Short label for a chat message preview, based on its kind. */
+const previewText = (m: ChatMessage) => {
+  if (m.kind === "photo") return "Skickade en bild";
+  if (m.kind === "meeting_proposal") return `Föreslog att ses: ${m.payload?.title ?? ""}`;
+  return m.body?.trim() || "…";
+};
+
 const CirclePage = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
@@ -65,7 +75,7 @@ const CirclePage = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [tips, setTips] = useState<Tip[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
-  const [aiSummary, setAiSummary] = useState<{ content: string; generated_at: string; author?: string | null } | null>(null);
+  const [lastMessages, setLastMessages] = useState<ChatMessage[]>([]);
   const [sinceLast, setSinceLast] = useState<{ label: string; body: string } | null>(null);
   const [loadingContent, setLoadingContent] = useState(true);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -97,8 +107,14 @@ const CirclePage = () => {
 
   // invite sheet (layered on top of Create Hub)
   const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteId, setInviteId] = useState<string | null>(null);
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [creatingInvite, setCreatingInvite] = useState(false);
+  const [revokingInvite, setRevokingInvite] = useState(false);
+
+  // notification settings sheet
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifyLevel, setNotifyLevel] = useState<"all" | "important" | "silent">("all");
 
   // Polls
   const [showPollForm, setShowPollForm] = useState(false);
@@ -185,23 +201,14 @@ const CirclePage = () => {
       const signedPhotos = await signPhotoUrls(photoList, "storage_path");
       setPhotos(signedPhotos);
 
-      // AI summary
-      const { data: summary } = await supabase
-        .from("circle_ai_summary")
-        .select("content, generated_at")
+      // Chatt-förhandsvisning: de två senaste meddelandena
+      const { data: msgs } = await supabase
+        .from("messages")
+        .select("id, user_id, body, kind, payload, created_at")
         .eq("circle_id", id)
-        .maybeSingle();
-      if (summary) {
-        const { data: last } = await supabase
-          .from("messages")
-          .select("user_id")
-          .eq("circle_id", id)
-          .lte("created_at", summary.generated_at)
-          .order("created_at", { ascending: false })
-          .limit(1);
-        const author = last?.[0]?.user_id ? nameMap.get(last[0].user_id) ?? null : null;
-        setAiSummary({ ...summary, author });
-      }
+        .order("created_at", { ascending: false })
+        .limit(2);
+      setLastMessages((msgs ?? []).slice().reverse() as unknown as ChatMessage[]);
 
       // "Sedan sist" — last activity in circle (meeting/tip/photo)
       const latestTs = [
@@ -243,40 +250,94 @@ const CirclePage = () => {
     })();
   }, [id, user]);
 
+  // Current user's notification preference for this circle
+  useEffect(() => {
+    if (!id || !user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("circle_members")
+        .select("notify_level")
+        .eq("circle_id", id)
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (data?.notify_level) setNotifyLevel(data.notify_level as "all" | "important" | "silent");
+    })();
+  }, [id, user]);
+
+  const saveNotifyLevel = async (level: "all" | "important" | "silent") => {
+    if (!id || !user) return;
+    setNotifyLevel(level);
+    const { error } = await supabase
+      .from("circle_members")
+      .update({ notify_level: level })
+      .eq("circle_id", id)
+      .eq("user_id", user.id);
+    if (error) toast.error(error.message);
+    if (level !== "silent") await enablePushNotifications(user.id);
+  };
+
+  // Reuses an existing, still-valid invite for this circle instead of always
+  // minting a new one, so there's one canonical link to show and revoke.
+  const getOrCreateInvite = async (): Promise<{ id: string; token: string } | null> => {
+    if (!id || !user) return null;
+    const { data: existing } = await supabase
+      .from("circle_invites")
+      .select("id, token")
+      .eq("circle_id", id)
+      .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (existing) return existing;
+
+    const token = crypto.randomUUID().replace(/-/g, "");
+    const { data, error } = await supabase
+      .from("circle_invites")
+      .insert({
+        token, circle_id: id, created_by: user.id,
+        expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
+      })
+      .select("id, token")
+      .single();
+    if (error || !data) { toast.error(error?.message ?? "Kunde inte skapa länk"); return null; }
+    setHasSentInvite(true);
+    return data;
+  };
 
   const openInviteSheet = async () => {
     if (!id || !user) return;
     setInviteOpen(true);
     if (inviteUrl) return;
     setCreatingInvite(true);
-    const token = crypto.randomUUID().replace(/-/g, "");
-    const { error } = await supabase.from("circle_invites").insert({
-      token, circle_id: id, created_by: user.id,
-      expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
-    });
+    const inv = await getOrCreateInvite();
     setCreatingInvite(false);
-    if (error) { toast.error(error.message); setInviteOpen(false); return; }
-    setInviteUrl(`${window.location.origin}/invite/${token}`);
-    setHasSentInvite(true);
+    if (!inv) { setInviteOpen(false); return; }
+    setInviteId(inv.id);
+    setInviteUrl(`${window.location.origin}/invite/${inv.token}`);
   };
 
   const invite = async () => {
     // legacy entry point used elsewhere on the page — keep direct share behaviour
-    if (!id || !user) return;
-    const token = crypto.randomUUID().replace(/-/g, "");
-    const { error } = await supabase.from("circle_invites").insert({
-      token, circle_id: id, created_by: user.id,
-      expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
-    });
-    if (error) { toast.error(error.message); return; }
-    setHasSentInvite(true);
-    const url = `${window.location.origin}/invite/${token}`;
+    const inv = await getOrCreateInvite();
+    if (!inv) return;
+    const url = `${window.location.origin}/invite/${inv.token}`;
     if (navigator.share) {
       try { await navigator.share({ title: circle?.name ?? "Krets", url }); } catch { /* cancelled */ }
     } else {
       await navigator.clipboard.writeText(url);
       toast.success("Länken är kopierad");
     }
+  };
+
+  const revokeInvite = async () => {
+    if (!inviteId) return;
+    setRevokingInvite(true);
+    const { error } = await supabase.from("circle_invites").delete().eq("id", inviteId);
+    setRevokingInvite(false);
+    if (error) { toast.error(error.message); return; }
+    setInviteId(null);
+    setInviteUrl(null);
+    toast.success("Länken är återkallad");
   };
 
   const shareInviteNative = async () => {
@@ -385,6 +446,7 @@ const CirclePage = () => {
   }
 
   const memberNames = members.map((m) => m.display_name).filter(Boolean).slice(0, 6).join(", ");
+  const memberNameMap = new Map(members.map((m) => [m.user_id, m.display_name ?? "Någon"]));
 
   return (
     <div className="min-h-screen bg-background">
@@ -413,18 +475,27 @@ const CirclePage = () => {
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <button
-            onClick={invite}
-            aria-label="Bjud in"
-            className="absolute right-3 p-200 rounded-2xl backdrop-blur-md"
-            style={{
-              top: "max(0.75rem, env(safe-area-inset-top))",
-              backgroundColor: "rgba(255,255,255,0.55)",
-              color: "hsl(var(--color-text-primary))",
-            }}
+          <div
+            className="absolute right-3 flex gap-200"
+            style={{ top: "max(0.75rem, env(safe-area-inset-top))" }}
           >
-            <Share2 className="w-5 h-5" />
-          </button>
+            <button
+              onClick={() => setNotifOpen(true)}
+              aria-label="Notiser från kretsen"
+              className="p-200 rounded-2xl backdrop-blur-md"
+              style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "hsl(var(--color-text-primary))" }}
+            >
+              <Bell className="w-5 h-5" />
+            </button>
+            <button
+              onClick={invite}
+              aria-label="Bjud in"
+              className="p-200 rounded-2xl backdrop-blur-md"
+              style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "hsl(var(--color-text-primary))" }}
+            >
+              <Share2 className="w-5 h-5" />
+            </button>
+          </div>
           <div
             className="absolute inset-x-0 bottom-0 px-300 pt-10 pb-300"
             style={{ background: OVERLAY_GRADIENT.hero }}
@@ -472,6 +543,28 @@ const CirclePage = () => {
         {/* Stepwise, non-blocking profile onboarding */}
         <ProfileNudge />
 
+        {/* Chatt — directly under hero, the fastest way into the circle */}
+        <section className="mt-6 px-300">
+          <Typography as="h2" variant="heading" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>Chatt</Typography>
+          <div className="rounded-300 p-300" style={{ backgroundColor: CARD_BLUE }}>
+            {lastMessages.length > 0 ? (
+              <div className="space-y-1 mb-4">
+                {lastMessages.map((m) => (
+                  <Typography key={m.id} as="p" variant="body" className="line-clamp-1" style={{ color: "hsl(var(--color-text-primary))" }}>
+                    <span style={{ fontWeight: 500 }}>{(m.user_id && memberNameMap.get(m.user_id)) || "Någon"}:</span> {previewText(m)}
+                  </Typography>
+                ))}
+              </div>
+            ) : (
+              <Typography as="p" variant="body" className="mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
+                Inga meddelanden än. Säg något så börjar det.
+              </Typography>
+            )}
+            <TextButton onClick={() => navigate(`/chat/${circle.id}`)}>
+              <MessageCircle className="w-4 h-4" /> Öppna chatten
+            </TextButton>
+          </div>
+        </section>
 
         {/* Sedan sist — collapsible */}
         {sinceLast && (
@@ -558,36 +651,6 @@ const CirclePage = () => {
             )}
           </section>
         )}
-
-
-
-        {/* Chatt */}
-        <section className="mt-8 px-300">
-          <Typography as="h2" variant="heading" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>Chatt</Typography>
-          <div className="rounded-300 p-300" style={{ backgroundColor: CARD_BLUE }}>
-            {aiSummary ? (
-              <>
-                <Typography as="div" variant="meta" className="mb-2" style={{ color: "hsl(210, 20%, 35%)" }}>
-                  Senast uppdaterad: {formatTimestamp(aiSummary.generated_at)}
-                  {aiSummary.author ? ` av ${aiSummary.author}` : ""}
-                </Typography>
-                <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-primary))" }}>
-                  {aiSummary.content}
-                </Typography>
-              </>
-            ) : (
-              <Typography as="p" variant="body" style={{ color: "hsl(var(--color-text-primary))" }}>
-                Ingen sammanfattning ännu. Skriv några meddelanden så plockar vi upp tråden.
-              </Typography>
-            )}
-            <TextButton
-              onClick={() => navigate(`/chat/${circle.id}`)}
-              className="mt-4"
-            >
-              <MessageCircle className="w-4 h-4" /> Se hela chatten
-            </TextButton>
-          </div>
-        </section>
 
         {/* Våra tips — overview preview */}
         <section className="px-300">
@@ -683,9 +746,33 @@ const CirclePage = () => {
             </div>
           )}
         </section>
+        <div style={{ height: 88 }} aria-hidden="true" />
+      </div>
+
+      {/* Fast skrivfält — snabbaste vägen in i chatten */}
+      <div className="fixed inset-x-0 bottom-0 z-30 pointer-events-none">
+        <div
+          className="max-w-md mx-auto px-300 pointer-events-auto"
+          style={{ paddingTop: 12, paddingBottom: "max(12px, env(safe-area-inset-bottom))" }}
+        >
+          <button
+            type="button"
+            onClick={() => navigate(`/chat/${circle.id}?focus=1`)}
+            className={cn(typography.body, "w-full text-left rounded-200 px-300 py-3")}
+            style={{
+              backgroundColor: "#FFFFFF",
+              border: "1px solid rgba(0,0,0,0.08)",
+              color: "hsl(var(--color-text-tertiary))",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+            }}
+          >
+            Skriv till {circle.name}
+          </button>
+        </div>
       </div>
 
       <PrimaryActionButton
+        fabBottomOffset={72}
         options={[
           { label: "Dela i kretsen", onSelect: () => navigate(`/chat/${id}`) },
           { label: "Föreslå en träff", onSelect: () => setShowMeetingForm(true) },
@@ -694,6 +781,14 @@ const CirclePage = () => {
           { label: "Ladda upp foto", onSelect: () => photoInputRef.current?.click() },
           { label: "Bjud in till kretsen", keepOpen: true, onSelect: openInviteSheet },
         ]}
+      />
+
+      <NotificationSettingsSheet
+        open={notifOpen}
+        onOpenChange={setNotifOpen}
+        circleName={circle.name}
+        level={notifyLevel}
+        onSelect={saveNotifyLevel}
       />
 
       {/* Poll create sheet */}
@@ -731,6 +826,9 @@ const CirclePage = () => {
               </TextButton>
               <TextButton onClick={copyInvite} disabled={!inviteUrl}>
                 Kopiera länk
+              </TextButton>
+              <TextButton variant="secondary" onClick={revokeInvite} disabled={!inviteUrl || revokingInvite}>
+                {revokingInvite ? "…" : "Återkalla länk"}
               </TextButton>
             </div>
           </BottomSheetBody>

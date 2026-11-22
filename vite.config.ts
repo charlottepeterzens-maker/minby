@@ -21,6 +21,9 @@ export default defineConfig(({ mode }) => ({
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         navigateFallbackDenylist: [/^\/~oauth/],
+        // Pull the push-notification handlers into the single generated SW
+        // instead of registering a second service worker for the same scope.
+        importScripts: ["push-sw.js"],
       },
       manifest: {
         name: "Minby",

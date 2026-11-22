@@ -65,6 +65,10 @@ const SettingsPage = () => {
   const [nameDraft, setNameDraft] = useState("");
   const [bioDraft, setBioDraft] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const [creatingAccount, setCreatingAccount] = useState(false);
+  const [accountEmail, setAccountEmail] = useState("");
+  const [accountPassword, setAccountPassword] = useState("");
+  const [savingAccount, setSavingAccount] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -107,6 +111,20 @@ const SettingsPage = () => {
     if (error) { toast.error(error.message); return; }
     setProfile((p) => ({ ...p, avatar_url: url }));
     toast.success("Profilbild uppdaterad");
+  };
+
+  const upgradeAccount = async () => {
+    if (!accountEmail.trim() || accountPassword.length < 6) return;
+    setSavingAccount(true);
+    const { error } = await supabase.auth.updateUser({
+      email: accountEmail.trim(),
+      password: accountPassword,
+    });
+    setSavingAccount(false);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Kolla din e-post för att bekräfta kontot");
+    setCreatingAccount(false);
+    setAccountPassword("");
   };
 
   const initials = (profile.display_name ?? user?.email ?? "?")
@@ -224,7 +242,44 @@ const SettingsPage = () => {
 
             {/* Konto */}
             <Section title="konto">
-              <Row label="E-post" value={user?.email ?? ""} />
+              {user?.is_anonymous ? (
+                creatingAccount ? (
+                  <div className="p-5 space-y-3">
+                    <input
+                      autoFocus
+                      type="email"
+                      value={accountEmail}
+                      onChange={(e) => setAccountEmail(e.target.value)}
+                      placeholder="E-post"
+                      className={cn(typography.body, "w-full bg-transparent border-0 outline-none text-foreground")}
+                    />
+                    <input
+                      type="password"
+                      value={accountPassword}
+                      onChange={(e) => setAccountPassword(e.target.value)}
+                      placeholder="Lösenord"
+                      minLength={6}
+                      className={cn(typography.body, "w-full bg-transparent border-0 outline-none text-foreground")}
+                    />
+                    <Typography variant="meta" as="p" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                      Vi skickar en bekräftelselänk till din mejl. Du behåller allt du redan skrivit.
+                    </Typography>
+                    <div className="flex gap-400">
+                      <TextButton
+                        onClick={upgradeAccount}
+                        disabled={savingAccount || !accountEmail.trim() || accountPassword.length < 6}
+                      >
+                        {savingAccount ? "…" : "Skapa konto"}
+                      </TextButton>
+                      <TextButton variant="secondary" onClick={() => setCreatingAccount(false)}>Avbryt</TextButton>
+                    </div>
+                  </div>
+                ) : (
+                  <Row label="Du är gäst" value="Skapa konto" onClick={() => setCreatingAccount(true)} />
+                )
+              ) : (
+                <Row label="E-post" value={user?.email ?? ""} />
+              )}
             </Section>
 
             {/* Om */}
