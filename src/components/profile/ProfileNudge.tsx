@@ -85,10 +85,10 @@ const ProfileNudge = () => {
 
   return (
     <section className="mt-4 px-300">
-      <div className="rounded-300 p-5" style={{ backgroundColor: "#EDE5F0" }}>
+      <div className="rounded-300 p-5" style={{ backgroundColor: "hsl(var(--butter-150))" }}>
         {step === "name" && (
           <>
-            <Typography variant="eyebrow" as="div" className="mb-2" style={{ color: "#5A4A66" }}>
+            <Typography variant="eyebrow" as="div" className="mb-2" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Steg 1 av 2
             </Typography>
             <Typography variant="body" className="mb-3" style={{ color: "hsl(var(--text-ink))" }}>
@@ -110,7 +110,7 @@ const ProfileNudge = () => {
         )}
         {step === "avatar" && (
           <>
-            <Typography variant="eyebrow" as="div" className="mb-2" style={{ color: "#5A4A66" }}>
+            <Typography variant="eyebrow" as="div" className="mb-2" style={{ color: "hsl(var(--color-text-tertiary))" }}>
               Steg 2 av 2
             </Typography>
             <Typography variant="body" className="mb-3" style={{ color: "hsl(var(--text-ink))" }}>

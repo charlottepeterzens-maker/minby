@@ -20,7 +20,7 @@ const PrivacyPage = () => {
 
         <Typography variant="display" as="h1" className="mb-8" style={{ color: "hsl(var(--color-text-primary))" }}>Integritetspolicy</Typography>
 
-        <div className="space-y-400" style={{ color: "#5A4A65" }}>
+        <div className="space-y-400" style={{ color: "hsl(var(--color-text-secondary))" }}>
           <section>
             <Typography variant="heading" as="h2" className="mb-1.5" style={{ color: "hsl(var(--color-text-primary))" }}>Vad vi samlar in</Typography>
             <Typography variant="body" as="p">Namn, e-postadress, profilbild, inlägg i delar av min vardag, gruppchattar och meddelanden, datum och aktiviteter för 'Hitta på något'.</Typography>
