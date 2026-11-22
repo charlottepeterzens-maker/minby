@@ -404,16 +404,24 @@ const CirclePage = () => {
           <button
             onClick={() => navigate("/")}
             aria-label="Tillbaka"
-            className="absolute top-3 left-3 p-200 rounded-2xl backdrop-blur-md pt-safe"
-            style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "hsl(var(--color-text-primary))" }}
+            className="absolute left-3 p-200 rounded-2xl backdrop-blur-md"
+            style={{
+              top: "max(0.75rem, env(safe-area-inset-top))",
+              backgroundColor: "rgba(255,255,255,0.55)",
+              color: "hsl(var(--color-text-primary))",
+            }}
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={invite}
             aria-label="Bjud in"
-            className="absolute top-3 right-3 p-200 rounded-2xl backdrop-blur-md pt-safe"
-            style={{ backgroundColor: "rgba(255,255,255,0.55)", color: "hsl(var(--color-text-primary))" }}
+            className="absolute right-3 p-200 rounded-2xl backdrop-blur-md"
+            style={{
+              top: "max(0.75rem, env(safe-area-inset-top))",
+              backgroundColor: "rgba(255,255,255,0.55)",
+              color: "hsl(var(--color-text-primary))",
+            }}
           >
             <Share2 className="w-5 h-5" />
           </button>
