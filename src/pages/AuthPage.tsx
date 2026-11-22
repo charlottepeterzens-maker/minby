@@ -82,7 +82,7 @@ const WelcomeScreen = ({
         >
           Äntligen ett ställe
           <br />
-          bara för <span style={{ color: "#561828" }}>er.</span>
+          bara för <span style={{ color: "hsl(var(--primary))" }}>er.</span>
         </Typography>
 
         {/* Body */}
@@ -114,7 +114,7 @@ const WelcomeScreen = ({
             height: 56,
             border: "none",
             borderRadius: 28,
-            background: "#561828",
+            background: "hsl(var(--primary))",
             color: "hsl(var(--butter-100))",
             cursor: "pointer",
             marginBottom: 20,
@@ -137,7 +137,7 @@ const WelcomeScreen = ({
             onClick={onLogin}
             className={typography.action}
             style={{
-              color: "#561828",
+              color: "hsl(var(--primary))",
               cursor: "pointer",
             }}
           >

@@ -58,11 +58,11 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
               typography.meta,
               "w-6 h-6 rounded-avatar overflow-hidden flex items-center justify-center",
             )}
-            style={{ backgroundColor: "#DCEAF8", color: "#561828" }}
+            style={{ backgroundColor: "#DCEAF8", color: "hsl(var(--primary))" }}
           >
             {ownerAvatar ? <img src={ownerAvatar} alt="" className="w-full h-full object-cover" /> : initials}
           </div>
-          <Typography variant="meta" style={{ color: "#561828" }}>
+          <Typography variant="meta" style={{ color: "hsl(var(--primary))" }}>
             {dateLabel}
           </Typography>
         </div>

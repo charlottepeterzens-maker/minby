@@ -85,7 +85,7 @@ const CircleSelector = ({
                   <span
                     className="w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0"
                     style={{
-                      backgroundColor: active ? "#561828" : "transparent",
+                      backgroundColor: active ? "hsl(var(--primary))" : "transparent",
                       border: active ? "none" : "1.5px solid hsl(var(--color-border-subtle))",
                     }}
                   >

@@ -53,7 +53,7 @@ export const GRADIENTS = {
 
   /** Burgundy brand overlay */
   brand:
-    "linear-gradient(to top, #561828 0%, rgba(86,24,40,0.35) 55%, rgba(86,24,40,0) 100%)",
+    "linear-gradient(to top, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.35) 55%, hsl(var(--primary) / 0) 100%)",
 
   /** Warm ochre overlay */
   warm:

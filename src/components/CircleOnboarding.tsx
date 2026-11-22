@@ -65,7 +65,7 @@ const CircleOnboarding = ({
     <section className="mt-6 px-300">
       <div
         className="rounded-300 p-5"
-        style={{ backgroundColor: "#561828" }}
+        style={{ backgroundColor: "hsl(var(--primary))" }}
       >
         <div className="flex items-start justify-between mb-2">
           <Typography variant="eyebrow" as="div" style={{ color: "hsl(var(--primary-foreground))" }}>

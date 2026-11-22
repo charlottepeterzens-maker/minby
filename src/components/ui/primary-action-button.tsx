@@ -57,7 +57,7 @@ const PrimaryActionButton = ({
           height: 58,
           right: "calc(max(16px, env(safe-area-inset-right)) + 8px)",
           bottom: `calc(env(safe-area-inset-bottom) + 16px + ${fabBottomOffset}px)`,
-          backgroundColor: "#561828",
+          backgroundColor: "hsl(var(--primary))",
           color: "hsl(var(--text-inverse))",
         }}
       >

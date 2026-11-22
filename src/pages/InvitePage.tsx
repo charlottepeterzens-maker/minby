@@ -178,7 +178,7 @@ const InvitePage = () => {
                   variant="meta"
                   as="div"
                   className="w-10 h-10 rounded-full flex items-center justify-center ring-2 ring-background"
-                  style={{ backgroundColor: "#F5EFD9", color: "#2B2B2B" }}
+                  style={{ backgroundColor: "hsl(var(--butter-150))", color: "#2B2B2B" }}
                 >
                   +{memberCount - 6}
                 </Typography>
@@ -220,7 +220,7 @@ const InvitePage = () => {
             type="submit"
             disabled={submitting || !guestName.trim() || !guestReply.trim()}
             className="w-full rounded-lg py-3.5 disabled:opacity-50"
-            style={{ backgroundColor: "#561828", color: "#F0EAE2" }}
+            style={{ backgroundColor: "hsl(var(--primary))", color: "#F0EAE2" }}
           >
             <Typography variant="action" as="span">
               {submitting ? "…" : "Skicka och gå med"}

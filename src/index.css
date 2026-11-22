@@ -19,7 +19,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 20 10% 12%;
 
-    --primary: 338 58% 22%;
+    --primary: 344 56% 21%;     /* #561828 — corrected from 338 58% 22% to match the hex used throughout the app */
     --primary-foreground: 30 28% 96%;
 
     --secondary: 210 65% 92%;
@@ -36,7 +36,7 @@
 
     --border: 200 25% 88%;
     --input: 0 0% 100%;
-    --ring: 338 58% 22%;
+    --ring: 344 56% 21%;        /* #561828 */
 
     --radius: 0.5rem;
 
@@ -91,6 +91,7 @@
 
     /* Butter */
     --butter-100: 45 67% 93%;   /* #F9F3E1 */
+    --butter-150: 47 58% 91%;   /* #F5EFD9 */
     --butter-200: 45 94% 87%;   /* #FDEEC0 */
     --butter-300: 45 88% 80%;   /* #F9E29D */
 

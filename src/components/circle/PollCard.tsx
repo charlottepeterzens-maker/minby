@@ -18,8 +18,8 @@ interface Props {
   onClose?: () => void;
 }
 
-const CARD_YELLOW = "#F5EFD9";
-const BURGUNDY = "#561828";
+const CARD_YELLOW = "hsl(var(--butter-150))";
+const BURGUNDY = "hsl(var(--primary))";
 
 const monthNames = ["jan","feb","mars","april","maj","juni","juli","aug","sep","okt","nov","dec"];
 const formatDay = (iso: string) => {
