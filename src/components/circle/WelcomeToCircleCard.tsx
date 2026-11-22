@@ -30,7 +30,7 @@ const WelcomeToCircleCard = ({ circleName, variant = "joined", onSayHi, onInvite
         >
           {eyebrow}
         </Typography>
-        <Typography variant="body" style={{ color: "#2B2B2B" }}>
+        <Typography variant="body" style={{ color: "hsl(var(--text-ink))" }}>
           {body}
         </Typography>
         <div className="mt-4">

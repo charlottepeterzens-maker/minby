@@ -91,7 +91,7 @@ const ProfileNudge = () => {
             <Typography variant="eyebrow" as="div" className="mb-2" style={{ color: "#5A4A66" }}>
               Steg 1 av 2
             </Typography>
-            <Typography variant="body" className="mb-3" style={{ color: "#2B2B2B" }}>
+            <Typography variant="body" className="mb-3" style={{ color: "hsl(var(--text-ink))" }}>
               Vad ska dina vänner kalla dig?
             </Typography>
             <Input
@@ -113,7 +113,7 @@ const ProfileNudge = () => {
             <Typography variant="eyebrow" as="div" className="mb-2" style={{ color: "#5A4A66" }}>
               Steg 2 av 2
             </Typography>
-            <Typography variant="body" className="mb-3" style={{ color: "#2B2B2B" }}>
+            <Typography variant="body" className="mb-3" style={{ color: "hsl(var(--text-ink))" }}>
               Lägg upp en profilbild så känner de andra igen dig.
             </Typography>
             <input

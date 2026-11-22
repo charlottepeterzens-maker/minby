@@ -168,7 +168,7 @@ const InvitePage = () => {
                   variant="meta"
                   as="div"
                   className="w-10 h-10 rounded-full flex items-center justify-center text-white ring-2 ring-background"
-                  style={{ backgroundColor: "#8b6f5e" }}
+                  style={{ backgroundColor: "hsl(var(--avatar-fallback))" }}
                 >
                   {initials(m.display_name)}
                 </Typography>
@@ -178,7 +178,7 @@ const InvitePage = () => {
                   variant="meta"
                   as="div"
                   className="w-10 h-10 rounded-full flex items-center justify-center ring-2 ring-background"
-                  style={{ backgroundColor: "hsl(var(--butter-150))", color: "#2B2B2B" }}
+                  style={{ backgroundColor: "hsl(var(--butter-150))", color: "hsl(var(--text-ink))" }}
                 >
                   +{memberCount - 6}
                 </Typography>

@@ -44,7 +44,7 @@ const TextButton = forwardRef<HTMLButtonElement, Props>(
             className,
           )}
           style={{
-            color: "#2B2B2B",
+            color: "hsl(var(--text-ink))",
             textDecorationColor: "hsl(var(--color-accent-terra))",
             backgroundColor: "rgba(255,255,255,0.55)",
             ...style,
@@ -55,14 +55,14 @@ const TextButton = forwardRef<HTMLButtonElement, Props>(
       );
     }
 
-    const decoration = variant === "secondary" ? "#DCEAF8" : "#C85A2E";
+    const decoration = variant === "secondary" ? "hsl(var(--breeze-100))" : "#C85A2E";
 
     return (
       <button
         ref={ref}
         {...rest}
         className={cn(base, className)}
-        style={{ color: "#2B2B2B", textDecorationColor: decoration, ...style }}
+        style={{ color: "hsl(var(--text-ink))", textDecorationColor: decoration, ...style }}
       >
         {children}
       </button>
