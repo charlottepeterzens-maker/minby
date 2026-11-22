@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { X, Send, Camera, CalendarPlus, Sparkles } from "lucide-react";
@@ -9,6 +9,7 @@ import { OVERLAY_GRADIENT } from "@/lib/card-styles";
 import Typography from "@/components/ui/typography";
 import { typography } from "@/design-system/typography";
 import { cn } from "@/lib/utils";
+import AddToHomeScreenSheet from "@/components/circle/AddToHomeScreenSheet";
 
 
 interface Message {
@@ -54,9 +55,11 @@ const ChatPage = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [circle, setCircle] = useState<Circle | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [dividerInfo, setDividerInfo] = useState<{ id: string; count: number } | null>(null);
   const [meetingResponses, setMeetingResponses] = useState<Record<string, "yes" | "no" | undefined>>({});
   const [body, setBody] = useState("");
   const [showMeetingForm, setShowMeetingForm] = useState(false);
@@ -66,9 +69,28 @@ const ChatPage = () => {
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [summarizing, setSummarizing] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const dividerRef = useRef<HTMLDivElement>(null);
+  const didInitialScroll = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [addHomeOpen, setAddHomeOpen] = useState(false);
+  const [addHomeSenderName, setAddHomeSenderName] = useState("");
+
+  // Shown once, right after a guest's first reply from the invite flow.
+  useEffect(() => {
+    if (!id) return;
+    const key = `minby_show_add_home_${id}`;
+    try {
+      const senderName = sessionStorage.getItem(key);
+      if (senderName !== null) {
+        sessionStorage.removeItem(key);
+        setAddHomeSenderName(senderName);
+        setAddHomeOpen(true);
+      }
+    } catch { /* ignore */ }
+  }, [id]);
 
   const nameMap = useMemo(() => new Map(members.map((m) => [m.user_id, m.display_name ?? "Någon"])), [members]);
   const avatarMap = useMemo(() => new Map(members.map((m) => [m.user_id, m.avatar_url])), [members]);
@@ -91,11 +113,12 @@ const ChatPage = () => {
   useEffect(() => {
     if (!id || !user) return;
     (async () => {
-      const [{ data: c }, { data: mems }, { data: msgs }, { data: sum }] = await Promise.all([
+      const [{ data: c }, { data: mems }, { data: msgs }, { data: sum }, { data: myMember }] = await Promise.all([
         supabase.from("circles").select("id, name, hero_image_url").eq("id", id).maybeSingle(),
         supabase.from("circle_members").select("user_id").eq("circle_id", id),
         supabase.from("messages").select("id, user_id, body, kind, payload, created_at").eq("circle_id", id).order("created_at", { ascending: true }).limit(200),
         supabase.from("circle_ai_summary").select("content").eq("circle_id", id).maybeSingle(),
+        supabase.from("circle_members").select("last_read_at").eq("circle_id", id).eq("user_id", user.id).maybeSingle(),
       ]);
       setCircle(c as Circle | null);
       const memberIds = (mems ?? []).map((m) => m.user_id);
@@ -104,8 +127,22 @@ const ChatPage = () => {
         setMembers((profs ?? []) as Member[]);
       }
       const signed = await signImageMessages((msgs ?? []) as Message[]);
+
+      // Snapshot what's unread *before* marking the circle as read, so the
+      // divider reflects what was new when the chat was opened.
+      const oldLastReadAt = myMember?.last_read_at ?? new Date(0).toISOString();
+      const unread = signed.filter((m) => m.user_id && m.user_id !== user.id && m.created_at > oldLastReadAt);
+
       setMessages(signed);
+      setDividerInfo(unread.length > 0 ? { id: unread[0].id, count: unread.length } : null);
       if (sum?.content) setSummary(sum.content);
+
+      supabase
+        .from("circle_members")
+        .update({ last_read_at: new Date().toISOString() })
+        .eq("circle_id", id)
+        .eq("user_id", user.id)
+        .then(({ error }) => { if (error) console.error(error); });
 
       // Load current user's responses to any meeting messages
       const meetingIds = signed
@@ -136,7 +173,24 @@ const ChatPage = () => {
     return () => { supabase.removeChannel(channel); };
   }, [id, user]);
 
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages.length]);
+  useEffect(() => {
+    if (messages.length === 0) return;
+    if (didInitialScroll.current) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      return;
+    }
+    didInitialScroll.current = true;
+    // Let the divider render first, then jump to it (or the bottom if nothing's unread).
+    requestAnimationFrame(() => {
+      if (dividerInfo) dividerRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
+      else bottomRef.current?.scrollIntoView({ behavior: "auto" });
+    });
+  }, [messages.length, dividerInfo]);
+
+  // Opened via the circle page's composer ("Skriv till …") — bring up the keyboard.
+  useEffect(() => {
+    if (searchParams.get("focus") === "1") inputRef.current?.focus();
+  }, [searchParams]);
 
   const send = async () => {
     if (!id || !user || !body.trim()) return;
@@ -317,92 +371,111 @@ const ChatPage = () => {
                   </div>
                 );
 
+                const divider = dividerInfo?.id === m.id && (
+                  <div ref={dividerRef} className="flex items-center gap-300 py-1">
+                    <div className="flex-1 h-px bg-activity opacity-30" />
+                    <Typography variant="meta" as="span" className="flex-shrink-0 text-activity" style={{ fontWeight: 500 }}>
+                      {dividerInfo.count} {dividerInfo.count === 1 ? "ny" : "nya"}
+                    </Typography>
+                    <div className="flex-1 h-px bg-activity opacity-30" />
+                  </div>
+                );
+
                 if (m.kind === "meeting_proposal") {
                   const meetingId = m.payload?.meeting_id as string;
                   const resp = meetingResponses[meetingId];
                   return (
-                    <div key={m.id} className="flex items-end gap-200">
-                      {!mine && Avatar}
-                      <div
-                        className="max-w-[78%] rounded-200 p-300"
-                        style={{ backgroundColor: "#F5EFD9" }}
-                      >
-                        <Typography variant="meta" as="div" className="mb-1" style={{ color: "hsl(var(--color-text-tertiary))" }}>
-                          Förslag att ses
-                        </Typography>
-                        <Typography variant="heading" as="div" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
-                          {m.payload?.meeting_date ? `${formatMeetingDate(m.payload.meeting_date)}.` : ""} {m.payload?.title}
-                        </Typography>
-                        <div className="flex gap-5">
-                          <button
-                            onClick={() => respondMeeting(meetingId, "yes")}
-                            className={cn(typography.body, "underline-offset-2 decoration-2")}
-                            style={{
-                              color: resp === "yes" ? "#561828" : "hsl(var(--color-text-primary))",
-                              textDecoration: resp === "yes" ? "underline" : "none",
-                              textDecorationColor: "hsl(var(--color-accent-terra))",
-                            }}
-                          >
-                            Jag kan
-                          </button>
-                          <button
-                            onClick={() => respondMeeting(meetingId, "no")}
-                            className={typography.body}
-                            style={{
-                              color: resp === "no" ? "#561828" : "hsl(var(--color-text-tertiary))",
-                              textDecoration: resp === "no" ? "underline" : "none",
-                              textDecorationColor: "hsl(var(--color-accent-terra))",
-                              textUnderlineOffset: 2,
-                            }}
-                          >
-                            Kan inte
-                          </button>
+                    <Fragment key={m.id}>
+                      {divider}
+                      <div className="flex items-end gap-200">
+                        {!mine && Avatar}
+                        <div
+                          className="max-w-[78%] rounded-200 p-300"
+                          style={{ backgroundColor: "#F5EFD9" }}
+                        >
+                          <Typography variant="meta" as="div" className="mb-1" style={{ color: "hsl(var(--color-text-tertiary))" }}>
+                            Förslag att ses
+                          </Typography>
+                          <Typography variant="heading" as="div" className="mb-3" style={{ color: "hsl(var(--color-text-primary))" }}>
+                            {m.payload?.meeting_date ? `${formatMeetingDate(m.payload.meeting_date)}.` : ""} {m.payload?.title}
+                          </Typography>
+                          <div className="flex gap-5">
+                            <button
+                              onClick={() => respondMeeting(meetingId, "yes")}
+                              className={cn(typography.body, "underline-offset-2 decoration-2")}
+                              style={{
+                                color: resp === "yes" ? "#561828" : "hsl(var(--color-text-primary))",
+                                textDecoration: resp === "yes" ? "underline" : "none",
+                                textDecorationColor: "hsl(var(--color-accent-terra))",
+                              }}
+                            >
+                              Jag kan
+                            </button>
+                            <button
+                              onClick={() => respondMeeting(meetingId, "no")}
+                              className={typography.body}
+                              style={{
+                                color: resp === "no" ? "#561828" : "hsl(var(--color-text-tertiary))",
+                                textDecoration: resp === "no" ? "underline" : "none",
+                                textDecorationColor: "hsl(var(--color-accent-terra))",
+                                textUnderlineOffset: 2,
+                              }}
+                            >
+                              Kan inte
+                            </button>
+                          </div>
                         </div>
+                        {mine && Avatar}
                       </div>
-                      {mine && Avatar}
-                    </div>
+                    </Fragment>
                   );
                 }
 
                 if (m.kind === "photo") {
                   return (
-                    <div key={m.id} className={`flex items-end gap-200 ${mine ? "justify-end" : ""}`}>
-                      {!mine && Avatar}
-                      <div className="max-w-[70%] rounded-200 overflow-hidden" style={{ backgroundColor: "#EDE4D3" }}>
-                        {m.image_url ? (
-                          <img src={m.image_url} alt="" className="block w-full h-auto" />
-                        ) : (
-                          <div className="w-40 h-40" />
-                        )}
+                    <Fragment key={m.id}>
+                      {divider}
+                      <div className={`flex items-end gap-200 ${mine ? "justify-end" : ""}`}>
+                        {!mine && Avatar}
+                        <div className="max-w-[70%] rounded-200 overflow-hidden" style={{ backgroundColor: "#EDE4D3" }}>
+                          {m.image_url ? (
+                            <img src={m.image_url} alt="" className="block w-full h-auto" />
+                          ) : (
+                            <div className="w-40 h-40" />
+                          )}
+                        </div>
+                        {mine && Avatar}
                       </div>
-                      {mine && Avatar}
-                    </div>
+                    </Fragment>
                   );
                 }
 
                 // text
                 return (
-                  <div key={m.id} className={`flex items-end gap-200 ${mine ? "justify-end" : ""}`}>
-                    {!mine && Avatar}
-                    <div
-                      className="max-w-[78%] px-300 py-3 rounded-200"
-                      style={{
-                        backgroundColor: mine ? "#561828" : "#EFEAE0",
-                        color: mine ? "#F0EAE2" : "hsl(var(--color-text-primary))",
-                      }}
-                    >
-                      <Typography variant="body" as="div" className="whitespace-pre-wrap">{m.body}</Typography>
-                      <Typography
-                        variant="meta"
-                        as="div"
-                        className={`mt-1 ${mine ? "text-right" : ""}`}
-                        style={{ color: mine ? "#E8A87C" : "hsl(var(--color-text-tertiary))" }}
+                  <Fragment key={m.id}>
+                    {divider}
+                    <div className={`flex items-end gap-200 ${mine ? "justify-end" : ""}`}>
+                      {!mine && Avatar}
+                      <div
+                        className="max-w-[78%] px-300 py-3 rounded-200"
+                        style={{
+                          backgroundColor: mine ? "#561828" : "#EFEAE0",
+                          color: mine ? "#F0EAE2" : "hsl(var(--color-text-primary))",
+                        }}
                       >
-                        {formatTime(m.created_at)}
-                      </Typography>
+                        <Typography variant="body" as="div" className="whitespace-pre-wrap">{m.body}</Typography>
+                        <Typography
+                          variant="meta"
+                          as="div"
+                          className={`mt-1 ${mine ? "text-right" : ""}`}
+                          style={{ color: mine ? "#E8A87C" : "hsl(var(--color-text-tertiary))" }}
+                        >
+                          {formatTime(m.created_at)}
+                        </Typography>
+                      </div>
+                      {mine && Avatar}
                     </div>
-                    {mine && Avatar}
-                  </div>
+                  </Fragment>
                 );
               })}
             </div>
@@ -441,6 +514,7 @@ const ChatPage = () => {
             style={{ backgroundColor: "#FAF6EE", border: "1px solid rgba(0,0,0,0.12)" }}
           >
             <input
+              ref={inputRef}
               value={body}
               onChange={(e) => setBody(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
@@ -483,6 +557,12 @@ const ChatPage = () => {
           </div>
         </div>
       </div>
+
+      <AddToHomeScreenSheet
+        open={addHomeOpen}
+        onOpenChange={setAddHomeOpen}
+        lastSenderName={addHomeSenderName}
+      />
     </div>
   );
 };

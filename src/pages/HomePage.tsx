@@ -82,7 +82,7 @@ const HomePage = () => {
         { data: tipVis },
         { data: pollRows },
       ] = await Promise.all([
-        supabase.from("circle_members").select("circle_id, user_id"),
+        supabase.from("circle_members").select("circle_id, user_id, last_read_at"),
         supabase.from("meetings").select("id, title, meeting_date, circle_id, created_by, created_at"),
         supabase.from("messages").select("circle_id, created_at, user_id").order("created_at", { ascending: false }).limit(300),
         supabase.from("photo_visibility").select("circle_id, photos(id, caption, created_at, owner_id)"),
@@ -101,10 +101,20 @@ const HomePage = () => {
 
       const today = new Date().toISOString().slice(0, 10);
 
-      /** Last time this user opened Hem — drives the orange activity ring. */
+      /** Last time this user opened Hem — drives the orange activity ring for
+       * signals without their own read-tracking (meetings, polls, tips, photos). */
       const stored = Number(window.localStorage.getItem("minby:last-seen") ?? 0);
       const lastSeenTs = stored || Date.now() - 7 * 24 * 60 * 60 * 1000;
       window.localStorage.setItem("minby:last-seen", String(Date.now()));
+
+      /** Per-circle chat read position — precise, unlike the single global
+       * last-seen timestamp above, so "someone wrote" only surfaces for what's
+       * genuinely unread in that circle's chat. */
+      const myLastReadByCircle = new Map(
+        (memberRows ?? [])
+          .filter((m) => m.user_id === user.id)
+          .map((m) => [m.circle_id, (m as { last_read_at?: string }).last_read_at]),
+      );
 
       const views: CircleView[] = list.map((c) => {
         const members = (memberRows ?? [])
@@ -192,16 +202,22 @@ const HomePage = () => {
           });
         }
 
-        // Chat
+        // Chat — only what's genuinely unread since this circle's chat was
+        // last opened counts; a fully-read chat quiets down instead of
+        // lingering as "something to read".
         const msgs = (messageRows ?? []).filter((m) => m.circle_id === c.id);
-        if (msgs.length) {
-          msgs.forEach((m) => markActive(m.user_id, m.created_at));
+        const myLastRead = myLastReadByCircle.get(c.id) ?? new Date(lastSeenTs).toISOString();
+        const unreadMsgs = msgs.filter((m) => m.user_id !== user.id && at(m.created_at) > at(myLastRead));
+        if (unreadMsgs.length) {
+          unreadMsgs.forEach((m) => markActive(m.user_id, m.created_at));
           events.push({
-            primaryText: `${firstNameOf(msgs[0].user_id)} skrev i chatten`,
-            shortText: msgs.length === 1 ? "Läs ett nytt meddelande" : "Läs vad som sagts i chatten",
-            ts: at(msgs[0].created_at),
-            weight: 1,
-            count: msgs.length,
+            primaryText: `${firstNameOf(unreadMsgs[0].user_id)} skrev i chatten`,
+            shortText: unreadMsgs.length === 1 ? "Läs ett nytt meddelande" : "Läs vad som sagts i chatten",
+            ts: at(unreadMsgs[0].created_at),
+            // Weighted above every other signal: someone waiting on a reply
+            // is the clearest reason to open a circle.
+            weight: 5,
+            count: unreadMsgs.length,
           });
         }
 

@@ -8,11 +8,8 @@ if (savedTheme === "dark") {
   document.documentElement.classList.add("dark");
 }
 
-// Register push notification service worker alongside VitePWA's SW
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/push-sw.js").catch(() => {});
-  });
-}
+// The push-notification handlers live inside the VitePWA-generated service
+// worker (see vite.config.ts workbox.importScripts) and register themselves
+// automatically — no separate registration needed here.
 
 createRoot(document.getElementById("root")!).render(<App />);
