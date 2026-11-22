@@ -549,11 +549,17 @@ const CirclePage = () => {
           <div className="rounded-300 p-300" style={{ backgroundColor: CARD_BLUE }}>
             {lastMessages.length > 0 ? (
               <div className="space-y-1 mb-4">
-                {lastMessages.map((m) => (
-                  <Typography key={m.id} as="p" variant="body" className="line-clamp-1" style={{ color: "hsl(var(--color-text-primary))" }}>
-                    <span style={{ fontWeight: 500 }}>{(m.user_id && memberNameMap.get(m.user_id)) || "Någon"}:</span> {previewText(m)}
-                  </Typography>
-                ))}
+                {lastMessages.map((m, i) => {
+                  const sameSenderAsPrev = i > 0 && m.user_id === lastMessages[i - 1].user_id;
+                  return (
+                    <Typography key={m.id} as="p" variant="body" className="line-clamp-1" style={{ color: "hsl(var(--color-text-primary))" }}>
+                      {!sameSenderAsPrev && (
+                        <span style={{ fontWeight: 500 }}>{(m.user_id && memberNameMap.get(m.user_id)) || "Någon"}: </span>
+                      )}
+                      {previewText(m)}
+                    </Typography>
+                  );
+                })}
               </div>
             ) : (
               <Typography as="p" variant="body" className="mb-4" style={{ color: "hsl(var(--color-text-primary))" }}>
