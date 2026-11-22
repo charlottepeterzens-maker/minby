@@ -1,4 +1,4 @@
-import { CARD_RADIUS, OVERLAY_GRADIENT } from "@/lib/card-styles";
+import { RADIUS, GRADIENTS } from "@/lib/card-styles";
 import { ExampleTag } from "@/components/ui/example-tag";
 import { typography } from "@/design-system/typography";
 import { cn } from "@/lib/utils";
@@ -15,6 +15,15 @@ interface Props {
   tag?: string;
 }
 
+/** Maps PhotoTile's semantic gradient kinds to the shared overlay tokens —
+ * "tips"/"photos" aren't keys on GRADIENTS itself, since those tokens are
+ * named by visual role (brand/warm), not by feature. */
+const GRADIENT_BY_KIND: Record<NonNullable<Props["gradient"]>, string> = {
+  dark: GRADIENTS.dark,
+  tips: GRADIENTS.brand,
+  photos: GRADIENTS.warm,
+};
+
 const PhotoTile = ({
   imageUrl,
   title,
@@ -26,7 +35,7 @@ const PhotoTile = ({
   gradient = "dark",
   tag,
 }: Props) => {
-  const radius = `${CARD_RADIUS.photo}px`;
+  const radius = `${RADIUS.photo}px`;
   const dims = size === "lg" ? "w-[150px] h-[210px]" : "w-[110px] h-[130px]";
   // Typography comes from the design system: large tiles use caption/labelSm,
   // small tiles step down one notch to labelSm/eyebrow.
@@ -53,7 +62,7 @@ const PhotoTile = ({
       {tag && <ExampleTag label={tag} className="absolute top-2 left-2 z-10" />}
       <div
         className={`absolute inset-x-0 bottom-0 ${pad}`}
-        style={{ background: OVERLAY_GRADIENT[gradient] }}
+        style={{ background: GRADIENT_BY_KIND[gradient] }}
       >
         {title && (
           <div className={cn(titleType, "text-white truncate")}>

@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { X, Send, Camera, CalendarPlus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import TextButton from "@/components/ui/text-button";
-import { OVERLAY_GRADIENT } from "@/lib/card-styles";
+import { GRADIENTS } from "@/lib/card-styles";
 import Typography from "@/components/ui/typography";
 import { typography } from "@/design-system/typography";
 import { cn } from "@/lib/utils";
@@ -293,7 +293,7 @@ const ChatPage = () => {
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute inset-0" style={{ background: OVERLAY_GRADIENT.heroSubtle }} />
+        <div className="absolute inset-0" style={{ background: GRADIENTS.subtle }} />
         <div className="absolute bottom-4 left-5 right-5 text-white">
           <Typography variant="display" as="h1">{circle?.name ?? ""}</Typography>
           {memberPreview && <Typography variant="meta" as="p" className="opacity-90 mt-1 truncate">{memberPreview}</Typography>}
