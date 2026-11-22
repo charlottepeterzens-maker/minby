@@ -56,7 +56,7 @@ const formatTimestamp = (iso: string) => {
 
 const LINK_STYLE = { color: "hsl(var(--color-accent-terra-text))" } as const;
 const CARD_YELLOW = "hsl(var(--butter-150))";
-const CARD_BLUE = "#DCEAF8";
+const CARD_BLUE = "hsl(var(--breeze-100))";
 
 /** Short label for a chat message preview, based on its kind. */
 const previewText = (m: ChatMessage) => {
@@ -455,7 +455,7 @@ const CirclePage = () => {
         <div
           className="relative w-full h-[220px] overflow-hidden"
           style={{
-            backgroundColor: "#8b6f5e",
+            backgroundColor: "hsl(var(--avatar-fallback))",
             backgroundImage: (photos[0]?.image_url || circle.hero_image_url)
               ? `url(${photos[0]?.image_url || circle.hero_image_url})`
               : undefined,

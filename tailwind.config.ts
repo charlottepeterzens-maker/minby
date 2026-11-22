@@ -89,6 +89,7 @@ export default {
         },
         activity: "hsl(var(--activity))",
         skeleton: "hsl(var(--skeleton))",
+        "avatar-fallback": "hsl(var(--avatar-fallback))",
 
         border: "hsl(var(--border))",
 

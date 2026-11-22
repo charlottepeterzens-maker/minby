@@ -57,7 +57,7 @@ export const GRADIENTS = {
 
   /** Warm ochre overlay */
   warm:
-    "linear-gradient(to top, #765D19 0%, rgba(118,93,25,0.35) 55%, rgba(118,93,25,0) 100%)",
+    "linear-gradient(to top, hsl(var(--color-text-photo)) 0%, hsl(var(--color-text-photo) / 0.35) 55%, hsl(var(--color-text-photo) / 0) 100%)",
 } as const;
 
 

@@ -58,7 +58,7 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
               typography.meta,
               "w-6 h-6 rounded-avatar overflow-hidden flex items-center justify-center",
             )}
-            style={{ backgroundColor: "#DCEAF8", color: "hsl(var(--primary))" }}
+            style={{ backgroundColor: "hsl(var(--breeze-100))", color: "hsl(var(--primary))" }}
           >
             {ownerAvatar ? <img src={ownerAvatar} alt="" className="w-full h-full object-cover" /> : initials}
           </div>
@@ -66,11 +66,11 @@ const TipCard = ({ imageUrl, ownerName, ownerAvatar, dateLabel, title, descripti
             {dateLabel}
           </Typography>
         </div>
-        <Typography variant="heading" as="div" className="truncate" style={{ color: "#2B2B2B" }}>
+        <Typography variant="heading" as="div" className="truncate" style={{ color: "hsl(var(--text-ink))" }}>
           {title}
         </Typography>
         {description && (
-          <Typography variant="body" className="mt-1 line-clamp-2" style={{ color: "#2B2B2B" }}>
+          <Typography variant="body" className="mt-1 line-clamp-2" style={{ color: "hsl(var(--text-ink))" }}>
             {description}
           </Typography>
         )}

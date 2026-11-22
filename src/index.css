@@ -125,6 +125,9 @@
     /* Skeleton (loading placeholders) */
     --skeleton: 41 42% 84%;     /* #E8DDC6 */
 
+    /* Avatar fallback (no profile photo) */
+    --avatar-fallback: 21 19% 46%; /* #8b6f5e */
+
     /* ------------------------------------------------------------------
      * Foundations — spacing, radius & motion tokens
      * Mirrors src/design-system/tokens.ts. Never hardcode px in components.

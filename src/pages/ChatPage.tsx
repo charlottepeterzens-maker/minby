@@ -287,7 +287,7 @@ const ChatPage = () => {
       <div
         className="relative w-full h-[220px] overflow-hidden max-w-lg mx-auto w-full"
         style={{
-          backgroundColor: "#8b6f5e",
+          backgroundColor: "hsl(var(--avatar-fallback))",
           backgroundImage: circle?.hero_image_url ? `url(${circle.hero_image_url})` : undefined,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -361,7 +361,7 @@ const ChatPage = () => {
                 const Avatar = (
                   <div
                     className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden"
-                    style={{ backgroundColor: "#DCEAF8" }}
+                    style={{ backgroundColor: "hsl(var(--breeze-100))" }}
                   >
                     {avatar ? (
                       <img src={avatar} alt="" className="w-full h-full object-cover" />

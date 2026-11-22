@@ -27,7 +27,7 @@ const MeetingCard = ({ hostName, dateLabel, title, responseCount, onRespond, onO
         >
           {hostName}
         </Typography>
-        <Typography variant="heading" as="div" style={{ color: "#2B2B2B" }}>
+        <Typography variant="heading" as="div" style={{ color: "hsl(var(--text-ink))" }}>
           {dateLabel}
           {dateLabel && <br />}
           {title}
