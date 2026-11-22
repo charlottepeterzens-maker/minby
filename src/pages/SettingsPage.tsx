@@ -18,7 +18,7 @@ interface Profile {
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <section className="mb-8">
     <Typography
-      variant="meta"
+      variant="eyebrow"
       as="h2"
       className="mb-2 px-100"
       style={{ color: "hsl(var(--color-text-tertiary))" }}

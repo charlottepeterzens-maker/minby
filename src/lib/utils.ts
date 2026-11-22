@@ -6,7 +6,7 @@ import { extendTailwindMerge } from "tailwind-merge";
  * must be registered as font-size classes, otherwise tailwind-merge treats
  * them as text colors and silently drops them when a color class is present.
  */
-const TYPOGRAPHY_SIZES = ["display", "heading", "section", "body", "meta", "action"];
+const TYPOGRAPHY_SIZES = ["display", "heading", "section", "body", "meta", "eyebrow", "action"];
 
 const twMerge = extendTailwindMerge({
   extend: {

@@ -64,7 +64,7 @@ const CircleDashboardCard = ({
       className="w-full text-left rounded-300 p-300 flex items-start gap-300 bg-butter-100"
     >
       <div className="flex-1 min-w-0 py-100">
-        <Typography as="div" variant="meta" className="truncate mb-200 text-berry-300">
+        <Typography as="div" variant="eyebrow" className="truncate mb-200 text-berry-300">
           {name}
         </Typography>
 

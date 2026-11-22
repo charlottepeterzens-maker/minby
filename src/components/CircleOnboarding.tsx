@@ -68,7 +68,7 @@ const CircleOnboarding = ({
         style={{ backgroundColor: "#561828" }}
       >
         <div className="flex items-start justify-between mb-2">
-          <Typography variant="meta" as="div" style={{ color: "hsl(var(--primary-foreground))" }}>
+          <Typography variant="eyebrow" as="div" style={{ color: "hsl(var(--primary-foreground))" }}>
             {doneCount} av {STEPS.length} steg klara
           </Typography>
 

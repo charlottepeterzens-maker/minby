@@ -14,6 +14,7 @@ export type TypographyVariant =
   | "section"
   | "body"
   | "meta"
+  | "eyebrow"
   | "action";
 
 export type TypographyStyle = {
@@ -55,6 +56,12 @@ export const typographyTokens = {
     lineHeight: "100%",
     letterSpacing: "0.02em",
   },
+  eyebrow: {
+    fontSize: "10px",
+    fontWeight: 400,
+    lineHeight: "100%",
+    letterSpacing: "0.08em",
+  },
   action: {
     fontSize: "14px",
     fontWeight: 500,
@@ -70,6 +77,7 @@ export const typography: Record<TypographyVariant, string> = {
   section: "font-display text-section",
   body: "font-body text-body",
   meta: "font-body text-meta",
+  eyebrow: "font-body text-eyebrow",
   action: "font-body text-action",
 };
 
@@ -80,5 +88,6 @@ export const typographyElements: Record<TypographyVariant, string> = {
   section: "h3",
   body: "p",
   meta: "span",
+  eyebrow: "span",
   action: "span",
 };

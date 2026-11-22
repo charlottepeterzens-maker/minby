@@ -313,6 +313,13 @@
     letter-spacing: 0.02em;
     font-weight: 400;
   }
+  .text-eyebrow {
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
   .text-action {
     font-size: 14px;
     line-height: 1;

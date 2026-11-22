@@ -48,6 +48,7 @@ export const Heading = (p: AliasProps) => <Typography variant="heading" {...p} /
 export const Section = (p: AliasProps) => <Typography variant="section" {...p} />;
 export const Body = (p: AliasProps) => <Typography variant="body" {...p} />;
 export const Meta = (p: AliasProps) => <Typography variant="meta" {...p} />;
+export const Eyebrow = (p: AliasProps) => <Typography variant="eyebrow" {...p} />;
 export const Action = (p: AliasProps) => <Typography variant="action" {...p} />;
 
 export default Typography;

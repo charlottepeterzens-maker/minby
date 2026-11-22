@@ -25,6 +25,7 @@ export default {
         section: ["18px", { lineHeight: "1", letterSpacing: "0", fontWeight: "400" }],
         body: ["14px", { lineHeight: "1.2", letterSpacing: "0", fontWeight: "400" }],
         meta: ["10px", { lineHeight: "1", letterSpacing: "0.02em", fontWeight: "400" }],
+        eyebrow: ["10px", { lineHeight: "1", letterSpacing: "0.08em", fontWeight: "400" }],
         action: ["14px", { lineHeight: "1", letterSpacing: "0", fontWeight: "500" }],
       },
 

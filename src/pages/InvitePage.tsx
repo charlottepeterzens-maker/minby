@@ -128,7 +128,7 @@ const InvitePage = () => {
     <div className="min-h-screen bg-background flex items-center justify-center px-400 py-10">
       <div className="w-full max-w-sm text-center">
         <Typography
-          variant="meta"
+          variant="eyebrow"
           as="span"
           style={{
             color: "#9B8BA5",
