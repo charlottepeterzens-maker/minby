@@ -84,7 +84,7 @@ const ProfileNudge = () => {
   };
 
   return (
-    <section className="mt-4 px-300">
+    <section className="mt-6 px-300">
       <div className="rounded-300 p-5" style={{ backgroundColor: "hsl(var(--butter-150))" }}>
         {step === "name" && (
           <>
