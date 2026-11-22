@@ -21,6 +21,17 @@ Deno.serve(async (req) => {
 
     const userId = user.id;
 
+    // Snapshot storage paths before deleting the rows that record them —
+    // once the rows are gone there's no way to find the files again.
+    const [{ data: ownedPhotos }, { data: ownedTips }] = await Promise.all([
+      admin.from("photos").select("storage_path").eq("owner_id", userId),
+      admin.from("tips").select("image_path").eq("owner_id", userId),
+    ]);
+    const circlePhotoPaths = [
+      ...(ownedPhotos ?? []).map((p) => p.storage_path),
+      ...(ownedTips ?? []).map((t) => t.image_path).filter((p): p is string => !!p),
+    ];
+
     // Delete owned circles (cascades members, messages, invites, meetings)
     await admin.from("circles").delete().eq("created_by", userId);
     // Leave any circles the user is member of
@@ -29,6 +40,15 @@ Deno.serve(async (req) => {
     await admin.from("photos").delete().eq("owner_id", userId);
     await admin.from("tips").delete().eq("owner_id", userId);
     await admin.from("profiles").delete().eq("user_id", userId);
+
+    // Clean up storage so deleted content doesn't leave orphaned files behind.
+    if (circlePhotoPaths.length) {
+      await admin.storage.from("circle-photos").remove(circlePhotoPaths);
+    }
+    const { data: avatarFiles } = await admin.storage.from("avatars").list(userId);
+    if (avatarFiles?.length) {
+      await admin.storage.from("avatars").remove(avatarFiles.map((f) => `${userId}/${f.name}`));
+    }
 
     const { error: authError } = await admin.auth.admin.deleteUser(userId);
     if (authError) return new Response(JSON.stringify({ error: authError.message }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });

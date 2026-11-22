@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import Typography from "@/components/ui/typography";
 import { typography } from "@/design-system/typography";
 import { cn } from "@/lib/utils";
+import { Sheet } from "@/components/ui/sheet";
+import { BottomSheetBody, BottomSheetContent, BottomSheetHeader } from "@/components/ui/bottom-sheet";
 
 interface Profile {
   display_name: string | null;
@@ -69,6 +71,8 @@ const SettingsPage = () => {
   const [accountEmail, setAccountEmail] = useState("");
   const [accountPassword, setAccountPassword] = useState("");
   const [savingAccount, setSavingAccount] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -125,6 +129,18 @@ const SettingsPage = () => {
     toast.success("Kolla din e-post för att bekräfta kontot");
     setCreatingAccount(false);
     setAccountPassword("");
+  };
+
+  const deleteAccount = async () => {
+    setDeletingAccount(true);
+    const { error } = await supabase.functions.invoke("delete-account");
+    if (error) {
+      toast.error(error.message ?? "Kunde inte radera kontot");
+      setDeletingAccount(false);
+      return;
+    }
+    await supabase.auth.signOut();
+    navigate("/", { replace: true });
   };
 
   const initials = (profile.display_name ?? user?.email ?? "?")
@@ -289,6 +305,11 @@ const SettingsPage = () => {
               <Row label="Användarvillkor" onClick={() => navigate("/terms")} />
             </Section>
 
+            {/* Farozon */}
+            <Section title="farozon">
+              <Row label="Radera konto" danger onClick={() => setConfirmingDelete(true)} />
+            </Section>
+
             <button
               type="button"
               onClick={signOut}
@@ -301,6 +322,34 @@ const SettingsPage = () => {
           </>
         )}
       </div>
+
+      <Sheet open={confirmingDelete} onOpenChange={setConfirmingDelete}>
+        <BottomSheetContent>
+          <BottomSheetHeader title="Radera ditt konto?" />
+          <BottomSheetBody className="px-5 pt-200 pb-500 space-y-400">
+            <Typography variant="body" as="p" style={{ color: "hsl(var(--color-text-primary))" }}>
+              Kretsar du skapat, och allt i dem, raderas för alla. Du lämnar kretsar du bara är
+              medlem i. Dina foton och tips tas bort. Det går inte att ångra.
+            </Typography>
+            <button
+              type="button"
+              onClick={deleteAccount}
+              disabled={deletingAccount}
+              className="w-full rounded-lg py-3.5 disabled:opacity-50"
+              style={{ backgroundColor: "#561828", color: "#F0EAE2" }}
+            >
+              <Typography variant="action" as="span">
+                {deletingAccount ? "Raderar…" : "Radera konto permanent"}
+              </Typography>
+            </button>
+            <div className="flex justify-center">
+              <TextButton variant="secondary" onClick={() => setConfirmingDelete(false)} disabled={deletingAccount}>
+                Avbryt
+              </TextButton>
+            </div>
+          </BottomSheetBody>
+        </BottomSheetContent>
+      </Sheet>
     </div>
   );
 };
